@@ -122,9 +122,12 @@ describe('parsePlanOrder (fiche 0089)', () => {
     );
     const planMd = readFileSync(planPath, 'utf8');
     const ids = parsePlanOrder(planMd);
-    // Depuis la bascule par milestone (2026-10-23), le plan MÈNE par la milestone courante
-    // (`preparation`), plus par la tête V0.1 (graphe compilé) depuis longtemps livrée.
-    expect(ids[0]).toBe('20261016114857813');
+    // La tête du plan bouge à chaque replanification : on ne la fige pas. On vérifie que la
+    // première entrée lue est la première ligne-entrée du document (rouge le 2026-11-02 quand le
+    // plan a remonté les correctifs du scout en tête).
+    const firstEntry = planMd.split('\n').find((l) => /^[-*] .*`\d{17}`/.test(l));
+    expect(firstEntry).toBeDefined();
+    expect(firstEntry).toContain(`\`${ids[0]}\``);
     // L’ordre du document reste préservé parmi les sections historiques V0.1 → V0.2 → P0 → V0.3.
     expect(ids.indexOf('20260821204737357')).toBeLessThan(ids.indexOf('20260910165637000'));
     expect(ids.indexOf('20260910165637000')).toBeLessThan(ids.indexOf('20260830194601233'));

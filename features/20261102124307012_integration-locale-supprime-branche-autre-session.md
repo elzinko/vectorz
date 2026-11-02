@@ -87,13 +87,13 @@ qui l'a déjà restreint une fois.
 
 ## Critères d'acceptation
 
-- [ ] Une branche créée au commit de `main`, sans dossier de travail, survit à un squash local d'une
+- [x] Une branche créée au commit de `main`, sans dossier de travail, survit à un squash local d'une
   autre branche.
-- [ ] Une branche qui pointe sur un commit plus ancien de `main` survit elle aussi.
-- [ ] La branche intégrée par le squash est toujours supprimée, avec la ligne `pruned:` qui la recrée.
-- [ ] Un reste d'un squash plus ancien, avec un commit à lui et son contenu déjà dans `main`, est
+- [x] Une branche qui pointe sur un commit plus ancien de `main` survit elle aussi.
+- [x] La branche intégrée par le squash est toujours supprimée, avec la ligne `pruned:` qui la recrée.
+- [x] Un reste d'un squash plus ancien, avec un commit à lui et son contenu déjà dans `main`, est
   toujours supprimé.
-- [ ] `test-ship-merge.sh` est vert : la fixture `old-absorbed` est réécrite en vrai reste, et un cas
+- [x] `test-ship-merge.sh` est vert : la fixture `old-absorbed` est réécrite en vrai reste, et un cas
   neuf couvre la branche neuve.
 
 ## Comment vérifier

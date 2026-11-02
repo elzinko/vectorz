@@ -115,6 +115,11 @@ prune_absorbed_branches() {
   while IFS= read -r b; do
     [[ -z "$b" ]] && continue
     protected_branch "$b" && continue
+    # Une branche dont la pointe est déjà dans l'historique de <base> n'a encore rien fait :
+    # c'est la branche toute neuve d'une autre session, pas un reste de squash (un squash
+    # recopie les commits, la pointe d'une branche livrée reste hors de l'historique). On
+    # l'épargne (fiche 20261102124307012).
+    git_c merge-base --is-ancestor "$b" "$base" 2>/dev/null && continue
     if is_absorbed "$b"; then
       sha="$(git_c rev-parse "$b")"
       # La branche peut être tenue par un AUTRE worktree (scénario multi-worktree normal

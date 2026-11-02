@@ -44,9 +44,18 @@ git -C "$REPO" add f.txt
 git -C "$REPO" commit -qm "feat: x en cours"
 git -C "$REPO" checkout -q main
 
-# Une branche déjà absorbée d'une session précédente (contenu déjà dans main) : le
-# script doit la retrouver et la purger, comme fait `check.sh` (fiche 0076).
-git -C "$REPO" branch old-absorbed main
+# Un reste d'un squash précédent (fiche 0076) : un commit à lui, dont le contenu est déjà
+# dans main par un squash. Sa pointe n'est donc pas dans l'historique de main. Le script doit
+# la retrouver et la purger, comme fait `check.sh`.
+squash_remnant() {  # <repo> <branche> <fichier> : branche à un commit, squashée dans main
+  local r="$1" b="$2" f="$3"
+  git -C "$r" checkout -qb "$b" main
+  echo "$b" > "$r/$f"; git -C "$r" add "$f"; git -C "$r" commit -qm "feat: $b"
+  git -C "$r" checkout -q main
+  git -C "$r" merge -q --squash "$b" >/dev/null
+  git -C "$r" commit -qm "feat: $b (squash)"
+}
+squash_remnant "$REPO" old-absorbed old.txt
 
 # `gh` est un piège : s'il est invoqué, il écrit un marqueur — le test échoue si le
 # marqueur apparaît.
@@ -198,7 +207,7 @@ git init -q -b main "$REPO6"
 git -C "$REPO6" config user.email t@t.io
 git -C "$REPO6" config user.name t
 echo v1 > "$REPO6/f.txt"; git -C "$REPO6" add f.txt; git -C "$REPO6" commit -qm "chore: v1"
-git -C "$REPO6" branch held main                                   # déjà absorbée (= main)
+squash_remnant "$REPO6" held held.txt                              # déjà absorbée (reste de squash)
 git -C "$REPO6" worktree add -q "$WORK/repo6-held-wt" held >/dev/null 2>&1   # tenue par un worktree
 git -C "$REPO6" checkout -qb feat/w
 echo v2 >> "$REPO6/f.txt"; git -C "$REPO6" add f.txt; git -C "$REPO6" commit -qm "feat: w"
@@ -235,7 +244,7 @@ git -C "$REPO8" add f.txt
 git -C "$REPO8" commit -qm "chore: v1"
 git -C "$REPO8" branch master main
 git -C "$REPO8" branch trunk main
-git -C "$REPO8" branch old-absorbed main
+squash_remnant "$REPO8" old-absorbed old.txt
 git init -q --bare "$BARE8"
 git -C "$REPO8" remote add origin "$BARE8"
 git -C "$REPO8" push -q origin main trunk
@@ -308,6 +317,36 @@ echo "$OUT9B"
 grep -qiF "conflit" <<<"$OUT9B" && ok "annonce le CONFLIT" || fail "ne dit pas le conflit : $OUT9B"
 [[ "$(git -C "$REPO9B" rev-parse main)" == "$MAIN_BEFORE9B" ]] && ok "main inchangé malgré le conflit simulé" || fail "main a bougé en dry-run conflit"
 [[ -z "$(git -C "$REPO9B" status --porcelain)" ]] && ok "index + arbre propres après dry-run conflit" || fail "dry-run conflit a sali l'index/l'arbre"
+
+# --- Cas 10 : branche neuve d'une autre session — elle survit au squash ----------------
+# Le bug (2026-11-02) : une session venait de créer `docs/un-seul-ecran` au commit de main.
+# Le squash local d'une autre branche l'a jugée « absorbée » et a tenté de la supprimer ; seul
+# un worktree l'a sauvée. Une branche dont la pointe est dans l'historique de main n'a encore
+# rien fait : on l'épargne. Ici AUCUN worktree ne la tient.
+echo "=== Cas 10 — branche neuve d'une autre session : épargnée par le squash, le reste toujours purgé ==="
+REPO10="$WORK/repo-fresh"
+git init -q -b main "$REPO10"
+git -C "$REPO10" config user.email t@t.io
+git -C "$REPO10" config user.name t
+echo v1 > "$REPO10/f.txt"; git -C "$REPO10" add f.txt; git -C "$REPO10" commit -qm "chore: v1"
+SHA_V1_10="$(git -C "$REPO10" rev-parse main)"
+squash_remnant "$REPO10" old-absorbed old.txt
+git -C "$REPO10" branch older-session "$SHA_V1_10"                # pointe sur un commit plus ancien de main
+git -C "$REPO10" checkout -qb feat/z
+echo v2 >> "$REPO10/f.txt"; git -C "$REPO10" add f.txt; git -C "$REPO10" commit -qm "feat: z"
+git -C "$REPO10" checkout -q main
+git -C "$REPO10" branch fresh-session main                         # créée à l'instant, au commit de main
+SHA_Z="$(git -C "$REPO10" rev-parse feat/z)"
+
+OUT10="$(bash "$SCRIPT" --local --repo "$REPO10" --branch feat/z --base main \
+  --subject "feat: z" --body b 2>&1)"
+
+git -C "$REPO10" show-ref --verify -q refs/heads/fresh-session && ok "fresh-session toujours là après le squash (branche neuve, sans worktree)" || fail "fresh-session supprimée : $OUT10"
+git -C "$REPO10" show-ref --verify -q refs/heads/older-session && ok "older-session toujours là (pointe sur un commit plus ancien de main)" || fail "older-session supprimée : $OUT10"
+grep -qE "(fresh|older)-session" <<<"$OUT10" && fail "une branche neuve citée dans la sortie : $OUT10" || ok "aucune branche neuve citée (ni supprimée, ni « non supprimée »)"
+git -C "$REPO10" show-ref --verify -q refs/heads/feat/z && fail "feat/z pas prunée" || ok "feat/z prunée (la branche qu'on vient d'intégrer)"
+grep -qxF "pruned: feat/z ($SHA_Z) — git branch feat/z $SHA_Z" <<<"$OUT10" && ok "la suppression de feat/z se dit, avec la commande qui la recrée" || fail "suppression de feat/z muette : $OUT10"
+git -C "$REPO10" show-ref --verify -q refs/heads/old-absorbed && fail "old-absorbed pas prunée" || ok "old-absorbed prunée (reste d'un squash plus ancien)"
 
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
