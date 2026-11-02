@@ -348,6 +348,35 @@ git -C "$REPO10" show-ref --verify -q refs/heads/feat/z && fail "feat/z pas prun
 grep -qxF "pruned: feat/z ($SHA_Z) — git branch feat/z $SHA_Z" <<<"$OUT10" && ok "la suppression de feat/z se dit, avec la commande qui la recrée" || fail "suppression de feat/z muette : $OUT10"
 git -C "$REPO10" show-ref --verify -q refs/heads/old-absorbed && fail "old-absorbed pas prunée" || ok "old-absorbed prunée (reste d'un squash plus ancien)"
 
+# --- Cas 11 : le squash recrée le commit à l'identique — la branche intégrée part quand même ---
+# Le bug (2026-11-02, régression du cas 10) : une branche à un seul commit, squashée dans la même
+# seconde avec le même message, donne un commit de squash identique à l'octet (même arbre, même
+# parent, mêmes auteur et date). La pointe de la branche devient la pointe de main, et le garde du
+# cas 10 la prenait pour une branche neuve. C'est le chemin de l'archive et des comptes rendus
+# (commit-doc-via-worktree.sh) : un commit, puis un squash avec le même sujet. Dates figées ici pour
+# jouer le piège à coup sûr.
+echo "=== Cas 11 — squash identique au commit de la branche : la branche intégrée est prunée, la neuve épargnée ==="
+REPO11="$WORK/repo-same-commit"
+git init -q -b main "$REPO11"
+git -C "$REPO11" config user.email t@t.io
+git -C "$REPO11" config user.name t
+echo v1 > "$REPO11/f.txt"; git -C "$REPO11" add f.txt; git -C "$REPO11" commit -qm "chore: v1"
+git -C "$REPO11" branch fresh-session main                         # branche neuve d'une autre session
+SAME_DATE="2026-11-02 12:00:00 +0000"
+git -C "$REPO11" checkout -qb docs/archive
+echo doc > "$REPO11/doc.md"; git -C "$REPO11" add doc.md
+GIT_AUTHOR_DATE="$SAME_DATE" GIT_COMMITTER_DATE="$SAME_DATE" git -C "$REPO11" commit -qm "docs: archive" -m b
+git -C "$REPO11" checkout -q main
+SHA_DOC="$(git -C "$REPO11" rev-parse docs/archive)"
+
+OUT11="$(GIT_AUTHOR_DATE="$SAME_DATE" GIT_COMMITTER_DATE="$SAME_DATE" bash "$SCRIPT" --local --repo "$REPO11" \
+  --branch docs/archive --base main --subject "docs: archive" --body b 2>&1)"
+
+[[ "$(git -C "$REPO11" rev-parse main)" == "$SHA_DOC" ]] && ok "le squash a recréé le commit de la branche à l'identique (le piège est joué)" || fail "fixture : le squash n'a pas recréé le même commit, le cas ne prouve rien"
+git -C "$REPO11" show-ref --verify -q refs/heads/docs/archive && fail "docs/archive pas prunée alors qu'on vient de l'intégrer : $OUT11" || ok "docs/archive prunée (la branche qu'on vient d'intégrer)"
+grep -qxF "pruned: docs/archive ($SHA_DOC) — git branch docs/archive $SHA_DOC" <<<"$OUT11" && ok "la suppression de docs/archive se dit, avec la commande qui la recrée" || fail "suppression de docs/archive muette : $OUT11"
+git -C "$REPO11" show-ref --verify -q refs/heads/fresh-session && ok "fresh-session toujours là (branche neuve, épargnée)" || fail "fresh-session supprimée : $OUT11"
+
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
   exit 1

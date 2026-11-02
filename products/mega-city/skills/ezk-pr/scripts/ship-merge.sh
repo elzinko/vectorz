@@ -111,15 +111,18 @@ protected_branch() {
 }
 
 prune_absorbed_branches() {
-  local b sha
+  local base_before="$1" b sha
   while IFS= read -r b; do
     [[ -z "$b" ]] && continue
     protected_branch "$b" && continue
-    # Une branche dont la pointe est déjà dans l'historique de <base> n'a encore rien fait :
-    # c'est la branche toute neuve d'une autre session, pas un reste de squash (un squash
-    # recopie les commits, la pointe d'une branche livrée reste hors de l'historique). On
-    # l'épargne (fiche 20261102124307012).
-    git_c merge-base --is-ancestor "$b" "$base" 2>/dev/null && continue
+    # Une branche dont la pointe est déjà dans l'historique de <base> d'AVANT le squash n'a
+    # encore rien fait : c'est la branche toute neuve d'une autre session, pas un reste de
+    # squash (un squash recopie les commits, la pointe d'une branche livrée reste hors de
+    # l'historique). On l'épargne (fiche 20261102124307012).
+    # On compare à <base> d'avant, pas d'après : le squash d'une branche à un seul commit, fait
+    # dans la même seconde avec le même message, recrée ce commit à l'identique. La pointe de la
+    # branche intégrée devient alors celle de <base>, et l'épargnerait à tort (cas de l'archive).
+    git_c merge-base --is-ancestor "$b" "$base_before" 2>/dev/null && continue
     if is_absorbed "$b"; then
       sha="$(git_c rev-parse "$b")"
       # La branche peut être tenue par un AUTRE worktree (scénario multi-worktree normal
@@ -158,9 +161,11 @@ ship_local() {
     exit 1
   fi
   git_c checkout -q "$base"
+  local base_before
+  base_before="$(git_c rev-parse HEAD)"
   git_c merge --squash "$branch" >/dev/null
   git_c commit -q -m "$subject" -m "$body"
-  prune_absorbed_branches
+  prune_absorbed_branches "$base_before"
   if has_remote; then
     # On rafraîchit les refs partagées. Si le remote ne répond pas, on ne l'avale pas en
     # silence (comme ship_remote) : on signale que le réalignement partagé n'est pas

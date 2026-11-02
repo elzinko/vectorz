@@ -120,3 +120,10 @@ dit que la branche neuve est toujours là après le squash.
 - Groom du 2026-11-02. Seul `ship-merge.sh` supprime des branches. Le portier d'`ezk-archive`
   (`check.sh`) propose des commandes `git branch -D` à l'humain, sans les lancer : hors périmètre.
 - Dépendances externes : aucune. Taille : 5 critères, une surface (le script et son test).
+- Régression trouvée le 2026-11-02, le soir même. La ligne « la branche qu'on vient d'intégrer » du
+  tableau avait un trou. Une branche d'un seul commit, squashée dans la même seconde avec le même
+  message, donne un commit de squash identique à l'octet. Sa pointe devient alors celle de `main`, et
+  le garde l'épargnait. C'est le chemin de l'archive et des comptes rendus : `test-archive-commit.sh`
+  est passé au rouge (cas L1). Correction : le garde compare la branche à `main` **d'avant** le
+  squash, pas d'après. Les branches neuves restent épargnées. Le cas 11 de `test-ship-merge.sh`
+  rejoue le piège avec des dates figées.
