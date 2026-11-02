@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, kpi]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-02
