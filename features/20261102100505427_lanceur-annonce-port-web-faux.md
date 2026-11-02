@@ -66,13 +66,13 @@ aujourd'hui.
 
 ## Critères d'acceptation
 
-- [ ] Port web occupé : `pnpm cop1:dev` s'arrête avec un code non nul, avant de lancer le daemon. Le
+- [x] Port web occupé : `pnpm cop1:dev` s'arrête avec un code non nul, avant de lancer le daemon. Le
   message nomme le port, le pid qui le tient, et `COP1_WEB_PORT`.
-- [ ] Port web libre : le lancement se passe comme aujourd'hui, et l'adresse affichée ouvre la page de
+- [x] Port web libre : le lancement se passe comme aujourd'hui, et l'adresse affichée ouvre la page de
   mission control.
-- [ ] Quand vite démarre avec `PORT` posé sur un port occupé, il s'arrête en erreur au lieu de
+- [x] Quand vite démarre avec `PORT` posé sur un port occupé, il s'arrête en erreur au lieu de
   prendre le port suivant.
-- [ ] Sans `PORT`, `pnpm --dir products/cop1/packages/web dev` garde son comportement : il glisse au
+- [x] Sans `PORT`, `pnpm --dir products/cop1/packages/web dev` garde son comportement : il glisse au
   port suivant si 5173 est pris.
 
 ## Comment vérifier

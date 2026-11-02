@@ -12,6 +12,9 @@ export default defineConfig({
   server: {
     // Respecte le port assigné (PORT — ex. preview autoPort) ; 5173 par défaut en dev direct.
     port: process.env.PORT ? Number(process.env.PORT) : 5173,
+    // Un port imposé est tenu ou refusé, jamais remplacé en silence : le lanceur affiche
+    // ce port-là. Sans PORT, vite peut glisser au suivant (5173 est aussi celui de muti).
+    strictPort: process.env.PORT !== undefined,
     proxy: {
       '/api': {
         target: daemonTarget,
