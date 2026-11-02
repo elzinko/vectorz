@@ -1,6 +1,6 @@
 ---
 id: "20261014113049954"
-title: "Cache de cartographie applicative — une carte vivante de l'app que les agents consultent"
+title: "Carte de l'app et suivi de ce qui est testé — une carte vivante que les agents consultent"
 type: feature
 priority: P2
 product: mega-city
@@ -13,7 +13,7 @@ evidence: none # capacité de méthode (outil + agents) ; preuve = ses tests + u
 created: 2026-10-14
 ---
 
-# 20261014113049954 — Cache de cartographie applicative
+# 20261014113049954 — Carte de l'app et suivi de ce qui est testé
 
 **En clair.** Un agent qui explore l'app la re-parcourt entièrement à chaque fois, sans mémoire. On
 aimerait une carte de l'app que les agents et les LLM consultent au lieu de tout re-explorer. **Le
@@ -21,6 +21,11 @@ panel adverse a tranché le POC** (voir plus bas) : on démarre par le plus honn
 un **index statique des routes**, tiré du code du routeur, qui ne ment jamais. On **mesure** ensuite
 ce qu'une carte fait gagner sur un vrai run. Le **cache vivant** — la carte tenue à jour au fil des
 devs, invalidée zone par zone — ne se construit qu'**après** cette preuve.
+
+**Besoin PO (2026-11-02).** Le PO veut aussi savoir **ce qui est testé**. Chaque fonctionnalité de
+l'arbre porterait son état de test, visuel et fonctionnel, avec une preuve datée. La preuve expire
+avec le temps ou quand le code change, comme un contrôle technique. Ce besoin change la raison d'être
+de la fiche : voir § **Besoin PO — savoir ce qui est testé**.
 
 **Si tu arrives frais.** La méthode ezk fabrique des *skills* (capacités) et des *agents*. Deux
 existent déjà pour explorer une app qui tourne : `ezk-scout` chasse les bugs, et une fiche
@@ -60,6 +65,148 @@ magasin par SHA, la passe complète : toute la section **Architecture** ci-desso
 qu'avec une valeur **prouvée** ET un **ADR dédié** qui règle ce que le panel a cassé (invalidation ↔
 adressage, éviction, concurrence). Au `ready`, le Pas 1 sera vraisemblablement une fiche sœur tirable
 à part ; le cache vivant reste une idée différée.
+
+## Besoin PO — savoir ce qui est testé (2026-11-02)
+
+**Le cas vécu.** Le 2026-11-02, le PO demande une commande pour tester son app à la demande, trouver
+les bugs d'affichage et de fonctionnement, et proposer des améliorations. `ezk-scout` existe, mais il
+ne répond pas à « ai-je tout testé ? ». Sa passe s'arrête à une borne (30 sondes, 15 minutes). Elle
+ne part d'aucune liste des fonctionnalités. Et rien ne garde la trace de ce qu'une passe a déjà
+vérifié. La passe suivante repart donc de zéro, sans savoir ce qui reste à couvrir.
+
+**Ce que ça change.** La fiche justifiait la carte par une économie de tokens. Le PO en fait un
+**outil de couverture** : savoir ce qui est testé, avec quelle preuve, et jusqu'à quand. Le panel du
+2026-10-14 avait écarté la carte vivante faute de consommateur qui la réclame (faille 5). Ce besoin
+en apporte deux : le PO lui-même, et `ezk-scout` qui s'en servirait pour cibler ses passes. Un seul
+cas ne bloque pas : la règle `agent-ops/preuve-mince-question-pas-veto` s'applique, le PO tranche.
+
+**Le modèle : un contrôle technique par fonctionnalité.**
+
+```
+app
+├── écran A
+│   ├── action « créer »      visuel ✓ 02/11 (capture)   fonctionnel ✓ 02/11 (sonde rejouable)
+│   └── action « supprimer »  visuel ✗ jamais testé      fonctionnel ⏳ expiré (code modifié)
+└── écran B
+    └── …
+```
+
+- **L'arbre** range les fonctionnalités par écran, puis par action. C'est l'index du Pas 1.
+- **Chaque nœud porte son état de test sur deux axes.** Le visuel : l'écran s'affiche bien. Le
+  fonctionnel : l'action fait ce qu'elle doit. Chaque axe vaut *jamais testé*, *valide*, *en échec*
+  ou *expiré*.
+- **Chaque état valide pointe vers sa preuve.** Une capture pour le visuel. La sonde rejouable du
+  journal `ezk-scout` pour le fonctionnel. La preuve porte sa date et le SHA testé.
+- **La preuve expire, comme un macaron de contrôle technique.** Elle vaut jusqu'à une date, ou
+  jusqu'à ce qu'on touche au code de la fonctionnalité.
+  - L'expiration par **date** est simple : elle ne dépend de rien.
+  - L'expiration par **code modifié** est le point dur. Il faut savoir quels fichiers forment quelle
+    fonctionnalité : c'est l'option B, que le panel a jugée fragile.
+- **Le test se lance à la demande.** `ezk-scout` cible une branche de l'arbre, ou seulement les
+  nœuds jamais testés ou expirés.
+- **La carte est une bibliothèque à part**, que `ezk-scout` utilise comme outil (formule PO). Le
+  scout lit la carte et y écrit ses résultats ; il ne la contient pas.
+
+**Le test de valeur change d'objet.** Le seuil de ~15 % d'économie de tokens (Pas 2) ne mesure plus
+la bonne chose. La valeur se juge d'abord ainsi : après une passe, le PO voit en un coup d'œil ce qui
+est couvert, ce qui ne l'est pas et ce qui a expiré. L'économie de tokens devient une mesure
+secondaire.
+
+**Questions ouvertes pour le groom.** Les modalités restent à définir (formule PO). Ce besoin rouvre
+une décision du panel du 2026-10-14 : le groom passe donc par un panel adverse.
+
+1. **Le grain de l'arbre.** Écran puis action suffit-il ? Ou faut-il descendre aux états : une
+   modale, une étape de formulaire ?
+2. **La source de l'arbre.** Le code seul (les routes) ? Ou aussi les fiches livrées (`done/`), qui
+   décrivent ce que l'app est censée faire ?
+3. **La durée de validité d'une preuve.** Quelle valeur par défaut ? Varie-t-elle entre le visuel et
+   le fonctionnel ?
+4. **Le lien entre le code et une fonctionnalité.** Déclaré à la main, déduit du diff, ou différé ?
+   Une piste pour le POC : l'expiration par date seule. Une autre : le déduire des imports (voir
+   § Avis de l'agent).
+5. **L'endroit où vivent l'état et les preuves.** Hors dépôt, comme le rapport du scout
+   (décision 3) ? Ou un registre léger committé ? Le panel a contesté le magasin clé par SHA
+   (faille 1). Un registre daté ne pose pas ce problème, mais il faut le vérifier.
+6. **Qui écrit l'état.** `ezk-scout` seul, après une passe ? Ou aussi `ezk-qa`, quand il valide une
+   PR ?
+7. **L'affichage d'une couverture partielle.** Une passe bornée ne doit pas présenter une carte
+   incomplète comme la carte entière : elle affiche « X sur Y testés » (faille 4).
+
+## Avis de l'agent — un registre, pas un cache (2026-11-02)
+
+> Avis rendu à la demande du PO, **à soumettre au panel du groom**. Ce n'est pas une décision.
+
+**En clair.** Le projet est viable s'il devient un **registre** : un carnet qui note ce qui a été
+testé. Il ne doit pas être un **cache** : une copie de l'app à tenir à jour. Le registre est un outil
+sans IA, séparé de l'agent qui le pilote.
+
+**L'idée clé : l'expiration se calcule.** Personne n'a à signaler « j'ai touché à cet écran ». Quand
+l'agent note une preuve, l'outil note aussi une **empreinte** des fichiers de la fonctionnalité.
+Quand on lit l'état, l'outil recalcule l'empreinte. Si elle a changé, la preuve est expirée. C'est le
+principe de `make` et des caches de build.
+
+```
+l'agent teste « supprimer »  ─▶ l'outil note la preuve, la date
+                                et l'empreinte des fichiers de l'écran
+… un dev modifie un fichier de cet écran …
+on lit l'état                ─▶ l'outil recalcule l'empreinte
+                                elle a changé ─▶ « expiré »
+```
+
+**Ce que ça répond au panel du 2026-10-14.**
+
+- **Faille 1.** Il n'y a plus de magasin à invalider. L'empreinte porte sur le contenu des fichiers :
+  elle marche aussi sur du code pas encore committé.
+- **Faille 2.** Les fichiers d'une fonctionnalité se déduisent des imports, de proche en proche,
+  depuis l'écran. Un utilitaire partagé modifié fait expirer beaucoup de preuves : c'est trop prudent,
+  mais jamais faux.
+- **Faille 3.** Le registre ne prétend pas décrire l'app d'aujourd'hui. Il garde des faits datés :
+  « testé tel jour, sur tel SHA ». L'état présent se calcule à la lecture. En cas de doute, il dit
+  « expiré ».
+- **Faille 4.** « X sur Y testés » se calcule depuis le même arbre que la liste.
+- **Faille 5.** Le besoin existe désormais : celui du PO, du 2026-11-02.
+
+**Le partage des rôles.** L'ADR-0001 le pose déjà : le programme range, le LLM juge.
+
+- **L'outil est le carnet.** Il construit l'arbre, note les résultats, calcule l'expiration et répond
+  en JSON. Il n'ouvre jamais de navigateur et ne juge rien.
+- **L'agent est les mains et les yeux.** C'est `ezk-scout`. Il demande quoi tester, teste, juge, puis
+  rend le résultat et sa preuve.
+- **L'agent pilote l'outil par une commande** `ezk carto … --json`, sur le modèle de l'ADR-086. Pas
+  de serveur MCP au départ : un agent appelle une commande tout aussi bien.
+
+**Où vit l'outil : par étapes.**
+
+1. **Un module séparé dans mega-city.** Il ne dépend pas du scout, et un test garde cette
+   séparation. Recommandé pour commencer.
+2. **Un paquet du monorepo**, quand un deuxième utilisateur arrive : `ezk-qa`, ou mission control
+   qui afficherait la couverture.
+3. **Un dépôt ou un paquet npm à lui**, seulement s'il sert hors de la méthode.
+
+Un dépôt séparé tout de suite coûterait versions et publications, alors que le contrat bouge encore.
+Le « deuxième cas » n'est pas un veto (règle `agent-ops/preuve-mince-question-pas-veto`) : le PO peut
+choisir l'étape 2 d'emblée et le noter ici.
+
+**Les risques et leurs parades.**
+
+| Risque | Parade |
+|---|---|
+| L'arbre dépend du framework de l'app | un seul framework au POC, source déclarée dans `.vectorz/config.yml` |
+| Les imports ne voient pas tout : CSS, config, données | ces fichiers-là expirent par date |
+| L'agent juge son propre travail | l'outil refuse un « valide » sans preuve rejouable ou visible |
+| Le visuel reste subjectif | plus tard, comparer chaque capture à une image de référence |
+| Les tests coûtent cher | le registre réduit ce coût : on ne reteste que ce qui a expiré |
+
+**Avant de construire.** Vérifier qu'aucun outil existant ne réunit déjà les trois : l'arbre de l'app,
+les preuves de test et l'expiration. Les idées existent séparément. Chromatic ne refait que les tests
+visuels des composants dont le code a changé. Turborepo calcule une empreinte de ce qui entre dans
+chaque build.
+
+**Décisions pour le PO et le panel.**
+
+1. Passer du cache au registre. Ce choix revient sur la décision du panel du 2026-10-14.
+2. Choisir où démarre l'outil : un module (recommandé) ou directement un paquet.
+3. Choisir la première app cible, et donc le premier framework.
 
 ## Contexte / Problème
 
@@ -133,6 +280,21 @@ reste est **différé** derrière le test de valeur.
       l'économie estimée d'une carte sont **mesurés et écrits** dans la fiche.
 - [ ] La décision « index seul » vs « cache vivant justifié » est **tranchée sur ce chiffre**, pas au feeling.
 
+> Amendé le 2026-11-02 (besoin PO) : ce chiffre devient une mesure **secondaire**. La valeur se juge
+> d'abord sur la couverture (critères ci-dessous et § Besoin PO).
+
+**Étage couverture — besoin PO du 2026-11-02** (les modalités se tranchent au groom)
+- [ ] Sur une app réelle, le PO obtient en **une commande, sans lancer de passe**, la liste des
+      fonctionnalités jamais testées ou expirées.
+- [ ] Chaque nœud de l'arbre affiche son état de test sur **deux axes**, visuel et fonctionnel :
+      jamais testé, valide, en échec ou expiré.
+- [ ] Chaque état valide pointe vers **sa preuve** (capture ou sonde rejouable), datée et estampillée
+      du SHA testé.
+- [ ] Une preuve plus vieille que sa durée de validité passe **expirée** sans intervention.
+- [ ] `ezk-scout` peut cibler **une branche de l'arbre**, ou seulement les nœuds jamais testés ou
+      expirés.
+- [ ] Une couverture partielle s'affiche **« X sur Y testés »**, jamais comme une couverture complète.
+
 - [ ] Gate locale verte (typecheck / lint / tests).
 
 **Différé derrière le test** (le cache vivant — section Architecture, ne pas construire sans ADR
@@ -151,7 +313,16 @@ ezk carto where "action X"   # où trouver l'action X, répondu depuis l'index
 # Pas 2 — test de valeur, sur un vrai run
 #   mesurer le coût d'une re-exploration complète (tokens, temps)
 #   l'écrire dans la fiche, décider index-seul vs cache-vivant sur ce chiffre
+
+# Étage couverture — besoin PO du 2026-11-02 (noms indicatifs, à trancher au groom)
+ezk carto status <app>              # l'arbre, avec l'état visuel et fonctionnel de chaque nœud
+ezk carto status <app> --todo       # seulement les nœuds jamais testés ou expirés
+/ezk-scout run <app> --zone "<nœud>"   # une passe ciblée sur une branche de l'arbre
 ```
+
+- **Couverture lisible** : `status --todo` répond sans lancer l'app ni de passe.
+- **Expiration** : une preuve datée au-delà de sa durée de validité ressort `expiré`.
+- **Pas de mensonge** : après une passe bornée, l'en-tête dit « X sur Y testés ».
 
 - **Fonction pure** : deux appels de `routes` sur le même commit rendent le même index ; aucun fichier
   durable écrit (rien à gitignorer, rien à purger).
@@ -319,9 +490,24 @@ complète) reste **différé** derrière ce test chiffré.
 - `dérive` — une zone qui a changé **sans** avoir été marquée ; seule une passe complète la rattrape.
 - `cache hit / miss` — l'entrée est fraîche, on la lit / elle est périmée ou absente, on la reconstruit.
 - `banc` / `testbed` — l'app lancée dans un environnement isolé, explorée sans risque pour l'état réel.
+- `couverture` — la part des fonctionnalités de l'arbre qui a une preuve de test valide.
+- `preuve` — ce qui montre qu'un test a eu lieu : une capture d'écran, ou une sonde qu'on peut
+  rejouer. Elle porte une date et le SHA testé.
+- `expiration` — le moment où une preuve cesse de compter : sa durée de validité est passée, ou le
+  code de la fonctionnalité a changé.
 
 ## Notes / décisions
 
+- **Besoin PO — couverture (2026-11-02).** Le PO veut tester son app à la demande et savoir ce qui
+  est testé, visuellement et fonctionnellement, avec des preuves qui expirent. Il voit la carte comme
+  une bibliothèque à part, que `ezk-scout` utilise comme outil. Décision PO : **enrichir cette fiche**
+  plutôt qu'en créer une autre, car c'est le même objet et la même milestone. La priorité ne change
+  pas (P2). Le titre change pour dire « ce qui est testé ». Détail dans § Besoin PO. Ce besoin rouvre
+  une décision du panel du 2026-10-14 : le groom passe par un panel adverse.
+- **Avis de l'agent (2026-11-02).** À la demande du PO : le projet est viable sous la forme d'un
+  **registre** dont l'expiration se calcule par empreinte des fichiers, et non d'un cache à
+  invalider. L'outil est séparé de l'agent qui le pilote, et commence comme un module de mega-city.
+  C'est un avis à ratifier par le panel, pas une décision. Détail dans § Avis de l'agent.
 - **Découpage — décision PO (2026-10-14).** « Le meilleur des deux mondes » : la carte est un **outil
   à part** (cette fiche), activable par projet ; les agents la **consultent ou non**. Framing PO :
   « presque un cache de cartographie applicative ». Priorité fixée à **P2** par le PO (voisines en P2).
