@@ -8,8 +8,8 @@ version:
 milestone: board
 depends: ["20261101215342537"]
 labels: [carte, loi, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (e1ad0479)"
 evidence: before-after
 created: 2026-08-27
 ---
@@ -29,7 +29,7 @@ si elle est lue, et trace les liens de ce que tu sélectionnes.
 - Le 2026-11-01, le PO a demandé à visualiser l'ensemble du process avec les règles de chaque skill.
   Le même jour, il a jugé le board de la méthode (port 4173) peu lisible, et préféré mission control
   comme écran. Mission control lit déjà le board par `ezk` depuis le
-  [branchement du 2026-11-01](done/20261031160441412_mission-control-consomme-ezk.md).
+  [branchement du 2026-11-01](20261031160441412_mission-control-consomme-ezk.md).
 - La carte actuelle ne dit pas la chose qui compte : si la règle est lue. Le même jour, une règle
   citée par le skill de sprint n'était lue par aucune session, et rien ne le montrait. La mesure
   de la fiche sœur : sur 96 règles, 10 lues partout, 17 citées sans être installées, 50 rangées
@@ -95,21 +95,21 @@ dédié.
 
 ## Notes
 
-- Dépend de [La méthode publie sa loi en JSON](done/20261101215342537_ezk-law-show-portee-des-regles.md),
+- Dépend de [La méthode publie sa loi en JSON](20261101215342537_ezk-law-show-portee-des-regles.md),
   qui fournit le contrat. Découpage du 2026-11-01, sans fiche chapeau, lié par `milestone: board`.
 - Réécrite le 2026-11-01. Avant, elle visait à dessiner les traits dans la carte « LA LOI » du board
   de la méthode, et elle était parkée. Le PO a choisi mission control comme écran : la fiche change
   de produit (`mega-city` → `cop1`) et sort du parking. Suite de la
-  [carte qui montre la loi](done/20260821172716537_carte-ne-montre-pas-la-loi.md) (PR #179) et
-  d'[ADR-0041](../products/mega-city/docs/adr/0041-carte-la-loi-lecteur-runtime-graphe-compile.md).
+  [carte qui montre la loi](20260821172716537_carte-ne-montre-pas-la-loi.md) (PR #179) et
+  d'[ADR-0041](../../products/mega-city/docs/adr/0041-carte-la-loi-lecteur-runtime-graphe-compile.md).
 - **Taille.** Six critères, deux surfaces : le serveur de cop1 et la page. La fiche reste entière.
 - Hors de cette fiche : les outils qu'utilise chaque skill, et le retrait du board de la méthode.
   Ce retrait amende l'ADR-086 : c'est au PO de le trancher, une fois cette vue en service.
 - Priorité P2, inchangée.
 - 2026-11-02 : cette vue est l'une des pages à porter avant [le retrait de la page web de la
-  méthode](20261102123552185_retirer-la-page-web-de-la-methode.md), décidé par [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+  méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md), décidé par [l'amendement de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
 - Groom du 2026-11-02 (run autonome) : la dépendance est livrée
-  ([`ezk law show`](done/20261101215342537_ezk-law-show-portee-des-regles.md)). Contrat vérifié : `comptes`
+  ([`ezk law show`](20261101215342537_ezk-law-show-portee-des-regles.md)). Contrat vérifié : `comptes`
   porte `partout`, `projet`, `citee`, `rangee`, `orpheline` (et `total`) ; chaque règle porte `portee`
   en code et `appliqueePar`. Choix : la phrase de portée est composée par mission control, depuis
   `portee` et `appliqueePar`, par une table de cinq codes testée ; la méthode garde la donnée. La loi

@@ -110,7 +110,7 @@ nombre de règles du catalogue au jour du build.
 
 ## Notes
 
-- Fiche sœur de [Mission control montre la loi](../20260826222044335_carte-la-loi-graphe-visuel.md), qui
+- Fiche sœur de [Mission control montre la loi](../done/20260826222044335_carte-la-loi-graphe-visuel.md), qui
   consomme ce contrat. Découpage du 2026-11-01, sans fiche chapeau, lié par `milestone: board`, sur
   le modèle de l'ADR-086.
 - Limite assumée : une règle `citee` peut quand même être lue, si un skill recopie son texte dans son

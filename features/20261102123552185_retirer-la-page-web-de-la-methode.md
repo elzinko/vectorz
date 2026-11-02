@@ -77,7 +77,7 @@ trouve plus de mention hors historique.
 - Dernière fiche du chantier « un seul écran ». Les fiches du chantier sont liées par
   `milestone: board` et le label `un-seul-ecran`, sans fiche chapeau. Elle dépend de toutes les
   fiches de portage, dont les deux du pouce, et de la
-  [vue « Loi » de mission control](20260826222044335_carte-la-loi-graphe-visuel.md).
+  [vue « Loi » de mission control](done/20260826222044335_carte-la-loi-graphe-visuel.md).
 - Rend sans objet [le serveur de test ezk-map orphelin](20261101131506169_serveur-de-test-ezk-map-orphelin.md).
   Tant que la page existe, cette fiche reste utile.
 - La fiche [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md)

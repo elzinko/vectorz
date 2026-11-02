@@ -121,7 +121,7 @@ compte 0 règle citée sans être installée. La troisième ne signale aucun éc
   qui a mesuré le trou. Priorité P2, reprise de la fiche mère.
 - Amende ADR-0056 : une troisième voie pour la loi, en plus du socle global et de la loi par projet.
   Le build écrit un ADR court.
-- La [vue « Loi » de mission control](20260826222044335_carte-la-loi-graphe-visuel.md) devra montrer
+- La [vue « Loi » de mission control](done/20260826222044335_carte-la-loi-graphe-visuel.md) devra montrer
   cette nouvelle portée : un compteur de plus.
 - Hors de cette fiche : les règles de la couche projet (`.vectorz/rules/`, ADR-0050).
 - **Taille.** Six critères : une commande, onze textes, un test et la portée du contrat. La fiche
