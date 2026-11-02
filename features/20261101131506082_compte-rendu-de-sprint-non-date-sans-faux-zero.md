@@ -41,7 +41,7 @@ faux :
 
 La fenêtre de mesure semble partir d'un point de passage bien plus ancien que le sprint. Ces chiffres
 empêchent aussi mission control d'afficher le temps et les jetons cumulés
-([vue d'ensemble : sprints et rétros réels](20261102104443762_vue-ensemble-sprints-retros-reels.md)).
+([vue d'ensemble : sprints et rétros réels](done/20261102104443762_vue-ensemble-sprints-retros-reels.md)).
 
 ## Valeur
 

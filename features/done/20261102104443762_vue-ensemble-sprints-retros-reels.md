@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, kpi]
-status: ready
-pr:
+status: shipped
+pr: "local (2e341e5f)"
 evidence: before-after
 created: 2026-11-02
 ---
@@ -29,7 +29,7 @@ compter, sprints et rétrospectives. Les trois autres disent en mots qu'elles ne
 - Ces tuiles n'ont jamais eu de source réelle. Le daemon les pose à « — » depuis qu'il sert le vrai
   plan (2026-10-24), pour ne jamais montrer un faux zéro. Avant, la page retombait sur l'échantillon
   de démonstration : 18,4 M jetons, ~42 h, 120 sprints, 14 rétros. Depuis le
-  [branchement du 2026-11-01](done/20261031160441412_mission-control-consomme-ezk.md), la page ne
+  [branchement du 2026-11-01](20261031160441412_mission-control-consomme-ezk.md), la page ne
   montre plus jamais cet échantillon.
 - La méthode sait pourtant compter deux de ces chiffres. Le 2026-11-02, vectorz a 27 comptes rendus
   de sprint (`docs/sprints/`) et 19 rétros capturées (`docs/captures/*-retro-*.md`).
@@ -83,16 +83,16 @@ Ouvrir http://localhost:5273, vue d'ensemble de vectorz. Signal observable : les
 
 | Avant : cinq tuiles muettes | Après : les vrais comptes, et ce qui n'est pas mesuré le dit |
 |---|---|
-| ![avant](../docs/pr-evidence/20261102104443762/vue-ensemble-before.png) | ![après](../docs/pr-evidence/20261102104443762/vue-ensemble-after.png) |
+| ![avant](../../docs/pr-evidence/20261102104443762/vue-ensemble-before.png) | ![après](../../docs/pr-evidence/20261102104443762/vue-ensemble-after.png) |
 
 ## Notes
 
 - Priorité P1, fixée par le PO le 2026-11-02.
 - Le temps et les jetons attendent une mesure fiable :
-  [Un compte rendu de sprint non daté le dit d'emblée](20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md).
+  [Un compte rendu de sprint non daté le dit d'emblée](../20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md).
   Une fois cette mesure réparée, une fiche courte branchera ces trois tuiles.
 - Le détail des jetons par run est une autre fiche, bloquée par un panel :
-  [Board : enrichir les runs (moments + jetons)](20261026132118384_board-enrichir-runs-moments-jetons.md).
+  [Board : enrichir les runs (moments + jetons)](../20261026132118384_board-enrichir-runs-moments-jetons.md).
 - La tuile « lancements » compte déjà les runs observés : elle n'est pas concernée.
 - **Taille.** Cinq critères, deux surfaces : la commande `ezk board show` et la page. La fiche reste
   entière.

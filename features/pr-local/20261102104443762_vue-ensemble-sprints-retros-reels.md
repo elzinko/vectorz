@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102104443762_vue-ensemble-sprints-retros-reels.md](../20261102104443762_vue-ensemble-sprints-retros-reels.md)
+> 🗎 Rendu de la fiche [features/20261102104443762_vue-ensemble-sprints-retros-reels.md](../done/20261102104443762_vue-ensemble-sprints-retros-reels.md)
 
 ## En clair
 
