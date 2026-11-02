@@ -38,7 +38,7 @@ attend la décision du PO ; aucune n'a été appliquée.
   un enrichissement, pas une nouvelle décision.
 - Le groom du sprint 9 a confronté les fiches au code, et en a tiré un vrai défaut : la collecte du
   « process » de la méthode appelle GitHub même sur un projet `github: false`. Il est devenu un
-  critère de la fiche [mission control montre le process](../../features/20261102123552183_mission-control-montre-le-process.md),
+  critère de la fiche [mission control montre le process](../../features/done/20261102123552183_mission-control-montre-le-process.md),
   pas une proposition de rétro.
 
 ## 2 · Tour 1 — chaque lentille propose

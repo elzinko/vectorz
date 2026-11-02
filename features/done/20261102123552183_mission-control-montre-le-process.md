@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: ready
-pr:
+status: shipped
+pr: "local (036e3256)"
 evidence: before-after
 created: 2026-11-02
 ---
@@ -23,7 +23,7 @@ control l'affiche.
 
 ## Contexte / Problème
 
-- L'[amendement du 2026-11-02 de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+- L'[amendement du 2026-11-02 de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   fait de mission control le seul écran. La page « process » de la méthode doit y trouver son
   remplaçant avant le retrait de la page web.
 - La méthode calcule déjà l'étape de chaque fiche (`src/core/process-data.ts`) : idée, prête, en
@@ -81,9 +81,9 @@ dans la même colonne que sur la page « process » de la méthode, tant que cel
 
 - Une des fiches du chantier « un seul écran », liées par `milestone: board` et le label
   `un-seul-ecran`, sans fiche chapeau. Le retrait vient en dernier :
-  [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
+  [retirer la page web de la méthode](../20261102123552185_retirer-la-page-web-de-la-methode.md).
 - L'entrée « Process » renvoie aujourd'hui vers
-  [le schéma des étapes d'un skill](20260830110131228_schema-etapes-skill-configurables.md). Ce schéma
+  [le schéma des étapes d'un skill](../20260830110131228_schema-etapes-skill-configurables.md). Ce schéma
   reste un autre sujet ; le build retire ce renvoi.
 - Groom du 2026-11-02 (run autonome) : sources vérifiées dans le code. `process-data.ts` est pur ;
   sa collecte vit dans `src/io/sessions-collect.ts` (`collectProcessIo`), qui lit `process.cwd()` et
