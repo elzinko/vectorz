@@ -7,7 +7,7 @@ product: mega-city
 milestone: exploration-app
 version: v0.23.0
 labels: [test-local, exploration-app]
-status: idea
+status: ready
 pr:
 evidence: none # commande sans écran ; la preuve, ce sont ses tests
 created: 2026-11-02
@@ -49,14 +49,17 @@ ezk carto status --todo   ◀── calculé à la lecture ────┘
   « 1 sur 9 testés — 8 jamais testés, 0 expiré »
 ```
 
-- **L'arbre** est un fichier que le projet déclare : les écrans, puis leurs actions. Son emplacement
-  se déclare dans `.vectorz/config.yml`.
-- **Le journal** vit hors du dépôt. Chaque résultat y ajoute une ligne : le nœud, l'axe (visuel ou
-  fonctionnel), le verdict, la date, le SHA testé et la preuve. On n'y efface ni n'y réécrit jamais
-  une ligne. Deux sessions peuvent donc écrire en même temps sans conflit.
-- **La preuve est copiée** dans le magasin du carnet, rangée par empreinte de son contenu. Elle
-  survit au dossier temporaire du scout.
-- **L'expiration se calcule à la lecture.** Une preuve plus vieille que sa durée de validité est
+- **L'arbre** est un fichier YAML par app, que le projet déclare : les écrans, puis leurs actions. Le
+  projet nomme ses fichiers d'arbre dans `.vectorz/config.yml`. L'arbre est versionné avec le projet.
+- **Le journal** vit dans le dossier git commun du dépôt, `<git-common-dir>/ezk/carto/`, là où vivent
+  déjà la note de passation et les sprints. Il est donc partagé entre tous les worktrees, hors de
+  l'arbre de travail, et jamais committé. Chaque résultat y ajoute une ligne : le nœud, l'axe
+  (visuel ou fonctionnel), le verdict, la date, le SHA testé et la preuve. On n'y efface ni n'y
+  réécrit jamais une ligne. Deux sessions peuvent donc écrire en même temps sans conflit.
+- **La preuve est copiée** dans ce même dossier, rangée par empreinte de son contenu. Elle survit au
+  dossier temporaire du scout.
+- **L'expiration se calcule à la lecture.** Une preuve vaut **14 jours** par défaut, pour le visuel
+  comme pour le fonctionnel. La durée se règle dans `.vectorz/config.yml`. Au-delà, la preuve est
   « expirée ». La sortie montre aussi son âge et le nombre de commits depuis.
 - **Deux commandes.** `ezk carto record` écrit une ligne. `ezk carto status [--todo] [--json]` lit.
   La méthode calcule et publie du JSON, comme le pose l'ADR-086.
@@ -67,12 +70,12 @@ ezk carto status --todo   ◀── calculé à la lecture ────┘
 
 - [ ] Un projet déclare l'arbre de son app, écrans puis actions, dans un fichier. Un arbre mal formé
       est refusé avec un message qui nomme la ligne fautive.
-- [ ] `ezk carto record` ajoute une ligne au journal, hors du dépôt : nœud, axe, verdict, date, SHA et
-      copie de la preuve. Un nœud inconnu ou une preuve absente est refusé.
+- [ ] `ezk carto record` ajoute une ligne au journal, dans le dossier git commun : nœud, axe, verdict,
+      date, SHA et copie de la preuve. Un nœud inconnu ou une preuve absente est refusé.
 - [ ] `ezk carto status` affiche chaque nœud avec son état sur les deux axes : jamais testé, valide,
       en échec ou expiré.
-- [ ] Une preuve plus vieille que sa durée de validité ressort « expirée », sans intervention. La
-      sortie montre son âge et le nombre de commits depuis.
+- [ ] Une preuve plus vieille que sa durée de validité, 14 jours par défaut et réglable, ressort
+      « expirée » sans intervention. La sortie montre son âge et le nombre de commits depuis.
 - [ ] `status --todo` ne liste que les nœuds jamais testés ou expirés. Son en-tête dit « X sur Y
       testés », calculé depuis le même arbre, et précise qu'il ne compte que les passes
       d'exploration.
@@ -109,8 +112,14 @@ pnpm --dir products/mega-city typecheck
 - **Née du découpage** de
   [Carte de l'app et suivi de ce qui est testé](done/20261014113049954_cache-cartographie-app.md), le
   2026-11-02, après le panel adverse et la décision du PO.
-- **À trancher au `ready`** : la durée de validité par défaut, et si elle varie par axe ; le format du
-  fichier d'arbre ; l'emplacement exact du magasin hors dépôt, réglage du poste au sens de l'ADR-074.
+- **Tranché au `ready` (PO, 2026-11-02)** :
+  - la durée de validité est de 14 jours par défaut, la même pour les deux axes, réglable dans
+    `.vectorz/config.yml` ;
+  - l'arbre est un fichier YAML par app, que le projet déclare dans `.vectorz/config.yml` ;
+  - le journal et les preuves vivent dans `<git-common-dir>/ezk/carto/`, comme la note de passation
+    et les sprints : partagés entre worktrees, hors de l'arbre de travail, jamais committés.
+- **Passée « prête » le 2026-11-02.** Socle complet : problème daté, valeur, 6 critères vérifiables,
+  aucune dépendance externe. Une seule surface touchée, la commande `ezk`.
 - **Hors périmètre** : le câblage du scout
   ([20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md)), mission control
   ([20261102182259592](20261102182259592_carnet-mission-control-premiere-app-mesure.md)),
