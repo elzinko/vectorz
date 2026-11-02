@@ -22,7 +22,7 @@ Chaque fonctionnalité déclare la liste de ses fichiers, CSS et serveur compris
 qu'un de ces fichiers change.
 
 **Si tu arrives frais.** Le carnet note ce qui est testé, avec une preuve datée :
-[20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md). **Cette fiche
+[20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md). **Cette fiche
 est différée** : elle ne se construit que si la mesure de
 [20261102182259592](20261102182259592_carnet-mission-control-premiere-app-mesure.md) la justifie.
 

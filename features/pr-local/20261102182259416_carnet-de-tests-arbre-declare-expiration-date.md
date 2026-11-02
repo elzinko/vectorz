@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md](../20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md)
+> 🗎 Rendu de la fiche [features/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md](../done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md)
 
 # 20261102182259416 — Un carnet qui note ce qui est testé dans l'app, et quand la preuve expire
 

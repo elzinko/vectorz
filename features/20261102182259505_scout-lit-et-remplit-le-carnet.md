@@ -23,7 +23,7 @@ la fin de sa passe, il note chaque résultat au carnet, preuve comprise.
 
 **Si tu arrives frais.** `ezk-scout` teste une app qui tourne, dans un état isolé, et rend un rapport
 de brouillons de fiches. Le carnet note ce qui a été testé et quand la preuve expire : c'est la fiche
-[20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
+[20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
 
 ## Contexte / Problème
 
@@ -79,5 +79,5 @@ bash products/mega-city/skills/ezk-scout/scripts/test-demo-app.sh
 - **Née du découpage** de
   [Carte de l'app et suivi de ce qui est testé](done/20261014113049954_cache-cartographie-app.md), le
   2026-11-02.
-- **Dépend** du carnet, [20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
+- **Dépend** du carnet, [20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
 - **Estimation du panel** : environ 120 000 jetons.

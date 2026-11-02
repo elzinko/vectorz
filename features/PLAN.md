@@ -375,7 +375,7 @@ design-system, release macOS, coût `sprint:report`), `observabilite` (jetons pa
 ### ㉔ v0.23.0 — l'app se cartographie (proposée le 2026-10-14, à valider)
 > Exploration-app, redécoupée le 2026-11-02 (panel adverse + PO) : le carnet de tests d'abord, puis `ezk-scout` qui s'en sert, puis mission control et la mesure de valeur. L'expiration quand le code change attend cette mesure.
 - ~~`20261014113049954` — cache de cartographie, Pas 1 : index statique des routes + test de valeur · P2 · `groom`~~ — split (2026-11-02, panel adverse + PO) en :
-- `20261102182259416` — le carnet de tests : arbre déclaré, journal, expiration par date, `status --todo` · P2 · `groom`
+- ~~`20261102182259416` — le carnet de tests : arbre déclaré, journal, expiration par date, `status --todo` · P2 · `groom`~~ — shipped
 - `20261102182259505` — `ezk-scout` part du carnet et y note ses résultats · P2 · `groom`
 - `20261102182259592` — le carnet de mission control, et la mesure de valeur sur 3 passes · P2 · `groom`
 - ~~`20260821210633457` — l'explorateur de features par PR (à dé-parker) · P2 · `groom`~~ — recentré le 2026-11-02 sur le siège automatique, sorti de la version ; la lentille améliorations part dans `20261102183114656` (hors version, le PO slotte)

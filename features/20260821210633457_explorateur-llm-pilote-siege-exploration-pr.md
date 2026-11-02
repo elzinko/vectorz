@@ -109,7 +109,7 @@ dogfood-guided.sh, mode autonome
   - les améliorations :
     [20261102183114656](20261102183114656_scout-lentille-ameliorations-fiches-feature.md) ;
   - le suivi de ce qui est testé, par le carnet :
-    [20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
+    [20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
 
   Le déclenchement « par PR » ne colle plus à vectorz, qui intègre sans PR. La fiche sort de la
   version v0.23.0 et de la milestone `exploration-app`, qui portent « l'app se cartographie ». Sa

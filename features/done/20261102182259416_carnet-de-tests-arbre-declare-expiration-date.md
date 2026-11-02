@@ -7,8 +7,8 @@ product: mega-city
 milestone: exploration-app
 version: v0.23.0
 labels: [test-local, exploration-app]
-status: ready
-pr:
+status: shipped
+pr: "local (af4c64d1)"
 evidence: none # commande sans écran ; la preuve, ce sont ses tests
 created: 2026-11-02
 split_from: "20261014113049954"
@@ -34,7 +34,7 @@ testé ? ».
 Le panel adverse du 2026-11-02 a cadré la réponse. Il a écarté l'arbre tiré d'un routeur, car aucune
 app cible n'en a. Il a écarté l'expiration par les imports, car elle se trompe dans les deux sens.
 Détail dans la fiche d'origine,
-[Carte de l'app et suivi de ce qui est testé](done/20261014113049954_cache-cartographie-app.md).
+[Carte de l'app et suivi de ce qui est testé](20261014113049954_cache-cartographie-app.md).
 
 ## Proposition
 
@@ -110,7 +110,7 @@ pnpm --dir products/mega-city typecheck
 ## Notes / décisions
 
 - **Née du découpage** de
-  [Carte de l'app et suivi de ce qui est testé](done/20261014113049954_cache-cartographie-app.md), le
+  [Carte de l'app et suivi de ce qui est testé](20261014113049954_cache-cartographie-app.md), le
   2026-11-02, après le panel adverse et la décision du PO.
 - **Tranché au `ready` (PO, 2026-11-02)** :
   - la durée de validité est de 14 jours par défaut, la même pour les deux axes, réglable dans
@@ -131,8 +131,8 @@ pnpm --dir products/mega-city typecheck
   `./--nom` ; l'écriture concurrente repose sur l'ajout en fin de fichier, sûr en local mais fragile
   sur un disque réseau.
 - **Hors périmètre** : le câblage du scout
-  ([20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md)), mission control
-  ([20261102182259592](20261102182259592_carnet-mission-control-premiere-app-mesure.md)),
+  ([20261102182259505](../20261102182259505_scout-lit-et-remplit-le-carnet.md)), mission control
+  ([20261102182259592](../20261102182259592_carnet-mission-control-premiere-app-mesure.md)),
   l'expiration quand le code change
-  ([20261102182259680](20261102182259680_carnet-expiration-quand-le-code-change.md)).
+  ([20261102182259680](../20261102182259680_carnet-expiration-quand-le-code-change.md)).
 - **Estimation du panel** : environ 150 000 à 200 000 jetons.

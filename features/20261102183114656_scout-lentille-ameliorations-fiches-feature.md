@@ -101,7 +101,7 @@ bash products/mega-city/skills/ezk-scout/scripts/test-find-only-guard.sh
 - **Au build** : mettre à jour `products/mega-city/skills/ezk-scout/SKILL.md:158-162`, qui cite encore
   l'explorateur comme futur porteur de la lentille `features`.
 - **Avec le carnet**
-  ([Un carnet qui note ce qui est testé dans l'app, et quand la preuve expire](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md)) :
+  ([Un carnet qui note ce qui est testé dans l'app, et quand la preuve expire](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md)) :
   aucune dépendance. Une fois le carnet là, la passe pourra viser une branche de l'arbre.
 - **Question ouverte, héritée de l'explorateur** : le PO voulait en 2026-10 que les propositions vivent
   dans un dossier séparé du backlog. Défaut actuel : `status: idea` et l'étiquette `scout`. À trancher

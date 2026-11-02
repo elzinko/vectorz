@@ -571,7 +571,7 @@ Deux échecs sur ces quatre points, et on retire l'outil.
 
 **Découpage** (milestone `exploration-app`, sans fiche chapeau), dans l'ordre de construction :
 
-1. [20261102182259416](../20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md) — Un
+1. [20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md) — Un
    carnet qui note ce qui est testé dans l'app, et quand la preuve expire.
 2. [20261102182259505](../20261102182259505_scout-lit-et-remplit-le-carnet.md) — `ezk-scout` part du
    carnet pour choisir quoi tester, et y note ses résultats.
