@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [git, multi-sessions]
-status: idea
+status: ready
 pr:
 evidence: none # comportement git des scripts ; pas d'écran
 created: 2026-11-02
