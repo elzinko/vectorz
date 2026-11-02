@@ -149,6 +149,12 @@ export function OverviewView(props: OverviewViewProps): JSX.Element {
             </div>
           ))}
         </div>
+        {/* Pourquoi une tuile n'a pas de chiffre : dit en mots, jamais un tiret muet (fiche 20261102104443762). */}
+        {m.notes?.map((note) => (
+          <p className="mnote" key={note}>
+            {note}
+          </p>
+        ))}
       </section>
 
       <section className="funnel">

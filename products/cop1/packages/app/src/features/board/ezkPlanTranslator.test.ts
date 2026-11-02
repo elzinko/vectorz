@@ -149,3 +149,23 @@ describe('translatePlan — format inconnu', () => {
     expect(() => translatePlan(null, backlog())).toThrow(EzkContractError);
   });
 });
+
+describe('translatePlan — ce que la méthode a mené (fiche 20261102104443762)', () => {
+  it("reprend l'historique du contrat : comptes rendus de sprint et rétros", () => {
+    const { plan } = translatePlan(board(), backlog());
+    expect(plan.history).toEqual(board().historique);
+    expect(plan.history).toEqual({ sprints: 2, retros: 1 });
+  });
+
+  it('sans historique (méthode plus ancienne) : rien, jamais un faux 0', () => {
+    const b = board();
+    b.historique = undefined;
+    expect(translatePlan(b, backlog()).plan.history).toBeUndefined();
+  });
+
+  it('un historique mal formé est ignoré, pas affiché', () => {
+    const b = board();
+    b.historique = { sprints: -1, retros: 'x' };
+    expect(translatePlan(b, backlog()).plan.history).toBeUndefined();
+  });
+});

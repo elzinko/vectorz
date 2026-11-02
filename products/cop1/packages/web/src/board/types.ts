@@ -56,10 +56,12 @@ export interface Metrics {
   tokens: string;
   temps: string;
   perFiche: string;
-  /** `'—'` = non encore câblé par le read-model (jamais un faux 0 présenté comme une mesure). */
+  /** `'—'` = la méthode ne publie pas ce compte (jamais un faux 0 présenté comme une mesure). */
   sprints: number | '—';
   runs: number | '—';
   retros: number | '—';
+  /** Pourquoi une tuile n'a pas de chiffre, une phrase chacune (fiche 20261102104443762). */
+  notes?: string[];
 }
 
 /** La lentille d'un run : côté cadrage, ou côté développement. */

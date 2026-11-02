@@ -56,17 +56,17 @@ compter, sprints et rétrospectives. Les trois autres disent en mots qu'elles ne
 
 ## Critères d'acceptation
 
-- [ ] **Mêmes comptes que la méthode.** Les tuiles « sprints » et « rétrospectives » valent les deux
-      comptes publiés par `ezk board show --json` pour le projet affiché. Pour vectorz, le
-      2026-11-02 : 27 et 19.
-- [ ] **Un vrai zéro.** Un projet sans compte rendu ni rétro affiche 0 dans ces deux tuiles, car la
+- [x] **Mêmes comptes que la méthode.** Les tuiles « sprints » et « rétrospectives » valent les deux
+      comptes publiés par `ezk board show --json` pour le projet affiché. Pour vectorz, au build du
+      2026-11-02 : 29 et 19 (27 à la rédaction : deux sprints se sont ajoutés le jour même).
+- [x] **Un vrai zéro.** Un projet sans compte rendu ni rétro affiche 0 dans ces deux tuiles, car la
       méthode a compté.
-- [ ] **Ce qui n'est pas mesuré le dit.** Temps cumulé, jetons consommés et jetons par fiche
+- [x] **Ce qui n'est pas mesuré le dit.** Temps cumulé, jetons consommés et jetons par fiche
       affichent « non mesuré » et leur raison en une phrase, jamais un chiffre tiré des comptes rendus
       actuels.
-- [ ] **Méthode plus ancienne.** Si `ezk board show --json` ne porte pas ces comptes, les deux tuiles
+- [x] **Méthode plus ancienne.** Si `ezk board show --json` ne porte pas ces comptes, les deux tuiles
       affichent « — » et la raison, jamais 0.
-- [ ] **Avant / après.** Capture de la vue d'ensemble de vectorz avant (cinq tirets) et après.
+- [x] **Avant / après.** Capture de la vue d'ensemble de vectorz avant (cinq tirets) et après.
 
 ## Comment vérifier
 
@@ -79,6 +79,12 @@ Ouvrir http://localhost:5273, vue d'ensemble de vectorz. Signal observable : les
 « rétrospectives » valent les deux comptes du JSON. Les trois tuiles de temps et de jetons disent
 « non mesuré ». Le nom du champ `historique` est à fixer au build, dans le contrat.
 
+## Avant / après
+
+| Avant : cinq tuiles muettes | Après : les vrais comptes, et ce qui n'est pas mesuré le dit |
+|---|---|
+| ![avant](../docs/pr-evidence/20261102104443762/vue-ensemble-before.png) | ![après](../docs/pr-evidence/20261102104443762/vue-ensemble-after.png) |
+
 ## Notes
 
 - Priorité P1, fixée par le PO le 2026-11-02.
@@ -90,3 +96,6 @@ Ouvrir http://localhost:5273, vue d'ensemble de vectorz. Signal observable : les
 - La tuile « lancements » compte déjà les runs observés : elle n'est pas concernée.
 - **Taille.** Cinq critères, deux surfaces : la commande `ezk board show` et la page. La fiche reste
   entière.
+- Revue adverse du 2026-11-02 (sprint 7 du run autonome) : GO, cinq critères prouvés. Deux remarques non
+  bloquantes : l'historique se lit en tout ou rien (un champ mal formé masque les deux tuiles) ; le
+  dossier `docs/sprints/` est fixe, comme pour `ezk retro reports`.

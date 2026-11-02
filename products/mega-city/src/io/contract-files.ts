@@ -139,6 +139,12 @@ export function makeContractFixture(): string {
   write('features/reviews/verdicts/20990101000000002.json', '{\n  "verdict": "up",\n  "date": "2026-11-01"\n}\n');
   write('features/reviews/verdicts/20990101000000003.json', '{ illisible\n');
   write('.vectorz/config.yml', FIXTURE_CONFIG);
+  // Ce que la méthode a mené (fiche 20261102104443762) : 2 comptes rendus, 1 rétro, et un intrus par dossier.
+  write('docs/sprints/2026-10-30-sprint-premier.md', '# Rapport de sprint — premier\n');
+  write('docs/sprints/2026-10-31-sprint-second.md', '# Rapport de sprint — second\n');
+  write('docs/sprints/notes.md', '# Notes libres, pas un compte rendu\n');
+  write('docs/captures/2026-10-31-retro-premiere.md', '# Rétro\n');
+  write('docs/captures/2026-10-31-panel-board.md', '# Panel, pas une rétro\n');
   const git = (...args: string[]): void => {
     execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', ...args], { stdio: 'ignore' });
   };

@@ -6,7 +6,8 @@
  * schéma comme l'exemple rangés pour les consommateurs sont à jour.
  */
 import { spawnSync } from 'node:child_process';
-import { readFileSync, realpathSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -133,9 +134,28 @@ describe('board show --json — la règle des bloquées (cœur pur)', () => {
       inProgressIds: new Set(['b']),
       tags: new Set(),
       verdicts: { verdicts: {}, illisibles: [] },
+      historique: { sprints: 0, retros: 0 },
     });
     expect(contract.comptes.bloquees).toBe(2);
     expect(contract.comptes).toMatchObject({ pretes: 1, enCours: 1, parkees: 1, livrees: 1 });
+  });
+});
+
+describe('board show --json — ce que la méthode a mené (fiche 20261102104443762)', () => {
+  it('compte les comptes rendus de sprint et les captures de rétro du projet, au bon format', () => {
+    // La fixture range 2 comptes rendus et 1 capture, plus un fichier de chaque dossier hors format.
+    expect(data.historique).toEqual({ sprints: 2, retros: 1 });
+  });
+
+  it('un projet sans ces dossiers compte un vrai zéro', () => {
+    const root = mkdtempSync(join(tmpdir(), 'board-vide-'));
+    try {
+      mkdirSync(join(root, 'features'));
+      spawnSync('git', ['init', '-q', '-b', 'main'], { cwd: root });
+      expect(boardShowData(root).historique).toEqual({ sprints: 0, retros: 0 });
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });
 

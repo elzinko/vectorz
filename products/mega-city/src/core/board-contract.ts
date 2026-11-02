@@ -119,6 +119,12 @@ export const BoardContractSchema = z.strictObject({
   comptes: ComptesSchema,
   versions: VersionsSchema,
   verdicts: z.record(z.string(), VerdictSchema).describe('Pouces de revue posés, par id de fiche (ADR-0057).'),
+  historique: z
+    .strictObject({
+      sprints: count().describe('Comptes rendus de sprint (`docs/sprints/AAAA-MM-JJ-sprint-<slug>.md`).'),
+      retros: count().describe('Captures de rétro (`AAAA-MM-JJ-retro-<slug>.md`, dossier `scrum:` du projet).'),
+    })
+    .describe('Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762).'),
   verdictsIllisibles: z.array(z.string()).describe('Fichiers de verdict illisibles, jamais ignorés en silence.'),
 });
 
@@ -132,6 +138,8 @@ export interface BoardContractInput {
   tags: ReadonlySet<string>;
   /** Pouces de revue, lus au bord (`io/verdicts.ts`). */
   verdicts: VerdictsData;
+  /** Comptes rendus de sprint et captures de rétro, comptés au bord (`io/board-show.ts`). */
+  historique: { sprints: number; retros: number };
 }
 
 const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
@@ -157,7 +165,7 @@ function colonneOf(f: Fiche, inProgressIds: ReadonlySet<string>): Colonne {
 
 /** Compile le contrat. Tout est trié : la même entrée donne toujours la même sortie. */
 export function buildBoardContract(input: BoardContractInput): BoardContract {
-  const { fiches, inProgressIds, tags, verdicts } = input;
+  const { fiches, inProgressIds, tags, verdicts, historique } = input;
   const board = buildAvancementData([...fiches], inProgressIds);
   const report = buildVersions(fiches, tags);
   const scope = versionScope(report);
@@ -203,5 +211,6 @@ export function buildBoardContract(input: BoardContractInput): BoardContract {
     },
     verdicts: Object.fromEntries(Object.entries(verdicts.verdicts).sort(([a], [b]) => (a < b ? -1 : 1))),
     verdictsIllisibles: [...verdicts.illisibles].sort(),
+    historique: { sprints: historique.sprints, retros: historique.retros },
   };
 }

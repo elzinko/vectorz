@@ -52,3 +52,18 @@ export function reportsSince(
     .sort();
   return reports;
 }
+
+/**
+ * Ce que la méthode a mené dans un projet (fiche 20261102104443762) : le nombre de comptes rendus de
+ * sprint et le nombre de captures de rétro, aux formats ci-dessus. Les noms hors format ne comptent pas.
+ * Mission control les affiche par `ezk board show --json` (bloc `historique`, ADR-086).
+ */
+export function countHistory(
+  captureNames: readonly string[],
+  reportNames: readonly string[],
+): { sprints: number; retros: number } {
+  return {
+    sprints: reportNames.filter((n) => REPORT_NAME.test(n)).length,
+    retros: captureNames.filter((n) => CAPTURE_NAME.test(n)).length,
+  };
+}

@@ -3,7 +3,7 @@
  * ceux écrits depuis la dernière capture, toutes sessions confondues. Cœur PUR : noms injectés.
  */
 import { describe, expect, it } from 'vitest';
-import { latestCaptureDate, reportsSince } from '../core/sprint-reports-since.js';
+import { countHistory, latestCaptureDate, reportsSince } from '../core/sprint-reports-since.js';
 
 const R = (d: string, slug: string) => `${d}-sprint-${slug}.md`;
 const C = (d: string, slug: string) => `${d}-retro-${slug}.md`;
@@ -47,5 +47,17 @@ describe('reportsSince', () => {
   it('ignore les noms qui ne sont pas des comptes rendus', () => {
     const reports = [R('2026-10-08', 'ok'), 'README.md', '2026-10-08-retro-x.md', 'docs.md'];
     expect(reportsSince([], reports)).toEqual([R('2026-10-08', 'ok')]);
+  });
+});
+
+describe('countHistory — ce que la méthode a mené (fiche 20261102104443762)', () => {
+  it('compte les comptes rendus de sprint et les captures de rétro, au bon format seulement', () => {
+    const reports = [R('2026-10-08', 'a'), R('2026-10-09', 'b'), 'README.md', '2026-10-08-retro-x.md'];
+    const captures = [C('2026-10-09', 'r'), '2026-10-09-panel-x.md', 'notes.md'];
+    expect(countHistory(captures, reports)).toEqual({ sprints: 2, retros: 1 });
+  });
+
+  it('un projet sans compte rendu ni rétro compte un vrai zéro', () => {
+    expect(countHistory([], [])).toEqual({ sprints: 0, retros: 0 });
   });
 });

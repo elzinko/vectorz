@@ -164,3 +164,24 @@ describe('OverviewView', () => {
     expect(screen.queryByRole('button', { name: '▸ Lancer' })).toBeNull();
   });
 });
+
+describe('OverviewView — les tuiles « depuis le début » (fiche 20261102104443762)', () => {
+  it('une tuile non mesurée le dit, et la raison s’affiche sous les tuiles', () => {
+    const project: BoardProject = {
+      ...PROJECT,
+      metrics: {
+        ...PROJECT.metrics,
+        tokens: 'non mesuré',
+        temps: 'non mesuré',
+        perFiche: 'non mesuré',
+        sprints: 29,
+        retros: 19,
+        notes: ['Temps et jetons : non mesurés — les comptes rendus de sprint ne les mesurent pas encore de façon fiable.'],
+      },
+    };
+    render(<OverviewView project={project} onLaunch={() => {}} onViewRun={() => {}} />);
+    expect(screen.getAllByText('non mesuré')).toHaveLength(3);
+    expect(screen.getByText('29')).toBeTruthy();
+    expect(screen.getByText(/ne les mesurent pas encore/)).toBeTruthy();
+  });
+});

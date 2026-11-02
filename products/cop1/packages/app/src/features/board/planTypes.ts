@@ -37,6 +37,11 @@ export interface PlanData {
   versions: PlanVersions;
   /** Compte de fiches livrées (`metrics.done` du board). */
   done: number;
+  /**
+   * Ce que la méthode a mené : comptes rendus de sprint et captures de rétro (fiche 20261102104443762).
+   * Absent quand la méthode installée ne le publie pas : la page dit « — », jamais un faux 0.
+   */
+  history?: { sprints: number; retros: number };
 }
 
 /** Les quatre états du board (identiques au type `FicheStatus` du web). */

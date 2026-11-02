@@ -62,10 +62,12 @@ export interface BoardPlanProject {
     tokens: string;
     temps: string;
     perFiche: string;
-    /** Non encore câblés par le read-model : `'—'`, jamais un faux 0. Viennent avec l'adaptateur des runs. */
+    /** Comptés par la méthode (`historique` du contrat) ; `'—'` quand elle ne les publie pas, jamais un faux 0. */
     sprints: number | '—';
     runs: number | '—';
     retros: number | '—';
+    /** Pourquoi une tuile n'a pas de chiffre, en une phrase chacune (fiche 20261102104443762). */
+    notes: string[];
   };
   /** Runs observés via l'adaptateur `projectChantiers` — vide tant qu'aucun journal keyé n'existe (jamais un faux run). */
   runs: Record<string, LiveRun>;
@@ -78,6 +80,13 @@ export interface BoardPlanProject {
   /** La config du projet, telle que la méthode la résout (`ezk config show --json`). */
   config?: ProjectConfigData;
 }
+
+/** Ce que disent les tuiles sans mesure fiable (fiche 20261102104443762). */
+export const UNMEASURED = 'non mesuré';
+export const UNMEASURED_NOTE =
+  'Temps et jetons : non mesurés — les comptes rendus de sprint ne les mesurent pas encore de façon fiable.';
+export const NO_HISTORY_NOTE =
+  'Sprints et rétros : la méthode installée ne publie pas encore ces comptes.';
 
 const EMPTY_FUNNEL: PlanFunnel = { idea: 0, ready: 0, wip: 0, unversioned: 0, parked: 0 };
 const EMPTY_VERSIONS: PlanVersions = { current: null, upcoming: [], past: [] };
@@ -105,6 +114,7 @@ export function shapeProject(
   const runsCount = Object.keys(live.runs).length;
   const anyLive = Object.values(live.runs).some((r) => r.live);
   const received = snapshot.state === 'ok' ? snapshot : null;
+  const history = received?.plan.history;
   return {
     name,
     desc,
@@ -114,12 +124,14 @@ export function shapeProject(
     versions: received ? received.plan.versions : EMPTY_VERSIONS,
     metrics: {
       done: received ? received.plan.done : 0,
-      tokens: '—',
-      temps: '—',
-      perFiche: '—',
-      sprints: '—',
+      // Plan reçu : on sait que le temps et les jetons ne sont pas mesurés, on le dit. Sinon « — ».
+      tokens: received ? UNMEASURED : '—',
+      temps: received ? UNMEASURED : '—',
+      perFiche: received ? UNMEASURED : '—',
+      sprints: history ? history.sprints : '—',
       runs: runsCount > 0 ? runsCount : '—',
-      retros: '—',
+      retros: history ? history.retros : '—',
+      notes: received ? [UNMEASURED_NOTE, ...(history ? [] : [NO_HISTORY_NOTE])] : [],
     },
     runs: live.runs,
     ...(live.chantiers.length > 0 ? { chantiers: live.chantiers } : {}),

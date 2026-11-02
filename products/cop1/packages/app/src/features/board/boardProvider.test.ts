@@ -60,9 +60,10 @@ describe('shapeProject — met le plan à la forme BoardProject', () => {
     const p = shapeProject('vectorz', '', ok);
     expect(p.runs).toEqual({});
     expect(p.live).toBe(false);
-    expect(p.metrics.tokens).toBe('—');
-    expect(p.metrics.temps).toBe('—');
-    expect(p.metrics.perFiche).toBe('—');
+    // Plan reçu : le temps et les jetons sont dits « non mesuré » (fiche 20261102104443762).
+    expect(p.metrics.tokens).toBe('non mesuré');
+    expect(p.metrics.temps).toBe('non mesuré');
+    expect(p.metrics.perFiche).toBe('non mesuré');
     expect(p.metrics.sprints).toBe('—');
     expect(p.metrics.runs).toBe('—');
     expect(p.metrics.retros).toBe('—');
@@ -106,6 +107,48 @@ const config: ProjectConfigData = {
   ],
 };
 const noLive = { runs: {}, chantiers: [] };
+
+describe('shapeProject — les tuiles « depuis le début » (fiche 20261102104443762)', () => {
+  const withHistory = (sprints: number, retros: number): PlanSnapshot => ({
+    ...ok,
+    plan: { ...plan, history: { sprints, retros } },
+  });
+
+  it('sprints et rétros viennent de l’historique publié par la méthode', () => {
+    const p = shapeProject('vectorz', '', withHistory(29, 19));
+    expect(p.metrics.sprints).toBe(29);
+    expect(p.metrics.retros).toBe(19);
+  });
+
+  it('un vrai zéro reste 0 : la méthode a compté', () => {
+    const p = shapeProject('vectorz', '', withHistory(0, 0));
+    expect(p.metrics.sprints).toBe(0);
+    expect(p.metrics.retros).toBe(0);
+  });
+
+  it('le temps et les jetons disent « non mesuré », avec leur raison en une phrase', () => {
+    const p = shapeProject('vectorz', '', withHistory(29, 19));
+    expect([p.metrics.tokens, p.metrics.temps, p.metrics.perFiche]).toEqual([
+      'non mesuré',
+      'non mesuré',
+      'non mesuré',
+    ]);
+    expect(p.metrics.notes.join(' ')).toMatch(/ne les mesurent pas encore/);
+  });
+
+  it('méthode plus ancienne, sans historique : « — » et la raison, jamais 0', () => {
+    const p = shapeProject('vectorz', '', ok);
+    expect(p.metrics.sprints).toBe('—');
+    expect(p.metrics.retros).toBe('—');
+    expect(p.metrics.notes.join(' ')).toMatch(/ne publie pas encore/);
+  });
+
+  it('plan pas encore reçu : tout reste « — », sans note', () => {
+    const p = shapeProject('vectorz', '', { state: 'loading' });
+    expect([p.metrics.tokens, p.metrics.sprints, p.metrics.retros]).toEqual(['—', '—', '—']);
+    expect(p.metrics.notes).toEqual([]);
+  });
+});
 
 describe('shapeProject — la config du projet, lue par ezk (ADR-086)', () => {
   it('config reçue : elle passe telle quelle, et configState dit « ok »', () => {

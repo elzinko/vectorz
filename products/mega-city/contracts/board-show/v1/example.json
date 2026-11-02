@@ -205,5 +205,9 @@
  },
  "verdictsIllisibles": [
   "features/reviews/verdicts/20990101000000003.json"
- ]
+ ],
+ "historique": {
+  "sprints": 2,
+  "retros": 1
+ }
 }

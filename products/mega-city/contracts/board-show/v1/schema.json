@@ -431,6 +431,28 @@
       },
       "description": "Pouces de revue posés, par id de fiche (ADR-0057)."
     },
+    "historique": {
+      "type": "object",
+      "properties": {
+        "sprints": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Comptes rendus de sprint (`docs/sprints/AAAA-MM-JJ-sprint-<slug>.md`)."
+        },
+        "retros": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Captures de rétro (`AAAA-MM-JJ-retro-<slug>.md`, dossier `scrum:` du projet)."
+        }
+      },
+      "required": [
+        "sprints",
+        "retros"
+      ],
+      "description": "Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762)."
+    },
     "verdictsIllisibles": {
       "type": "array",
       "items": {
@@ -449,6 +471,7 @@
     "comptes",
     "versions",
     "verdicts",
+    "historique",
     "verdictsIllisibles"
   ]
 }

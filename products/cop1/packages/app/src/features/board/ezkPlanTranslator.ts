@@ -34,6 +34,8 @@ interface BoardShow {
     sansVersion: number;
   };
   versions: { courante: string | null; lots: BoardLot[] };
+  /** Ajouté au contrat v1 (fiche 20261102104443762) : absent d'une méthode plus ancienne. */
+  historique?: unknown;
 }
 
 interface BacklogFiche {
@@ -131,11 +133,21 @@ function toPlanVersion(lot: BoardLot, enCoursIds: ReadonlySet<string>): PlanVers
   };
 }
 
+const isCount = (value: unknown): value is number =>
+  Number.isInteger(value) && (value as number) >= 0;
+
+/** L'historique publié, ou `undefined` s'il manque ou est mal formé : la page dit alors « — ». */
+function readHistory(value: unknown): PlanData['history'] {
+  if (!isRecord(value) || !isCount(value.sprints) || !isCount(value.retros)) return undefined;
+  return { sprints: value.sprints, retros: value.retros };
+}
+
 /** Traduit les deux réponses d'`ezk` ; lève `EzkContractError` si leur forme n'est pas celle du contrat v1. */
 export function translatePlan(boardJson: unknown, backlogJson: unknown): TranslatedPlan {
   const board = asBoardShow(boardJson);
   const backlog = asBacklogShow(backlogJson);
   const { comptes, versions } = board;
+  const history = readHistory(board.historique);
 
   const funnel: PlanFunnel = {
     idea: comptes.idees,
@@ -169,6 +181,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
           .reverse(),
       },
       done: comptes.livrees,
+      ...(history ? { history } : {}),
     },
     fiches,
   };
