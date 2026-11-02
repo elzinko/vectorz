@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version:
 labels: [git, multi-sessions]
-status: ready
-pr:
+status: shipped
+pr: "local (main 9e60c6cc)"
 evidence: none # comportement git des scripts ; pas d'écran
 created: 2026-11-02
 ---
@@ -81,8 +81,8 @@ reste. La fixture devient un vrai reste : une branche avec un commit à elle, do
 dans `main` par un squash.
 
 Voisines livrées, relues au groom :
-[hygiène des branches après un squash](done/0076-hygiene-branches-post-squash.md), qui a posé ce
-nettoyage, et [le merge local ne supprime jamais main](done/20261004074008211_merge-local-ne-supprime-jamais-main.md),
+[hygiène des branches après un squash](0076-hygiene-branches-post-squash.md), qui a posé ce
+nettoyage, et [le merge local ne supprime jamais main](20261004074008211_merge-local-ne-supprime-jamais-main.md),
 qui l'a déjà restreint une fois.
 
 ## Critères d'acceptation

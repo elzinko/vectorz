@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102124307012_integration-locale-supprime-branche-autre-session.md](../20261102124307012_integration-locale-supprime-branche-autre-session.md)
+> 🗎 Rendu de la fiche [features/20261102124307012_integration-locale-supprime-branche-autre-session.md](../done/20261102124307012_integration-locale-supprime-branche-autre-session.md)
 
 # L'intégration locale supprime la branche toute neuve d'une autre session
 
