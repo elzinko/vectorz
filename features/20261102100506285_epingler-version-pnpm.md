@@ -7,7 +7,7 @@ product: vectorz
 milestone:
 version:
 labels: [scout, outillage]
-status: idea
+status: ready
 pr:
 evidence: none # configuration du dépôt ; pas d'écran
 created: 2026-11-02
