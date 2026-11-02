@@ -36,6 +36,8 @@ interface BoardShow {
   versions: { courante: string | null; lots: BoardLot[] };
   /** Ajouté au contrat v1 (fiche 20261102104443762) : absent d'une méthode plus ancienne. */
   historique?: unknown;
+  /** Pouces de revue posés, par id de fiche (ADR-0057) ; lus sans confiance aveugle. */
+  verdicts?: unknown;
 }
 
 interface BacklogFiche {
@@ -133,6 +135,17 @@ function toPlanVersion(lot: BoardLot, enCoursIds: ReadonlySet<string>): PlanVers
   };
 }
 
+/** Les pouces bien formés, par id de fiche ; un pouce illisible est ignoré, jamais deviné. */
+function readVerdicts(value: unknown): Record<string, 'up' | 'down'> {
+  const out: Record<string, 'up' | 'down'> = {};
+  if (!isRecord(value)) return out;
+  for (const [id, entry] of Object.entries(value)) {
+    if (isRecord(entry) && (entry.verdict === 'up' || entry.verdict === 'down'))
+      out[id] = entry.verdict;
+  }
+  return out;
+}
+
 const isCount = (value: unknown): value is number =>
   Number.isInteger(value) && (value as number) >= 0;
 
@@ -148,6 +161,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
   const backlog = asBacklogShow(backlogJson);
   const { comptes, versions } = board;
   const history = readHistory(board.historique);
+  const verdicts = readVerdicts(board.verdicts);
 
   const funnel: PlanFunnel = {
     idea: comptes.idees,
@@ -163,7 +177,9 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
 
   const fiches: Record<string, FicheDetailData> = {};
   for (const f of backlog.fiches) {
-    if (!f.done) fiches[f.id] = toFicheDetail(f);
+    if (f.done) continue;
+    const verdict = verdicts[f.id];
+    fiches[f.id] = verdict ? { ...toFicheDetail(f), verdict } : toFicheDetail(f);
   }
 
   return {

@@ -65,6 +65,11 @@ export interface RunAbandonHandler {
   execute(runDir: string): Promise<{ status: 200 | 202 | 404 | 409; body: unknown }>;
 }
 
+/** fiche 20261102151630248 — le pouce de revue, posé par la commande de la méthode. */
+export interface VerdictHandler {
+  execute(body: unknown): Promise<{ status: number; body: unknown }>;
+}
+
 /** fiche 0063 — ancrage projet (geste humain depuis le Moniteur). */
 export interface ProjectAnchorHandler {
   execute(body: unknown): Promise<{ status: 200 | 400 | 409; body: unknown }>;
@@ -83,6 +88,7 @@ export class HttpServer {
   private blocageApiHandler: BlocageApiPort | null = null;
   private runAbandonHandler: RunAbandonHandler | null = null;
   private projectAnchorHandler: ProjectAnchorHandler | null = null;
+  private verdictHandler: VerdictHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -132,6 +138,11 @@ export class HttpServer {
   /** fiche 0063 — POST /api/supervision/projects/anchor. */
   setProjectAnchorHandler(handler: ProjectAnchorHandler): void {
     this.projectAnchorHandler = handler;
+  }
+
+  /** fiche 20261102151630248 — POST /api/verdict. */
+  setVerdictHandler(handler: VerdictHandler): void {
+    this.verdictHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -273,6 +284,12 @@ export class HttpServer {
     // fiche 0063 — ancrage projet (geste humain)
     if (req.method === 'POST' && req.url === '/api/supervision/projects/anchor') {
       void this.handleProjectAnchor(req, res);
+      return;
+    }
+
+    // fiche 20261102151630248 — le pouce de revue, posé par la commande de la méthode
+    if (req.method === 'POST' && req.url === '/api/verdict') {
+      this.handleVerdict(req, res);
       return;
     }
 
@@ -420,6 +437,27 @@ export class HttpServer {
         return;
       }
       void this.projectAnchorHandler
+        .execute(parsed)
+        .then(({ status, body: responseBody }) => {
+          res.writeHead(status, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(responseBody));
+        })
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : String(error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: message }));
+        });
+    });
+  }
+
+  private handleVerdict(req: IncomingMessage, res: ServerResponse): void {
+    this.readJsonBody(req, res, (parsed) => {
+      if (!this.verdictHandler) {
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'verdict handler not configured' }));
+        return;
+      }
+      void this.verdictHandler
         .execute(parsed)
         .then(({ status, body: responseBody }) => {
           res.writeHead(status, { 'Content-Type': 'application/json' });

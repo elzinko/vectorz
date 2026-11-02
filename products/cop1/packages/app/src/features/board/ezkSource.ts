@@ -113,6 +113,16 @@ export class EzkSource<T> {
     return { ...entry.snapshot, refreshing: entry.refreshing };
   }
 
+  /**
+   * Fait relire la méthode à la prochaine demande, même si la réponse gardée est fraîche : après
+   * une écriture par `ezk` (le pouce de revue, fiche 20261102151630248). Un rafraîchissement déjà
+   * en cours n'est pas interrompu ; celui-ci repartira après lui.
+   */
+  invalidate(root: string): void {
+    const entry = this.entries.get(root);
+    if (entry) entry.lastAttemptAt = 0;
+  }
+
   private async refresh(root: string, entry: Entry<T>): Promise<void> {
     entry.refreshing = true;
     entry.lastAttemptAt = this.now();

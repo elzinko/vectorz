@@ -110,6 +110,8 @@ describe('translatePlan — même détail', () => {
       crit: ['Le premier critère est fait', 'Le second critère tient sur deux lignes'],
       verif: b.fiches[1].commentVerifier,
       blocked: '',
+      // L'exemple du contrat porte un pouce 👍 sur cette fiche (fiche 20261102151630248).
+      verdict: 'up',
     });
   });
 
@@ -167,5 +169,25 @@ describe('translatePlan — ce que la méthode a mené (fiche 20261102104443762)
     const b = board();
     b.historique = { sprints: -1, retros: 'x' };
     expect(translatePlan(b, backlog()).plan.history).toBeUndefined();
+  });
+});
+
+describe('translatePlan — le pouce de revue de chaque fiche (fiche 20261102151630248)', () => {
+  it('reprend le pouce publié par la méthode sur la fiche concernée', () => {
+    const { fiches } = translatePlan(board(), backlog());
+    expect(fiches['20990101000000002']?.verdict).toBe('up');
+  });
+
+  it('une fiche sans pouce n’en porte aucun', () => {
+    const { fiches } = translatePlan(board(), backlog());
+    expect(fiches['20990101000000001']?.verdict).toBeUndefined();
+  });
+
+  it('sans bloc de pouces, ou avec un pouce mal formé : aucun pouce affiché', () => {
+    const b = board();
+    b.verdicts = { '20990101000000002': { verdict: 'peut-être' } };
+    expect(translatePlan(b, backlog()).fiches['20990101000000002']?.verdict).toBeUndefined();
+    b.verdicts = undefined;
+    expect(translatePlan(b, backlog()).fiches['20990101000000002']?.verdict).toBeUndefined();
   });
 });

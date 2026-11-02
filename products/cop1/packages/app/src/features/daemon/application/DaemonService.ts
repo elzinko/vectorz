@@ -5,6 +5,7 @@ import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandl
 import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { EzkConfigSource } from '../../board/ezkConfigSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
+import { execVerdictRunner, writeVerdictThroughEzk } from '../../board/verdictWriter.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
 import { AnchorProjectUseCase } from '../../supervision/application/AnchorProjectUseCase.js';
@@ -106,6 +107,17 @@ export class DaemonService {
         config: this.configSource(),
       }),
     );
+    // fiche 20261102151630248 — le pouce de revue : le daemon lance `ezk review verdict`, puis
+    // relit le plan du projet tout de suite. La commande `ezk` est lue dans la config au moment de
+    // l'appel, pas ici : la config se charge juste après.
+    this.httpServer.setVerdictHandler({
+      execute: (body) =>
+        writeVerdictThroughEzk(body, {
+          projects: () => this.boardProjects(projectPath),
+          run: execVerdictRunner(this.ezkCommand),
+          onWritten: (root) => this.planSource().invalidate(root),
+        }),
+    });
 
     try {
       const config = new ConfigLoader({ skipRamValidation: true }).load(projectPath);

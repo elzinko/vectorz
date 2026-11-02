@@ -343,3 +343,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .pcount b { color: var(--fg); }
 
 @media (max-width: 720px) { .md2 { grid-template-columns: 1fr; } }
+
+/* Le pouce de revue d'une fiche (fiche 20261102151630248). */
+.verdictbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 10px; font-size: 13px; }
+.verdictbar .verdictnow { font-size: 18px; }
+.verdictbar .btn.on { border-color: var(--accent, #3b5bdb); }
+.verdictbar .verdicterr { color: var(--danger, #c92a2a); font-size: 12px; }

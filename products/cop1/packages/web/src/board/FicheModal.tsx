@@ -3,8 +3,11 @@
  *
  * Un résumé lisible d'une fiche (En clair, contexte, critères, comment vérifier)
  * et un lien vers sa page complète. Fermeture par Échap et par clic sur le fond.
+ *
+ * Le pouce de revue (fiche 20261102151630248) : la fenêtre montre le pouce publié par la méthode et
+ * le pose par `onVerdict`, qui passe par la commande `ezk review verdict`. Elle n'écrit rien elle-même.
  */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { FicheDetail } from './types.js';
 import { STATUS_LABEL } from './activity.js';
 
@@ -13,9 +16,69 @@ interface FicheModalProps {
   onClose: () => void;
   /** Ouvrir la page complète de la fiche (vue Fiches). */
   onOpenPage: (fid: string) => void;
+  /** Poser ou retirer le pouce ; rend le message d'erreur, ou `null` si c'est posé. Absent = lecture seule. */
+  onVerdict?: (fid: string, pouce: Pouce) => Promise<string | null>;
 }
 
-export function FicheModal({ fiche, onClose, onOpenPage }: FicheModalProps): JSX.Element {
+export type Pouce = 'up' | 'down' | 'none';
+
+const POUCE_LABEL: Record<'up' | 'down', string> = { up: '👍', down: '👎' };
+
+/** Le pouce de revue : celui que publie la méthode, et les boutons qui le posent par elle. */
+function VerdictBar({
+  fiche,
+  onVerdict,
+}: {
+  fiche: FicheDetail;
+  onVerdict?: FicheModalProps['onVerdict'];
+}): JSX.Element {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  async function set(pouce: Pouce): Promise<void> {
+    if (!onVerdict) return;
+    setPending(true);
+    setError(null);
+    setError(await onVerdict(fiche.id, pouce));
+    setPending(false);
+  }
+  return (
+    <div className="verdictbar">
+      <span className="faint">Pouce de revue</span>
+      {fiche.verdict && (
+        <span className="verdictnow" aria-label={`pouce posé : ${fiche.verdict}`}>
+          {POUCE_LABEL[fiche.verdict]}
+        </span>
+      )}
+      {onVerdict && (
+        <>
+          {(['up', 'down'] as const).map((p) => (
+            <button
+              type="button"
+              key={p}
+              className={`btn ghost sm${fiche.verdict === p ? ' on' : ''}`}
+              disabled={pending || fiche.verdict === p}
+              onClick={() => void set(p)}
+            >
+              {POUCE_LABEL[p]}
+            </button>
+          ))}
+          {fiche.verdict && (
+            <button type="button" className="btn ghost sm" disabled={pending} onClick={() => void set('none')}>
+              Retirer
+            </button>
+          )}
+        </>
+      )}
+      {error && (
+        <span className="verdicterr" role="alert">
+          {error}
+        </span>
+      )}
+    </div>
+  );
+}
+
+export function FicheModal({ fiche, onClose, onOpenPage, onVerdict }: FicheModalProps): JSX.Element {
   useEffect(() => {
     function onKey(e: KeyboardEvent): void {
       if (e.key === 'Escape') onClose();
@@ -49,6 +112,7 @@ export function FicheModal({ fiche, onClose, onOpenPage }: FicheModalProps): JSX
         </div>
 
         <h2 style={{ fontSize: 21 }}>{fiche.title}</h2>
+        <VerdictBar fiche={fiche} onVerdict={onVerdict} />
         <div className="enclair">
           <b>En clair.</b> {fiche.enclair}
         </div>

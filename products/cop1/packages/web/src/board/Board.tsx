@@ -14,7 +14,7 @@ import { defaultToolConfig, type Role, type Tier } from './configModel.js';
 import { ToolConfigView } from './ToolConfigView.js';
 import type { BoardData, BoardProject, FicheDetail, PlanState } from './types.js';
 import { DevView } from './DevView.js';
-import { FicheModal } from './FicheModal.js';
+import { FicheModal, type Pouce } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
@@ -154,6 +154,33 @@ function awaitsFresher(state: PlanState | undefined): boolean {
   return state?.state === 'loading' || state?.refreshing === true;
 }
 
+/**
+ * Pose le pouce de revue par le daemon, qui lance `ezk review verdict` (fiche 20261102151630248).
+ * Rend le message d'erreur, ou `null` si c'est posé ; dans ce cas, `onDone` fait redemander le board.
+ */
+async function postVerdict(
+  projet: string,
+  id: string,
+  pouce: Pouce,
+  onDone: () => void,
+): Promise<string | null> {
+  try {
+    const res = await fetch('/api/verdict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projet, id, pouce }),
+    });
+    if (res.ok) {
+      onDone();
+      return null;
+    }
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    return body.error ?? `pouce refusé (HTTP ${res.status})`;
+  } catch {
+    return 'serveur de mission control injoignable';
+  }
+}
+
 /** Le message à montrer quand le plan d'un projet n'est pas arrivé ; `null` s'il l'est. */
 function planMessage(plan: PlanState | undefined): string | null {
   if (!plan || plan.state === 'ok') return null;
@@ -189,6 +216,8 @@ export function Board(): JSX.Element {
   // ADR-086). Jamais d'échantillon figé : tant que la source n'a pas répondu, ou si elle est
   // injoignable, la page le dit au lieu d'inventer des chiffres.
   const [source, setSource] = useState<BoardSource>({ kind: 'loading' });
+  // Après un geste qui écrit (le pouce de revue), on redemande le board tout de suite.
+  const [reloadTick, setReloadTick] = useState(0);
 
   // Montage : fetch de la source live. Toute erreur (pas de daemon, HTTP, réseau, JSON cassé,
   // `fetch` absent) donne « injoignable ». Le serveur demande son plan à `ezk` en arrière-plan :
@@ -224,7 +253,7 @@ export function Board(): JSX.Element {
       alive = false;
       if (retry) clearTimeout(retry);
     };
-  }, []);
+  }, [reloadTick]);
 
   // Fermeture clavier de la modale (Échap) tant qu'elle est ouverte.
   useEffect(() => {
@@ -493,6 +522,7 @@ export function Board(): JSX.Element {
             setView('fiches');
             setFicheModalId(fid);
           }}
+          onVerdict={(fid, pouce) => postVerdict(project.name, fid, pouce, () => setReloadTick((n) => n + 1))}
         />
       )}
 

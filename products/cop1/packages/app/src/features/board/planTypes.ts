@@ -61,4 +61,6 @@ export interface FicheDetailData {
   pr?: string;
   /** Raison du blocage ; chaîne vide si la fiche n'est pas bloquée. */
   blocked: string;
+  /** Le pouce de revue posé (fiche 20261102151630248) ; absent s'il n'y en a pas. */
+  verdict?: 'up' | 'down';
 }

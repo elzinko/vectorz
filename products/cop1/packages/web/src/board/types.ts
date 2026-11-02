@@ -197,6 +197,8 @@ export interface FicheDetail {
   pr?: string;
   /** Raison du blocage (fiche bloquée) ; absente ou vide si la fiche n'est pas bloquée. */
   blocked?: string;
+  /** Le pouce de revue publié par la méthode (fiche 20261102151630248) ; absent s'il n'y en a pas. */
+  verdict?: 'up' | 'down';
 }
 
 /** Où en est le plan d'un projet : reçu de la méthode, en chargement, ou indisponible (avec la raison).

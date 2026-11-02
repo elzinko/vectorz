@@ -117,6 +117,19 @@ describe('EzkPlanSource — jamais d’attente', () => {
     await vi.waitFor(() => expect(source.get('/p').refreshing).toBe(false));
   });
 
+  it('invalidate fait relire la méthode à la demande suivante, même avant 30 s (fiche 20261102151630248)', async () => {
+    let now = 1_000;
+    const { run, calls } = fakeRunner();
+    const source = new EzkPlanSource({ command: ['ezk'], run, now: () => now });
+    source.get('/p');
+    await vi.waitFor(() => expect(source.get('/p').state).toBe('ok'));
+    expect(calls).toHaveLength(2);
+    now += 1_000; // la réponse est fraîche : sans invalidate, rien ne repartirait
+    source.invalidate('/p');
+    expect(source.get('/p').refreshing).toBe(true);
+    await vi.waitFor(() => expect(calls).toHaveLength(4));
+  });
+
   it('suit chaque projet séparément', async () => {
     const { run, calls } = fakeRunner();
     const source = new EzkPlanSource({ command: ['ezk'], run });

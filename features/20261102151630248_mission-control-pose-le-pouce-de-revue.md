@@ -64,13 +64,13 @@ Avis d'architecte du 2026-11-02, gardé par le PO.
 
 ## Critères d'acceptation
 
-- [ ] **Mission control montre le pouce.** La fenêtre d'une fiche montre le pouce que publie
+- [x] **Mission control montre le pouce.** La fenêtre d'une fiche montre le pouce que publie
       `ezk board show --json` ; une fiche sans pouce n'affiche rien de plus.
-- [ ] **Mission control pose le pouce par la commande.** Un clic lance `ezk review verdict` ; le daemon
+- [x] **Mission control pose le pouce par la commande.** Un clic lance `ezk review verdict` ; le daemon
       n'écrit jamais le fichier lui-même. La fenêtre montre le nouveau pouce à la relecture suivante.
-- [ ] **Une autre origine est refusée.** Une requête venue d'un autre site, ou d'un autre type que
+- [x] **Une autre origine est refusée.** Une requête venue d'un autre site, ou d'un autre type que
       JSON, est refusée sans lancer la commande.
-- [ ] **Avant / après.** Capture de la fenêtre d'une fiche avant (sans pouce) et après (pouce posé).
+- [x] **Avant / après.** Capture de la fenêtre d'une fiche avant (sans pouce) et après (pouce posé).
 
 ## Comment vérifier
 
