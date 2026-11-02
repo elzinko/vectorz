@@ -8,7 +8,7 @@ version:
 milestone: board
 depends: ["20261101215342537"]
 labels: [carte, loi, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-08-27
@@ -72,6 +72,10 @@ bouge rarement : un rafraîchissement toutes les cinq minutes suffit.
 - [ ] **Portée en mots.** Chaque règle dit sa portée par une phrase, jamais par un code. La règle
       `development/story-dans-un-worktree-dedie` se lit « citée par ezk-sprint, absente de la loi
       installée ».
+- [ ] **Filtrer par un compteur.** Cliquer « citées sans être installées » ne laisse dans la liste que
+      ces règles (17 pour vectorz le 2026-11-02).
+- [ ] **Le détail d'une règle.** Il montre son niveau, sa portée en mots, ses bundles, ses profils, qui
+      l'applique, qui la vérifie et son fichier.
 - [ ] **Jamais de faux chiffre.** Sans `ezk`, ou avec un format inconnu : « loi indisponible : <raison> »,
       jamais de compteurs à zéro.
 - [ ] **Jamais d'attente.** `/api/law` répond en moins de 100 ms pendant qu'un appel à `ezk` tourne.
@@ -104,3 +108,12 @@ dédié.
 - Priorité P2, inchangée.
 - 2026-11-02 : cette vue est l'une des pages à porter avant [le retrait de la page web de la
   méthode](20261102123552185_retirer-la-page-web-de-la-methode.md), décidé par [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+- Groom du 2026-11-02 (run autonome) : la dépendance est livrée
+  ([`ezk law show`](done/20261101215342537_ezk-law-show-portee-des-regles.md)). Contrat vérifié : `comptes`
+  porte `partout`, `projet`, `citee`, `rangee`, `orpheline` (et `total`) ; chaque règle porte `portee`
+  en code et `appliqueePar`. Choix : la phrase de portée est composée par mission control, depuis
+  `portee` et `appliqueePar`, par une table de cinq codes testée ; la méthode garde la donnée. La loi
+  passe par sa propre route `/api/law`, hors de `/api/board` relu toutes les 15 s.
+- Prête le 2026-11-02 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Coupe si le
+  build déborde : `/api/law`, compteurs, filtre et liste, puis la sélection reliée et le détail. Deux
+  critères ajoutés à sa demande : le filtre par compteur et le détail d'une règle.

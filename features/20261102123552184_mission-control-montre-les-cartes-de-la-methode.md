@@ -8,7 +8,7 @@ milestone: board
 version:
 depends: ["20261031160441412"]
 labels: [board, mission-control, un-seul-ecran]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-02
@@ -43,10 +43,17 @@ existent ; mission control les affiche tels quels.
 
 ## Proposition
 
-1. **La méthode publie la liste.** `ezk … --json` rend les documents de `diagrams/` : identifiant,
-   titre (lu dans `meta.yaml`), type (HTML ou SVG) et chemin. Un contrat versionné la décrit.
-2. **Mission control les montre.** Une vue « Cartes », dans la partie « Méthode », liste les documents
-   et en affiche un au clic. Le daemon sert le fichier que la méthode désigne, sans l'interpréter.
+1. **La méthode publie la liste.** `ezk board maps --json` rend les documents de `diagrams/` qui ne
+   sont pas des pages portées par une autre fiche : identifiant, titre (lu dans `meta.yaml`), type
+   (HTML ou SVG), fichier, et le fichier de données que la page charge, s'il y en a un. Un contrat
+   versionné `board-maps` la décrit. Les documents sont ceux de la méthode, quel que soit `--root`.
+2. **La méthode calcule les données à la demande.** La carte de la méthode charge
+   `carte-interactive.data.js`, un fichier généré que git ignore : absent d'un clone neuf, périmé
+   ailleurs. `ezk board maps --data <id>` l'écrit sur la sortie, calculé à l'instant, comme le fait
+   `ezk board open`.
+3. **Mission control les montre.** Une vue « Cartes », dans la partie « Méthode », liste les documents
+   et en affiche un au clic, dans un cadre isolé (`sandbox`, sans accès à mission control). Le daemon
+   sert le fichier que la méthode désigne, et les données par la commande ; rien d'autre.
 
 ## Critères d'acceptation
 
@@ -56,6 +63,10 @@ existent ; mission control les affiche tels quels.
       dans mission control comme dans la page web de la méthode.
 - [ ] **Rien d'autre n'est servi.** Le daemon ne sert que les fichiers désignés par la méthode ; un
       chemin hors de cette liste est refusé.
+- [ ] **Des données fraîches.** La carte de la méthode s'affiche avec ses données même quand
+      `carte-interactive.data.js` est absent du disque.
+- [ ] **Un cadre isolé.** Le document s'ouvre dans un cadre `sandbox` sans `allow-same-origin` : ses
+      scripts tournent, mais ne lisent rien de mission control.
 - [ ] **Jamais de liste inventée.** Sans `ezk`, la vue dit « cartes indisponibles : <raison> ».
 - [ ] **Avant / après.** Capture de la carte de la méthode dans la page web (avant) et dans mission
       control (après).
@@ -63,7 +74,8 @@ existent ; mission control les affiche tels quels.
 ## Comment vérifier
 
 ```bash
-ezk board open --list
+ezk board maps --json | jq '.documents[] | {id, titre, type}'
+ezk board maps --data methode-mega-city | head -c 200
 pnpm cop1:dev
 ```
 
@@ -77,3 +89,9 @@ listés, et la carte de la méthode s'ouvre au clic.
   [retirer la page web de la méthode](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Les documents restent des fichiers de la méthode : seul l'écran qui les montre change.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
+- Groom du 2026-11-02 (run autonome) : sources vérifiées. `ezk board open --list` liste bien douze
+  cartes, dont sept documents. `carte-interactive.html` charge `carte-interactive.data.js`, ignoré par
+  git (`.gitignore`, ADR-0055) : d'où la commande `--data`. `benchmark.html` pointe vers des fiches
+  par `../../features/…` : ces liens ne s'ouvriront pas dans mission control, c'est accepté.
+- Prête le 2026-11-02 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Coupe si le
+  build déborde : la méthode seule (`maps --json`, `maps --data`, contrat), puis le daemon et la vue.
