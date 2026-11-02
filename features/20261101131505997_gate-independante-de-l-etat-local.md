@@ -31,6 +31,11 @@ Constaté au run du 2026-11-01, sprints 2 et 3 :
   stderr du lanceur. Quand la branche a du retard sur `origin/main`, le lanceur y ajoute « le code
   d'ezk a N commits de retard », et les deux tests échouent.
 
+Revu le 2026-11-02, à l'intégration du carnet de tests : dans un worktree neuf, la gate a rendu
+5 échecs sur 2385 tests (4 dans `ezk-cwd-root.test.ts`, 1 dans `project-root-bins.test.ts`), tous sur
+`ENOENT … features/BACKLOG.md`. Après un `regen-backlog.sh` à la main, les 33 tests de ces deux
+fichiers passent. Le piège coûte une gate rouge à chaque story construite dans un worktree neuf.
+
 ## Valeur
 
 Pour le dev qui construit dans un worktree neuf : une gate rouge doit vouloir dire « le code est
