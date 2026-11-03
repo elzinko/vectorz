@@ -73,7 +73,7 @@ console.log(`✓ registre : projet « ${id} » ajouté (${pathLabel}, method=${m
 console.log(`  fichier écrit : ${join(located.dir, 'supervision.registry.yaml')}`);
 if (inLinkedWorktree(located.dir)) {
   console.log(
-    "  ⚠ c'est la copie d'un worktree : committe-la et merge-la, sinon le cockpit et le daemon cop1 lancés depuis le dossier principal ne verront pas ce projet.",
+    "  ⚠ c'est la copie d'un worktree : committe-la et merge-la, sinon mission control et le daemon cop1 lancés depuis le dossier principal ne verront pas ce projet.",
   );
 } else {
   console.log('  → redémarre le daemon cop1 pour activer la surveillance (watchers).');

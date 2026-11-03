@@ -61,17 +61,21 @@ depuis la session du run, ou la route du daemon `POST /api/supervision/runs/aban
 
 ## Critères d'acceptation
 
-- [ ] Aucun des neuf messages ne dit « Moniteur », « cockpit » ou « dashboard » ; chacun nomme ce que
+- [x] Aucun des neuf messages ne dit « Moniteur », « cockpit » ou « dashboard » ; chacun nomme ce que
       l'utilisateur voit vraiment.
-- [ ] Le message d'un run bloquant ne renvoie plus vers un bouton absent : il donne `run_finished` et
+- [x] Le message d'un run bloquant ne renvoie plus vers un bouton absent : il donne `run_finished` et
       la route du daemon.
-- [ ] Les tests qui lisent ces messages suivent, et la gate reste verte.
+- [x] Les tests qui lisent ces messages suivent, et la gate reste verte.
 
 ## Comment vérifier
 
 ```bash
-grep -rniwE "moniteur|cockpit|dashboard" products/cop1/packages/*/src products/mega-city/bin
+grep -rniwE "moniteur|cockpit|dashboard" products/cop1/packages/*/src products/mega-city/src products/mega-city/bin \
+  | grep -vE "__tests__|\.test\.|/testing/" | grep -vE ":[0-9]+:\s*(\*|//|/\*)"
 ```
+
+Signal observable : les lignes restantes sont des identifiants (`SprintDashboardService`), des stubs
+`@deprecated` ou la commande `ezk dashboard`, jamais un message affiché.
 
 ## Notes
 
@@ -82,3 +86,11 @@ grep -rniwE "moniteur|cockpit|dashboard" products/cop1/packages/*/src products/m
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : vérifier dans le
   code que `run_finished` (status abandoned) et la route d'abandon existent avant de les citer ; prouver
   le critère (a) par un grep des trois mots sur les neuf messages.
+- **Preuves du build (2026-11-03).** Le grep des trois mots sur les fichiers des neuf messages ne trouve
+  plus rien hors des commentaires. `run_finished` accepte `status: "abandoned"` (`mcp-server.ts`) et la
+  route `POST /api/supervision/runs/abandon` attend `{"runDir": …}` (`HttpServer.ts`) : le nouveau
+  message ne cite que ce qui existe. Une session silencieuse s'affiche « à récupérer » dans mission
+  control : les messages de silence le disent. Tests : supervision 235, app cop1 359, web 151, verts.
+- **Après la revue (GO, 2026-11-03).** Le message d'abandon dit l'en-tête `Content-Type: application/json`,
+  que la garde du daemon exige, et prévient que le geste peut être éteint. Le test du message attend
+  `run_finished` seul, sans l'ancien mot.

@@ -263,7 +263,7 @@ export function describeOpenRun(events: JournalEvent[]): string {
     `Méthode bloquante : ${method}`,
     `Âge du run : ${runAge}`,
     `Dernier événement : ${lastEventDesc} (${eventCount} événement(s) au total)`,
-    `Marche à suivre : abandonne ce run au Moniteur (bouton "Abandonner ce run" sur la carte "Silence prolongé"), ou appelle run_finished {run_id:"<l'id du run ci-dessus>", status:"abandoned"} si c'est un orphelin de ta propre session.`,
+    `Marche à suivre : si c'est un orphelin de ta propre session, appelle run_finished {run_id:"<l'id du run ci-dessus>", status:"abandoned"}. Sinon, demande l'abandon au daemon cop1 : POST /api/supervision/runs/abandon, en-tête Content-Type: application/json, corps {"runDir":"<dossier du run>"} (le daemon répond s'il n'a pas de commande d'abandon configurée).`,
   ].join('\n');
 }
 

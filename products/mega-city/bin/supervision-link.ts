@@ -129,6 +129,6 @@ console.log('Étapes suivantes :');
 console.log(`  1. Rouvre Claude Code DANS ce projet :  cd "${projectRoot}" && claude`);
 console.log('     puis autorise le serveur « supervision » à la 1re demande.');
 console.log('  2. Lance ta méthode :  /ezk-sprint   (ou /supervision-demo pour un essai jouet).');
-console.log('  3. Pour la voir dans le Moniteur, côté cop1 (observateur externe) :');
+console.log('  3. Pour la voir dans mission control, côté cop1 (observateur externe) :');
 console.log(`     ajoute "${projectRoot}" aux supervision.watch_roots du cop1.config.yaml du`);
 console.log('     daemon, lance-le, puis la web UI — voir src/supervision/README.md.');

@@ -69,7 +69,7 @@ sprint
 
 const orchestrator = program
   .command('orchestrator')
-  .description('Removed in epoch 2 — use mega-city + Moniteur');
+  .description('Removed in epoch 2 — use mega-city + mission control');
 
 orchestrator
   .command('run')

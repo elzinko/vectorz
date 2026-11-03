@@ -376,7 +376,7 @@ export function Board(): JSX.Element {
             </button>
           ))}
           <div className="grp">Archives</div>
-          <a href="/v1/index.html" title="Pages de l'ancien dashboard (benchmark, diagrammes qualité, cartes)">
+          <a href="/v1/index.html" title="Pages archivées de la v1 (benchmark, diagrammes qualité, cartes)">
             <span className="ic" aria-hidden="true">🗄</span>
             <span className="lbl">v1 / archives</span>
           </a>

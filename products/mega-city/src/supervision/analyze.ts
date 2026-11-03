@@ -337,12 +337,12 @@ function deriveVerdicts(
           code: 'silence_explained',
           detail:
             `Run ${run.runId} : 1× run.started, 0 heartbeat, 0 gate, run ouvert → ` +
-            `« Silence prolongé » Moniteur attendu (pas un bug lecteur). Émettre heartbeat (fiche 0103) ou clore le run.`,
+            `« Silence prolongé » attendu : mission control montrera la session « à récupérer » (pas un bug lecteur). Émettre heartbeat (fiche 0103) ou clore le run.`,
         });
       } else {
         verdicts.push({
           code: 'silence_explained',
-          detail: `Run ${run.runId} : seulement run.started pour l’instant — sans heartbeat/gate le silence Moniteur arrivera au seuil.`,
+          detail: `Run ${run.runId} : seulement run.started pour l’instant — sans heartbeat/gate, mission control montrera la session « à récupérer » au seuil de silence.`,
         });
       }
     }

@@ -654,7 +654,7 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
 
     expect(errorMsg).toContain('ezk-sprint');
     expect(errorMsg).toMatch(/min|h|s/); // âge du run
-    expect(errorMsg).toMatch(/Moniteur|run_finished|abandonner/i); // marche à suivre
+    expect(errorMsg).toMatch(/run_finished/); // marche à suivre
   });
 
   // J5 — AC4 : journal semi-hostile → dégrade en "date inconnue", ne crashe pas
@@ -688,7 +688,7 @@ describe('Rubrique J — Run orphelin (fiche 0168)', () => {
     expect(threw).toBe(true);
     expect(errorMsg).toContain('ezk-sprint'); // méthode toujours présente
     expect(errorMsg).toMatch(/inconnue|inconnu/i); // âge/date dégradés
-    expect(errorMsg).toMatch(/Moniteur|run_finished|abandonner/i); // marche à suivre toujours présente
+    expect(errorMsg).toMatch(/run_finished/); // marche à suivre toujours présente
   });
 
   // J6 — D5 : abandonRun refuse si le run ouvert ≠ run attendu

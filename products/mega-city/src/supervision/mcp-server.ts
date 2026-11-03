@@ -141,7 +141,7 @@ export function createSupervisionMcpServer(projectRoot: string, expectedMethod?:
     'heartbeat',
     {
       description:
-        'Signe de vie pendant un run ouvert (entre deux jalons) — réarme le timer « Silence prolongé » du Moniteur. note optionnelle.',
+        'Signe de vie pendant un run ouvert (entre deux jalons) — réarme le seuil de silence : sans lui, mission control montre la session « à récupérer ». note optionnelle.',
       inputSchema: {
         note: z.string().optional(),
         run_id: z.string().optional(),

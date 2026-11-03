@@ -2,7 +2,7 @@
 export const EPOCH2_METHOD_MESSAGE = `This cop1 pilot command was removed in epoch 2 (E4 / ADR-029).
 
 Dogfood method: mega-city — ezk-backlog, ezk-sprint, ezk-archive.
-Supervision: cop1 start + Moniteur (GET /api/supervision/runs, ADR-028).
+Supervision: cop1 start + mission control (GET /api/supervision/runs, ADR-028).
 
 BMAD as external emitter on another project: fiche 2058 + cop1 init-bmad-bridge.`;
 
