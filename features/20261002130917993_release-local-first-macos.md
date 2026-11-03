@@ -7,6 +7,7 @@ priority: P2
 product: vectorz
 labels: [ci, release, dx, cost]
 status: idea
+blocked: review
 pr:
 evidence: none
 created: 2026-10-02
@@ -99,3 +100,6 @@ Deux raisons **factuelles**, pas un report vague :
    Apple Developer** (coût annuel, credentials) : décision du PO, hors autonomie.
 
 Geste qui la débloque : dé-parker `ezk-secret`, ou valider l'infra de release. Jusque-là, `idea` assumé.
+- **Écartée du run autonome le 2026-11-03** : la livraison notarise chez Apple et envoie vers R2, deux
+  actions sortantes, avec des secrets du trousseau. Marquée `blocked: review` : elle se construit sous
+  ta revue, jamais en run autonome.
