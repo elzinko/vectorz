@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [mission-control]
-status: idea
+status: ready
 pr:
 evidence: none # message du lanceur dans le terminal ; pas d'écran
 created: 2026-11-02
@@ -44,20 +44,30 @@ fausse affichée.
 
 ## Proposition
 
-À instruire au groom. Piste : vérifier dans `scripts/cop1-dev.sh` que chaque port est un entier entre
-1 et 65535, avant tout le reste.
+`scripts/cop1-dev.sh` vérifie chaque port avant tout le reste, avant même le contrôle du port déjà
+pris. Un port valide est un entier entre 1 et 65535, écrit sans zéro en tête. Sinon le lanceur
+s'arrête, avec un message qui nomme la variable et la valeur, et ne démarre rien.
+
+Un test de script, `scripts/test-cop1-dev.sh`, rejoue les valeurs refusées. Il est branché sur
+`pnpm test:scripts`, donc sur la gate.
 
 ## Critères d'acceptation
 
 - [ ] Un port qui n'est pas un entier entre 1 et 65535 est refusé avant tout lancement, avec un
-  message qui nomme la variable et la valeur.
+      message qui nomme la variable et la valeur.
+- [ ] Le refus vaut pour les deux variables, `COP1_WEB_PORT` et `COP1_DAEMON_PORT`.
+- [ ] Le test de script tourne dans `pnpm test:scripts`.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus : le lancement doit s'arrêter à l'étape 1, sans démarrer le daemon.
+1. `bash scripts/test-cop1-dev.sh` passe, puis `pnpm --dir products/mega-city test:scripts`.
+2. Rejouer la reproduction : `COP1_DAEMON_PORT=4354 COP1_WEB_PORT=abc pnpm cop1:dev --no-build`
+   s'arrête tout de suite, sans démarrer le daemon.
 
 ## Notes / décisions
 
 - Trouvé par la revue adverse (ezk-reviewer) du sprint 5, le 2026-11-02, constat P2 hors périmètre.
 - Indice de localisation : `scripts/cop1-dev.sh`, fonction `refuse_busy_port` et lecture des
   variables de port.
+- **Groomée le 2026-11-03** (run autonome) : la vérification se pose dans le
+  script, avant `refuse_busy_port`. Aucun écran ne change.

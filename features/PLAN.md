@@ -24,6 +24,10 @@ Suite de la passe scout, tirée par priorité au run autonome du 2026-11-03 (spr
 - ~~`20261102100506119` — résoudre un blocage avec un corps invalide répond « introuvable » · build~~ — shipped
 - ~~`20261102100505955` — changer le statut d'une proposition de règle répond « OK » sans rien faire · build~~ — shipped
 
+Sprint 22, même passe scout, le lanceur de mission control :
+- `20261102100505596` — deux daemons du même dossier se partagent un seul fichier de pid · build
+- `20261102124306840` — le lanceur accepte un port qui n'est pas un nombre · build
+
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped
 - ~~`20261014200651962` — cycle de vie d'une version : préparer, figer (tag freeze) · build~~ — shipped
