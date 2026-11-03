@@ -23,7 +23,7 @@ N.A.
 
 ## Matrice de validation
 
-Gate locale 2314 tests et 48 suites de scripts verts ; test-sprint-lifecycle.sh PASS ; deux mutations attrapées
+Gate locale 2315 tests et 48 suites de scripts verts ; test-sprint-lifecycle.sh PASS ; deux mutations attrapées
 
 ## À tester
 
