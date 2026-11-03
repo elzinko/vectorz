@@ -115,6 +115,24 @@ POC = pré-répondre le menu de grooming par config (le reste est en Suite).
 - [ ] **Défaut inchangé** — sans section `grooming.techniques`, le menu interactif s'affiche comme
       aujourd'hui.
 
+## Plan de build du POC (grooming du 2026-11-03, run autonome)
+
+Les deux questions ouvertes sont tranchées par ta préférence du 2026-10-09 : des **noms** lisibles,
+les ids stables du catalogue, jamais des numéros ni des alias.
+
+1. **La forme.** `grooming: { techniques: all }`, `{ techniques: none }`, ou une table
+   `{ <id du catalogue>: true|false }`. Avec une table, seules les techniques à `true` s'appliquent ;
+   les autres sont sautées. `all` et `none` ne se mélangent pas à une table.
+2. **La garde anti-silence.** Une clé hors du catalogue (`skills/ezk-backlog/groom-techniques.yml`)
+   ou une valeur qui n'est pas un booléen est refusée : le message nomme la clé et liste les ids connus.
+3. **La méthode le publie.** Un résolveur pur lit la config contre le catalogue. `ezk config show`
+   affiche `grooming.techniques` : `menu` (défaut, rien de posé), `all`, `none`, la liste retenue, ou
+   l'erreur. `--json` gagne le champ `groomingTechniques`, ajouté sans changer `schema_version`.
+4. **Le skill l'applique.** `ezk-backlog groom`, avant le menu, lit cette ligne : `menu` garde la boucle
+   d'aujourd'hui ; `all`, `none` ou une liste s'appliquent sans menu, en manuel comme en auto-groom ;
+   une erreur arrête le groom et la nomme.
+5. **Tests** : le résolveur, la sortie de `ezk config show`, le contrat régénéré, et le texte du skill.
+
 ## Comment vérifier
 
 À rejouer une fois construit :
