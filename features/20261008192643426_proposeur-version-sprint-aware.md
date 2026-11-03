@@ -5,6 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 status: idea
+blocked: deferred
 pr:
 evidence: none # commande/règle de méthode, sans écran
 created: 2026-10-08
@@ -73,3 +74,9 @@ ou en cours.
 - Capturée en `idea` sur demande PO (2026-10-08), **P1**.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
+- **Mise en attente le 2026-11-03** (run autonome) : la fiche contredit
+  [l'ADR-0083](../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md).
+  Elle propose une version dès l'ajout ou le groom d'une fiche. L'ADR, ta décision du 2026-10-23, dit
+  que la version se pose à la construction, et que la poser trop tôt a coincé des versions prêtes. Deux
+  issues : clore la fiche, ou la changer en « proposer la milestone d'une fiche », le trou d'outillage
+  que l'ADR-0083 nomme. Ces deux exigences se contredisent : le choix te revient.

@@ -7,6 +7,7 @@ product: vectorz
 milestone:
 labels: [observabilite]
 status: idea
+blocked: deferred
 pr:
 evidence: none # plomberie de mesure ; l'écran est la fiche 0056
 created: 2026-10-08
@@ -127,3 +128,10 @@ catalogue d'adaptateurs [0054](0054-catalogue-adaptateurs-outils.md), rollups g�
 - Capturée en `idea` sur demande PO (2026-10-08), groomée (archi + critères + valeur) le 2026-10-09.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
+- **Mise en attente le 2026-11-03** (run autonome) : une partie du besoin est déjà livrée. Le compte
+  rendu de chaque sprint donne ses jetons, par mode, depuis la livraison de la fiche
+  [Un compte rendu de sprint non daté le dit d'emblée](done/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md).
+  La décision d'archi de cette fiche passe, elle, par `MetricSink` et `.quality/`, la doctrine du lot
+  observabilité parké. Deux voies coexistent donc. À toi de choisir : clore la fiche, ou la réduire au
+  coût par fiche et à son affichage dans mission control. Relancer le lot parké est un dé-park, qui te
+  revient.

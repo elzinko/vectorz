@@ -8,7 +8,7 @@ milestone:
 version:
 labels: [methode, backlog, versioning, milestone, sequencement]
 status: idea
-blocked:
+blocked: panel
 pr:
 evidence: none # modèle/outillage de méthode, pas d'écran ; prouvé par tests du séquenceur
 created: 2026-10-16
@@ -130,3 +130,7 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
 - **Noyau sorti en fiche tirable** :
   [lire `depends:` + désambiguïser « en cours »](done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md)
   (prête). Cette fiche-ci reste la **cible différée**.
+- **Mise en attente le 2026-11-03** (run autonome) : le noyau est livré, par la fiche
+  [lire `depends:` et désambiguïser « en cours »](done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md).
+  Ce qui reste est le basculement vers un graphe de milestones. L'ADR-0081 le diffère derrière quatre
+  verrous ; seul un nouveau panel, tenu avec toi, peut le rouvrir.

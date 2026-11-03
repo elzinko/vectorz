@@ -8,6 +8,7 @@ milestone:
 depends: ["0169"]
 labels: [test-local, supervision, dogfood]
 status: idea
+blocked: deferred
 pr:
 evidence: none # script et journal, sans écran ; la preuve, c'est le journal
 created: 2026-08-21
@@ -130,3 +131,7 @@ dogfood-guided.sh, mode autonome
   sous-séquence).
 - **À trancher au grooming** : le spike sur l'Agent SDK, et la vérification de la session dans mission
   control, seul écran depuis l'amendement de l'ADR-086.
+- **Mise en attente le 2026-11-03** (run autonome) : le panel du 2026-10-14 exige d'abord un spike
+  sur l'Agent SDK. Ce spike lance de vraies sessions Claude Code depuis un script, sans humain. Elles
+  consomment ton quota, ou demandent une clé d'API. Ouvrir cette dépense te revient, comme le dépôt
+  d'une clé si le SDK en exige une.

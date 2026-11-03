@@ -8,6 +8,7 @@ milestone:
 version:
 labels: [recettes]
 status: idea
+blocked: design
 pr:
 created: 2026-10-29
 ---
@@ -60,3 +61,8 @@ maquette d'abord.
 - Distinct de `ezk-chef scan` (découverte de recettes neuves) : ici, adoption des recettes
   existantes. Décision PO : nouvelle fiche.
 - Dépend du dashboard unifié ([20261007135620590](20261007135620590_refondre-vue-supervision-moniteur-lisible.md)) pour la partie visualisation.
+- **Mise en attente le 2026-11-03** (run autonome) : tu as demandé une maquette avant toute
+  implémentation, et la fiche dit de ne pas trancher en silence entre une commande et un autre
+  mécanisme. Depuis le 2026-10-28, `ezk recipes` montre déjà les recettes de la méthode et celles
+  déclarées par un projet, en lecture seule. La suggestion par projet peut partir de là. La maquette
+  et ce choix te reviennent.
