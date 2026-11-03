@@ -43,18 +43,29 @@ faux », jamais « le poste n'est pas préparé ». Moins de faux rouges, moins 
 
 ## Proposition
 
-À préciser au grooming.
+Précisée au grooming du 2026-11-03 (run autonome), d'après le code.
 
-- Les tests qui lisent l'index le génèrent dans leur propre dossier jetable, ou tolèrent son
-  absence (s'il n'existait pas, il n'existe toujours pas après).
-- Les tests qui comparent le stderr du lanceur coupent l'avertissement de retard (variable
-  d'environnement ou option dédiée), au lieu de dépendre de l'état de `origin/main`.
+1. **L'index absent reste absent.** Les deux fichiers de tests lisent l'index du vrai dépôt pour
+   vérifier qu'une commande ne l'a pas touché (`ezk-cwd-root.test.ts:68` et
+   `project-root-bins.test.ts:145`). Ils prennent une photo qui accepte l'absence : le contenu du
+   fichier, ou « absent ». Après la commande, la photo doit être la même. Un index absent qui
+   apparaît fait donc échouer le test, comme un index modifié.
+2. **Le retard se coupe par une variable.** Le lanceur `bin/ezk.ts` lit `EZK_NO_LAG_WARNING=1` et
+   n'écrit alors pas l'avertissement de retard. Les helpers des deux tests du lanceur posent cette
+   variable. Sans elle, l'avertissement reste écrit comme avant.
+
+```
+aujourd'hui   worktree neuf → pas d'index → readFileSync → ENOENT → gate rouge
+après         worktree neuf → photo « absent » → commande → photo « absent » → vert
+```
 
 ## Critères d'acceptation
 
 - [ ] Dans un worktree neuf, sans `regen-backlog.sh`, `pnpm test` est vert.
 - [ ] Avec une branche en retard sur `origin/main`, `pnpm test` est vert.
 - [ ] Aucun test ne lit `features/BACKLOG.md` du vrai dépôt sans le créer lui-même.
+- [ ] Sans `EZK_NO_LAG_WARNING`, un checkout en retard écrit toujours l'avertissement : un test le
+      garde.
 
 ## Comment vérifier
 
@@ -67,3 +78,5 @@ git worktree add /tmp/wt-gate -b essai-gate main && cd /tmp/wt-gate && pnpm inst
 - Née de la rétro légère du 2026-11-01 (P3 de la rétro), acceptée par le PO le même jour :
   [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
+- Groomée le 2026-11-03 (run autonome) : proposition précisée d'après le code ; taille d'une
+  petite story (deux helpers de test, une variable lue par le lanceur).

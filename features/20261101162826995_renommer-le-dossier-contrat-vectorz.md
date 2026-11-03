@@ -8,6 +8,7 @@ milestone: qualite
 version:
 labels: [config, nommage, migration]
 status: idea
+blocked: deferred
 pr:
 evidence: none # chemins de fichiers et code, sans écran
 created: 2026-11-01
@@ -70,3 +71,5 @@ Signal observable : les deux commandes rendent le même résultat avant et aprè
 - Priorité P2 donnée par le PO le 2026-11-01.
 - Voisin à lire au grooming : le foyer multi-client `.vectorz/mega-city/` de
   [Contenu mono-source, modèle en surcouche](../products/mega-city/docs/adr/0048-contenu-mono-source-modele-en-surcouche.md).
+- **Mise en attente le 2026-11-03** (run autonome) : le nouveau nom du dossier est une décision du PO
+  (critère 1). Marquée `blocked: deferred` jusqu'à ce nom ; le reste se groome ensuite.
