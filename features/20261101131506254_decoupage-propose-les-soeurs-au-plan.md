@@ -36,17 +36,31 @@ Pour le run autonome : plus de fiche prête bloquée « hors plan ».
 
 ## Proposition
 
-À préciser au grooming.
+Précisée au grooming du 2026-11-03 (run autonome), d'après le code. L'outil propose, il n'écrit pas
+le plan : le plan reste tenu à la main.
 
-- Le découpage (`ezk backlog apply`, ou le groom qui produit des sœurs) imprime les lignes de plan
-  à ajouter sous la milestone des sœurs, prêtes à copier, ou les écrit avec un accord explicite.
-- `plan-lot` qui écarte une fiche prête « hors plan » dit la commande qui l'y inscrit.
+1. **Une fonction pure rédige les lignes de plan.** Pour une liste de fiches absentes du plan, elle
+   rend une ligne au format du plan, rangée par milestone :
+   `` - `<id>` — <titre> · groom `` pour une idée, `` · build `` pour une fiche prête.
+2. **Le découpage les imprime.** Après `ezk backlog apply split <source> --into <a>,<b>` (et à blanc
+   avec `--dry-run`), la sortie dit quelles sœurs manquent au plan et donne leurs lignes, à copier sous
+   la milestone de chaque sœur dans `features/PLAN.md`. Une sœur déjà au plan n'est pas reproposée.
+3. **`plan-lot` dit comment inscrire une fiche « hors plan ».** Sous chaque fiche prête écartée faute
+   d'être au plan, la sortie donne la ligne à copier et sa milestone.
+
+```
+aujourd'hui   split → sœurs créées → hors du plan → plan-lot : « hors plan » → inscription à la main, à deviner
+après         split → « au plan, sous milestone `board` : - `<id>` — <titre> · groom » → copier la ligne
+```
 
 ## Critères d'acceptation
 
-- [ ] Après un découpage, la sortie propose l'inscription de chaque sœur au plan.
-- [ ] Aucune écriture du plan sans accord explicite.
-- [ ] Sur les 5 prochains découpages, 0 fiche prête « hors plan » juste après.
+- [ ] Après un découpage, la sortie propose la ligne de plan de chaque sœur absente du plan, rangée
+      sous sa milestone ; une sœur déjà au plan n'est pas reproposée.
+- [ ] `plan-lot` donne, pour chaque fiche prête « hors plan », la ligne à copier et sa milestone.
+- [ ] Aucune écriture du plan : `features/PLAN.md` ne change pas, hors l'entrée barrée de la source.
+
+**Mesure de suivi** : sur les 5 prochains découpages, 0 fiche prête « hors plan » juste après.
 
 ## Comment vérifier
 
@@ -59,3 +73,5 @@ ezk backlog plan-lot 1
 - Née de la rétro légère du 2026-11-01 (P7 de la rétro), acceptée par le PO le même jour :
   [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
+- Groomée le 2026-11-03 (run autonome) : proposition précisée d'après le code ; « 0 fiche hors plan sur
+  5 découpages » passe en mesure de suivi, car elle ne se prouve pas au build.
