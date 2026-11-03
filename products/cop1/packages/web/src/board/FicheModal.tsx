@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import type { FicheDetail } from './types.js';
 import { STATUS_LABEL } from './activity.js';
+import { inlineMarkdown } from './inlineMarkdown.js';
 
 interface FicheModalProps {
   fiche: FicheDetail;
@@ -114,12 +115,12 @@ export function FicheModal({ fiche, onClose, onOpenPage, onVerdict }: FicheModal
         <h2 style={{ fontSize: 21 }}>{fiche.title}</h2>
         <VerdictBar fiche={fiche} onVerdict={onVerdict} />
         <div className="enclair">
-          <b>En clair.</b> {fiche.enclair}
+          <b>En clair.</b> {inlineMarkdown(fiche.enclair)}
         </div>
 
         <div className="sec" style={{ marginTop: 14 }}>
           <h4>Contexte</h4>
-          <p>{fiche.ctx}</p>
+          <p>{inlineMarkdown(fiche.ctx)}</p>
         </div>
         <div className="sec">
           <h4>Critères</h4>
@@ -127,7 +128,7 @@ export function FicheModal({ fiche, onClose, onOpenPage, onVerdict }: FicheModal
             {fiche.crit.map((c, i) => (
               <li key={i}>
                 <span className="box" />
-                <span>{c}</span>
+                <span>{inlineMarkdown(c)}</span>
               </li>
             ))}
           </ul>
