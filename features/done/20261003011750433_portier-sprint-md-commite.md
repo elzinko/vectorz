@@ -7,8 +7,8 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, portier]
-status: ready
-pr:
+status: shipped
+pr: "local (76a76cef)"
 evidence: none # script de sprint, pas d'écran
 created: 2026-10-03
 ---
@@ -76,7 +76,7 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
   committé) **ne se reproduit plus** par ce mécanisme. J'avais groomé la fiche `ready` en me fiant à la note
   du 14/10 sans relire le code — faute corrigée. Retour `idea` : **à re-scoper** (reste au plus un
   durcissement défensif de `sprint_state()` : reconnaître `en cours` explicitement, un fichier sans marqueur
-  = instantané). Nouvelle preuve pour la fiche « [prête vérifie la prémisse](done/20261015213921103_dor-verifie-premisse-dans-le-code.md) ».
+  = instantané). Nouvelle preuve pour la fiche « [prête vérifie la prémisse](20261015213921103_dor-verifie-premisse-dans-le-code.md) ».
 - **Re-groomée `ready` le 2026-11-03** (run autonome), après relecture du code : `do_start` traite un
   `SPRINT.md` racine sans `Branche:` comme étranger (`SPRINT-FOREIGN`), il ne le compte pas comme
   sprint ouvert. La story se réduit à la preuve sur le cas exact de muti, plus le correctif si la

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261003011750433_portier-sprint-md-commite.md](../20261003011750433_portier-sprint-md-commite.md)
+> 🗎 Rendu de la fiche [features/20261003011750433_portier-sprint-md-commite.md](../done/20261003011750433_portier-sprint-md-commite.md)
 
 # 20261003011750433 — sprint.sh start/close distingue un sprint ouvert d'un SPRINT.md commité
 
@@ -78,7 +78,7 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
 
 | Modalité | Statut |
 |---|---|
-| Gate locale | ✅ 2314 tests et 48 suites de scripts |
+| Gate locale | ✅ 2315 tests et 48 suites de scripts |
 | Preuve S25 | ✅ 6 contrôles sur le cas exact de muti |
 | Mutations de sprint.sh | ✅ le test passe rouge sur les deux régressions |
 | Revue ezk-reviewer | ✅ GO |

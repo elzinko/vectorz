@@ -29,7 +29,7 @@ Sprint 22, même passe scout, le lanceur de mission control :
 - ~~`20261102124306840` — le lanceur accepte un port qui n'est pas un nombre · build~~ — shipped
 
 Sprint 23, le portier de sprint (dernière fiche constructible sans le PO) :
-- `20261003011750433` — un `SPRINT.md` d'ancien format committé ne bloque plus `start` : la preuve · build
+- ~~`20261003011750433` — un `SPRINT.md` d'ancien format committé ne bloque plus `start` : la preuve · build~~ — shipped
 
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped
