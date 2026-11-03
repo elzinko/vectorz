@@ -7,6 +7,7 @@ product: mega-city
 milestone: exploration-app
 labels: [test-local, exploration-app]
 status: idea
+blocked: deferred
 pr:
 evidence: none # skill et scripts, sans écran ; la preuve, ce sont ses tests
 created: 2026-11-02
@@ -107,3 +108,6 @@ bash products/mega-city/skills/ezk-scout/scripts/test-find-only-guard.sh
   dans un dossier séparé du backlog. Défaut actuel : `status: idea` et l'étiquette `scout`. À trancher
   au grooming.
 - **Priorité provisoire** : P2, comme ses voisines de la milestone. À confirmer par le PO.
+- **Mise en attente le 2026-11-03** (run autonome) : deux questions restent au PO, la priorité
+  provisoire et le lieu des propositions (dossier séparé, souhait d'octobre, ou `status: idea` avec
+  l'étiquette `scout`). Marquée `blocked: deferred` jusqu'à sa réponse.

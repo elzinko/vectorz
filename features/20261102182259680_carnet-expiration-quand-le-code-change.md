@@ -8,6 +8,7 @@ milestone: exploration-app
 depends: ["20261102182259592"]
 labels: [test-local, exploration-app]
 status: idea
+blocked: deferred
 pr:
 evidence: none # commande sans écran ; la preuve, ce sont ses tests
 created: 2026-11-02
@@ -74,3 +75,7 @@ pnpm --dir products/mega-city test
   carte de dépendances d'esbuild (son `metafile`) ; contrôler la dérive de l'arbre pour d'autres
   stacks ; écrire les sondes d'interface en scripts Playwright rejouables.
 - **Estimation du panel** : environ 100 000 à 150 000 jetons.
+- **Toujours différée le 2026-11-03** (run autonome) : la mesure qui doit la justifier porte sur trois
+  passes du scout sur mission control. Une seule est faite (0 puis 19 sur 70, aucune preuve encore
+  périmée par le code). Marquée `blocked: deferred` pour que le tri du run ne la reprenne pas avant
+  la troisième passe et la décision du PO.
