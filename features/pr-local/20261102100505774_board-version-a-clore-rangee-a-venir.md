@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102100505774_board-version-a-clore-rangee-a-venir.md](../20261102100505774_board-version-a-clore-rangee-a-venir.md)
+> 🗎 Rendu de la fiche [features/20261102100505774_board-version-a-clore-rangee-a-venir.md](../done/20261102100505774_board-version-a-clore-rangee-a-venir.md)
 
 # Le board range une version « à clore » parmi les versions à venir
 

@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control, board]
-status: ready
-pr:
+status: shipped
+pr: "local (c6a25fa8)"
 evidence: before-after
 created: 2026-11-02
 ---
