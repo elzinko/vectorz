@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103161632129_messages-du-code-disent-mission-control.md](../20261103161632129_messages-du-code-disent-mission-control.md)
+> 🗎 Rendu de la fiche [features/20261103161632129_messages-du-code-disent-mission-control.md](../done/20261103161632129_messages-du-code-disent-mission-control.md)
 
 # 20261103161632129 — Les messages affichés par le code disent « mission control »
 

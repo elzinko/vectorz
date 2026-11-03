@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version:
 labels: [board, vocabulaire]
-status: ready
-pr:
+status: shipped
+pr: "local (f75c5760)"
 evidence: none # messages de terminal et de journal ; aucun écran ne change
 created: 2026-11-03
 split_from: "20261102234112839"
@@ -29,7 +29,7 @@ de plus.
 ## Contexte / Problème
 
 Née du découpage de
-[Réécrire les guides de l'ancien écran de supervision](done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md),
+[Réécrire les guides de l'ancien écran de supervision](20261102234112839_reecrire-guides-ancien-ecran-supervision.md),
 le 2026-11-03 : la fiche mère tenait trop pour un sprint. Les anciens mots apparaissent dans
 `products/cop1/packages/*/src` et `products/mega-city/bin` (environ 15 occurrences, hors tests). Les
 scripts qui accompagnent les guides vont avec les guides, dans la fiche sœur.
@@ -79,7 +79,7 @@ Signal observable : les lignes restantes sont des identifiants (`SprintDashboard
 
 ## Notes
 
-- Fiche mère : [Réécrire les guides de l'ancien écran](done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+- Fiche mère : [Réécrire les guides de l'ancien écran](20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 - **Trou trouvé au grooming (2026-11-03)** : mission control n'a pas repris le bouton « Abandonner ce
   run » de l'ancien écran (ADR-035, décision 4). La route du daemon existe encore, mais aucun écran ne
   l'appelle. À trancher par le PO : reprendre ce geste dans mission control, ou l'assumer retiré.

@@ -55,7 +55,7 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 Découpage du 2026-11-03 (run autonome) : la fiche des guides de l'ancien écran, trop grosse pour un
 sprint, devient deux sœurs.
 
-- `20261103161632129` — Les messages affichés par le code de cop1 et de la méthode disent « mission control » · groom
+- ~~`20261103161632129` — Les messages affichés par le code de cop1 et de la méthode disent « mission control » · groom~~ — shipped
 - `20261103161632234` — Rejouer ou retirer les guides de l'ancien écran de supervision, et leurs scripts · groom
 
 **Milestone `exploration-app` — « Le carnet de tests »** (suite du carnet livré le 2026-11-02) :
