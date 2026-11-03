@@ -8,10 +8,11 @@ milestone: board
 version:
 depends: ["20261031160441559"]
 labels: [board, documentation, vocabulaire]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261103161632129, 20261103161632234"
 evidence: none # documentation ; les écrans montrés sont ceux de mission control
 created: 2026-11-03
+split_into: ["20261103161632129", "20261103161632234"]
 ---
 
 ## En clair
@@ -24,7 +25,7 @@ anciens mots.
 
 ## Contexte / Problème
 
-- La fiche [un seul vocabulaire pour les boards](done/20261031160441559_un-seul-vocabulaire-boards.md) a
+- La fiche [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md) a
   remplacé le mot dans les documents actifs, le 2026-11-03. Dans ces guides, le remplacer rendait des
   phrases fausses : la revue adverse l'a vu, et le décideur produit a choisi de les garder tels quels
   jusqu'à leur réécriture, qui demande de rejouer chaque parcours dans mission control.

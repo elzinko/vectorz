@@ -2,7 +2,7 @@
 
 > **Ancien écran, retiré.** Ce guide décrit le Moniteur, l'ancien écran de cop1, remplacé par
 > mission control. Ses étapes et ses commandes ne sont plus garanties. Réécriture :
-> [fiche](../../features/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+> [fiche](../../features/done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 
 > **Historique (2026-06-25)** — l'onglet **Connexion** a été retiré de l'UI Moniteur
 > (fiche 0059). Ce protocole reste valable pour tester l'endpoint `/api/auth/check` du

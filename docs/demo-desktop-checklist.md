@@ -2,7 +2,7 @@
 
 > **Ancien écran, retiré.** Ce guide décrit le Moniteur, l'ancien écran de cop1, remplacé par
 > mission control. Ses étapes et ses commandes ne sont plus garanties. Réécriture :
-> [fiche](../features/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+> [fiche](../features/done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 
 Fiche `features/done/0030-mvp-demo-desktop.md`, étape 0. Prépare et rejoue la démo
 « mode moniteur pur » : un manager (ex. ezk-product-build) tourne dans Claude

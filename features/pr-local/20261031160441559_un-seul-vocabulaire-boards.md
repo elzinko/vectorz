@@ -41,7 +41,7 @@ Un passage, dans cet ordre, après [le retrait de la page web](../done/202611021
 
 - [x] `grep` ne trouve plus `ezk:map`, `ezk dashboard` ni « Moniteur » dans un document actif, hors
       glossaire et historique. Exceptions bornées : les cinq guides de l'ancien écran, marqués « Ancien
-      écran, retiré », en attente de [leur réécriture](../20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+      écran, retiré », en attente de [leur réécriture](../done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 - [x] Chaque commande citée dans un document actif s'exécute, hors les cinq mêmes guides, dont le
       bandeau dit que leurs commandes ne sont plus garanties.
 - [x] Les ADR-074 et ADR-021 renvoient vers l'ADR-086.

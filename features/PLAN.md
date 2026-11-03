@@ -52,6 +52,12 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 - ~~`20261031160441559` — un seul vocabulaire pour les boards · groom (sprint 5)~~ — shipped
 - ~~`20261102123552185` — retirer la page web de la méthode · groom (sprint 5, dépend de tout le reste)~~ — shipped
 
+Découpage du 2026-11-03 (run autonome) : la fiche des guides de l'ancien écran, trop grosse pour un
+sprint, devient deux sœurs.
+
+- `20261103161632129` — Les messages affichés par le code de cop1 et de la méthode disent « mission control » · groom
+- `20261103161632234` — Rejouer ou retirer les guides de l'ancien écran de supervision, et leurs scripts · groom
+
 **Milestone `exploration-app` — « Le carnet de tests »** (suite du carnet livré le 2026-11-02) :
 - ~~`20261102182259505` — ezk-scout part du carnet pour choisir quoi tester · groom~~ — shipped
 - ~~`20261102182259592` — tenir le carnet de tests de mission control · groom~~ — shipped

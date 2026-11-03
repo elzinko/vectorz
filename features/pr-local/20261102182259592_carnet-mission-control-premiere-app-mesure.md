@@ -69,7 +69,7 @@ console. Elle a trouvé un défaut mineur sur un nœud jamais testé, et elle en
 - **Notés** : les 12 vues sur l'axe visuel, 7 actions sur l'axe fonctionnel, sur le SHA de la branche.
 - **Défaut trouvé** en ouvrant la vue d'ensemble, jamais testée : l'en-tête, commun à tous les écrans,
   s'appelle encore « board v0.17.0 », pas « mission control ». La vue elle-même s'affiche bien. Brouillon B1 du rapport, proposé pour enrichir
-  [Réécrire les guides de l'ancien écran de supervision](../20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+  [Réécrire les guides de l'ancien écran de supervision](../done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 - **Faux défaut écarté** : la Chronologie semblait vide. Le banc lisait la branche, qui n'a pas de
   dossier de runs ; sur le dépôt principal, le même code trouve 3 chantiers. La note d'échec a été
   retirée du carnet.
