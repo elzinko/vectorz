@@ -85,6 +85,51 @@ describe('translatePlan — mêmes chiffres que le contrat', () => {
     expect(plan.versions.past.map((v) => v.ver)).toEqual(['v0.9.0', 'v0.8.0']);
   });
 
+  it('un lot que la méthode dit « à clore » quitte « à venir » et rejoint les réalisées (fiche 20261102100505774)', () => {
+    const b = board();
+    b.versions.lots.push(
+      {
+        ...b.versions.lots[1],
+        version: 'v2.5.0',
+        etat: 'a-clore',
+        livrees: ['a', 'b'],
+        aFaire: [],
+        pretes: [],
+      },
+      { ...b.versions.lots[1], version: 'v3.0.0', aFaire: ['x'], pretes: [] },
+    );
+    const { plan } = translatePlan(b, backlog());
+    expect(plan.versions.upcoming.map((v) => v.ver)).toEqual(['v2.0.0', 'v3.0.0']);
+    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v2.5.0']);
+    expect(plan.versions.past[0]?.toClose).toBe(true);
+    expect(plan.versions.past[0]?.date).toBeUndefined();
+    expect(plan.versions.upcoming.some((v) => v.toClose)).toBe(false);
+  });
+
+  it('la version courante dite « à clore » porte la marque, et reste la courante', () => {
+    const b = board();
+    b.versions.lots[0] = { ...b.versions.lots[0], etat: 'a-clore' };
+    const { plan } = translatePlan(b, backlog());
+    expect(plan.versions.current?.ver).toBe('v1.0.0');
+    expect(plan.versions.current?.toClose).toBe(true);
+  });
+
+  it('un lot publié sans `etat` (méthode plus ancienne) est rangé comme avant, sans marque', () => {
+    const b = board();
+    b.versions.lots = b.versions.lots.map(({ etat: _etat, ...lot }: Json) => lot);
+    b.versions.lots.push({
+      ...b.versions.lots[1],
+      version: 'v3.0.0',
+      livrees: ['a'],
+      aFaire: [],
+      pretes: [],
+    });
+    const { plan } = translatePlan(b, backlog());
+    expect(plan.versions.upcoming.map((v) => v.ver)).toEqual(['v2.0.0', 'v3.0.0']);
+    expect(plan.versions.past).toEqual([]);
+    expect(plan.versions.current?.toClose).toBeUndefined();
+  });
+
   it('sans version courante, current vaut null', () => {
     const b = board();
     b.versions.courante = null;

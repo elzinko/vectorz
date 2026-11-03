@@ -21,6 +21,8 @@ export class EzkContractError extends Error {}
 
 interface BoardLot {
   version: string;
+  /** L'état publié par la méthode ; absent d'une méthode plus ancienne. */
+  etat?: string;
   etiquette: string | null;
   livrees: string[];
   aFaire: string[];
@@ -139,8 +141,12 @@ function toPlanVersion(lot: BoardLot, enCoursIds: ReadonlySet<string>): PlanVers
     idea: lot.aFaire.length - ready - wip,
     total: lot.livrees.length + lot.aFaire.length,
     ...(lot.etiquette ? { date: 'taguée' } : {}),
+    ...(lot.etat === 'a-clore' ? { toClose: true as const } : {}),
   };
 }
+
+/** Un lot réalisé : tagué, ou dit « à clore » par la méthode (tout livré, étiquette à poser). */
+const isRealised = (lot: BoardLot): boolean => Boolean(lot.etiquette) || lot.etat === 'a-clore';
 
 /** Les pouces bien formés, par id de fiche ; un pouce illisible est ignoré, jamais deviné. */
 function readVerdicts(value: unknown): Record<string, 'up' | 'down'> {
@@ -233,11 +239,11 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
       versions: {
         current: current ? toPlanVersion(current, enCoursIds) : null,
         upcoming: others
-          .filter((lot) => !lot.etiquette)
+          .filter((lot) => !isRealised(lot))
           .map((lot) => toPlanVersion(lot, enCoursIds)),
         // Le contrat range les lots en croissant ; la page attend la plus récente d'abord.
         past: others
-          .filter((lot) => lot.etiquette)
+          .filter(isRealised)
           .map((lot) => toPlanVersion(lot, enCoursIds))
           .reverse(),
       },

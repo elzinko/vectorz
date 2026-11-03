@@ -48,7 +48,7 @@ export function isCurVer(p: BoardProject, ver: string): boolean {
   return p.versions.current?.ver === ver;
 }
 
-/** Vrai si `ver` est une version taguée (passée). */
+/** Vrai si `ver` est une version réalisée : taguée, ou « à clore » selon la méthode. */
 export function isPastVer(p: BoardProject, ver: string): boolean {
   return p.versions.past.some((v) => v.ver === ver);
 }

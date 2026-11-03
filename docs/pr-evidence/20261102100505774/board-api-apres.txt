@@ -1,0 +1,4 @@
+Après correction — GET /api/board, projet vectorz
+courante : v0.23.0 4/4 à-clore
+à venir  : —
+réalisées (4 premières) : v0.24.0 3/3 à-clore, v0.22.0 1/1, v0.21.0 2/2, v0.20.0 1/1

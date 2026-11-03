@@ -25,6 +25,8 @@ export interface Version {
   total: number;
   /** Présent seulement pour une version taguée (passée). */
   date?: string;
+  /** La méthode dit cette version « à clore » : tout est livré, l'étiquette manque. */
+  toClose?: true;
   /** Jetons consommés, présent pour une version passée. */
   tok?: string;
 }
@@ -35,7 +37,7 @@ export interface ProjectVersions {
   current: Version | null;
   /** Les versions à venir, dans l'ordre du train. */
   upcoming: Version[];
-  /** Les versions taguées, de la plus récente à la plus ancienne. */
+  /** Les versions réalisées (taguées, ou « à clore »), de la plus récente à la plus ancienne. */
   past: Version[];
 }
 

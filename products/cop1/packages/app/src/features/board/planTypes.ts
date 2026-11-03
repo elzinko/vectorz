@@ -23,6 +23,8 @@ export interface PlanVersion {
   idea: number;
   total: number;
   date?: string;
+  /** La méthode dit ce lot « à clore » : toutes ses fiches sont livrées, l'étiquette manque. */
+  toClose?: true;
 }
 
 export interface PlanVersions {

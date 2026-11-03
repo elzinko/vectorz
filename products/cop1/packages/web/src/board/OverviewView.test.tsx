@@ -93,6 +93,30 @@ describe('OverviewView', () => {
     expect(screen.getAllByRole('button')).toHaveLength(2);
   });
 
+  it('écrit « à clore » pour une version que la méthode dit à clore, sans la dire taguée (fiche 20261102100505774)', () => {
+    const project: BoardProject = {
+      ...PROJECT,
+      versions: {
+        current: V('v2.0.0', 'Courante', { done: 3, total: 3, toClose: true }),
+        upcoming: [],
+        past: [
+          V('v1.1.0', 'À clore', { done: 2, total: 2, toClose: true }),
+          V('v1.0.0', 'Taguée', { done: 2, total: 2, date: 'taguée' }),
+        ],
+      },
+      runs: {},
+    };
+    render(<OverviewView project={project} onLaunch={() => {}} onViewRun={() => {}} />);
+    const versionne = (ver: string) => {
+      const row = screen.getByText(ver).closest('.ptrow');
+      return row ? within(row as HTMLElement).queryByText(/à clore|✓ taguée/)?.textContent : undefined;
+    };
+    expect(versionne('v2.0.0')).toBe('à clore');
+    expect(versionne('v1.1.0')).toBe('à clore');
+    expect(versionne('v1.0.0')).toBe('✓ taguée');
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+  });
+
   it('ordonne les versions de la plus récente à la plus ancienne', () => {
     renderView();
     const rows = screen.getAllByText(/^v\d/).map((el) => el.textContent);

@@ -95,7 +95,9 @@ function VersionsInProcess({ project, onLaunch, onViewRun }: OverviewViewProps):
               </span>
             )}
             <span className="ptc">
-              {isPastVer(project, v.ver) ? (
+              {v.toClose ? (
+                <span style={{ color: 'var(--warn)' }}>à clore</span>
+              ) : isPastVer(project, v.ver) ? (
                 <span style={{ color: 'var(--go)' }}>✓ taguée</span>
               ) : (
                 <span className="faint">—</span>

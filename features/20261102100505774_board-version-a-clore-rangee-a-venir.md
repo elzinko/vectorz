@@ -59,7 +59,8 @@ reclasse rien lui-même.
 ## Comment vérifier
 
 1. Les tests du traducteur et de la vue d'ensemble passent :
-   `pnpm --dir products/cop1 exec vitest run packages/app/src/features/board packages/web/src/board`.
+   `pnpm exec vitest run products/cop1/packages/app/src/features/board`, puis
+   `pnpm --dir products/cop1/packages/web exec vitest run src/board`.
 2. Mission control lancé, `curl -s http://127.0.0.1:<port>/api/board` ne cite plus v0.24.0 dans
    `versions.upcoming`.
 3. La vue d'ensemble montre v0.23.0 et v0.24.0 avec « à clore ». Capture avant et après dans
