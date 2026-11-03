@@ -1,0 +1,5 @@
+Après correction — barre « Entonnoir », projet de banc sans fiche prête (2 idées)
+segment idées : texte « 2 », largeur 720 px
+segment prêtes : texte vide, largeur 0 px, rien ne dépasse de la barre (fin à 977 px)
+segment en cours : texte vide, largeur 0 px
+légende : « prêtes 0 » toujours affiché

@@ -167,12 +167,14 @@ export function OverviewView(props: OverviewViewProps): JSX.Element {
             <b style={{ color: 'var(--fg)', fontFamily: 'var(--font-data)' }}>{ratio.toFixed(2)}</b>
           </span>
         </div>
+        {/* Un segment vide n'écrit pas son zéro : il dépasserait, coupé, au bout de la barre
+            (fiche 20261103191932077). La légende, elle, garde tous les comptes. */}
         <div className="funbar">
           <i className="fun-idea" style={{ width: pct(f.idea, tot) }}>
-            {f.idea}
+            {f.idea || ''}
           </i>
           <i className="fun-ready" style={{ width: pct(f.ready, tot) }}>
-            {f.ready}
+            {f.ready || ''}
           </i>
           <i className="fun-wip" style={{ width: pct(f.wip, tot) }}>
             {f.wip || ''}

@@ -61,3 +61,6 @@ sous la barre garde tous les comptes, zéros compris.
   « en cours » n'affiche déjà rien quand il est vide.
 - **Groomée `ready` le 2026-11-03** (run autonome) : cause dans `OverviewView.tsx`,
   barre « Entonnoir » : seul le segment « en cours » masque son zéro.
+- **Preuve du 2026-11-03** : aucun projet réel n'avait 0 fiche prête ce soir-là. Les captures avant et
+  après viennent d'un projet de banc jetable, deux idées et aucune fiche prête, ajouté au registre des
+  instances de test sans être committé.

@@ -117,6 +117,21 @@ describe('OverviewView', () => {
     expect(screen.queryAllByRole('button')).toHaveLength(0);
   });
 
+  // fiche 20261103191932077 — un segment vide de l'entonnoir n'écrit pas de « 0 » coupé
+  it('un segment vide de l’entonnoir n’écrit pas son zéro, la légende le garde', () => {
+    const project: BoardProject = {
+      ...PROJECT,
+      funnel: { idea: 5, ready: 0, wip: 0, unversioned: 0, parked: 0 },
+    };
+    const { container } = render(
+      <OverviewView project={project} onLaunch={() => {}} onViewRun={() => {}} />,
+    );
+    expect(container.querySelector('.funbar .fun-ready')?.textContent).toBe('');
+    expect(container.querySelector('.funbar .fun-wip')?.textContent).toBe('');
+    expect(container.querySelector('.funbar .fun-idea')?.textContent).toBe('5');
+    expect(container.querySelector('.funlegend')?.textContent).toMatch(/prêtes\s*0/);
+  });
+
   it('ordonne les versions de la plus récente à la plus ancienne', () => {
     renderView();
     const rows = screen.getAllByText(/^v\d/).map((el) => el.textContent);
