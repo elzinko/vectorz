@@ -36,8 +36,10 @@ au démarrage    règle citée     → ezk law show <objet>    → lue quand l'o
    tient sur une ligne ; les autres sont données en texte complet. `--json` suit le contrat
    `contracts/law-object/v1/`.
 2. Les 11 objets qui déclarent des règles ouvrent par « **Avant d'agir, lis tes règles :**
-   `ezk law show <objet>` ». Un test fait tomber la gate si un objet qui déclare des règles n'a pas
-   cette ligne avant sa première section.
+   `ezk --root "$(git rev-parse --show-toplevel)" law show <objet>` ». Le `--root` désigne le projet,
+   comme toute commande ezk sur un projet : sans lui, le lanceur refuse de tourner dans un projet hôte.
+   Un test fait tomber la gate si un objet qui déclare des règles n'a pas cette ligne avant sa
+   première section.
 3. La carte de la loi gagne une portée, `demarrage` : installée nulle part, lue au démarrage par un
    objet qui la cite. Une règle citée seulement par des objets sans la ligne reste `citee`.
    `schema_version` reste à 1 : la portée et son compte s'ajoutent, aucun champ ne disparaît.

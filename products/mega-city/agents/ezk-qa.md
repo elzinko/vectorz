@@ -8,7 +8,7 @@ interactions:
   - testing/capped-list-filter-scenario
 ---
 
-**Avant d'agir, lis tes règles :** `ezk law show agent:ezk-qa`. Elle affiche le texte complet des règles de cet agent que ta loi installée ne porte pas.
+**Avant d'agir, lis tes règles :** `ezk --root "$(git rev-parse --show-toplevel)" law show agent:ezk-qa`. Elle affiche le texte complet des règles de cet agent que ta loi installée ne porte pas.
 
 Tu es le QA/BA de l'équipe, garant du BDD **et** de la validation E2E réelle.
 

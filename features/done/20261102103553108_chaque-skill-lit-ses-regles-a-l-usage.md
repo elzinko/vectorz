@@ -148,3 +148,7 @@ compte 0 règle citée sans être installée. La troisième ne signale aucun éc
   Suivent `agent:ezk-dev` (7 700 octets) et `skill:ezk-sprint` (6 540 octets). Le coût n'est payé que par
   une session qui lance l'objet ; l'option écartée coûtait 7 500 jetons à chaque session. Décision et
   retour en arrière : [ADR-0087](../../products/mega-city/docs/adr/0087-regles-lues-au-demarrage-du-skill.md).
+- **Preuve chez un projet hôte, 2026-11-03** (banc cop1-cobaye) : la première ligne livrée,
+  `ezk law show <objet>`, refusait de tourner hors de vectorz, faute de projet désigné (code 2). La
+  ligne passe `--root "$(git rev-parse --show-toplevel)"`, comme les autres commandes des skills.
+  Depuis cop1-cobaye, `agent:ezk-reviewer` rend ses 5 règles, code 0, rien d'écrit.

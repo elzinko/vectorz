@@ -24,7 +24,7 @@ description: >-
 
 # ezk-archive
 
-**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-archive`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+**Avant d'agir, lis tes règles :** `ezk --root "$(git rev-parse --show-toplevel)" law show skill:ezk-archive`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
 
 **Ce skill ne *juge* jamais lui-même.** C'est l'invariant — il a remplacé « ce skill ne
 fait QUE déléguer », qui était posé à la mauvaise granularité et coûtait ~235 000 tokens

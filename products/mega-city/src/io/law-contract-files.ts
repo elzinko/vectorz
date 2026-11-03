@@ -10,7 +10,7 @@
  *
  * La fixture est un petit catalogue factice avec deux fichiers de loi factices : une règle par portée
  * (`partout`, `projet`, `demarrage`, `citee` en direct et par bundle, `rangee`, `orpheline`). Le skill
- * `s3` ouvre par `ezk law show skill:s3` : il lit ses règles au démarrage. Elle ne touche jamais
+ * `s3` ouvre par la commande qui lui sert ses règles : il les lit au démarrage. Elle ne touche jamais
  * au vrai `~/.claude`. Les chemins de loi de l'exemple sont fixes, pour qu'il ne change pas d'une
  * machine à l'autre.
  */
@@ -56,7 +56,7 @@ const FIXTURE_CATALOG: Record<string, string> = {
   'skills/s1/SKILL.md': '---\nname: s1\napplies: [r/citee]\n---\n\nSkill de la fixture.\n',
   'skills/s2/SKILL.md': '---\nname: s2\napplies: [b2]\n---\n\nSkill de la fixture.\n',
   'skills/s3/SKILL.md':
-    '---\nname: s3\napplies: [r/globale, r/demarrage]\n---\n\nAvant d’agir, lis tes règles : `ezk law show skill:s3`.\n',
+    '---\nname: s3\napplies: [r/globale, r/demarrage]\n---\n\nAvant d’agir, lis tes règles : `ezk --root "$(git rev-parse --show-toplevel)" law show skill:s3`.\n',
 };
 
 const GLOBAL_LAW = '# La loi globale\n\n## r/globale  `[MUST]`\n\n- Texte.\n\n### Un sous-titre\n\n- Autre.\n';

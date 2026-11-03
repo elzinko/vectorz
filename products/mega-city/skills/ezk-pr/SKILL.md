@@ -23,7 +23,7 @@ description: >-
 
 # ezk-pr
 
-**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-pr`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+**Avant d'agir, lis tes règles :** `ezk --root "$(git rev-parse --show-toplevel)" law show skill:ezk-pr`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
 
 > **Nom préféré : `ezk-pr`** (ADR-0022). Le dossier / invocation `ezk-pr`
 > reste l'alias jusqu'au rename mécanique. **Pas** `ezk-backlog` : backlog =

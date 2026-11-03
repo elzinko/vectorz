@@ -142,8 +142,12 @@ function uniqueLiens(liens: Lien[]): Lien[] {
     .sort(byIdThenVia);
 }
 
-/** La commande qu'un skill ou un agent lance au démarrage pour lire ses règles : `ezk law show <objet>`. */
-export const startupCommand = (objet: string): string => `ezk law show ${objet}`;
+/**
+ * La commande qu'un skill ou un agent lance au démarrage pour lire ses règles. Elle désigne le projet
+ * par `--root`, comme toute commande ezk sur un projet : sans lui, le lanceur refuse de tourner dans un
+ * projet hôte (constaté sur le banc cop1-cobaye le 2026-11-03).
+ */
+export const startupCommand = (objet: string): string => `ezk --root "$(git rev-parse --show-toplevel)" law show ${objet}`;
 
 /** Vrai si le texte d'un skill ou d'un agent lance la commande qui lui sert ses règles. */
 export function readsRulesAtStartup(texte: string, objet: string): boolean {

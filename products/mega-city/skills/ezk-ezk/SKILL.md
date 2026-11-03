@@ -26,7 +26,7 @@ description: >-
 
 # ezk-ezk
 
-**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-ezk`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+**Avant d'agir, lis tes règles :** `ezk --root "$(git rev-parse --show-toplevel)" law show skill:ezk-ezk`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
 
 Tu **transformes une discussion de session en un skill réutilisable**, en
 **composant** des compétences existantes — sans rien réinventer. Le besoin réel :

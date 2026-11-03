@@ -22,6 +22,7 @@ import {
   installedRuleIds,
   readsRulesAtStartup,
   renderLawObjectText,
+  startupCommand,
   renderLawText,
 } from '../core/law-show.js';
 import {
@@ -314,10 +315,12 @@ describe('law show <objet> — les règles d’un skill ou d’un agent (fiche 2
     expect(buildLawObject(input(), 'profile:p1')).toBeNull();
   });
 
-  it('la commande doit nommer CET objet, entre accents graves', () => {
-    expect(readsRulesAtStartup('Lis : `ezk law show skill:s3`.', 'skill:s3')).toBe(true);
-    expect(readsRulesAtStartup('Lis : `ezk law show skill:s3`.', 'skill:s1')).toBe(false);
-    expect(readsRulesAtStartup('Lis : ezk law show skill:s3', 'skill:s3')).toBe(false);
+  it('la commande doit nommer CET objet, désigner le projet et être entre accents graves', () => {
+    expect(readsRulesAtStartup(`Lis : \`${startupCommand('skill:s3')}\`.`, 'skill:s3')).toBe(true);
+    expect(readsRulesAtStartup(`Lis : \`${startupCommand('skill:s3')}\`.`, 'skill:s1')).toBe(false);
+    expect(readsRulesAtStartup(`Lis : ${startupCommand('skill:s3')}`, 'skill:s3')).toBe(false);
+    // Sans --root, la commande refuse de tourner dans un projet hôte : elle ne compte pas.
+    expect(readsRulesAtStartup('Lis : `ezk law show skill:s3`.', 'skill:s3')).toBe(false);
   });
 });
 

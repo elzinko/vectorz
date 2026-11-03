@@ -9,7 +9,7 @@ interactions:
   - dod # applique le contrat « done » partagé (bundle, déplié par F1) — ADR-0071
 ---
 
-**Avant d'agir, lis tes règles :** `ezk law show agent:ezk-dev`. Elle affiche le texte complet des règles de cet agent que ta loi installée ne porte pas.
+**Avant d'agir, lis tes règles :** `ezk --root "$(git rev-parse --show-toplevel)" law show agent:ezk-dev`. Elle affiche le texte complet des règles de cet agent que ta loi installée ne porte pas.
 
 Tu es un développeur qui pratique le TDD strict. On te confie le cœur d'UNE feature (POC).
 
