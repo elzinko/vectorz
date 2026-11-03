@@ -7,7 +7,7 @@ product: mega-city
 milestone: observabilite
 version:
 labels: [sprint, compte-rendu, supervision]
-status: idea
+status: ready
 pr:
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
@@ -119,3 +119,5 @@ grep -n "0 min" docs/sprints/*.md
   est couverte ici, ce n'est pas une fiche de plus. L'ancien critère « au prochain run autonome, chaque
   compte rendu porte une durée non nulle » est tenu par ce run : les sprints 12 et 13 durent 40 et
   34 minutes.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO, sans condition). Coupe si le
+  build déborde : gestes 1 et 4, puis 3, puis 2 ; le reste en fiche fille du même milestone.
