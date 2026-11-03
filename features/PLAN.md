@@ -39,6 +39,11 @@ Passe scout du 2026-11-03 au soir, brouillons retenus par `ezk-pm` en mode auto 
 - ~~`20261103191932077` — un « 0 » coupé dépasse au bout de la barre « Entonnoir » · build (sprint 25)~~ — shipped
 - ~~`20261103191932080` — les lignes de version promettent un clic qui ne fait rien · build (sprint 25)~~ — shipped
 
+Seconde passe scout du 2026-11-03 (nuit), brouillons retenus par `ezk-pm` (B3, format de version, laissé au PO) :
+- `20261103203943915` — la vue Pilotage cite les fiches d'une session par leur seul id · build (sprint 26)
+- `20261103203943912` — les listes à puces d'une fiche s'affichent en un seul paragraphe · build (sprint 26)
+- `20261103203943909` — la fenêtre d'une fiche bloquée déborde à droite · build (sprint 26, après la précédente : même fichier)
+
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped
 - ~~`20261014200651962` — cycle de vie d'une version : préparer, figer (tag freeze) · build~~ — shipped

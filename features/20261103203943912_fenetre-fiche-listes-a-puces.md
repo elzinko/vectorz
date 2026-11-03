@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-03
@@ -33,15 +33,29 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+Le contexte d'une fiche est rendu par blocs, en complément du rendu en ligne livré le 2026-11-03 :
+
+- une ligne vide sépare deux paragraphes ;
+- des lignes qui commencent par « - » ou « * » suivis d'une espace forment une liste à puces, un
+  point par ligne ;
+- dans chaque paragraphe et chaque point, le gras, l'italique et le code restent rendus.
+
+Rien n'est injecté en HTML : chaque bloc devient un élément React. « En clair » et les critères
+restent rendus en ligne ; « Comment vérifier » reste brut.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Dans la fenêtre d'une fiche, une liste à puces du contexte s'affiche en liste, un point par ligne,
+      sans les tirets.
+- [ ] Deux paragraphes séparés par une ligne vide restent deux paragraphes.
+- [ ] Le gras, l'italique et le code restent rendus dans les points et les paragraphes.
+- [ ] Une ligne qui commence par « - » collé à un mot (« -- », « -x ») n'est pas un point de liste.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests de la page web passent : `pnpm --dir products/cop1/packages/web exec vitest run src/board`.
+2. Mission control lancé, la carte « Sortir la 1.8.0 » de muti montre une liste à puces dans son
+   contexte. Captures avant et après dans `docs/pr-evidence/<id>/`.
 
 ## Notes / décisions
 
@@ -52,3 +66,5 @@ Rejouer la reproduction ci-dessus.
 - Suite de la fiche livrée [la fenêtre d'une fiche affiche le Markdown brut](done/20261103191932074_fenetre-fiche-markdown-brut.md),
   qui couvrait le Markdown en ligne seulement.
 - Indice relevé avant le groom : `FicheModal.tsx`, le contexte est rendu dans un seul `<p>`.
+- **Groomée `ready` le 2026-11-03** (run autonome) : le contexte est la section où les listes
+  apparaissent ; « En clair » reste un paragraphe en ligne.

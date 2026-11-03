@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-03
@@ -35,15 +35,22 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+La pastille « bloquée : … » de la fenêtre d'une fiche reçoit une variante qui revient à la ligne. Les
+autres pastilles, courtes, gardent leur règle `white-space: nowrap` : on ne touche pas à la règle
+globale de `board.css`. L'en-tête de la fenêtre peut déjà passer à la ligne (`.dhead`, `flex-wrap`).
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Une raison de blocage longue se lit en entier, sur plusieurs lignes.
+- [ ] La fenêtre d'une fiche bloquée n'a plus de défilement horizontal.
+- [ ] Les autres pastilles (version, statut) gardent leur rendu sur une ligne.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests de la page web passent : `pnpm --dir products/cop1/packages/web exec vitest run src/board`.
+2. Mission control lancé, la carte « Sortir la 1.8.0 » de muti, ouverte depuis Process, montre sa
+   raison en entier, et `.sheet2` a un `scrollWidth` égal à son `clientWidth`. Captures avant et après
+   dans `docs/pr-evidence/<id>/`.
 
 ## Notes / décisions
 
@@ -53,3 +60,6 @@ Rejouer la reproduction ci-dessus.
   pas une idée produit. Le PO peut la retirer.
 - Indice relevé avant le groom : `FicheModal.tsx`, la pastille `bloquée : …` est en
   `white-space: nowrap`.
+- **Groomée `ready` le 2026-11-03** (run autonome) : la cause est la règle globale `.pill`
+  (`board.css`, `white-space: nowrap`). Une variante pour la seule pastille de blocage, pas un
+  changement global.
