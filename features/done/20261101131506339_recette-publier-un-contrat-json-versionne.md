@@ -7,8 +7,8 @@ product: mega-city
 milestone: recettes
 version:
 labels: [recette, contrat, json]
-status: ready
-pr:
+status: shipped
+pr: "local (c7128975)"
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
 ---
@@ -71,7 +71,7 @@ ezk recipes
 ## Notes
 
 - Née de la rétro légère du 2026-11-01 (P9 de la rétro), acceptée par le PO le même jour :
-  [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
+  [rétro du run des contrats JSON](../../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : sept contrats existent désormais ; un troisième piège (énumération
   élargie, sprint 13 du 2026-11-03) rejoint les deux d'origine.

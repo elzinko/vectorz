@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261101131506339_recette-publier-un-contrat-json-versionne.md](../20261101131506339_recette-publier-un-contrat-json-versionne.md)
+> 🗎 Rendu de la fiche [features/20261101131506339_recette-publier-un-contrat-json-versionne.md](../done/20261101131506339_recette-publier-un-contrat-json-versionne.md)
 
 ## En clair
 
