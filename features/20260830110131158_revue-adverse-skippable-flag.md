@@ -66,6 +66,22 @@ Distinction inchangée : ça ne concerne que la revue adverse **interne** (`ezk-
 - [ ] **Garde — le POC ne retire QUE le reviewer** — un sprint POC dont la gate locale échoue (tests
       rouges) est **bloqué quand même**. Sans ce critère, « POC » deviendrait « aucune sécurité ».
 
+## Plan de build (grooming du 2026-11-03, run autonome)
+
+Lu dans le code ; la décision du PO du 2026-10-09 est déjà écrite plus bas.
+
+1. **La config** : `src/core/project-config.ts` gagne un résolveur pur. `review: { adverse: skip }`
+   donne `skip` ; toute autre valeur, ou rien, donne `run`. On ne saute jamais par accident.
+2. **La méthode le publie** : `ezk config show` affiche une ligne `review.adverse` ; `--json` gagne le
+   champ `adverseReview` (`run` ou `skip`), ajouté sans changer `schema_version`.
+3. **Les skills l'appliquent** : `ezk-sprint`, à l'étape de la revue, lit ce réglage. En `skip`, il saute
+   `ezk-reviewer`, garde la gate locale, journalise « revue adverse SKIPPÉE — mode POC » dans
+   `SPRINT.md` et au checkpoint. `ezk-product-build` dit qu'`ezk-pm` ne saute jamais la revue seul.
+4. **L'ADR-0059 est amendé** : une section datée dit que le mode POC est la seule dérogation au
+   plancher, et comment revenir en arrière.
+5. **Tests** : le résolveur, la sortie de `ezk config show` (texte et JSON), le contrat régénéré, et le
+   test du plancher (`review-floor-contract.test.ts`) qui garde la dérogation et la gate locale.
+
 ## Comment vérifier
 
 À rejouer une fois construit :
