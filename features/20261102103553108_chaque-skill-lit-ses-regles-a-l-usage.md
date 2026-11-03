@@ -8,7 +8,7 @@ milestone: qualite
 version:
 depends: ["20261101215342537"]
 labels: [loi, regles, jetons]
-status: idea
+status: ready
 pr:
 evidence: none # commande et textes de skills, sans écran
 created: 2026-11-02
@@ -103,6 +103,9 @@ après         règle → ezk-sprint démarre → ezk law show skill:ezk-sprint 
       apparaissent comme lues au démarrage de leur skill ou de leur agent.
 - [ ] **La loi globale ne grossit pas.** Après `ezk law bind-global global --link`,
       `~/.claude/rules/iamthelaw.md` garde ses 10 règles.
+- [ ] **Le coût est mesuré.** La taille de la sortie de `ezk law show` pour l'objet le plus lourd est
+      écrite dans cette fiche, en octets et en jetons (repère d'ADR-0056). Si elle dépasse le coût de
+      l'option écartée, on revient à « élargir la loi globale ».
 
 ## Comment vérifier
 
@@ -126,3 +129,9 @@ compte 0 règle citée sans être installée. La troisième ne signale aucun éc
 - Hors de cette fiche : les règles de la couche projet (`.vectorz/rules/`, ADR-0050).
 - **Taille.** Six critères : une commande, onze textes, un test et la portée du contrat. La fiche
   tient dans un sprint.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO sous trois conditions).
+  1. Le coût de la sortie la plus lourde est mesuré et écrit ici (7e critère).
+  2. La revue adverse vérifie que seule la ligne d'ouverture change dans les 11 textes, et que le
+     test couvre les 11 objets.
+  3. L'ADR d'amendement d'ADR-0056 dit comment revenir en arrière : retirer les 11 lignes et le verbe.
+  Construite après la fiche « La gate ne dépend ni de l'index généré ni du retard sur GitHub ».

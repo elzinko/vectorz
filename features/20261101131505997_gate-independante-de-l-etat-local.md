@@ -7,7 +7,7 @@ product: mega-city
 milestone: qualite
 version:
 labels: [gate, tests, worktree]
-status: idea
+status: ready
 pr:
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
@@ -80,3 +80,7 @@ git worktree add /tmp/wt-gate -b essai-gate main && cd /tmp/wt-gate && pnpm inst
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : proposition précisée d'après le code ; taille d'une
   petite story (deux helpers de test, une variable lue par le lanceur).
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : le test qui
+  garde l'avertissement sans `EZK_NO_LAG_WARNING` est dans la livraison ; le critère « worktree neuf »
+  se prouve dans un vrai worktree neuf, sans `regen-backlog.sh`. À construire avant la fiche des
+  règles lues au démarrage, qui ajoute un test de gate.
