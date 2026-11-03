@@ -1,0 +1,4 @@
+Après correction — fenêtre de la fiche « Sortir la 1.8.0 » (muti, onglet Process)
+.sheet2 : scrollWidth 543 px pour un clientWidth de 543 px : plus de défilement de côté
+la pastille « bloquée : … » revient à la ligne (431 px de large), raison entière
+le bouton « Fermer » reste sur une ligne (35 px de haut)

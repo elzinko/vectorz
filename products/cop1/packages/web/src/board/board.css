@@ -68,6 +68,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .card > h3 a { color: var(--accent); text-decoration: none; font-size: 12px; text-transform: none; letter-spacing: 0; }
 .pill { font-family: var(--font-data); font-size: 11.5px; font-weight: 500; padding: 2px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .pill.ver { background: var(--accent-soft); color: var(--accent); }
+/* La raison d'un blocage peut être longue : elle revient à la ligne au lieu de déborder de la fenêtre
+   (fiche 20261103203943909). Les autres pastilles, courtes, restent sur une ligne. */
+.pill.blocked { white-space: normal; overflow-wrap: anywhere; min-width: 0; }
 .muted { color: var(--muted); }
 .faint { color: var(--faint); }
 .live { width: 8px; height: 8px; border-radius: 50%; background: var(--go); box-shadow: 0 0 0 3px var(--go-soft); display: inline-block; animation: pulse 1.8s infinite; }
@@ -85,7 +88,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .sheet2 { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; width: min(560px, 100%); max-height: 85vh; overflow: auto; padding: 18px; }
 .sheet2 .mh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .sheet2 .mh h3 { font-size: 16px; }
-.sheet2 .x { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 5px 11px; }
+.sheet2 .x { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 5px 11px; flex-shrink: 0; white-space: nowrap; }
 .pmlist { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .pmcard { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 7px; }
 .pmcard:hover { border-color: var(--accent); background: var(--surface-2); }
