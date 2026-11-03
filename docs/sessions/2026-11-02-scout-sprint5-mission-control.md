@@ -20,7 +20,7 @@ pendant le sprint, est prête en tête du plan : son sprint reste à ouvrir.
    - [Le lanceur annonce un port web faux quand ce port est déjà pris](../../features/done/20261102100505427_lanceur-annonce-port-web-faux.md) — local `1724dd06` ;
    - [vectorz réinstalle ses dépendances avec un autre pnpm](../../features/done/20261102100506285_epingler-version-pnpm.md) — local `38de13e9`. Mesure de suivi : constater la CI réelle sous pnpm 10.28.2.
 5. **Deux fiches vues pendant le sprint**, en idée :
-   - [Le lanceur accepte un port qui n'est pas un nombre](../../features/20261102124306840_lanceur-port-non-numerique.md) — P3 ;
+   - [Le lanceur accepte un port qui n'est pas un nombre](../../features/done/20261102124306840_lanceur-port-non-numerique.md) — P3 ;
    - [L'intégration locale supprime la branche toute neuve d'une autre session](../../features/done/20261102124307012_integration-locale-supprime-branche-autre-session.md) — P2, groomée, prête, en tête du plan.
 6. **Sprint suivant non ouvert.** Le portier était en alerte sur le dossier de travail d'une autre
    session. Le PO a choisi d'attendre, puis de continuer dans une nouvelle session.

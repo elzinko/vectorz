@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (10a05e52)"
 evidence: none # message du lanceur dans le terminal ; pas d'écran
 created: 2026-11-02
 ---
@@ -29,7 +29,7 @@ Gravité : **mineure**. Seule une saisie malformée déclenche le défaut, et le
 erreur.
 
 Relevé par la revue adverse du 2026-11-02, sur la correction du port web déjà pris
-([le lanceur annonce un port web faux](done/20261102100505427_lanceur-annonce-port-web-faux.md)). Ce
+([le lanceur annonce un port web faux](20261102100505427_lanceur-annonce-port-web-faux.md)). Ce
 défaut existait avant cette correction.
 
 Reproduction :
