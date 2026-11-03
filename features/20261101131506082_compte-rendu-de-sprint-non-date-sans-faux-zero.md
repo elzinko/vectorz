@@ -68,22 +68,40 @@ dite. Et un sprint daté rend la rétro outillée (recettes, durées) possible.
 
 ## Proposition
 
-À préciser au grooming.
+Précisée au grooming du 2026-11-03 (run autonome), d'après le code. Quatre causes, quatre gestes.
 
-- Le rendu du compte rendu non daté remplace « 0 min / 0 tokens » par « durée et jetons non
-  mesurés » dans sa première phrase.
-- En mode autonome, le run pose le point de passage `sprint-<slug>-checkpoint` avec le slug que
-  `close` dérivera de l'objectif.
+1. **Les dates se comparent comme des instants.** `src/sprint-metrics/domain/kpi.ts:14` compare comme
+   du texte la date du commit de livraison, en heure locale (`2026-11-03T00:20:35+01:00`), aux bornes
+   de la fenêtre, en heure universelle (`2026-11-03T00:05:36Z`). Une livraison à 00 h 20 à Paris passe
+   pour être dans la fenêtre, une livraison à 01 h 44 passe pour en être sortie. Les comptes rendus des
+   sprints 11, 12 et 13 du 2026-11-03 nomment ainsi les fiches du sprint d'avant. On compare les
+   instants (`Date.parse`).
+2. **Les fiches livrées sont celles du lot.** Quand le lot scellé est connu, le compte ne retient que
+   ses fiches livrées dans la fenêtre : une fiche d'une autre session n'est plus comptée. Sans lot, le
+   compte reste celui de la fenêtre.
+3. **La fenêtre part du même run.** `domain/duration.ts:49` prend le point de passage précédent, quel
+   que soit son run, et sinon le tout premier run du dépôt : d'où 390 h. Le début devient le point de
+   passage précédent DU MÊME run, sinon le démarrage de ce run.
+4. **Non mesuré se dit.** Un compte rendu sans point de passage ouvre par « durée et jetons non
+   mesurés », jamais par « 0 min » ni « 0 tokens ». Et `ezk-product-build`, en mode autonome, pose le
+   point de passage `sprint-<slug>-checkpoint` avant `close` : son texte le dit à l'étape 4.
+
+```
+aujourd'hui   commit 01:44+01:00 (= 00:44Z)  vs  fin 00:45Z  →  « 01:44 » > « 00:45 » en texte  →  exclu
+après         Date.parse(00:44Z) <= Date.parse(00:45Z)                                          →  compté
+```
 
 ## Critères d'acceptation
 
 - [ ] Un compte rendu sans point de passage dit « non mesuré » dans sa première phrase, et aucun zéro
       de durée ou de jetons n'y apparaît.
-- [ ] Au prochain run autonome, chaque compte rendu de sprint porte une durée non nulle.
-- [ ] `ezk sprint report <slug>` d'un sprint de run autonome ne refuse plus faute de point de passage.
-- [ ] La fenêtre d'un sprint commence à son ouverture : rejoué sur le sprint
-      `mission-control-lit-le-board-par-ezk`, le compte rendu ne dit plus 390 h, ni 49 fiches livrées
-      pour une seule fiche au lot.
+- [ ] Une livraison datée en heure locale est comptée selon son instant : sur une fixture, un commit
+      à `00:20+01:00` sort d'une fenêtre `00:05Z → 00:45Z`, un commit à `01:44+01:00` y entre.
+- [ ] Quand le lot est connu, une fiche livrée dans la fenêtre hors du lot n'est pas comptée.
+- [ ] La fenêtre commence au point de passage précédent du même run, sinon au démarrage de ce run :
+      sur une fixture à deux runs, un sprint du second run ne part jamais d'un point du premier.
+- [ ] Le texte d'`ezk-product-build` dit de poser `sprint-<slug>-checkpoint` avant `close` en mode
+      autonome.
 
 ## Comment vérifier
 
@@ -96,3 +114,8 @@ grep -n "0 min" docs/sprints/*.md
 - Née de la rétro légère du 2026-11-01 (P5 de la rétro), acceptée par le PO le même jour :
   [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
+- Groomée le 2026-11-03 (run autonome) : causes lues dans le code. La cause n° 1 vient de la rétro du
+  sprint 12 du 2026-11-03 (proposition P1 en attente du PO), qui la décrit comme un défaut neuf : elle
+  est couverte ici, ce n'est pas une fiche de plus. L'ancien critère « au prochain run autonome, chaque
+  compte rendu porte une durée non nulle » est tenu par ce run : les sprints 12 et 13 durent 40 et
+  34 minutes.
