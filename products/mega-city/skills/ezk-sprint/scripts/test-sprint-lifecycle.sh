@@ -474,6 +474,40 @@ sed -i.bak -e "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (local abc1234)/" "$
 OUT24B="$(cd "$TMP/det" && bash "$SPRINT" close)"
 ok "après un commit, close RETROUVE le sprint (clé stable), pas de REFUSED not_open" 'printf "%s\n" "$OUT24B" | grep -qx "CLOSE: SEALED sprint=1 done=1 deferred=0"'
 
+echo "S25 — le cas muti : un SPRINT.md d'ancien format, SUIVI par git et sans ligne Branche:, ne bloque ni start ni close (fiche 20261003011750433)"
+# muti avait committé un instantané de son carnet (2026-09-12). Avant v0.14, start le prenait pour un
+# sprint ouvert (REFUSED open_sprint) et il fallait le déplacer à la main à start puis à close.
+git init -q -b main "$TMP/committed"
+(
+  cd "$TMP/committed"
+  git config user.email test@test && git config user.name test && git config commit.gpgsign false
+  mkdir -p features && mkfiche "$A" "Alpha" alpha
+  echo node_modules/ > .gitignore
+  cat > SPRINT.md <<'EOF'
+# Sprint 4 — FPS auto-adaptatif
+Statut: en cours   Ouvert: 2026-09-12
+
+## Lot
+- [ ] 0042 — une story d'un ancien sprint
+
+## Galères & gestes (labo)
+- galère de l'instantané
+EOF
+  git add . && git commit -qm base
+)
+COM_J="$(journal_of "$TMP/committed")"
+COM_SUM="$(sum "$TMP/committed/SPRINT.md")"
+OUT25="$(cd "$TMP/committed" && bash "$SPRINT" start --lot "$A" --objective "Malgré l'instantané")"
+ok "start ouvre le sprint sans geste manuel" 'printf "%s\n" "$OUT25" | grep -qx "START: OPENED sprint=1 stories=1"'
+ok "start le signale par SPRINT-FOREIGN" 'printf "%s\n" "$OUT25" | grep -q "^SPRINT-FOREIGN: SPRINT.md"'
+ok "l'instantané n'entre pas dans le journal (ni sa story, ni son labo)" '! grep -q "0042" "$COM_J" && ! grep -q "galère de l" "$COM_J"'
+OUT25B="$(cd "$TMP/committed" && bash "$SPRINT" start --lot "$A" 2>&1 || true)"
+ok "un vrai sprint ouvert est toujours refusé" 'printf "%s\n" "$OUT25B" | grep -qx "START: REFUSED open_sprint sprint=1"'
+sed -i.bak -e "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (local abc1234)/" "$COM_J" && rm -f "$COM_J.bak"
+OUT25C="$(cd "$TMP/committed" && bash "$SPRINT" close)"
+ok "close scelle le sprint" 'printf "%s\n" "$OUT25C" | grep -qx "CLOSE: SEALED sprint=1 done=1 deferred=0"'
+ok "le SPRINT.md committé reste intact et suivi, l'arbre reste propre" '[ "$(sum "$TMP/committed/SPRINT.md")" = "$COM_SUM" ] && git -C "$TMP/committed" ls-files --error-unmatch SPRINT.md >/dev/null 2>&1 && [ -z "$(git -C "$TMP/committed" status --porcelain)" ]'
+
 if (( FAIL )); then
   echo "FAIL"
   exit 1

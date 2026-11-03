@@ -81,3 +81,7 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
   `SPRINT.md` racine sans `Branche:` comme étranger (`SPRINT-FOREIGN`), il ne le compte pas comme
   sprint ouvert. La story se réduit à la preuve sur le cas exact de muti, plus le correctif si la
   preuve échoue.
+- **Livrée le 2026-11-03** (run autonome, sprint 23) : la preuve passe sans toucher à `sprint.sh`. Le
+  cas S25 de `test-sprint-lifecycle.sh` committe un `SPRINT.md` d'ancien format sans `Branche:` ;
+  `start` ouvre le sprint et le signale par `SPRINT-FOREIGN`, un second `start` reste refusé, `close`
+  scelle, et l'instantané reste intact et suivi.
