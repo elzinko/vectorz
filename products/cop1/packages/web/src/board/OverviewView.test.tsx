@@ -132,6 +132,15 @@ describe('OverviewView', () => {
     expect(container.querySelector('.funlegend')?.textContent).toMatch(/prêtes\s*0/);
   });
 
+  // fiche 20261103191932080 — une ligne de version n'ouvre rien : le sous-titre ne le promet plus
+  it('le tableau des versions ne promet pas de détail au clic', () => {
+    renderView();
+    expect(screen.getByText(/où en est chaque version/).textContent).toBe(
+      'où en est chaque version · ligne verte = en run',
+    );
+    expect(screen.queryByText(/clique pour le détail/)).toBeNull();
+  });
+
   it('ordonne les versions de la plus récente à la plus ancienne', () => {
     renderView();
     const rows = screen.getAllByText(/^v\d/).map((el) => el.textContent);

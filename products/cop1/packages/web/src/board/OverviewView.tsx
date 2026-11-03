@@ -64,7 +64,7 @@ function VersionsInProcess({ project, onLaunch, onViewRun }: OverviewViewProps):
       <h3>
         Versions dans le process{' '}
         <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
-          où en est chaque version · ligne verte = en run · clique pour le détail
+          où en est chaque version · ligne verte = en run
         </span>
       </h3>
       <div className="ptrow hd">
