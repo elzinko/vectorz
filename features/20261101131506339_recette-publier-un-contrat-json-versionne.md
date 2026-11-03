@@ -58,9 +58,9 @@ config-show, law-show, law-object). La recette part de ces sept preuves.
 
 ## Critères d'acceptation
 
-- [ ] La recette existe, passe `ezk-chef check`, et figure dans le livre des recettes.
-- [ ] Elle pointe vers au moins deux contrats existants et vers `contract-files.ts`, par `fichier:ligne`.
-- [ ] Elle nomme les trois pièges : schéma publié strict, sortie coupée à 64 Ko, énumération élargie.
+- [x] La recette existe, passe `ezk-chef check`, et figure dans le livre des recettes.
+- [x] Elle pointe vers au moins deux contrats existants et vers `contract-files.ts`, par `fichier:ligne`.
+- [x] Elle nomme les trois pièges : schéma publié strict, sortie coupée à 64 Ko, énumération élargie.
 
 ## Comment vérifier
 
@@ -77,3 +77,6 @@ ezk recipes
   élargie, sprint 13 du 2026-11-03) rejoint les deux d'origine.
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : `fichier:ligne`
   relus le jour du build, sans code recopié ; chaque piège porte sa date et sa source.
+- **Preuves du build (2026-11-03).** `ezk-chef` : GO (gate mécanique verte, livre régénéré, 73 liens,
+  13 pointeurs relus). Revue adverse : GO (chaque `fichier:ligne` ouvert, pièges datés et vérifiés,
+  `law:contract` vert). Retouches : les vraies lignes de `process.exitCode`, un accord dans « En clair ».
