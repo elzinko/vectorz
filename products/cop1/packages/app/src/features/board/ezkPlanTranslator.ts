@@ -104,6 +104,13 @@ function asBacklogShow(value: unknown): BacklogShow {
   return raw as unknown as BacklogShow;
 }
 
+/**
+ * Les fiches closes sans livraison, comme le contrat de la méthode les nomme (`comptes.closes` :
+ * superseded, merged, split). Ce n'est pas du travail à faire : la vue d'ensemble ne les compte pas,
+ * la vue Fiches ne les montre plus en idées (fiche 20261103191932070).
+ */
+const CLOSED_STATUSES: ReadonlySet<string> = new Set(['superseded', 'merged', 'split']);
+
 function ficheStatus(f: BacklogFiche): FicheDetailStatus {
   if (f.done) return 'done';
   if (f.enCours) return 'wip';
@@ -228,7 +235,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
 
   const fiches: Record<string, FicheDetailData> = {};
   for (const f of backlog.fiches) {
-    if (f.done) continue;
+    if (f.done || CLOSED_STATUSES.has(f.status)) continue;
     const verdict = verdicts[f.id];
     fiches[f.id] = verdict ? { ...toFicheDetail(f), verdict } : toFicheDetail(f);
   }

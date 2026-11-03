@@ -1,0 +1,3 @@
+Après correction — GET /api/board, projet vectorz
+fiches servies : 108
+fiche découpée 20261007135620590 : absente

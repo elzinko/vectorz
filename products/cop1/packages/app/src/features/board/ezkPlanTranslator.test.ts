@@ -179,6 +179,28 @@ describe('translatePlan — même détail', () => {
   });
 });
 
+describe('translatePlan — les fiches closes sans livraison (fiche 20261103191932070)', () => {
+  it.each(['split', 'superseded', 'merged'])(
+    'une fiche `%s` n’est pas servie en idée',
+    (status) => {
+      const b = backlog();
+      b.fiches.push({ ...b.fiches[0], id: 'close', status, done: false, enCours: false });
+      expect(translatePlan(board(), b).fiches.close).toBeUndefined();
+    },
+  );
+
+  it('une idée et une fiche prête restent servies', () => {
+    const b = backlog();
+    b.fiches.push(
+      { ...b.fiches[0], id: 'idee', status: 'idea', done: false, enCours: false },
+      { ...b.fiches[0], id: 'prete', status: 'ready', done: false, enCours: false },
+    );
+    const { fiches } = translatePlan(board(), b);
+    expect(fiches.idee?.status).toBe('idea');
+    expect(fiches.prete?.status).toBe('ready');
+  });
+});
+
 describe('translatePlan — format inconnu', () => {
   it('refuse un schema_version différent de 1 dans board show', () => {
     const b = { ...board(), schema_version: 2 };
