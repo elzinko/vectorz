@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20260830110131158_revue-adverse-skippable-flag.md](../20260830110131158_revue-adverse-skippable-flag.md)
+> 🗎 Rendu de la fiche [features/20260830110131158_revue-adverse-skippable-flag.md](../done/20260830110131158_revue-adverse-skippable-flag.md)
 
 # 20260830110131158 — Revue adverse skippable par un flag
 

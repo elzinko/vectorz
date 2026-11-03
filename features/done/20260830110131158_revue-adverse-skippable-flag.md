@@ -8,8 +8,8 @@ milestone: methode-configurable
 version:
 epic:
 labels: [revue]
-status: ready
-pr:
+status: shipped
+pr: "local (ec8b20e3)"
 created: 2026-08-30
 ---
 
@@ -97,7 +97,7 @@ Lu dans le code ; la décision du PO du 2026-10-09 est déjà écrite plus bas.
 - un **flag de lancement** one-shot pour sauter la revue hors mode POC (dépannage ponctuel), avec un
   nom non ambigu (p. ex. `--skip-adverse-review`) — au-delà du POC piloté par config ;
 - le **contrôle générique** de n'importe quelle étape (activer / sauter), via le mécanisme « étapes
-  configurables » ([228](20260830110131228_schema-etapes-skill-configurables.md)).
+  configurables » ([228](../20260830110131228_schema-etapes-skill-configurables.md)).
 
 ## Notes / décisions
 
@@ -132,7 +132,7 @@ POC explicite. L'amendement lui-même s'écrit **au build**, par l'architecte, p
 plancher par accident.
 
 Cette fiche est le cas précis ; elle s'inscrit dans la capacité plus large
-[Configurer les étapes et les choix de la méthode via le fichier de config](20261009104401282_config-etapes-et-choix-methode.md).
+[Configurer les étapes et les choix de la méthode via le fichier de config](../20261009104401282_config-etapes-et-choix-methode.md).
 Reste à trancher au grooming : la **collision de nom `--review`** (voir la note du 2026-09-20) et la
 porte POC (flag au lancement ? valeur de config ?).
 

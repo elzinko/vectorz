@@ -116,7 +116,7 @@ en mode POC, où l'humain choisit la vitesse plutôt qu'une seconde opinion. Il 
 aucun agent ne le décide à sa place, et la gate locale ne se saute jamais.
 
 - **Décision du PO du 2026-10-09**, écrite dans la fiche
-  [Revue adverse skippable par un flag](../../../../features/20260830110131158_revue-adverse-skippable-flag.md) :
+  [Revue adverse skippable par un flag](../../../../features/done/20260830110131158_revue-adverse-skippable-flag.md) :
   « on doit pouvoir overrider le fonctionnement, revue adverse comprise, en mode POC, par un geste
   explicite et tracé ».
 - **Le geste.** `review: { adverse: skip }` dans `.vectorz/config.yml`. Toute autre valeur, une faute de
