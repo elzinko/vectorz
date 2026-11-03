@@ -18,8 +18,8 @@ export interface JournalSource {
   listSprintCheckpoints(projectRoot: string): SprintCheckpointEvent[];
   /** Événements `escalate{type:"blocked"}`, toutes runs confondues. */
   listBlockedEscalations(projectRoot: string): BlockedEscalationEvent[];
-  /** `ts` du plus ancien `run.started` — repli quand un sprint n'a pas de checkpoint antérieur. */
-  earliestRunStartedTs(projectRoot: string): string | undefined;
+  /** `ts` du `run.started` de ce run — début d'un sprint qui n'a pas de checkpoint antérieur dans son run. */
+  runStartedTs(projectRoot: string, runId: string): string | undefined;
   /** L'id du run le plus récent (toutes runs confondues) — le run « courant », celui qu'on vient de
    * clore. Sert à apparier le sprint à SON run, pas à un vieux checkpoint d'un autre run. */
   latestRunId(projectRoot: string): string | undefined;

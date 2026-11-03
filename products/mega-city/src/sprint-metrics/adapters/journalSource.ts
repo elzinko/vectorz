@@ -67,13 +67,8 @@ export class SupervisionJournalSource implements JournalSource {
     return events;
   }
 
-  earliestRunStartedTs(projectRoot: string): string | undefined {
-    let earliest: string | undefined;
-    for (const { event: e } of readAllEventsWithRun(projectRoot)) {
-      if (e.type !== 'run.started') continue;
-      if (earliest === undefined || e.ts < earliest) earliest = e.ts;
-    }
-    return earliest;
+  runStartedTs(projectRoot: string, runId: string): string | undefined {
+    return readAllEventsWithRun(projectRoot).find((r) => r.runId === runId && r.event.type === 'run.started')?.event.ts;
   }
 
   latestRunId(projectRoot: string): string | undefined {

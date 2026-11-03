@@ -93,21 +93,25 @@ après         Date.parse(00:44Z) <= Date.parse(00:45Z)                         
 
 ## Critères d'acceptation
 
-- [ ] Un compte rendu sans point de passage dit « non mesuré » dans sa première phrase, et aucun zéro
+- [x] Un compte rendu sans point de passage dit « non mesuré » dans sa première phrase, et aucun zéro
       de durée ou de jetons n'y apparaît.
-- [ ] Une livraison datée en heure locale est comptée selon son instant : sur une fixture, un commit
+- [x] Une livraison datée en heure locale est comptée selon son instant : sur une fixture, un commit
       à `00:20+01:00` sort d'une fenêtre `00:05Z → 00:45Z`, un commit à `01:44+01:00` y entre.
-- [ ] Quand le lot est connu, une fiche livrée dans la fenêtre hors du lot n'est pas comptée.
-- [ ] La fenêtre commence au point de passage précédent du même run, sinon au démarrage de ce run :
+- [x] Quand le lot est connu, une fiche livrée dans la fenêtre hors du lot n'est pas comptée.
+- [x] La fenêtre commence au point de passage précédent du même run, sinon au démarrage de ce run :
       sur une fixture à deux runs, un sprint du second run ne part jamais d'un point du premier.
-- [ ] Le texte d'`ezk-product-build` dit de poser `sprint-<slug>-checkpoint` avant `close` en mode
+- [x] Le texte d'`ezk-product-build` dit de poser `sprint-<slug>-checkpoint` avant `close` en mode
       autonome.
 
 ## Comment vérifier
 
 ```bash
-grep -n "0 min" docs/sprints/*.md
+pnpm --dir products/mega-city exec vitest run src/sprint-metrics
 ```
+
+Signal observable : les comptes rendus écrits après ce correctif ne contiennent ni « 0 min » ni
+« 0 tokens », et leur liste « Fiches livrées » est celle de leur lot. Les comptes rendus déjà committés
+ne sont pas régénérés : ils restent l'historique, avec leurs zéros d'époque.
 
 ## Notes
 
@@ -121,3 +125,15 @@ grep -n "0 min" docs/sprints/*.md
   34 minutes.
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO, sans condition). Coupe si le
   build déborde : gestes 1 et 4, puis 3, puis 2 ; le reste en fiche fille du même milestone.
+- **Preuves du build (2026-11-03).** Rejoués avec le nouveau code, sur le vrai journal et le lot de
+  chaque compte rendu :
+  - sprint 12 du 2026-11-03 : 2 fiches livrées, exactement son lot (avant : deux fiches des sprints 10
+    et 11) ; la fenêtre part du démarrage de son run, 34 min ;
+  - sprint 13 du 2026-11-03 : 2 fiches livrées, exactement son lot (avant : deux fiches du sprint 11) ;
+  - `mission-control-lit-le-board-par-ezk` du 2026-11-01 : 41 min et 1 fiche livrée (avant : 390 h et
+    49 fiches).
+  - Un compte rendu non daté ouvre par « Durée, jetons et fiches livrées sont donc non mesurés », et
+    aucun « 0 min » ni « 0 tokens » n'y figure (test).
+- **Après la revue (GO, 2026-11-03).** Les compteurs de blocages et de retouches de PR comparent eux
+  aussi des instants : une PR fusionnée pile à la borne, sans millisecondes, sortait de la fenêtre.
+  « Comment vérifier » vise les tests, plus les anciens comptes rendus, qui gardent leurs zéros.

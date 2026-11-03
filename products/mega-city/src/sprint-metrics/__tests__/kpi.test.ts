@@ -19,6 +19,37 @@ describe('summarizeShippedFeatures', () => {
     ];
     expect(summarizeShippedFeatures(fiches, window)).toEqual({ count: 2, ids: ['a', 'b'] });
   });
+
+  it('compare des instants : une date en heure locale compte selon son heure universelle (fiche 20261101131506082)', () => {
+    // Fenêtre 00:05Z → 00:45Z. Git écrit en heure de Paris (+01:00).
+    const fenetre = { startTs: '2026-11-03T00:05:36.453Z', endTs: '2026-11-03T00:45:44.439Z' };
+    const fiches = [
+      { id: 'avant', mergedAt: '2026-11-03T00:20:35+01:00' }, // = 2 nov. 23:20Z : avant la fenêtre
+      { id: 'dedans', mergedAt: '2026-11-03T01:44:45+01:00' }, // = 00:44:45Z : dans la fenêtre
+    ];
+    expect(summarizeShippedFeatures(fiches, fenetre)).toEqual({ count: 1, ids: ['dedans'] });
+  });
+
+  it('lot connu : ne compte que ses fiches, livrées depuis l’ouverture, même après la fin de la fenêtre', () => {
+    const fiches = [
+      { id: 'du-lot', mergedAt: '2026-08-30T11:05:00.000Z' }, // livrée juste après le point de passage
+      { id: 'autre-session', mergedAt: '2026-08-30T10:00:00.000Z' }, // dans la fenêtre, hors lot
+      { id: 'du-lot-ancienne', mergedAt: '2026-08-29T10:00:00.000Z' }, // avant l'ouverture
+    ];
+    expect(summarizeShippedFeatures(fiches, window, ['du-lot', 'du-lot-ancienne'])).toEqual({ count: 1, ids: ['du-lot'] });
+  });
+});
+
+describe('les trois compteurs comparent des instants (fiche 20261101131506082)', () => {
+  it('une escalade datée en heure locale compte selon son instant', () => {
+    const escalations = [{ ts: '2026-08-30T11:30:00+01:00', detail: '10 h 30 UTC' }];
+    expect(summarizeBlockages(escalations, window).count).toBe(1);
+  });
+
+  it('une PR fusionnée pile à la borne, sans millisecondes, est dans la fenêtre', () => {
+    const prs = [{ mergedAt: '2026-08-30T11:00:00Z', commits: [] }];
+    expect(summarizePrRetouches(prs, window).total).toBe(1);
+  });
 });
 
 describe('summarizeBlockages', () => {

@@ -1,4 +1,4 @@
-import type { LotResult, SprintReport } from './types.js';
+import { type LotResult, type SprintReport, UNDATED_NOTE } from './types.js';
 
 function fmtDuration(ms: number): string {
   const totalMinutes = Math.round(ms / 60_000);
@@ -16,12 +16,21 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
   lines.push('');
   lines.push('## En clair');
   lines.push('');
-  lines.push(
-    `Le sprint **${report.sprint.slug}** a duré **${fmtDuration(report.duration.ms)}** et consommé ` +
-      `**${report.tokens.totalTokens} tokens** (grain \`${report.tokens.grain}\`${report.tokens.note ? `, ${report.tokens.note}` : ''}). ` +
-      `Il a livré **${report.kpi.shippedFeatures.count} fiche(s)**, essuyé **${report.kpi.blockages.count} blocage(s)** ` +
-      `et mergé **${report.kpi.prRetouches.total} PR** sur la fenêtre.`,
-  );
+  const undated = report.tokens.note === UNDATED_NOTE;
+  if (undated) {
+    // Non daté : aucune mesure n'a eu lieu. On le dit d'emblée, jamais par des zéros (fiche 20261101131506082).
+    lines.push(
+      `Le sprint **${report.sprint.slug}** n'est pas daté : aucun point de passage \`sprint-${report.sprint.slug}-checkpoint\` ` +
+        'ne le borne dans le journal de supervision. Durée, jetons et fiches livrées sont donc non mesurés ; son lot scellé suit.',
+    );
+  } else {
+    lines.push(
+      `Le sprint **${report.sprint.slug}** a duré **${fmtDuration(report.duration.ms)}** et consommé ` +
+        `**${report.tokens.totalTokens} tokens** (grain \`${report.tokens.grain}\`${report.tokens.note ? `, ${report.tokens.note}` : ''}). ` +
+        `Il a livré **${report.kpi.shippedFeatures.count} fiche(s)**, essuyé **${report.kpi.blockages.count} blocage(s)** ` +
+        `et mergé **${report.kpi.prRetouches.total} PR** sur la fenêtre.`,
+    );
+  }
   lines.push('');
   if (!report.steps.ventilated) {
     lines.push(`> ${report.steps.note}`);
@@ -39,6 +48,13 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
   lines.push('');
   lines.push('## Détail');
   lines.push('');
+  if (undated) {
+    lines.push('- **Mesures** : non mesurées — durée, jetons, fiches livrées, blocages et retouches demandent un point de passage de supervision.');
+    lines.push('');
+    lines.push(`_Rapport généré le ${report.generatedAt} — schéma \`${report.schema}\`._`);
+    lines.push('');
+    return lines.join('\n');
+  }
   lines.push(`- **Fenêtre** : ${report.window.startTs} → ${report.window.endTs}`);
   lines.push(`- **Durée** : ${report.duration.ms} ms`);
   lines.push(

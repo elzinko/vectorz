@@ -38,6 +38,13 @@ export interface TokensSummary {
   note?: string;
 }
 
+/**
+ * La mention d'un compte rendu NON DATÉ : aucun point de passage `sprint-<slug>-checkpoint` ne borne le
+ * sprint. Posée par `collect`, lue par le rendu, qui dit alors « non mesuré » au lieu de zéros
+ * (fiche 20261101131506082).
+ */
+export const UNDATED_NOTE = 'fenêtre de supervision absente — durée et tokens non datés (lot seulement)';
+
 export interface ShippedFeaturesSummary {
   count: number;
   ids: string[];

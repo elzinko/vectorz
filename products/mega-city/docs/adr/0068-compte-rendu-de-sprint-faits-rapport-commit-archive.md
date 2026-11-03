@@ -50,5 +50,5 @@ committe le fichier. Le périmètre « ce sprint seulement » vient du **lot que
 - **+** Un sprint abandonné (`close --abandon`) laisse aussi un compte rendu, avec sa raison, même périmètre.
 - **−** Généraliser `archive-commit.sh` touche un script livré sous ADR-0063 : à faire avec ses tests
   `test:scripts`, en gardant l'API d'`ezk-archive` intacte (helper paramétré, appelant mince).
-- **−** Sans checkpoint de supervision, la fenêtre retombe sur `earliestRunStartedTs` : dégradation
+- **−** Sans checkpoint de supervision, la fenêtre retombe sur le démarrage du run (`runStartedTs`, fiche 20261101131506082) : dégradation
   connue (voisine 20261002230039863, pas bloqueur).

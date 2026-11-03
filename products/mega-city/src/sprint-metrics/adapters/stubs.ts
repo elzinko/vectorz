@@ -10,7 +10,7 @@ export class StubJournalSource implements JournalSource {
   constructor(
     private readonly checkpoints: SprintCheckpointEvent[] = [],
     private readonly blockedEscalations: BlockedEscalationEvent[] = [],
-    private readonly runStartedTs: string | undefined = undefined,
+    private readonly runStartTs: string | undefined = undefined,
     /** Run courant ; par défaut, celui du dernier checkpoint (ou undefined si aucun). */
     private readonly currentRunId: string | undefined = undefined,
   ) {}
@@ -23,8 +23,8 @@ export class StubJournalSource implements JournalSource {
     return this.blockedEscalations;
   }
 
-  earliestRunStartedTs(): string | undefined {
-    return this.runStartedTs;
+  runStartedTs(): string | undefined {
+    return this.runStartTs;
   }
 
   latestRunId(): string | undefined {

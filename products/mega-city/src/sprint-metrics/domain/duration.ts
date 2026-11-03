@@ -10,8 +10,9 @@ export interface SprintCheckpoint {
 /**
  * Frontières de sprint = jointure en LECTURE sur les gates `sprint-<slug>-checkpoint`
  * du journal de supervision (zéro instrumentation neuve). Le checkpoint DE ce sprint
- * marque la fin ; le début est le checkpoint le plus récent qui le précède, ou
- * `fallbackStartTs` (ex. `run.started`) quand ce sprint est le premier de la session.
+ * marque la fin ; le début est le checkpoint qui le précède DANS LE MÊME RUN, sinon le démarrage de
+ * ce run (`runStart`). Jamais un checkpoint d'un autre run : un compte rendu disait 390 h pour une
+ * soirée en partant du checkpoint d'un run ancien (fiche 20261101131506082).
  *
  * Appariement (fiche 20261002230039863) — par l'ID DU RUN, pas par l'égalité des slugs (fragile) :
  *   - on préfère d'abord un checkpoint dont le slug correspond (redater un vieux sprint par son slug) ;
@@ -26,7 +27,7 @@ export interface SprintCheckpoint {
 export function computeSprintWindow(
   checkpoints: readonly SprintCheckpoint[],
   slug: string,
-  fallbackStartTs?: string,
+  runStart?: (runId: string) => string | undefined,
   currentRunId?: string,
 ): SprintWindow | null {
   const sorted = [...checkpoints].sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
@@ -45,8 +46,10 @@ export function computeSprintWindow(
     if (idx === -1) return null; // le run courant n'a aucun checkpoint de sprint → non daté
   }
 
-  const endTs = sorted[idx].ts;
-  const startTs = idx > 0 ? sorted[idx - 1].ts : (fallbackStartTs ?? endTs);
+  const end = sorted[idx];
+  const endTs = end.ts;
+  const previous = sorted.slice(0, idx).filter((c) => c.runId === end.runId).at(-1);
+  const startTs = previous?.ts ?? runStart?.(end.runId) ?? endTs;
   const durationMs = Math.max(0, Date.parse(endTs) - Date.parse(startTs));
   return { startTs, endTs, durationMs };
 }

@@ -3,7 +3,7 @@ import { summarizeBlockages, summarizePrRetouches, summarizeShippedFeatures } fr
 import { parseSprintLot } from './domain/lot.js';
 import { buildSprintReport } from './domain/report.js';
 import { attributeTokens } from './domain/tokens.js';
-import type { ReviewMode, SprintReport } from './domain/types.js';
+import { type ReviewMode, type SprintReport, UNDATED_NOTE } from './domain/types.js';
 import type { JournalSource } from './ports/JournalSource.js';
 import type { RepoSource } from './ports/RepoSource.js';
 import type { TranscriptSource, TranscriptSourceOptions } from './ports/TranscriptSource.js';
@@ -49,11 +49,15 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
   const lot = { entries: input.sprintMd ? parseSprintLot(input.sprintMd) : [] };
 
   const checkpoints = ports.journal.listSprintCheckpoints(input.projectRoot);
-  const fallbackStart = ports.journal.earliestRunStartedTs(input.projectRoot);
   // Le run COURANT (le plus récent) : on apparie le sprint à SON run, pas à un vieux checkpoint
   // d'un autre run (fiche 20261002230039863).
   const currentRunId = ports.journal.latestRunId(input.projectRoot);
-  const window = computeSprintWindow(checkpoints, input.slug, fallbackStart, currentRunId);
+  const window = computeSprintWindow(
+    checkpoints,
+    input.slug,
+    (runId) => ports.journal.runStartedTs(input.projectRoot, runId),
+    currentRunId,
+  );
   if (window === null) {
     if (!input.allowUndated) {
       throw new Error(
@@ -70,7 +74,7 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
       slug: input.slug,
       product: input.product,
       window: { startTs: generatedAt, endTs: generatedAt, durationMs: 0 },
-      tokens: { grain: 'session', inputTokens: 0, outputTokens: 0, cacheRead: 0, cacheCreation: 0, totalTokens: 0, mode: input.reviewMode, note: 'fenêtre de supervision absente — durée et tokens non datés (lot seulement)' },
+      tokens: { grain: 'session', inputTokens: 0, outputTokens: 0, cacheRead: 0, cacheCreation: 0, totalTokens: 0, mode: input.reviewMode, note: UNDATED_NOTE },
       shippedFeatures: { count: 0, ids: [] },
       blockages: { count: 0, events: [] },
       prRetouches: { total: 0, sansRetouche: 0, indetermine: 0 },
@@ -87,7 +91,11 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
     mode: input.reviewMode, // mode DÉDUIT au rapport (fiche 20261017110956989) — l'attribution reste pure
   };
   const blockages = summarizeBlockages(ports.journal.listBlockedEscalations(input.projectRoot), window);
-  const shippedFeatures = summarizeShippedFeatures(ports.repo.listShippedFiches(input.repoRoot), window);
+  const shippedFeatures = summarizeShippedFeatures(
+    ports.repo.listShippedFiches(input.repoRoot),
+    window,
+    lot.entries.map((e) => e.id),
+  );
   const prRetouches = summarizePrRetouches(
     ports.repo.listMergedPrs(input.repoRoot, window.startTs),
     window,

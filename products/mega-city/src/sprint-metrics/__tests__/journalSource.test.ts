@@ -35,7 +35,8 @@ describe('SupervisionJournalSource (fixtures synthétiques, journal réel sur di
       { ts: '2026-08-30T09:00:00.000Z', slug: 'un', runId: 'run-1' },
       { ts: '2026-08-30T11:00:00.000Z', slug: 'deux', runId: 'run-1' },
     ]);
-    expect(source.earliestRunStartedTs(projectRoot)).toBe('2026-08-30T08:00:00.000Z');
+    expect(source.runStartedTs(projectRoot, 'run-1')).toBe('2026-08-30T08:00:00.000Z');
+    expect(source.runStartedTs(projectRoot, 'run-inconnu')).toBeUndefined();
   });
 
   it('extrait uniquement les escalades de type "blocked" (pas "authority")', () => {
@@ -62,7 +63,7 @@ describe('SupervisionJournalSource (fixtures synthétiques, journal réel sur di
     const source = new SupervisionJournalSource();
     expect(source.listSprintCheckpoints(projectRoot)).toEqual([]);
     expect(source.listBlockedEscalations(projectRoot)).toEqual([]);
-    expect(source.earliestRunStartedTs(projectRoot)).toBeUndefined();
+    expect(source.runStartedTs(projectRoot, 'run-1')).toBeUndefined();
   });
 });
 

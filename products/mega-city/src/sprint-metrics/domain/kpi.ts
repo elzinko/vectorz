@@ -1,17 +1,47 @@
 import type { BlockagesSummary, PrRetouchesSummary, ShippedFeaturesSummary } from './types.js';
 
+/**
+ * Vrai si `ts` tombe dans `]start, end]`, comparé comme un INSTANT. Git écrit ses dates en heure locale
+ * (`…+01:00`), le journal et GitHub en heure universelle (`…Z`, avec ou sans millisecondes) : comparées
+ * comme du texte, elles se rangent mal (fiche 20261101131506082). Une date illisible n'est jamais dedans.
+ */
+function inWindow(ts: string, window: { startTs: string; endTs: string }): boolean {
+  const at = Date.parse(ts);
+  return Number.isFinite(at) && at > Date.parse(window.startTs) && at <= Date.parse(window.endTs);
+}
+
 export interface ShippedFiche {
   id: string;
   mergedAt?: string;
 }
 
-/** KPI (a) — fiches livrées : ids passés en `features/done/` dans la fenêtre du sprint. */
+/**
+ * KPI (a) — fiches livrées : ids passés en `features/done/` pendant le sprint (fiche 20261101131506082).
+ *
+ * Les dates se comparent comme des INSTANTS : git les écrit en heure locale (`…+01:00`), le journal en
+ * heure universelle (`…Z`). Comparées comme du texte, une livraison à 00 h 20 à Paris entrait dans une
+ * fenêtre qui finissait à 00 h 45 UTC, et une livraison à 01 h 44 à Paris en sortait.
+ *
+ * Quand le lot scellé est connu, on ne compte que SES fiches, livrées depuis l'ouverture du sprint : le
+ * compte rendu est écrit à la clôture, après les livraisons, et une fiche d'une autre session ne compte
+ * pas. Sans lot, on compte ce qui a été livré dans la fenêtre. Pas de borne haute avec un lot : ses
+ * fiches sont propres au sprint et une fiche n'est livrée qu'une fois, donc un rejeu tardif ne compte
+ * rien de plus.
+ */
 export function summarizeShippedFeatures(
   fiches: readonly ShippedFiche[],
   window: { startTs: string; endTs: string },
+  lotIds: readonly string[] = [],
 ): ShippedFeaturesSummary {
+  const start = Date.parse(window.startTs);
+  const end = Date.parse(window.endTs);
+  const lot = new Set(lotIds);
   const ids = fiches
-    .filter((f) => f.mergedAt !== undefined && f.mergedAt > window.startTs && f.mergedAt <= window.endTs)
+    .filter((f) => {
+      const at = f.mergedAt === undefined ? Number.NaN : Date.parse(f.mergedAt);
+      if (!Number.isFinite(at) || at <= start) return false;
+      return lot.size > 0 ? lot.has(f.id) : at <= end;
+    })
     .map((f) => f.id)
     .sort();
   return { count: ids.length, ids };
@@ -28,7 +58,7 @@ export function summarizeBlockages(
   window: { startTs: string; endTs: string },
 ): BlockagesSummary {
   const events = escalations
-    .filter((e) => e.ts > window.startTs && e.ts <= window.endTs)
+    .filter((e) => inWindow(e.ts, window))
     .map((e) => ({ ts: e.ts, detail: e.detail }))
     .sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
   return { count: events.length, events };
@@ -77,12 +107,12 @@ export function summarizePrRetouches(
   prs: readonly MergedPrLike[],
   window: { startTs: string; endTs: string },
 ): PrRetouchesSummary {
-  const inWindow = prs.filter((pr) => pr.mergedAt > window.startTs && pr.mergedAt <= window.endTs);
+  const merged = prs.filter((pr) => inWindow(pr.mergedAt, window));
   let sansRetouche = 0;
   let indetermine = 0;
-  for (const pr of inWindow) {
+  for (const pr of merged) {
     if (prSansRetouche(pr.commits) === true) sansRetouche += 1;
     else indetermine += 1;
   }
-  return { total: inWindow.length, sansRetouche, indetermine };
+  return { total: merged.length, sansRetouche, indetermine };
 }

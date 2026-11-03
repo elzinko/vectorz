@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { StubJournalSource, StubRepoSource, StubTranscriptSource } from '../adapters/stubs.js';
 import { collectSprintReport } from '../collect.js';
+import { renderSprintReportMarkdown } from '../domain/render.js';
 
 const SPRINT_START = '2026-08-30T09:00:00.000Z';
 const SPRINT_END = '2026-08-30T11:00:00.000Z';
@@ -96,5 +97,16 @@ describe('collectSprintReport', () => {
     expect(report.tokens.totalTokens).toBe(0);
     expect(report.tokens.note).toMatch(/supervision absente/i);
     expect(report.lot.entries).toEqual([{ id: '20260826082120062', result: 'shipped', title: 'Rapport' }]);
+  });
+
+  it('non daté : le rendu dit « non mesurés » d’emblée, sans aucun zéro de durée ni de jetons (fiche 20261101131506082)', () => {
+    const ports = fixturePorts();
+    const sprintMd = '## Lot\n- [x] 20260826082120062 — Rapport\n';
+    const report = collectSprintReport({ ...input, sprintMd, allowUndated: true }, { ...ports, journal: new StubJournalSource([]) });
+    const md = renderSprintReportMarkdown(report);
+    const enClair = md.split('## En clair')[1]?.split('##')[0] ?? '';
+    expect(enClair).toContain('non mesurés');
+    expect(md).not.toMatch(/\b0 min\b|\b0 tokens\b|\*\*0 tokens\*\*/);
+    expect(md).toContain('20260826082120062');
   });
 });
