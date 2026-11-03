@@ -31,12 +31,15 @@ mkdir -p "$FAKE_BIN"
 cat > "$FAKE_BIN/pnpm" <<'EOF'
 #!/usr/bin/env bash
 [[ "${FAKE_SHIP_FAIL:-0}" == 1 ]] && { echo "✗ ship refusé — rien n'a été écrit" >&2; exit 1; }
-mc="$2"; pr=""; fiche=""
+mc="$2"; pr=""; fiche=""; root=""
 shift 2
 while [[ $# -gt 0 ]]; do
-  case "$1" in --pr) pr="$2"; shift 2 ;; ship:fiche|--) shift ;; *) fiche="$1"; shift ;; esac
+  case "$1" in --pr) pr="$2"; shift 2 ;; --root) root="$2"; shift 2 ;; ship:fiche|--) shift ;; *) fiche="$1"; shift ;; esac
 done
-repo="$(cd "$mc/../.." && pwd)"
+# Le vrai script passe le dépôt par --root (fiche 20261027194016734) ; on le garde pour la preuve.
+[[ -n "$root" ]] || { echo "✗ --root absent : le dépôt visé n'est pas nommé" >&2; exit 1; }
+repo="$root"
+echo "$root" > "${FAKE_ROOT_SEEN:-/dev/null}"
 mkdir -p "$repo/features/done"
 git -C "$repo" mv "$fiche" "features/done/$(basename "$fiche")"
 sed -i.bak -e 's/^status: ready$/status: shipped/' -e "s/^pr:\$/pr: \"$pr\"/" "$repo/features/done/$(basename "$fiche")"
@@ -206,5 +209,23 @@ git -C "$REPO2" checkout -qb "feat/${ID}-suite"
 rc=0; bash "$SCRIPT" undo --repo "$REPO2" --fiche-id "$ID" >/dev/null 2>&1 || rc=$?
 [[ $rc -eq 1 ]] && ok "fiche déjà en done/ sur main, pas de ship sur la branche → refus (exit 1)" || fail "fiche héritée : rc=$rc"
 
+echo "=== add depuis un projet hôte : pas de products/mega-city, fiche à trois chiffres (fiche 20261027194016734) ==="
+HOST="$WORK/hote"
+git init -q -b main "$HOST"
+git -C "$HOST" config user.email t@t.io
+git -C "$HOST" config user.name t
+mkdir -p "$HOST/features"
+printf -- '---\nid: "0049"\ntitle: fiche hôte\ntype: feature\npriority: P1\nstatus: ready\npr:\ncreated: 2099-01-01\n---\n# x\n' > "$HOST/features/049-repo.md"
+git -C "$HOST" add -A && git -C "$HOST" commit -qm "chore: base"
+git -C "$HOST" checkout -qb "feat/049-repo"
+echo code > "$HOST/code.txt" && git -C "$HOST" add code.txt && git -C "$HOST" commit -qm "feat: le code"
+SEEN="$WORK/root-vu"
+rc=0; OUT="$(cd "$HOST" && FAKE_ROOT_SEEN="$SEEN" bash "$SCRIPT" add --repo . --fiche-id 049 --pr 77 2>&1)" || rc=$?
+[[ $rc -eq 0 && "$OUT" == *"SHIP: added"* ]] && ok "un hôte sans catalogue : SHIP: added (exit 0)" || fail "hôte : rc=$rc out=$OUT"
+[[ -f "$HOST/features/done/049-repo.md" ]] && ok "la fiche à trois chiffres est rangée sous done/" || fail "049-repo.md absente de done/"
+[[ "$(cat "$SEEN" 2>/dev/null)" == "$(cd "$HOST" && pwd -P)" || "$(cat "$SEEN" 2>/dev/null)" == "$(cd "$HOST" && pwd)" ]] \
+  && ok "la transaction vise le dépôt hôte par sa racine absolue (--root)" || fail "--root reçu : $(cat "$SEEN" 2>/dev/null)"
+[[ "$OUT" != *"addEmptyPathspec"* ]] && ok "aucun avertissement git d'un ajout vide" || fail "avertissement d'ajout vide"
+
 echo
-if [[ $FAIL -eq 0 ]]; then echo "OK — ship dans la PR (ADR-0049) : check, add, undo, garde du merge"; else echo "ÉCHEC"; exit 1; fi
+if [[ $FAIL -eq 0 ]]; then echo "OK — ship dans la PR (ADR-0049) : check, add, undo, garde du merge, depuis un hôte"; else echo "ÉCHEC"; exit 1; fi

@@ -22,6 +22,7 @@ import {
   findProvenanceMismatches,
   validateFicheFrontMatter,
 } from '../src/backlog/fiche-validator.js';
+import { isFicheFileName } from '../src/backlog/fiche-file-name.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { frontMatter, readField, readListField } from '../src/loaders/fiches.js';
 
@@ -51,7 +52,7 @@ function listFicheFiles(root: string): string[] {
       continue;
     }
     for (const name of names) {
-      if (/^\d/.test(name) && name.endsWith('.md')) {
+      if (isFicheFileName(name)) {
         files.push(join(dir, name));
       }
     }

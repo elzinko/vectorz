@@ -31,6 +31,9 @@ Les options du routeur se placent **avant** la commande. `ezk help` liste les co
 acceptent un autre projet le disent dans leur résumé (`--root <projet>`).
 
 - **Elle n'écrit que dans le projet visé.** Un ship depuis muti ne touche que `features/` de muti.
+- **Le ship dans la PR marche depuis un hôte.** `ezk pr ship-in-pr add --repo . --fiche-id <id> --pr <N>`,
+  tapé dans le projet hôte, trouve la méthode et vise ce dépôt. Une fiche à trois chiffres (`049-…`)
+  passe, comme pour `backlog check`. Rejoué le 2026-11-03 sur un clone de livestreamz.
 - **Une variable `EZK_ROOT` restée dans le shell ne redirige jamais une écriture.** Seule l'option
   `--root` désigne le projet d'une commande qui écrit (`backlog ship`, `regen`, `version`, `config`).
 - **Sans `--root`, cinq commandes visent le dépôt git du dossier où tu tapes la commande** :

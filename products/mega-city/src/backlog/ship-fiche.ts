@@ -19,6 +19,7 @@
 import { posix } from 'node:path';
 import { TERMINAUX } from '../core/fiche-schema.js';
 import { frontMatter, readField } from '../loaders/fiches.js';
+import { isFicheFileName } from './fiche-file-name.js';
 import { parsePlanSections } from './plan-sections.js';
 
 // ─── Lecture des liens, calquée sur bin/check-links.sh ───────────────────────────────────────
@@ -255,7 +256,6 @@ export class ShipRefusal extends Error {
   }
 }
 
-const FICHE_NAME = /^\d{4,}[-_].+\.md$/;
 const PLAN = 'features/PLAN.md';
 
 /** Pour tester le filet : on peut injecter un recaleur défaillant. Jamais utilisé en production. */
@@ -277,8 +277,12 @@ export function planShip(fs: RepoFs, input: ShipInput, seams: ShipSeams = {}): S
   const ids = new Map<string, string>(); // id → fiche
   for (const raw of input.files) {
     const file = posix.normalize(raw);
-    if (posix.dirname(file) !== 'features' || !FICHE_NAME.test(posix.basename(file))) {
+    if (posix.dirname(file) !== 'features') {
       reasons.push(`${raw} : doit être une fiche directement sous features/ (pas déjà dans done/)`);
+      continue;
+    }
+    if (!isFicheFileName(posix.basename(file))) {
+      reasons.push(`${raw} : nom de fichier non reconnu (attendu <id>-slug.md ou <id>_slug.md)`);
       continue;
     }
     if (!fs.exists(file)) {

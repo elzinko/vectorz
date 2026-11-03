@@ -8,7 +8,7 @@ milestone:
 version:
 labels: [methode, ship, projet-hote]
 depends:
-status: idea
+status: ready
 pr:
 evidence: none # scripts et messages d'erreur, pas d'écran ; preuve = commandes rejouées depuis un clone hôte
 created: 2026-10-27
@@ -105,18 +105,28 @@ Décision à trancher au groom : tolérer les noms à trois chiffres partout (`a
 fiches d'un hôte au format `0049-…` lors de sa migration. Recommandation : tolérer dans `ship` (c'est
 la panne vécue) et traiter le reste dans une fiche à part si un hôte le rencontre.
 
+## Décision de grooming (2026-11-03, run autonome)
+
+- **Une règle de nom partagée.** `ship` et `backlog check` lisent la même fonction : un nom de fiche
+  commence par des chiffres, puis `-` ou `_`, et finit par `.md`. `check` acceptait déjà les noms à
+  trois chiffres ; `ship` les accepte aussi. Le loader des vues garde sa règle : l'élargir change les
+  vues de tous les projets, hors de cette panne, comme la fiche le recommande.
+- **`ship-in-pr.sh add`** trouve la méthode par `loader_root()` et vise le dépôt par
+  `ship:fiche --root <racine git du dépôt>`, en chemin absolu : `pnpm --dir` change de dossier.
+- **La preuve chez l'hôte** se fait dans un clone jetable de livestreamz, jamais dans le vrai dépôt.
+
 ## Critères d'acceptation
 
-- [ ] Depuis un clone hôte sans `products/mega-city`, sur une branche de story propre,
+- [x] Depuis un clone hôte sans `products/mega-city`, sur une branche de story propre,
       `ship-in-pr.sh add --repo . --fiche-id <id> --pr <N>` range la fiche en `features/done/`
       (`status: shipped`, `pr: "#<N>"`) et committe `docs(features): ship <id> #<N>`.
-- [ ] `ezk --root <hôte> backlog ship --dry-run --pr '#999' features/049-repo-github-private.md`
+- [x] `ezk --root <hôte> backlog ship --dry-run --pr '#999' features/049-repo-github-private.md`
       accepte la fiche (code 0) ; `check` et `ship` acceptent les mêmes noms de fichier.
-- [ ] Un chemin réellement mauvais (`features/done/x.md`, `features/BACKLOG.md`) reste refusé, avec
+- [x] Un chemin réellement mauvais (`features/done/x.md`, `features/BACKLOG.md`) reste refusé, avec
       un message qui nomme la vraie raison.
-- [ ] Les tests du catalogue couvrent les deux cas (nom à trois chiffres ; dépôt hôte sans catalogue)
+- [x] Les tests du catalogue couvrent les deux cas (nom à trois chiffres ; dépôt hôte sans catalogue)
       et passent.
-- [ ] Le skill `ezk-sprint` (étape 8) et la doc hôte montrent une commande qui marche depuis un hôte.
+- [x] Le skill `ezk-sprint` (étape 8) et la doc hôte montrent une commande qui marche depuis un hôte.
 
 **Mesure de suivi** — sur le prochain run autonome dans un projet hôte, 0 ship fait à la main
 (journal `SPRINT.md` du run).
@@ -161,3 +171,14 @@ git switch main && git branch -D test/ship-hote
   (lecture depuis un hôte) ; [Recopier sur GitHub ce que la méthode écrit en local](0171-adapter-github-issues-push-only.md)
   § « Bloquant pour un projet hôte » (`pr emit-local`, `review emit`, `run context` refusent un hôte).
   Celle-ci ne couvre que le ship.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : preuve dans un
+  clone jetable de livestreamz, sans push ; la mesure de suivi ne bloque pas la fusion ; le loader des vues
+  garde sa règle. La priorité P1 reste à confirmer par le PO.
+- **Preuves du build (2026-11-03)**, sur un clone jetable de livestreamz (le vrai dépôt n'a pas bougé) :
+  - avant : `backlog ship --dry-run` refusait `features/049-repo-github-private.md` avec un faux motif ;
+    après : accepté, code 0 ; `features/BACKLOG.md` est refusé avec « nom de fichier non reconnu » ;
+  - `ship-in-pr.sh add --repo . --fiche-id 049 --pr 999` committe `docs(features): ship 049 #999` et
+    range la fiche ; la commande du skill, `ezk pr ship-in-pr add`, fait de même pour `048` ;
+  - `backlog check` contrôle toujours les 51 fiches de l'hôte, avec la même règle de nom que `ship`.
+  - Tests : le cas hôte dans `test-ship-in-pr.sh` (sans catalogue, trois chiffres, `--root` absolu,
+    aucun avertissement d'ajout vide) ; le nom à trois chiffres et le mauvais nom dans `ship-fiche.test.ts`.

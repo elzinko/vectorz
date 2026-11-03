@@ -114,10 +114,13 @@ do_add() {
   while IFS= read -r f; do fiches+=("$f"); done < <(git_c ls-files -- "features/${id}_*.md" "features/${id}-*.md")
   [[ ${#fiches[@]} -eq 1 ]] || die 2 "fiche ${id} introuvable (ou ambiguë) sous features/ : ${#fiches[@]} candidate(s)"
 
-  local mc="$repo/products/mega-city"
-  [[ -f "$mc/package.json" ]] \
-    || die 2 "ship:fiche introuvable dans ce dépôt ($mc) — fais le ship à la main (ezk-backlog ship), puis committe"
-  pnpm --dir "$mc" ship:fiche -- --pr "#$pr" "${fiches[0]}" \
+  # La méthode n'est pas forcément dans ce dépôt (un projet hôte) : on la trouve comme `check` et
+  # `undo`, puis on vise le dépôt par sa racine absolue (`pnpm --dir` change de dossier). Fiche
+  # 20261027194016734.
+  local mc root
+  mc="$(loader_root)"
+  root="$(git_c rev-parse --show-toplevel)" || die 2 "racine git introuvable pour $repo"
+  pnpm --dir "$mc" ship:fiche -- --root "$root" --pr "#$pr" "${fiches[0]}" \
     || die 2 "ship:fiche a refusé ou échoué — rien committé (voir son message ci-dessus)"
 
   # Arbre propre au départ : tout ce qui a bougé vient du ship. Le `git mv` est déjà dans
@@ -127,7 +130,7 @@ do_add() {
     git_c diff --name-only
     git_c ls-files --others --exclude-standard
   )
-  git_c add -- ${changed[@]+"${changed[@]}"}
+  [[ ${#changed[@]} -gt 0 ]] && git_c add -- "${changed[@]}"
   git_c commit -q -m "docs(features): ship ${id} #${pr}" \
     -m "Le ship voyage dans la PR (ADR-0049) : la fiche arrive en done/ avec son code, quel que soit le canal de merge."
   echo "SHIP: added $(git_c rev-parse --short HEAD)"

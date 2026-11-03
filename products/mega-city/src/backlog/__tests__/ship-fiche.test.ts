@@ -179,10 +179,17 @@ describe('planShip — calcule tout en mémoire, refuse avant d’écrire', () =
   it('refuse sans rien écrire : fiche déjà dans done/, hors fiche, introuvable, double', () => {
     const run = (files: string[]) => () => planShip(memFs(fixture()), { ...ship, files });
     expect(run([Z])).toThrow(ShipRefusal);
-    expect(run(['features/BACKLOG.md'])).toThrow(/directement sous features/);
+    expect(run(['features/BACKLOG.md'])).toThrow(/nom de fichier non reconnu/);
+    expect(run(['features/done/20260101000000009_z.md'])).toThrow(/directement sous features/);
     expect(run(['features/20260101000000077_absente.md'])).toThrow(/introuvable/);
     expect(run([A, A])).toThrow(/deux fois/);
     expect(run([])).toThrow(/aucune fiche/);
+  });
+
+  it('accepte une fiche d’hôte à trois chiffres, comme backlog check (fiche 20261027194016734)', () => {
+    const files = { ...fixture(), 'features/049-repo.md': fm('0049', 'Une fiche d’un hôte migré.') };
+    const plan = planShip(memFs(files), { ...ship, files: ['features/049-repo.md'] });
+    expect(plan.moves).toEqual([{ from: 'features/049-repo.md', to: 'features/done/049-repo.md' }]);
   });
 
   it('refuse un statut non admis, une PR vide, une destination existante', () => {
