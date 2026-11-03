@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261027194016734_ship-depuis-projet-hote.md](../20261027194016734_ship-depuis-projet-hote.md)
+> 🗎 Rendu de la fiche [features/20261027194016734_ship-depuis-projet-hote.md](../done/20261027194016734_ship-depuis-projet-hote.md)
 
 # 20261027194016734 — Ship depuis un projet hôte : les deux commandes de ship refusent
 

@@ -8,8 +8,8 @@ milestone:
 version:
 labels: [methode, ship, projet-hote]
 depends:
-status: ready
-pr:
+status: shipped
+pr: "local (1829a56e)"
 evidence: none # scripts et messages d'erreur, pas d'écran ; preuve = commandes rejouées depuis un clone hôte
 created: 2026-10-27
 ---
@@ -29,9 +29,9 @@ scripts et on prouve le ship depuis un clone hôte.
 
 - **Ship** : ranger la fiche d'une story en `features/done/`, avec `status: shipped` et son numéro de
   PR, par un commit dans la branche de la PR
-  ([ADR-0049](../products/mega-city/docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)).
+  ([ADR-0049](../../products/mega-city/docs/adr/0049-ship-fiche-dans-la-pr-vues-post-merge.md)).
 - **Projet hôte** : un dépôt qui utilise la méthode ezk sans contenir vectorz (livestreamz, muti,
-  samplerz). Voir [ezk depuis un projet hôte](../products/mega-city/docs/ezk-depuis-un-projet-hote.md).
+  samplerz). Voir [ezk depuis un projet hôte](../../products/mega-city/docs/ezk-depuis-un-projet-hote.md).
 - **Catalogue** : `products/mega-city`, le dossier de vectorz qui porte les scripts de la méthode.
 
 ## Contexte / Problème
@@ -40,7 +40,7 @@ Vécu au run autonome `ezk-product-build` sur livestreamz, le 2026-10-27 (PR #86
 journal `SPRINT.md` du run, entrée de 14:07). Deux pannes distinctes, une par commande.
 
 **Panne 1 — `ship-in-pr.sh add` cherche le catalogue au mauvais endroit.** Dans
-[ship-in-pr.sh](../products/mega-city/skills/ezk-pr/scripts/ship-in-pr.sh), `do_add` fixe en dur :
+[ship-in-pr.sh](../../products/mega-city/skills/ezk-pr/scripts/ship-in-pr.sh), `do_add` fixe en dur :
 
 ```bash
 local mc="$repo/products/mega-city"
@@ -56,7 +56,7 @@ sinon le chemin physique du script) sert à `check` et `undo`. Et `ship:fiche` a
 pour viser un autre projet (en-tête de `bin/ship-fiche.ts`). `add` n'utilise ni l'un ni l'autre.
 
 **Panne 2 — `ezk backlog ship` refuse les noms de fichier à trois chiffres.** Dans
-[ship-fiche.ts](../products/mega-city/src/backlog/ship-fiche.ts), `FICHE_NAME = /^\d{4,}[-_].+\.md$/`
+[ship-fiche.ts](../../products/mega-city/src/backlog/ship-fiche.ts), `FICHE_NAME = /^\d{4,}[-_].+\.md$/`
 exige au moins quatre chiffres en tête du nom. Les fiches historiques de livestreamz s'appellent
 `049-repo-github-private.md` (avec `id: "0049"` dans l'en-tête). `backlog check` et `backlog regen`
 les acceptent ; `ship` les refuse, avec un message qui ment sur la cause :
@@ -97,7 +97,7 @@ branche de story (hôte) ─▶ ship-in-pr.sh add ─▶ loader_root() trouve le
    loader acceptent, à la place du regex local à quatre chiffres. Deux messages distincts : « pas
    directement sous features/ » et « nom de fichier non reconnu (attendu `<id>-slug.md` ou
    `<id>_slug.md`) ». Le test existant `directement sous features` tient toujours.
-3. **Doc et skill** : [ezk depuis un projet hôte](../products/mega-city/docs/ezk-depuis-un-projet-hote.md)
+3. **Doc et skill** : [ezk depuis un projet hôte](../../products/mega-city/docs/ezk-depuis-un-projet-hote.md)
    et `ezk-sprint` étape 8 montrent la commande telle qu'elle se tape depuis un hôte, rejouée une fois.
 
 Décision à trancher au groom : tolérer les noms à trois chiffres partout (`aggregate-apply.ts`,
@@ -167,8 +167,8 @@ git switch main && git branch -D test/ship-hote
 - Constat lié, hors périmètre : `sprint.sh start --lot` résout les stories par le préfixe du nom de
   fichier (`004`), pas par l'`id` de l'en-tête (`0004`). Même racine (nom de fichier ≠ id sur un hôte
   migré) ; fiche à part si ça se reproduit.
-- Fiches voisines : [Uniformiser --root](20261013143324404_root-uniforme-avant-apres-verbe.md)
-  (lecture depuis un hôte) ; [Recopier sur GitHub ce que la méthode écrit en local](0171-adapter-github-issues-push-only.md)
+- Fiches voisines : [Uniformiser --root](../20261013143324404_root-uniforme-avant-apres-verbe.md)
+  (lecture depuis un hôte) ; [Recopier sur GitHub ce que la méthode écrit en local](../0171-adapter-github-issues-push-only.md)
   § « Bloquant pour un projet hôte » (`pr emit-local`, `review emit`, `run context` refusent un hôte).
   Celle-ci ne couvre que le ship.
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : preuve dans un
