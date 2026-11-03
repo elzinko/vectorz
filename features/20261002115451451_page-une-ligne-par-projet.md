@@ -8,6 +8,7 @@ milestone: cockpit
 version:
 labels: [ezk-map, supervision]
 status: idea
+blocked: deferred
 pr:
 evidence:
 created: 2026-10-02
@@ -60,3 +61,7 @@ Direction, à cadrer au grooming. Sur la liste des projets du cockpit, une ligne
 - 2026-11-02 : [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) fait de mission control le seul écran. Cette page
   d'accueil se construit donc dans mission control, pas dans la page web de la méthode, qui sera
   retirée. Mission control a déjà une vue « Tous les projets » : à comparer au grooming.
+- **Mise en attente le 2026-11-03** (run autonome) : mission control a déjà l'accueil « Tous les
+  projets », une ligne par projet avec ses sessions. Il n'y montre ni la config, ni les fiches prêtes,
+  ni le dernier run. La fiche dit que tu ne sais pas encore si c'est ton usage : à toi de dire si cet
+  ajout t'est utile.

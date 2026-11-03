@@ -9,6 +9,7 @@ milestone: cockpit
 version:
 epic:
 status: idea
+blocked: panel
 pr:
 created: 2026-08-30
 ---
@@ -89,3 +90,7 @@ Raison : décrire les étapes d'un skill comme de la donnée est le socle de la 
 la vue [voir les fiches posées sur le schéma du process, avec leur session](done/20261002115451315_fiches-sur-le-process-avec-session.md).
 La position fine, ce sont les étapes internes du sprint : BDD, TDD, gate, revue. Le panel
 `ezk-architect` + `ezk-pm` reste requis avant tout build.
+- **Mise en attente le 2026-11-03** (run autonome) : le mécanisme des étapes configurables recouvre la
+  fiche [Configurer les étapes et les choix de la méthode](20261009104401282_config-etapes-et-choix-methode.md),
+  Skema et ADR-0040. Les notes de cette fiche-là demandent un panel `ezk-architect` + `ezk-pm` pour ce
+  morceau, et une fusion éventuelle des deux fiches te revient (ADR-0051).

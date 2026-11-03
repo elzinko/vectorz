@@ -7,6 +7,7 @@ product: mega-city
 milestone: methode-configurable
 version:
 status: idea
+blocked: design
 pr:
 evidence: none # garde-fou de session, sans écran
 created: 2026-10-08
@@ -72,3 +73,6 @@ Pourquoi soft d'abord (tranché PO) : un rappel qu'on peut couper coûte peu et 
 - Capturée en `idea` sur demande PO (2026-10-08), P2 : garde-fou qui change l'usage quotidien.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
+- **Mise en attente le 2026-11-03** (run autonome) : la forme reste à choisir. Tu as dit « je ne sais
+  pas trop » le 2026-10-08 ; un garde-fou qui pousse chaque session dans la méthode change ton usage
+  de Claude Code au quotidien. À cadrer avec toi.
