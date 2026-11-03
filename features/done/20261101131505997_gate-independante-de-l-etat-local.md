@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [gate, tests, worktree]
-status: ready
-pr:
+status: shipped
+pr: "local (55a345b6)"
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
 ---
@@ -76,7 +76,7 @@ git worktree add /tmp/wt-gate -b essai-gate main && cd /tmp/wt-gate && pnpm inst
 ## Notes
 
 - Née de la rétro légère du 2026-11-01 (P3 de la rétro), acceptée par le PO le même jour :
-  [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
+  [rétro du run des contrats JSON](../../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : proposition précisée d'après le code ; taille d'une
   petite story (deux helpers de test, une variable lue par le lanceur).

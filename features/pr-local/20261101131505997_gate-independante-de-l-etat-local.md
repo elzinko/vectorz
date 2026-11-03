@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261101131505997_gate-independante-de-l-etat-local.md](../20261101131505997_gate-independante-de-l-etat-local.md)
+> 🗎 Rendu de la fiche [features/20261101131505997_gate-independante-de-l-etat-local.md](../done/20261101131505997_gate-independante-de-l-etat-local.md)
 
 ## En clair
 

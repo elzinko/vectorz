@@ -70,7 +70,7 @@ dégradé, sans sous-agent par lentille (mode léger, rétro après chaque sprin
 
 Porté par l'orchestrateur, comme le tour 1.
 
-- P1 recoupe la fiche [la gate ne dépend ni de l'index généré ni du retard sur GitHub](../../features/20261101131505997_gate-independante-de-l-etat-local.md),
+- P1 recoupe la fiche [la gate ne dépend ni de l'index généré ni du retard sur GitHub](../../features/done/20261101131505997_gate-independante-de-l-etat-local.md),
   qui supprime la dépendance à l'index. P1 reste distincte : elle traite aussi la compilation de
   mission control, et vise un seul geste pour un worktree neuf.
 - P2 devient une exploration plutôt qu'une fiche : il faut d'abord comprendre comment le lanceur
