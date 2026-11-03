@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (ca99dccf)"
 evidence: none # route d'API, sans écran
 created: 2026-11-03
 ---

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103191932067_pouce-refuse-cache-sa-raison.md](../20261103191932067_pouce-refuse-cache-sa-raison.md)
+> 🗎 Rendu de la fiche [features/20261103191932067_pouce-refuse-cache-sa-raison.md](../done/20261103191932067_pouce-refuse-cache-sa-raison.md)
 
 # Un pouce de revue refusé renvoie la bannière d'ezk au lieu de la raison
 
