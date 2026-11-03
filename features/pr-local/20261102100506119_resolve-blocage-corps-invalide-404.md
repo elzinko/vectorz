@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102100506119_resolve-blocage-corps-invalide-404.md](../20261102100506119_resolve-blocage-corps-invalide-404.md)
+> 🗎 Rendu de la fiche [features/20261102100506119_resolve-blocage-corps-invalide-404.md](../done/20261102100506119_resolve-blocage-corps-invalide-404.md)
 
 # Résoudre un blocage avec un corps invalide répond « introuvable »
 

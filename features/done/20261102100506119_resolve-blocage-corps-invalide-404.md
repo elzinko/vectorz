@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control, api]
-status: ready
-pr:
+status: shipped
+pr: "local (bb67c8a6)"
 evidence: none # route HTTP du daemon ; pas d'écran
 created: 2026-11-02
 ---
@@ -67,6 +67,6 @@ Le gestionnaire lit le corps à part, avant de chercher le blocage.
 - Trouvé par ezk-scout, rapport `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz/50a740fe-2443-4e7f-bcb3-17d581e154ae/scratchpad/ezk-scout/cop1-2026-11-02/report.md` (brouillon B5), le 2026-11-02.
 - Indice de localisation, non garanti :
   `products/cop1/packages/app/src/features/blocage-api/application/BlocageApiHandler.ts:53`.
-- Voisine livrée : [câbler la boucle de blocage](done/0021-cabler-boucle-blocage.md).
+- Voisine livrée : [câbler la boucle de blocage](0021-cabler-boucle-blocage.md).
 - **Groomée le 2026-11-03** (run autonome) : la cause est un seul `catch` pour la
   lecture du corps et la résolution (`BlocageApiHandler.ts`). Aucun écran ne change.
