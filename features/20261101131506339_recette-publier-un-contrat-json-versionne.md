@@ -41,17 +41,26 @@ implémentations et de refaire les deux erreurs déjà payées (schéma trop str
 
 ## Proposition
 
-À préciser au grooming.
+Précisée au grooming du 2026-11-03 (run autonome). Depuis la fiche, la méthode a publié cinq autres
+contrats sur le même patron (`contracts/` : board-show, backlog-show, board-process, board-maps,
+config-show, law-show, law-object). La recette part de ces sept preuves.
 
-- Une recette dans `recipes/`, au format du contrat de recette, qui pointe vers les deux
-  implémentations (`fichier:ligne`) sans recopier leur code.
-- Elle passe `ezk-chef check`.
+1. **Une recette** `recipes/publier-un-contrat-json-versionne.md`, au format du gabarit
+   (`recipes/RECIPE_TEMPLATE.md`), `home: central`. Elle pointe vers les implémentations par
+   `fichier:ligne` et ne recopie aucun code.
+2. **Le patron en étapes** : le format décrit une fois en zod strict côté producteur ; le schéma publié
+   rendu tolérant (`tolerant()` de `src/io/contract-files.ts`) ; un exemple généré sur une fixture ;
+   une commande `…:contract [--write]` qui régénère ou vérifie ; un test de contrat qui échoue si les
+   fichiers ne sont plus à jour ; un consommateur qui lit `schema_version` d'abord.
+3. **Les pièges payés**, chacun avec sa date : le schéma publié trop strict ; la sortie coupée à 64 Ko
+   par un `process.exit` dans un tuyau (on pose `process.exitCode`) ; une valeur d'énumération ajoutée
+   qu'un consommateur strict refuse (loi du 2026-11-03 : le consommateur change dans le même commit).
 
 ## Critères d'acceptation
 
 - [ ] La recette existe, passe `ezk-chef check`, et figure dans le livre des recettes.
-- [ ] Elle pointe vers les deux contrats existants et vers `contract-files.ts`.
-- [ ] Elle nomme les deux pièges : schéma publié strict, sortie coupée à 64 Ko.
+- [ ] Elle pointe vers au moins deux contrats existants et vers `contract-files.ts`, par `fichier:ligne`.
+- [ ] Elle nomme les trois pièges : schéma publié strict, sortie coupée à 64 Ko, énumération élargie.
 
 ## Comment vérifier
 
@@ -64,3 +73,5 @@ ezk recipes
 - Née de la rétro légère du 2026-11-01 (P9 de la rétro), acceptée par le PO le même jour :
   [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
+- Groomée le 2026-11-03 (run autonome) : sept contrats existent désormais ; un troisième piège (énumération
+  élargie, sprint 13 du 2026-11-03) rejoint les deux d'origine.
