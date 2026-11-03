@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, portier]
-status: idea
+status: ready
 pr:
 evidence: none # script de sprint, pas d'écran
 created: 2026-10-03
@@ -33,16 +33,22 @@ refaire la même danse à `close`. On veut que le script reconnaisse un vrai spr
 
 ## Proposition
 
-`sprint.sh` reconnaît un sprint ouvert par une marque sûre (ex. `Statut: en cours` + date d'ouverture
-au format courant), et traite un `SPRINT.md` **suivi par git** sans cette marque comme un instantané :
-il le signale par une ligne `WARN:` et ne bloque pas. La voie conseillée reste de ne pas commiter
-`SPRINT.md` (fiche [[20261001192624192]]).
+Re-scopée le 2026-11-03 : depuis la refonte du portier (v0.14), le journal du sprint vit hors de
+l'arbre, dans `<git-common-dir>/ezk/sprints/<branche>.md`. Un `SPRINT.md` resté à la racine n'est lu
+qu'une fois, pour une reprise : s'il ne porte pas la branche courante, `start` le signale par une ligne
+`SPRINT-FOREIGN:` et ouvre un journal neuf. Le symptôme de la fiche ne devrait donc plus se produire.
+
+Ce qui manque, c'est la preuve sur le cas exact de muti : un `SPRINT.md` d'ancien format, **suivi par
+git**, sans ligne `Branche:`. La suite `test-sprint-lifecycle.sh` couvre un fichier étranger non
+suivi, avec une ligne `Branche:`. On ajoute ce cas-là à la suite. Si le test échoue, on corrige
+`sprint.sh` dans la même story.
 
 ## Critères d'acceptation
 
-- [ ] `start` ouvre un sprint dans un dépôt où un `SPRINT.md` d'ancien format est commité, sans
-      geste manuel, avec un `WARN:` explicite.
-- [ ] Un vrai sprint ouvert est toujours refusé (`REFUSED open_sprint`) — test existant intact.
+- [ ] Dans un dépôt où un `SPRINT.md` d'ancien format est committé, sans ligne `Branche:`, `start`
+      ouvre un sprint sans geste manuel et le signale par `SPRINT-FOREIGN:`.
+- [ ] `close` scelle ce sprint sans toucher au `SPRINT.md` committé, et l'arbre reste propre.
+- [ ] Un vrai sprint ouvert est toujours refusé (`REFUSED open_sprint`) : test existant intact.
 - [ ] `test-sprint-lifecycle.sh` couvre le cas.
 
 ## Comment vérifier
@@ -71,3 +77,7 @@ bash products/mega-city/skills/ezk-sprint/scripts/test-sprint-lifecycle.sh
   du 14/10 sans relire le code — faute corrigée. Retour `idea` : **à re-scoper** (reste au plus un
   durcissement défensif de `sprint_state()` : reconnaître `en cours` explicitement, un fichier sans marqueur
   = instantané). Nouvelle preuve pour la fiche « [prête vérifie la prémisse](done/20261015213921103_dor-verifie-premisse-dans-le-code.md) ».
+- **Re-groomée `ready` le 2026-11-03** (run autonome), après relecture du code : `do_start` traite un
+  `SPRINT.md` racine sans `Branche:` comme étranger (`SPRINT-FOREIGN`), il ne le compte pas comme
+  sprint ouvert. La story se réduit à la preuve sur le cas exact de muti, plus le correctif si la
+  preuve échoue.
