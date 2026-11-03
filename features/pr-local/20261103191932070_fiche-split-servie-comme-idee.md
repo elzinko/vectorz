@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103191932070_fiche-split-servie-comme-idee.md](../20261103191932070_fiche-split-servie-comme-idee.md)
+> 🗎 Rendu de la fiche [features/20261103191932070_fiche-split-servie-comme-idee.md](../done/20261103191932070_fiche-split-servie-comme-idee.md)
 
 # Une fiche découpée est servie comme une idée par mission control
 

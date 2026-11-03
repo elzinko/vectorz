@@ -34,7 +34,7 @@ Sprint 23, le portier de sprint (dernière fiche constructible sans le PO) :
 Passe scout du 2026-11-03 au soir, brouillons retenus par `ezk-pm` en mode auto (B2 laissé au PO) :
 - `20261103191932064` — la vue Fiches ne montre jamais les fiches livrées · build (sprint 24)
 - ~~`20261103191932067` — un pouce refusé cache sa raison derrière la bannière d'ezk · build (sprint 24)~~ — shipped
-- `20261103191932070` — une fiche découpée est servie comme une idée · build (sprint 24)
+- ~~`20261103191932070` — une fiche découpée est servie comme une idée · build (sprint 24)~~ — shipped
 - `20261103191932074` — la fenêtre d'une fiche affiche le Markdown brut · groom (sprint 25)
 - `20261103191932077` — un « 0 » coupé dépasse au bout de la barre « Entonnoir » · groom (sprint 25)
 - `20261103191932080` — les lignes de version promettent un clic qui ne fait rien · groom (sprint 25)
