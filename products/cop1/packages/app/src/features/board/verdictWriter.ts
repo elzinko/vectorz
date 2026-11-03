@@ -23,6 +23,20 @@ export type VerdictResponse = { status: 200 | 400 | 404 | 502; body: unknown };
 const FICHE_ID = /^\d{4,20}$/;
 const VALUES = ['up', 'down', 'none'] as const;
 
+/**
+ * La raison donnée par la méthode : la première ligne de sa sortie d'erreur qui n'est pas un avis du
+ * routeur `ezk` (« ezk : dépôt visé : … », « ezk : … s'est terminé avec le code 1 »). Ces avis sont
+ * voulus côté terminal, mais ils cachaient la raison d'un refus (fiche 20261103191932067).
+ */
+function methodMessage(stderr: string): string {
+  return (
+    stderr
+      .split('\n')
+      .map((line) => line.trim())
+      .find((line) => line !== '' && !line.startsWith('ezk : ')) ?? ''
+  );
+}
+
 const refuse = (status: 400 | 404 | 502, error: string): VerdictResponse => ({
   status,
   body: { ok: false, error },
@@ -48,11 +62,7 @@ export async function writeVerdictThroughEzk(
   if (!project) return refuse(404, `projet inconnu : ${projet}`);
 
   const result = await deps.run(['--root', project.root, 'review', 'verdict', id, pouce]);
-  const message =
-    result.stderr
-      .split('\n')
-      .find((line) => line.trim() !== '')
-      ?.trim() ?? '';
+  const message = methodMessage(result.stderr);
   if (result.code === 0) {
     deps.onWritten(project.root);
     return { status: 200, body: { ok: true, id, pouce } };

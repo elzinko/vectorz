@@ -71,6 +71,38 @@ describe('writeVerdictThroughEzk — rend la réponse de la méthode', () => {
     expect(d.onWritten).not.toHaveBeenCalled();
   });
 
+  // fiche 20261103191932067 — la bannière du routeur précède la raison : elle ne la remplace plus
+  it('un refus précédé de la bannière d’ezk rend la raison, pas la bannière', async () => {
+    const d = deps({
+      code: 1,
+      stderr:
+        'ezk : dépôt visé : /tmp/projet\nrefusé : fiche inconnue : 1234\nezk : « bin/review-verdict.ts » s’est terminé avec le code 1.\n',
+    });
+    const res = await writeVerdictThroughEzk(
+      { projet: 'vectorz', id: '1234', pouce: 'up' },
+      d.deps,
+    );
+    expect(res).toEqual({
+      status: 400,
+      body: { ok: false, error: 'refusé : fiche inconnue : 1234' },
+    });
+  });
+
+  it('un refus sans autre ligne que les avis d’ezk dit « refusé par la méthode »', async () => {
+    const d = deps({ code: 1, stderr: 'ezk : dépôt visé : /tmp/projet\n' });
+    const res = await writeVerdictThroughEzk({ projet: 'vectorz', id: ID, pouce: 'up' }, d.deps);
+    expect(res).toEqual({ status: 400, body: { ok: false, error: 'refusé par la méthode' } });
+  });
+
+  it('une panne d’ezk garde son message, sans la bannière', async () => {
+    const d = deps({ code: 2, stderr: 'ezk : dépôt visé : /tmp/projet\n✗ option --x inconnue\n' });
+    const res = await writeVerdictThroughEzk({ projet: 'vectorz', id: ID, pouce: 'up' }, d.deps);
+    expect(res).toEqual({
+      status: 502,
+      body: { ok: false, error: 'ezk a échoué (code 2) : ✗ option --x inconnue' },
+    });
+  });
+
   it('une autre panne d’ezk rend 502 et le dit', async () => {
     const d = deps({ code: 127, stderr: 'ezk: command not found' });
     const res = await writeVerdictThroughEzk({ projet: 'vectorz', id: ID, pouce: 'up' }, d.deps);
