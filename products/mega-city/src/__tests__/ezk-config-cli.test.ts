@@ -79,6 +79,19 @@ describe('ezk config — aide et options (fiche 20261004083838781)', () => {
     expect(r.out).not.toMatch(/review\.adverse\s+skip/);
   });
 
+  it('show dit le menu de groom : menu par défaut, la sélection, ou l’erreur (fiche 20261009104401282)', () => {
+    const config = join(repo, '.vectorz', 'config.yml');
+    try {
+      expect(cfg(['show']).out).toMatch(/^grooming\.techniques\s+menu\s/m);
+      writeFileSync(config, 'github: false\ngrooming:\n  techniques:\n    avis-architecte: true\n');
+      expect(cfg(['show']).out).toMatch(/^grooming\.techniques\s+avis-architecte\s/m);
+      writeFileSync(config, 'github: false\ngrooming:\n  techniques:\n    archi: true\n');
+      expect(cfg(['show']).out).toMatch(/^grooming\.techniques\s+ERREUR : .*« archi »/m);
+    } finally {
+      writeFileSync(config, 'github: false\n');
+    }
+  });
+
   it('show dit « skip » quand un humain pose le mode POC, et seulement avec la forme exacte', () => {
     const config = join(repo, '.vectorz', 'config.yml');
     try {

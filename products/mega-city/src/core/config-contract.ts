@@ -12,6 +12,7 @@
  * laisse tel quel.
  */
 import { z } from 'zod';
+import type { GroomingTechniques } from './grooming-config.js';
 import { EFFORTS, type ModelConfig, ROLES, TIERS, resolveAgent } from './model-config.js';
 import {
   ADVERSE_REVIEW_MODES,
@@ -49,6 +50,13 @@ export const ConfigShowSchema = z.strictObject({
   github: z.strictObject({ pr: z.boolean(), ci: z.boolean(), codexReview: z.boolean() }),
   integration: z.enum(INTEGRATION_STRATEGIES).describe('Sans PR : comment une story arrive sur main.'),
   releaseGate: z.boolean().describe('La gate de release bloque-t-elle le tag d’une version ?'),
+  groomingTechniques: z
+    .union([
+      z.strictObject({ mode: z.literal('menu') }),
+      z.strictObject({ mode: z.enum(['all', 'none', 'selection']), ids: z.array(z.string()) }),
+      z.strictObject({ mode: z.literal('error'), error: z.string() }),
+    ])
+    .describe("Le menu de `groom` pré-réglé par la config : `menu` (rien de posé), `all`, `none`, une sélection d'ids du catalogue, ou l'erreur qui nomme la clé fautive."),
   adverseReview: z
     .enum(ADVERSE_REVIEW_MODES)
     .describe('La revue adverse locale d’un sprint : `run` (le plancher) ou `skip` (mode POC, posé par un humain).'),
@@ -64,6 +72,7 @@ export interface ConfigShowInput {
   integration: IntegrationStrategy;
   release: ReleaseConfig;
   adverseReview: AdverseReview;
+  groomingTechniques: GroomingTechniques;
   models: ModelConfig;
 }
 
@@ -75,6 +84,7 @@ export function buildConfigShow(input: ConfigShowInput): ConfigShow {
     github: { pr: input.github.pr, ci: input.github.ci, codexReview: input.github.codexReview },
     integration: input.integration,
     releaseGate: input.release.gate,
+    groomingTechniques: input.groomingTechniques,
     adverseReview: input.adverseReview,
     agents: ROLES.map((agent) => {
       try {

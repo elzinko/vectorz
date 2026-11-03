@@ -44,6 +44,62 @@
       "type": "boolean",
       "description": "La gate de release bloque-t-elle le tag d’une version ?"
     },
+    "groomingTechniques": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "const": "menu"
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "all",
+                "none",
+                "selection"
+              ]
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "mode",
+            "ids"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "const": "error"
+            },
+            "error": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode",
+            "error"
+          ]
+        }
+      ],
+      "description": "Le menu de `groom` pré-réglé par la config : `menu` (rien de posé), `all`, `none`, une sélection d'ids du catalogue, ou l'erreur qui nomme la clé fautive."
+    },
     "adverseReview": {
       "type": "string",
       "enum": [
@@ -125,6 +181,7 @@
     "github",
     "integration",
     "releaseGate",
+    "groomingTechniques",
     "adverseReview",
     "agents"
   ]

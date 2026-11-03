@@ -23,9 +23,11 @@ import {
   type GithubMutation,
   adverseReview,
   githubCapabilities,
+  groomingTechniques,
   integrationStrategy,
   writeGithubConfig,
 } from '../src/loaders/project-config.js';
+import { groomingStatusText } from '../src/core/grooming-config.js';
 import { githubStatusText } from '../src/core/project-config.js';
 import { configShowData } from '../src/io/config-show.js';
 import { EFFORTS, ROLES, TIERS, resolveAgent } from '../src/core/model-config.js';
@@ -73,6 +75,8 @@ function printStatus(root: string): void {
       ? 'review.adverse       skip  (mode POC : ezk-reviewer est sauté, la gate locale reste)'
       : 'review.adverse       run   (revue adverse ezk-reviewer, plancher de toute fusion)',
   );
+  // Le menu de groom pré-réglé par la config (fiche 20261009104401282).
+  console.log(groomingStatusText(groomingTechniques(root)));
 }
 
 /**

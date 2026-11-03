@@ -75,6 +75,7 @@ describe('config show --json — le contrat', () => {
       integration: 'local-squash',
       release: { gate: true },
       adverseReview: 'run',
+      groomingTechniques: { mode: 'menu' },
       models: { roles: { 'ezk-dev': 'enorme' as never } },
     });
     expect(ConfigShowSchema.parse(data)).toEqual(data);
@@ -87,6 +88,16 @@ describe('config show --json — le contrat', () => {
     expect(configShowData(project()).adverseReview).toBe('run');
     expect(configShowData(project('review:\n  adverse: skip\n')).adverseReview).toBe('skip');
     expect(configShowData(project('review:\n  adverse: oui\n')).adverseReview).toBe('run');
+  });
+
+  it('le menu de groom : menu par défaut, all, une sélection, ou l’erreur qui nomme la clé (fiche 20261009104401282)', () => {
+    expect(configShowData(project()).groomingTechniques).toEqual({ mode: 'menu' });
+    expect(configShowData(project('grooming:\n  techniques: none\n')).groomingTechniques).toEqual({ mode: 'none', ids: [] });
+    expect(configShowData(project('grooming:\n  techniques:\n    avis-architecte: true\n    criteres-testables: false\n')).groomingTechniques)
+      .toEqual({ mode: 'selection', ids: ['avis-architecte'] });
+    const err = configShowData(project('grooming:\n  techniques:\n    archi: true\n')).groomingTechniques;
+    expect(err).toMatchObject({ mode: 'error' });
+    expect(JSON.stringify(err)).toContain('« archi »');
   });
 
   it('un YAML malformé lève une erreur qui nomme le fichier, jamais les défauts en silence', () => {

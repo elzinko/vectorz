@@ -102,17 +102,17 @@ grooming:
 
 POC = pré-répondre le menu de grooming par config (le reste est en Suite).
 
-- [ ] **Respecté en manuel** — avec `grooming.techniques` posé (ex. `archi: true, criterias: false`),
+- [x] **Respecté en manuel** — avec `grooming.techniques` posé (ex. `archi: true, criterias: false`),
       `ezk-backlog groom <id>` applique les techniques à `true`, saute celles à `false`, et **n'affiche
       pas le menu**.
-- [ ] **Respecté en auto** — en auto-groom (run autonome), la même config oriente les techniques
+- [x] **Respecté en auto** — en auto-groom (run autonome), la même config oriente les techniques
       appliquées.
-- [ ] **Raccourcis** — `all` applique toutes les techniques du catalogue ; `none` n'en applique aucune
+- [x] **Raccourcis** — `all` applique toutes les techniques du catalogue ; `none` n'en applique aucune
       (grooming sauté).
-- [ ] **Garde anti-silence** — une clé **inconnue** (hors catalogue) est **refusée** avec un message
+- [x] **Garde anti-silence** — une clé **inconnue** (hors catalogue) est **refusée** avec un message
       clair, jamais ignorée en silence. Sans ce critère, on « configure » une technique mal
       orthographiée qui ne fait rien, et la config ment.
-- [ ] **Défaut inchangé** — sans section `grooming.techniques`, le menu interactif s'affiche comme
+- [x] **Défaut inchangé** — sans section `grooming.techniques`, le menu interactif s'affiche comme
       aujourd'hui.
 
 ## Plan de build du POC (grooming du 2026-11-03, run autonome)
@@ -132,6 +132,9 @@ les ids stables du catalogue, jamais des numéros ni des alias.
    d'aujourd'hui ; `all`, `none` ou une liste s'appliquent sans menu, en manuel comme en auto-groom ;
    une erreur arrête le groom et la nomme.
 5. **Tests** : le résolveur, la sortie de `ezk config show`, le contrat régénéré, et le texte du skill.
+
+**Mesure de suivi** (après la fusion) : le premier auto-groom d'un projet qui pose `grooming.techniques`
+applique les techniques réglées, sans menu, et le dit dans son compte rendu.
 
 ## Comment vérifier
 
@@ -185,3 +188,8 @@ suffit au v1.
   critères se prouvent par les tests du résolveur, de `ezk config show` et du texte du skill ; ce qui ne
   se prouve qu'après la fusion (un vrai auto-groom réglé) part en mesure de suivi. Les gros morceaux de
   la Suite restent hors de ce sprint, en attente de panel.
+- **Preuves du build du POC (2026-11-03).** Sur un projet jetable, `ezk config show --root <projet>` dit
+  `grooming.techniques couper-au-poc, avis-architecte` pour une table, `none` en JSON pour `none`, une
+  ERREUR qui nomme « archi » pour un alias, et `menu` sans section. Le résolveur (5 cas), le contrat, la
+  commande et le texte de `groom` sont gardés par des tests. Le comportement de `groom` est porté par
+  son texte, que l'agent suit ; un vrai auto-groom réglé reste à observer (mesure de suivi).

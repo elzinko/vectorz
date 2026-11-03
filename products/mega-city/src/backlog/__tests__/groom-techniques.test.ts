@@ -105,6 +105,14 @@ describe('SKILL.md ezk-backlog — la boucle de groom est écrite (convention, p
     expect(existsSync(catalogPath)).toBe(true);
   });
 
+  it('lit la config avant le menu : menu, all, none, une liste, ou une erreur qui arrête (fiche 20261009104401282)', () => {
+    const regle = skill.split('**La config pré-règle le menu**')[1]?.split('   - **Menu court.**')[0] ?? '';
+    expect(regle).toContain('config show');
+    expect(regle).toContain('`grooming.techniques`');
+    for (const mot of ['`menu`', '`all`', '`none`', '`ERREUR`', '**sans afficher de menu**']) expect(regle, mot).toContain(mot);
+    expect(skill).toContain('Si la config pré-règle le menu (puce\n     ci-dessus), ses techniques remplacent ce choix.');
+  });
+
   it('documente les quatre paramètres qui forcent ou coupent l’architecte et le brainstorm', () => {
     for (const flag of ['--archi', '--no-archi', '--brainstorm', '--no-brainstorm']) {
       expect(skill, flag).toContain(flag);

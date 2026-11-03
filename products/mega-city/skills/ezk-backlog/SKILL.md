@@ -329,7 +329,15 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
    une boucle « propose, l'opérateur choisit, tu appliques, tu re-proposes ». Prior art : BMAD
    `advanced-elicitation` (50 méthodes, `methods.csv`) — voir le
    [rapport de benchmark](../../docs/benchmarks/2026-08-25-bmad-vs-ezk.md). Le catalogue est une
-   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (9 techniques).
+   **donnée** éditable : [`groom-techniques.yml`](groom-techniques.yml) (10 techniques).
+   - **La config pré-règle le menu** (fiche 20261009104401282). Avant tout menu, lis
+     `ezk --root "$(git rev-parse --show-toplevel)" config show`, ligne `grooming.techniques`.
+     `menu` : la boucle ci-dessous, inchangée. `all`, `none` ou une liste d'ids du catalogue :
+     applique ces techniques **sans afficher de menu**, avec ou sans opérateur ; `none` saute la
+     passe de raffinement. `ERREUR` : arrête le groom et cite le message, sans deviner la technique
+     voulue. Les slots du projet restent dus : une sélection qui ne les couvre pas ne les dispense
+     pas de la DoR. Un paramètre donné à la commande (`--archi`, `--no-archi`, `--brainstorm`,
+     `--no-brainstorm`) l'emporte sur la config pour sa technique.
    - **Menu court.** Propose 3 techniques (4 au plus), choisies sur le slot le plus faible :
      numérotées, une ligne chacune (titre + ce qu'elle va faire), plus `0 — terminer`. Si
      `ezk dor check <id>` nomme un **slot du projet** vide ou incomplet, propose d'office
@@ -345,7 +353,8 @@ sur un backlog vide ou minuscule, les étapes 2-3 sont triviales — ne les sur-
      personne ne peut répondre : appel d'un orchestrateur ou d'un run autonome (`ezk-product-build`,
      `ezk-pm`, `ezk-sprint` à l'intake sur une tête bloquée). Pour **chaque slot manquant** ou faible
      (le socle et les slots du projet), applique toi-même la technique la plus utile : une par slot,
-     en une passe, et nomme-les dans ton compte rendu. Un slot qui ne se remplit pas sans arbitrage
+     en une passe, et nomme-les dans ton compte rendu. Si la config pré-règle le menu (puce
+     ci-dessus), ses techniques remplacent ce choix. Un slot qui ne se remplit pas sans arbitrage
      reste dit tel quel : la fiche n'est pas prête, et l'appelant retombe sur son checkpoint « aucune
      fiche ready ».
 3. **Architecte et brainstorm** (fiche 20260812104022243). Deux techniques du catalogue APPELLENT un

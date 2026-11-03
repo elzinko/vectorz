@@ -11,7 +11,9 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Document, isMap, parseDocument, parse as parseYaml } from 'yaml';
+import { type GroomingTechniques, resolveGroomingTechniques } from '../core/grooming-config.js';
 import {
   type AdverseReview,
   type GithubCapabilities,
@@ -88,6 +90,22 @@ export function integrationStrategy(projectRoot: string): IntegrationStrategy {
 export function adverseReview(projectRoot: string): AdverseReview {
   const config = loadProjectConfig(projectRoot);
   return resolveAdverseReview((config as { review?: unknown } | undefined)?.review);
+}
+
+/** Les ids du catalogue des techniques de `groom`, dans son ordre (`skills/ezk-backlog/groom-techniques.yml`). */
+export function groomTechniqueIds(): string[] {
+  const path = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'skills', 'ezk-backlog', 'groom-techniques.yml');
+  const catalog = parseYaml(readFileSync(path, 'utf8')) as { techniques?: { id?: unknown }[] } | null;
+  return (catalog?.techniques ?? []).map((t) => t.id).filter((id): id is string => typeof id === 'string');
+}
+
+/**
+ * Le menu de `groom` tel que la config du projet le pré-règle (fiche 20261009104401282) : `menu` par
+ * défaut, `all`, `none`, une sélection, ou l'erreur qui nomme la clé fautive.
+ */
+export function groomingTechniques(projectRoot: string): GroomingTechniques {
+  const config = loadProjectConfig(projectRoot);
+  return resolveGroomingTechniques((config as { grooming?: unknown } | undefined)?.grooming, groomTechniqueIds());
 }
 
 /** Les trois capacités pilotables de la famille `github` (clés YAML canoniques, kebab). */

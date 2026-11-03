@@ -8,6 +8,9 @@
  },
  "integration": "push-ff",
  "releaseGate": false,
+ "groomingTechniques": {
+  "mode": "menu"
+ },
  "adverseReview": "run",
  "agents": [
   {
