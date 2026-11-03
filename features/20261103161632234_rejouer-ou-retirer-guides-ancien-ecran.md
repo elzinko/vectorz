@@ -8,6 +8,7 @@ milestone: board
 version:
 labels: [board, documentation, vocabulaire]
 status: idea
+blocked: deferred
 pr:
 evidence: none # documentation ; les écrans montrés sont ceux de mission control
 created: 2026-11-03
@@ -61,3 +62,12 @@ grep -rniwE "moniteur|cockpit|dashboard" scripts
 ## Notes
 
 - Fiche mère : [Réécrire les guides de l'ancien écran](done/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+- **Mise en attente le 2026-11-03** (run autonome) : garder ou retirer un guide engage ta stratégie de
+  documentation. Le 2026-11-02, tu as dit que la doc viendrait du code ou de mission control, pas d'un
+  wiki. Recommandation du run, à trancher par toi :
+  - retirer `docs/USER-GUIDE-web-ui.md` et `docs/tests/auth-panel.md` : ils décrivent des écrans que
+    mission control n'a pas ;
+  - retirer `docs/tests/moniteur-smoke.md` et `scripts/e2e/moniteur-smoke.mjs` : le carnet de tests de
+    mission control et la passe du scout couvrent ce besoin ;
+  - réécrire en court `docs/DOGFOOD.md` et `docs/demo-desktop-checklist.md` : la vérification de bout
+    en bout reste utile, mais son rejeu demande l'app Claude Desktop et une vraie session supervisée.
