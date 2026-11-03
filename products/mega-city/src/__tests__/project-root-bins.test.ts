@@ -128,6 +128,12 @@ describe('les scripts qui lisent les fiches du projet désigné', () => {
   });
 });
 
+/** Photo de l'index d'un dépôt : son contenu, ou `null` s'il n'existe pas (non versionné, ADR-0075). */
+function snapshotIndex(root: string): string | null {
+  const path = join(root, 'features', 'BACKLOG.md');
+  return existsSync(path) ? readFileSync(path, 'utf8') : null;
+}
+
 /** Le vrai lanceur `ezk`, depuis un dossier hors de tout dépôt, sans tsx dans le PATH. */
 function ezk(args: string[], env: Record<string, string> = {}) {
   const r = spawnSync(process.execPath, [launcher, ...args], {
@@ -142,13 +148,13 @@ describe('depuis un projet hôte : les commandes dont les skills ont besoin (fic
   const RETRO = '2026-10-03-retro-session-2026-10-02.md';
 
   it('ezk --root <projet> backlog regen : écrit l’index DE ce projet, jamais celui de vectorz', { timeout: 60_000 }, () => {
-    const vectorzIndex = readFileSync(join(repoRoot, 'features', 'BACKLOG.md'), 'utf8');
+    const vectorzIndex = snapshotIndex(repoRoot);
     const r = ezk(['--root', project, 'backlog', 'regen']);
     expect(r.code).toBe(0);
     const index = readFileSync(join(project, 'features', 'BACKLOG.md'), 'utf8');
     expect(index).toContain(PROJECT_FICHE);
     expect(index).not.toContain(A_VECTORZ_FICHE);
-    expect(readFileSync(join(repoRoot, 'features', 'BACKLOG.md'), 'utf8')).toBe(vectorzIndex);
+    expect(snapshotIndex(repoRoot)).toBe(vectorzIndex);
   });
 
   it('une EZK_ROOT restée dans le shell ne redirige pas une écriture : refus, rien d’écrit', { timeout: 60_000 }, () => {

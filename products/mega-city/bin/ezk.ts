@@ -27,6 +27,7 @@ import {
   type Manifest,
   type Step,
   behindNotice,
+  lagWarningSilenced,
   childEnv,
   delegationTarget,
   findCheckoutRoot,
@@ -155,7 +156,7 @@ async function main(argv: string[]): Promise<number> {
   // Avertir si le code d'ezk (ce checkout) est en retard sur origin/main : sinon une commande
   // tourne du code d'avant la dernière livraison, sans le dire (fiche 20261003201034897). On ne
   // lance rien — le checkout peut appartenir à une autre session.
-  const behind = behindNotice(countBehind(OWN_ROOT), OWN_ROOT);
+  const behind = lagWarningSilenced(process.env) ? null : behindNotice(countBehind(OWN_ROOT), OWN_ROOT);
   if (behind) warn(behind);
   // pnpm change de dossier avant de lancer le script ; INIT_CWD garde celui de l'utilisateur. Une
   // INIT_CWD laissée par un pnpm parent est périmée : on la remplace par le vrai dossier, que les

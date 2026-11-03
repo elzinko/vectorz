@@ -61,10 +61,10 @@ après         worktree neuf → photo « absent » → commande → photo « ab
 
 ## Critères d'acceptation
 
-- [ ] Dans un worktree neuf, sans `regen-backlog.sh`, `pnpm test` est vert.
-- [ ] Avec une branche en retard sur `origin/main`, `pnpm test` est vert.
-- [ ] Aucun test ne lit `features/BACKLOG.md` du vrai dépôt sans le créer lui-même.
-- [ ] Sans `EZK_NO_LAG_WARNING`, un checkout en retard écrit toujours l'avertissement : un test le
+- [x] Dans un worktree neuf, sans `regen-backlog.sh`, `pnpm test` est vert.
+- [x] Avec une branche en retard sur `origin/main`, `pnpm test` est vert.
+- [x] Aucun test ne lit `features/BACKLOG.md` du vrai dépôt sans le créer lui-même.
+- [x] Sans `EZK_NO_LAG_WARNING`, un checkout en retard écrit toujours l'avertissement : un test le
       garde.
 
 ## Comment vérifier
@@ -84,3 +84,11 @@ git worktree add /tmp/wt-gate -b essai-gate main && cd /tmp/wt-gate && pnpm inst
   garde l'avertissement sans `EZK_NO_LAG_WARNING` est dans la livraison ; le critère « worktree neuf »
   se prouve dans un vrai worktree neuf, sans `regen-backlog.sh`. À construire avant la fiche des
   règles lues au démarrage, qui ajoute un test de gate.
+- **Preuves du build (2026-11-03).**
+  - Worktree neuf, sans `regen-backlog.sh` : avant la correction, 5 tests rouges sur `ENOENT …
+    features/BACKLOG.md` ; après, les 5 fichiers concernés passent (41 tests) et l'index est toujours
+    absent après le passage. La gate complète tourne dans ce même worktree, sans index.
+  - Branche en retard : prouvée dans un clone jetable, dont `origin/main` pointe sur un commit
+    fictif en avance d'un. On ne touche jamais la référence `origin/main` du vrai dépôt, partagée par
+    toutes les sessions. Sans la correction, 2 tests du lanceur échouent ; avec, 25 passent. Le
+    lanceur écrit l'avertissement sans la variable, et se tait avec `EZK_NO_LAG_WARNING=1`.

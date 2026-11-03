@@ -30,7 +30,7 @@ function ezk(cwd: string, args: string[]) {
   const r = spawnSync(process.execPath, [launcher, ...args], {
     cwd,
     encoding: 'utf8',
-    env: { PATH: '/usr/bin:/bin', HOME: sandbox },
+    env: { PATH: '/usr/bin:/bin', HOME: sandbox, EZK_NO_LAG_WARNING: '1' },
   });
   return { code: r.status, out: r.stdout, err: r.stderr };
 }

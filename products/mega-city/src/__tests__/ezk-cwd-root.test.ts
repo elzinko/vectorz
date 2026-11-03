@@ -66,20 +66,25 @@ afterAll(() => {
 });
 
 const index = (root: string): string => readFileSync(join(root, 'features', 'BACKLOG.md'), 'utf8');
+/** Photo de l'index d'un dépôt : son contenu, ou `null` s'il n'existe pas (non versionné, ADR-0075). */
+const snapshot = (root: string): string | null => {
+  const path = join(root, 'features', 'BACKLOG.md');
+  return existsSync(path) ? readFileSync(path, 'utf8') : null;
+};
 
 describe('sans --root : le dépôt git du dossier courant', () => {
   it('depuis la racine du dépôt, regen écrit SON index, avec son titre, et dit où', { timeout: 60_000 }, () => {
-    const before = index(vectorz);
+    const before = snapshot(vectorz);
     const r = ezk(repo, ['backlog', 'regen']);
     expect(r.code).toBe(0);
     expect(r.err).toContain(`dépôt visé : ${repo}`);
     expect(index(repo).split('\n')[0]).toBe('# Backlog — dépôt jetable');
     expect(index(repo)).toContain(FICHE);
-    expect(index(vectorz)).toBe(before);
+    expect(snapshot(vectorz)).toBe(before);
   });
 
   it('depuis un sous-dossier, il vise toujours la racine du dépôt', { timeout: 60_000 }, () => {
-    rmSync(join(repo, 'features', 'BACKLOG.md'));
+    rmSync(join(repo, 'features', 'BACKLOG.md'), { force: true });
     const r = ezk(join(repo, 'apps', 'web'), ['backlog', 'regen']);
     expect(r.code).toBe(0);
     expect(r.err).toContain(`dépôt visé : ${repo}`);
@@ -87,7 +92,7 @@ describe('sans --root : le dépôt git du dossier courant', () => {
   });
 
   it('depuis un worktree, il vise ce worktree, pas le dépôt principal', { timeout: 60_000 }, () => {
-    rmSync(join(repo, 'features', 'BACKLOG.md'));
+    rmSync(join(repo, 'features', 'BACKLOG.md'), { force: true });
     const r = ezk(worktree, ['backlog', 'regen']);
     expect(r.code).toBe(0);
     expect(r.err).toContain(`dépôt visé : ${worktree}`);
@@ -96,7 +101,7 @@ describe('sans --root : le dépôt git du dossier courant', () => {
   });
 
   it('une EZK_ROOT restée dans le shell ne redirige pas l’écriture', { timeout: 60_000 }, () => {
-    rmSync(join(worktree, 'features', 'BACKLOG.md'));
+    rmSync(join(worktree, 'features', 'BACKLOG.md'), { force: true });
     const r = ezk(repo, ['backlog', 'regen'], { EZK_ROOT: worktree });
     expect(r.code).toBe(0);
     expect(existsSync(join(repo, 'features', 'BACKLOG.md'))).toBe(true);

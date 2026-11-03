@@ -458,6 +458,15 @@ export function findCheckoutRoot(cwd: string, exists: (path: string) => boolean)
   return nearestAncestorWith(MANIFEST_RELPATH, cwd, exists);
 }
 
+/** Posée à `1`, elle coupe l'avertissement de retard : un test qui compare le stderr ne dépend plus de
+ * l'état de `origin/main` (fiche 20261101131505997). */
+export const NO_LAG_WARNING_ENV = 'EZK_NO_LAG_WARNING';
+
+/** Vrai si l'environnement coupe l'avertissement de retard. Toute autre valeur que `1` le laisse. */
+export function lagWarningSilenced(env: NodeJS.ProcessEnv): boolean {
+  return env[NO_LAG_WARNING_ENV] === '1';
+}
+
 /**
  * L'avertissement « le code d'ezk est en retard », ou `null` si à jour (fiche 20261003201034897).
  * `ezk` exécute le code d'un checkout donné ; si ce checkout est en retard sur `origin/main`, une

@@ -3,7 +3,7 @@
  * Le comptage git (sans fetch) est fait au bord ; ici on prouve le message et son silence.
  */
 import { describe, expect, it } from 'vitest';
-import { behindNotice } from '../core/ezk-cli.js';
+import { behindNotice, lagWarningSilenced } from '../core/ezk-cli.js';
 
 describe('behindNotice (fiche 20261003201034897)', () => {
   it('à jour (0) → aucun message', () => {
@@ -24,5 +24,17 @@ describe('behindNotice (fiche 20261003201034897)', () => {
   it('valeurs non significatives → silence (jamais de faux signal)', () => {
     expect(behindNotice(-1, '/r')).toBeNull();
     expect(behindNotice(Number.NaN, '/r')).toBeNull();
+  });
+});
+
+describe('lagWarningSilenced (fiche 20261101131505997)', () => {
+  it('EZK_NO_LAG_WARNING=1 coupe l’avertissement', () => {
+    expect(lagWarningSilenced({ EZK_NO_LAG_WARNING: '1' })).toBe(true);
+  });
+
+  it('sans la variable, ou avec une autre valeur, l’avertissement reste', () => {
+    expect(lagWarningSilenced({})).toBe(false);
+    expect(lagWarningSilenced({ EZK_NO_LAG_WARNING: '0' })).toBe(false);
+    expect(lagWarningSilenced({ EZK_NO_LAG_WARNING: '' })).toBe(false);
   });
 });

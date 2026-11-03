@@ -26,7 +26,7 @@ function ezk(args: string[], cwd = elsewhere): { code: number | null; out: strin
   const r = spawnSync(process.execPath, [launcher, ...args], {
     cwd,
     encoding: 'utf8',
-    env: { PATH: '/usr/bin:/bin', HOME: elsewhere },
+    env: { PATH: '/usr/bin:/bin', HOME: elsewhere, EZK_NO_LAG_WARNING: '1' },
   });
   return { code: r.status, out: r.stdout, err: r.stderr };
 }
