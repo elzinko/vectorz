@@ -8,8 +8,8 @@ milestone: qualite
 version:
 depends: ["20261101215342537"]
 labels: [loi, regles, jetons]
-status: ready
-pr:
+status: shipped
+pr: "local (0147db7f)"
 evidence: none # commande et textes de skills, sans écran
 created: 2026-11-02
 ---
@@ -27,12 +27,12 @@ il démarre, par une commande `ezk`. Une session qui ne lance pas ce skill ne pa
   `ezk-sprint` applique la règle du worktree dédié, mais la loi installée ne la contient pas.
 - La cause tient en trois faits :
   - Le profil `global` ne compile que le bundle `base` dans `~/.claude/rules/iamthelaw.md`. C'est la
-    décision d'[ADR-0056](../products/mega-city/docs/adr/0056-loi-du-socle-par-le-global.md), pour
+    décision d'[ADR-0056](../../products/mega-city/docs/adr/0056-loi-du-socle-par-le-global.md), pour
     garder chaque session légère.
   - Les 17 règles vivent dans cinq autres bundles : `development`, `testing`, `token-economy`, `dod`
     et `clean-code`. Seul le profil `cop1-target` les déploie.
   - La loi du projet vectorz (`.iamthelaw/ENTRY.md`) est liée avec le profil `base`
-    ([ADR-0064](../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md)). Elle porte
+    ([ADR-0064](../../products/mega-city/docs/adr/0064-loi-bindee-par-projet-cap-law-only.md)). Elle porte
     donc les mêmes 10 règles que la loi globale.
 - 13 des 17 règles sont nommées dans le texte du skill ou de l'agent qui les cite. Le nom ne suffit
   pas : l'agent voit un identifiant, pas la règle.
@@ -120,11 +120,11 @@ compte 0 règle citée sans être installée. La troisième ne signale aucun éc
 
 ## Notes
 
-- Suite de [La méthode publie sa loi en JSON](done/20261101215342537_ezk-law-show-portee-des-regles.md),
+- Suite de [La méthode publie sa loi en JSON](20261101215342537_ezk-law-show-portee-des-regles.md),
   qui a mesuré le trou. Priorité P2, reprise de la fiche mère.
 - Amende ADR-0056 : une troisième voie pour la loi, en plus du socle global et de la loi par projet.
   Le build écrit un ADR court.
-- La [vue « Loi » de mission control](done/20260826222044335_carte-la-loi-graphe-visuel.md) devra montrer
+- La [vue « Loi » de mission control](20260826222044335_carte-la-loi-graphe-visuel.md) devra montrer
   cette nouvelle portée : un compteur de plus.
 - Hors de cette fiche : les règles de la couche projet (`.vectorz/rules/`, ADR-0050).
 - **Taille.** Six critères : une commande, onze textes, un test et la portée du contrat. La fiche
@@ -147,4 +147,4 @@ compte 0 règle citée sans être installée. La troisième ne signale aucun éc
   4 000 jetons) : l'objet le plus lourd, `agent:ezk-reviewer`, sort 7 705 octets, environ 1 900 jetons.
   Suivent `agent:ezk-dev` (7 700 octets) et `skill:ezk-sprint` (6 540 octets). Le coût n'est payé que par
   une session qui lance l'objet ; l'option écartée coûtait 7 500 jetons à chaque session. Décision et
-  retour en arrière : [ADR-0087](../products/mega-city/docs/adr/0087-regles-lues-au-demarrage-du-skill.md).
+  retour en arrière : [ADR-0087](../../products/mega-city/docs/adr/0087-regles-lues-au-demarrage-du-skill.md).

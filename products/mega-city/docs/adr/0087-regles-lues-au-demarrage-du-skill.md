@@ -3,7 +3,7 @@
 **Statut :** Accepté (run autonome du 2026-11-03, porte « prête » tranchée par ezk-pm sous délégation du PO)
 **Date :** 2026-11-03
 **Deciders :** ezk-pm, sous la délégation du PO (« continue sans mon intervention »)
-**Fiche :** [Chaque skill et chaque agent lit ses règles au démarrage](../../../../features/20261102103553108_chaque-skill-lit-ses-regles-a-l-usage.md)
+**Fiche :** [Chaque skill et chaque agent lit ses règles au démarrage](../../../../features/done/20261102103553108_chaque-skill-lit-ses-regles-a-l-usage.md)
 **Amende :** [ADR-0056 — La loi du socle voyage par le global](0056-loi-du-socle-par-le-global.md)
 
 ## En clair

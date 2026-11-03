@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102103553108_chaque-skill-lit-ses-regles-a-l-usage.md](../20261102103553108_chaque-skill-lit-ses-regles-a-l-usage.md)
+> 🗎 Rendu de la fiche [features/20261102103553108_chaque-skill-lit-ses-regles-a-l-usage.md](../done/20261102103553108_chaque-skill-lit-ses-regles-a-l-usage.md)
 
 ## En clair
 

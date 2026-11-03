@@ -59,7 +59,7 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 - `20261102183114656` — ezk-scout propose aussi des améliorations · groom
 
 **Milestone `qualite` — « La méthode tient debout »** :
-- `20261102103553108` — chaque skill lit ses règles au démarrage · groom
+- ~~`20261102103553108` — chaque skill lit ses règles au démarrage · groom~~ — shipped
 - ~~`20261101131505997` — la gate ne dépend ni de l'index généré ni du retard sur GitHub · groom~~ — shipped
 - `20261101162826995` — le dossier de contrat porte le nom de la méthode · groom
 
