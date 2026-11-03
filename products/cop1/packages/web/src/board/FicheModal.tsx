@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import type { FicheDetail } from './types.js';
 import { STATUS_LABEL } from './activity.js';
-import { inlineMarkdown } from './inlineMarkdown.js';
+import { inlineMarkdown, markdownBlocks } from './inlineMarkdown.js';
 
 interface FicheModalProps {
   fiche: FicheDetail;
@@ -120,7 +120,7 @@ export function FicheModal({ fiche, onClose, onOpenPage, onVerdict }: FicheModal
 
         <div className="sec" style={{ marginTop: 14 }}>
           <h4>Contexte</h4>
-          <p>{inlineMarkdown(fiche.ctx)}</p>
+          {markdownBlocks(fiche.ctx)}
         </div>
         <div className="sec">
           <h4>Critères</h4>

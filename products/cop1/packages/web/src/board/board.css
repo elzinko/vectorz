@@ -169,6 +169,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .sec { font-size: 14px; }
 .sec h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); margin-bottom: 6px; }
 .sec p { margin: 0 0 7px; }
+.sec .mdlist { margin: 0 0 7px; padding-left: 20px; }
+.sec .mdlist li { margin-bottom: 3px; }
 .crit { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 .crit li { display: flex; gap: 9px; align-items: flex-start; font-size: 14px; }
 .crit .box { width: 16px; height: 16px; border: 1.5px solid var(--line); border-radius: 4px; flex: none; margin-top: 2px; }

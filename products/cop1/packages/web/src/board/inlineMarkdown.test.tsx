@@ -5,7 +5,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { FicheModal } from './FicheModal.js';
-import { inlineMarkdown } from './inlineMarkdown.js';
+import { inlineMarkdown, markdownBlocks } from './inlineMarkdown.js';
 import type { FicheDetail } from './types.js';
 
 afterEach(cleanup);
@@ -75,5 +75,59 @@ describe('FicheModal — le Markdown de la fiche', () => {
     expect(screen.getByText('code').tagName).toBe('CODE');
     expect(screen.getByText('fort').tagName).toBe('B');
     expect(screen.getByText('pnpm `brut` **brut**')).toBeTruthy();
+  });
+});
+
+// fiche 20261103203943912 — les paragraphes et les listes à puces du contexte
+describe('markdownBlocks', () => {
+  const blocks = (text: string) =>
+    render(<div>{markdownBlocks(text)}</div>).container.firstElementChild as HTMLElement;
+
+  it('une liste à puces devient une liste, un point par ligne, sans les tirets', () => {
+    const d = blocks('Avant la liste :\n- un **point**\n* deux\nAprès la liste.');
+    const items = [...d.querySelectorAll('ul.mdlist > li')].map((li) => li.textContent);
+    expect(items).toEqual(['un point', 'deux']);
+    expect(d.querySelector('li b')?.textContent).toBe('point');
+    expect([...d.querySelectorAll('p')].map((p) => p.textContent)).toEqual(['Avant la liste :', 'Après la liste.']);
+  });
+
+  it('une ligne vide sépare deux paragraphes', () => {
+    const d = blocks('premier\nsuite du premier\n\nsecond');
+    expect([...d.querySelectorAll('p')].map((p) => p.textContent)).toEqual(['premier\nsuite du premier', 'second']);
+  });
+
+  it('une ligne en retrait prolonge le point précédent', () => {
+    const d = blocks('- un point\n  qui continue\n- un autre');
+    expect([...d.querySelectorAll('li')].map((li) => li.textContent)).toEqual(['un point\nqui continue', 'un autre']);
+  });
+
+  it('« -- » ou « -x » en début de ligne n’ouvre pas de liste', () => {
+    const d = blocks('-- un tiret double\n-x collé');
+    expect(d.querySelector('ul')).toBeNull();
+    expect(d.textContent).toBe('-- un tiret double\n-x collé');
+  });
+
+  it('un point qui contient du HTML l’affiche comme du texte', () => {
+    const d = blocks('- <img src=x onerror=alert(1)>');
+    expect(d.querySelector('img')).toBeNull();
+    expect(d.querySelector('li')?.textContent).toBe('<img src=x onerror=alert(1)>');
+  });
+
+  it('la fenêtre d’une fiche montre la liste de son contexte', () => {
+    const fiche: FicheDetail = {
+      id: '20261103203943912',
+      title: 'Une fiche à liste',
+      prio: 'P3',
+      status: 'idea',
+      ver: '',
+      enclair: '',
+      ctx: 'Trois choses :\n- Le guide\n- Les package.json\n- Six fonctions',
+      crit: [],
+      verif: '',
+    };
+    render(<FicheModal fiche={fiche} onClose={() => {}} onOpenPage={() => {}} />);
+    expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(
+      expect.arrayContaining(['Le guide', 'Les package.json', 'Six fonctions']),
+    );
   });
 });

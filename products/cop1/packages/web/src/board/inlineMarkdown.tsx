@@ -26,3 +26,52 @@ export function inlineMarkdown(text: string): ReactNode[] {
     })
     .filter((node) => node !== '');
 }
+
+const LIST_ITEM = /^\s*[-*] +(\S.*)$/;
+
+/**
+ * Le rendu par blocs d'un texte de fiche (fiche 20261103203943912) : une ligne vide sépare deux
+ * paragraphes, des lignes « - … » ou « * … » forment une liste à puces, et une ligne en retrait
+ * prolonge le point précédent. Chaque paragraphe et chaque point passent par le rendu en ligne.
+ */
+export function markdownBlocks(text: string): ReactNode[] {
+  const blocks: ReactNode[] = [];
+  let paragraph: string[] = [];
+  let items: string[] = [];
+  const flushParagraph = (): void => {
+    if (paragraph.length > 0) {
+      blocks.push(<p key={blocks.length}>{inlineMarkdown(paragraph.join('\n'))}</p>);
+      paragraph = [];
+    }
+  };
+  const flushList = (): void => {
+    if (items.length > 0) {
+      blocks.push(
+        <ul key={blocks.length} className="mdlist">
+          {items.map((item, i) => (
+            <li key={i}>{inlineMarkdown(item)}</li>
+          ))}
+        </ul>,
+      );
+      items = [];
+    }
+  };
+  for (const line of text.split('\n')) {
+    const item = LIST_ITEM.exec(line);
+    if (line.trim() === '') {
+      flushParagraph();
+      flushList();
+    } else if (item?.[1] !== undefined) {
+      flushParagraph();
+      items.push(item[1]);
+    } else if (items.length > 0 && /^\s/.test(line)) {
+      items[items.length - 1] += `\n${line.trim()}`;
+    } else {
+      flushList();
+      paragraph.push(line);
+    }
+  }
+  flushParagraph();
+  flushList();
+  return blocks;
+}
