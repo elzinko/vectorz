@@ -8,7 +8,7 @@ milestone: exploration-app
 version: v0.23.0
 depends: ["20261102182259416"]
 labels: [test-local, exploration-app]
-status: idea
+status: ready
 pr:
 evidence: none # skill et scripts, sans écran ; la preuve, ce sont ses tests
 created: 2026-11-02
@@ -81,3 +81,13 @@ bash products/mega-city/skills/ezk-scout/scripts/test-demo-app.sh
   2026-11-02.
 - **Dépend** du carnet, [20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md).
 - **Estimation du panel** : environ 120 000 jetons.
+- **Groom du 2026-11-03 (run autonome)** : sources vérifiées. `ezk carto status --todo --json` et
+  `ezk carto record <nœud> --axis --verdict --proof [--sha]` existent ; le journal vit dans
+  `<git-common-dir>/ezk/carto/`, hors du dossier de travail, donc la garde find-only du scout tient.
+  Il manque le filtre de branche : `--zone <nœud>` s'ajoute à `ezk carto status` (le nœud et sa
+  descendance), testé comme une commande. La part déterministe du scout passe ainsi par des commandes
+  testables ; `SKILL.md` dit quand les appeler (étapes 1 et 5), et `check-report.sh` exige le bloc
+  « Couverture » quand le rapport déclare un carnet actif.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO, taille limite). Coupe si le
+  build déborde : `--zone` et le bloc « Couverture » ; le départ depuis `--todo` et l'écriture au
+  carnet restent dans le noyau.
