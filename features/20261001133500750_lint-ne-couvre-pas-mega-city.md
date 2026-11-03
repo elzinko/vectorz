@@ -71,3 +71,8 @@ pnpm lint
   --since=origin/main`), qui tolère l'existant et refuse le neuf (critère 2), sans toucher aux
   396. Biome 1.9 n'a pas de fichier de baseline natif. Hors passe lean.
 - 2026-10-27 : raison blocked: passée à `deferred` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17
+- **Cas du 2026-11-03** (sprint 21 du run autonome) : `pnpm exec biome check --error-on-warnings products/cop1`
+  est rouge aussi, sur 9 erreurs de format, d'imports et une assertion non nulle. Elles datent de
+  l'adaptateur du board du 2026-10-26 (`chantierAdapter.ts`, `projectChantier.ts`). Aucune gate ne lance
+  biome sur cop1 : la dette est passée sans bruit. Critère à ajouter au groom : la gate refuse un fichier
+  de cop1 que biome refuse.
