@@ -7,8 +7,8 @@ product: mega-city
 milestone: methode-configurable
 version:
 labels: [fabrique]
-status: ready
-pr:
+status: shipped
+pr: "local (5f502df1)"
 evidence: none # config de méthode ; l'écran (éditeur visuel) est une Suite
 created: 2026-10-09
 ---
@@ -36,9 +36,9 @@ Trois décisions de la méthode se règlent aujourd'hui de trois façons incohé
 - le **menu de grooming** se répond **à la main**, chaque fois ;
 - les **étapes d'un skill** sont figées **en prose** — on ne peut ni en sauter une ni en changer
   l'ordre de façon déclarative (c'est le sujet de la fiche sœur
-  [Rendre les étapes d'un skill configurables](20260830110131228_schema-etapes-skill-configurables.md)) ;
+  [Rendre les étapes d'un skill configurables](../20260830110131228_schema-etapes-skill-configurables.md)) ;
 - **sauter la revue adverse** n'existe que comme flag parké
-  ([Pouvoir sauter volontairement la revue adverse](done/20260830110131158_revue-adverse-skippable-flag.md)),
+  ([Pouvoir sauter volontairement la revue adverse](20260830110131158_revue-adverse-skippable-flag.md)),
   contredit par l'ADR-0059 (la revue locale est un **plancher**).
 
 Le PO veut **un seul endroit** — le fichier de config — pour pré-régler ces choix, au lieu de trois
@@ -77,7 +77,7 @@ rapide du menu interactif.
 **Cas phare — sauter la revue adverse en mode POC.** Le réglage le plus demandé. **Décision PO prise
 (2026-10-09) : on amende l'ADR-0059** — le plancher tient par défaut, le **mode POC** est une
 dérogation explicite. L'amendement lui-même s'écrit **au build** (archi), pour ne pas retirer le
-plancher par accident. Fiche recadrée : [158](done/20260830110131158_revue-adverse-skippable-flag.md).
+plancher par accident. Fiche recadrée : [158](20260830110131158_revue-adverse-skippable-flag.md).
 
 **Premier morceau (POC) de cette fiche** — pré-répondre le **menu de grooming** par config : une
 section `grooming.techniques` où **chaque technique est un interrupteur nommé**, plus les raccourcis
@@ -150,11 +150,11 @@ applique les techniques réglées, sans menu, et le dit dans son compte rendu.
 
 **Hors du POC** (fiches sœurs ou étapes suivantes) :
 - configurer / réordonner **toutes les étapes** d'un skill — mécanisme de la fiche
-  [Rendre les étapes d'un skill configurables](20260830110131228_schema-etapes-skill-configurables.md) ;
+  [Rendre les étapes d'un skill configurables](../20260830110131228_schema-etapes-skill-configurables.md) ;
 - **overrider un plancher** de sécurité (sauter la revue) —
-  [Pouvoir sauter volontairement la revue adverse](done/20260830110131158_revue-adverse-skippable-flag.md) ;
+  [Pouvoir sauter volontairement la revue adverse](20260830110131158_revue-adverse-skippable-flag.md) ;
 - **forçage + débrayage** de la méthode au démarrage —
-  [Garder les sessions dans le cadre de la méthode](20261008182705749_forcer-sessions-dans-la-methode-debrayage-config.md) ;
+  [Garder les sessions dans le cadre de la méthode](../20261008182705749_forcer-sessions-dans-la-methode-debrayage-config.md) ;
 - le **schéma YAML complet par domaine**, au-delà du seul `grooming:` ;
 - le **câblage auto** : comment l'orchestrateur lit la config en run autonome.
 
@@ -169,20 +169,20 @@ suffit au v1.
 ## Notes / décisions
 
 - **Compose, ne refait pas** : le modèle « étapes comme donnée » est la fiche
-  [228](20260830110131228_schema-etapes-skill-configurables.md) (mécanisme) ; cette fiche-ci est la
+  [228](../20260830110131228_schema-etapes-skill-configurables.md) (mécanisme) ; cette fiche-ci est la
   **surface de config** + le pré-remplissage des choix interactifs. Foyer de config = fiche sœur
-  [Garder les sessions dans le cadre de la méthode](20261008182705749_forcer-sessions-dans-la-methode-debrayage-config.md)
+  [Garder les sessions dans le cadre de la méthode](../20261008182705749_forcer-sessions-dans-la-methode-debrayage-config.md)
   (même `.vectorz/config.yml`).
 - **Panel `ezk-architect` + `ezk-pm`** : requis pour les gros morceaux en Suite (configuration
   générale des étapes, qui recouvre 228 / Skema / ADR-0040) — **pas pour le POC** (pré-répondre le
   menu de grooming), resserré et sans ce recouvrement.
 - **ADR-0059 : amendement DÉCIDÉ (PO 2026-10-09)** — overrider la revue en mode POC est permis
-  (dérogation explicite). La fiche [158](done/20260830110131158_revue-adverse-skippable-flag.md) est le
+  (dérogation explicite). La fiche [158](20260830110131158_revue-adverse-skippable-flag.md) est le
   cas buildable précis : **recadrée et sortie du parking**. L'amendement de l'ADR s'écrit au build.
 - Capturée en `idea` sur demande PO (2026-10-09), P2.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
-- Recoupe [le schéma des étapes d'un skill](20260830110131228_schema-etapes-skill-configurables.md) : à fusionner
+- Recoupe [le schéma des étapes d'un skill](../20260830110131228_schema-etapes-skill-configurables.md) : à fusionner
   ou à départager au groom.
 - Prête le 2026-11-03 pour son POC : porte « prête » passée en run autonome (ezk-pm GO). Conditions : les
   critères se prouvent par les tests du résolveur, de `ezk config show` et du texte du skill ; ce qui ne

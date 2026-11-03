@@ -132,7 +132,7 @@ POC explicite. L'amendement lui-même s'écrit **au build**, par l'architecte, p
 plancher par accident.
 
 Cette fiche est le cas précis ; elle s'inscrit dans la capacité plus large
-[Configurer les étapes et les choix de la méthode via le fichier de config](../20261009104401282_config-etapes-et-choix-methode.md).
+[Configurer les étapes et les choix de la méthode via le fichier de config](20261009104401282_config-etapes-et-choix-methode.md).
 Reste à trancher au grooming : la **collision de nom `--review`** (voir la note du 2026-09-20) et la
 porte POC (flag au lancement ? valeur de config ?).
 

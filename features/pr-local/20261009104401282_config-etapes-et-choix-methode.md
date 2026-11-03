@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261009104401282_config-etapes-et-choix-methode.md](../20261009104401282_config-etapes-et-choix-methode.md)
+> 🗎 Rendu de la fiche [features/20261009104401282_config-etapes-et-choix-methode.md](../done/20261009104401282_config-etapes-et-choix-methode.md)
 
 # 20261009104401282 — Configurer les étapes et les choix de la méthode par config
 
