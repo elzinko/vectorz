@@ -293,3 +293,50 @@ describe('translatePlan — le pilotage : milestones et sessions closes (fiche 2
     expect(translatePlan(c, backlog()).plan.pilotage).toBeUndefined();
   });
 });
+
+describe('translatePlan — les fiches livrées (fiche 20261103191932064)', () => {
+  const livree = { id: 'L1', title: 'Livrée', priority: 'P2', version: 'v0.9.0', pr: '#12' };
+
+  it('sert chaque fiche livrée publiée au statut done, avec sa version et sa PR', () => {
+    const b = backlog();
+    b.livrees = [livree, { ...livree, id: 'L2', version: '', pr: '' }];
+    const { fiches } = translatePlan(board(), b);
+    expect(fiches.L1).toEqual({
+      id: 'L1',
+      title: 'Livrée',
+      prio: 'P2',
+      status: 'done',
+      ver: 'v0.9.0',
+      enclair: '',
+      ctx: '',
+      crit: [],
+      verif: '',
+      pr: '#12',
+      blocked: '',
+    });
+    expect(fiches.L2?.status).toBe('done');
+    expect(fiches.L2?.pr).toBeUndefined();
+  });
+
+  it('une entrée mal formée est ignorée, les autres restent', () => {
+    const b = backlog();
+    b.livrees = [livree, { id: 'L3', title: 42 }, null, 'x'];
+    const { fiches } = translatePlan(board(), b);
+    expect(fiches.L1?.status).toBe('done');
+    expect(fiches.L3).toBeUndefined();
+  });
+
+  it('sans liste (méthode plus ancienne) : aucune fiche livrée, comme avant', () => {
+    const { livrees: _livrees, ...b } = backlog();
+    const { fiches } = translatePlan(board(), b);
+    expect(Object.values(fiches).some((f) => f.status === 'done')).toBe(false);
+  });
+
+  it('le pouce publié s’applique aussi à une fiche livrée', () => {
+    const b = backlog();
+    b.livrees = [livree];
+    const c = board();
+    c.verdicts = { L1: { verdict: 'up' } };
+    expect(translatePlan(c, b).fiches.L1?.verdict).toBe('up');
+  });
+});

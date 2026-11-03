@@ -187,6 +187,16 @@ describe('ezk backlog show — sur la fixture', () => {
     expect(liste.fiches.find((f) => f.id === FIXTURE_CRLF)?.enClair).toBe('Fiche de fixture.');
   });
 
+  // fiche 20261103191932064 — mission control montre les fiches livrées : la méthode les publie
+  it('sans id : le résumé des fiches livrées, sans les closes rangées dans done/', () => {
+    const liste = backlogShowListe(fixture);
+    expect(liste.livrees).toEqual([
+      { id: '20990101000000006', title: 'Livrée', priority: 'P2', version: 'v1.0.0', pr: '' },
+    ]);
+    expect(liste.livrees.map((f) => f.id)).not.toContain('20990101000000004'); // superseded
+    expect(liste.fiches.map((f) => f.id)).not.toContain('20990101000000006');
+  });
+
   it('avec un id : une fiche, même rangée dans done/', () => {
     expect(BacklogShowFicheSchema.safeParse(backlogShowFiche(fixture, FIXTURE_DETAIL)).success).toBe(true);
     expect(backlogShowFiche(fixture, '20990101000000004')?.done).toBe(true);

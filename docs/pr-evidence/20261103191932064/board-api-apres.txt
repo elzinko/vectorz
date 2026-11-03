@@ -1,0 +1,3 @@
+Après correction — GET /api/board, projet vectorz
+fiches servies : 469 ; dont livrées : 360
+fiches du lot v0.22.0 : 1

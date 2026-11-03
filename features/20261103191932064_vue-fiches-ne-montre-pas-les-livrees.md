@@ -54,6 +54,8 @@ Le défaut a deux étages, et la correction aussi.
 - [ ] Dans la vue Fiches, « réalisées » fait apparaître les fiches livrées, et le lot v0.22.0 montre
       ses fiches.
 - [ ] Une réponse de la méthode sans `livrees` garde l'affichage d'aujourd'hui.
+- [ ] Une fiche livrée sans version obéit au filtre « réalisées » : décoché par défaut, elle ne
+      s'affiche pas. 278 des fiches de `done/` n'ont pas de version.
 
 ## Comment vérifier
 
@@ -78,3 +80,6 @@ Le défaut a deux étages, et la correction aussi.
 - **Groomée `ready` le 2026-11-03** (run autonome) : une liste légère plutôt que le
   détail complet de 360 fiches, pour garder la réponse de la méthode raisonnable. La fenêtre d'une
   fiche livrée montre ce que la liste porte ; son détail complet reste à une commande.
+- **Vu au build le 2026-11-03** : le filtre « réalisées » ne gouvernait pas les fiches sans version.
+  Sans ce réglage, les fiches livrées sans version auraient envahi la vue par défaut. Preuve : 113
+  fiches par défaut après la correction, contre 109 avant ; 469 avec « réalisées ».

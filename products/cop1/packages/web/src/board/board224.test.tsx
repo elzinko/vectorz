@@ -77,6 +77,23 @@ describe('FichesView', () => {
     expect(screen.getByText('3 fiche(s)')).toBeTruthy();
   });
 
+  // fiche 20261103191932064 — les fiches livrées sans version obéissent au filtre « réalisées »
+  it('une fiche livrée sans version reste cachée par défaut, et sort avec « réalisées »', async () => {
+    const p = makeProject();
+    p.fiches = { ...p.fiches, d: fd('d', 'Livrée sans version', 'done', '') };
+    render(<FichesView project={p} onOpenFiche={() => {}} />);
+    expect(screen.queryByText('Livrée sans version')).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: 'réalisées' }));
+    expect(screen.getByText('Livrée sans version')).toBeTruthy();
+  });
+
+  it('une idée sans version reste visible par défaut, comme avant', () => {
+    const p = makeProject();
+    p.fiches = { ...p.fiches, e: fd('e', 'Idée sans version', 'idea', '') };
+    render(<FichesView project={p} onOpenFiche={() => {}} />);
+    expect(screen.getByText('Idée sans version')).toBeTruthy();
+  });
+
   it('le sélecteur de lot marque la version en cours', () => {
     render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
     expect(screen.getByRole('option', { name: /v2\.0\.0.*en cours/ })).toBeTruthy();

@@ -67,11 +67,13 @@ interface BacklogFiche {
 
 interface BacklogShow {
   fiches: BacklogFiche[];
+  /** Le résumé des fiches livrées (fiche 20261103191932064) ; absent d'une méthode plus ancienne. */
+  livrees?: unknown;
 }
 
 export interface TranslatedPlan {
   plan: PlanData;
-  /** Détail des fiches NON livrées, indexé par id. */
+  /** Détail des fiches à faire, et résumé des fiches livrées, indexés par id. */
   fiches: Record<string, FicheDetailData>;
 }
 
@@ -110,6 +112,42 @@ function asBacklogShow(value: unknown): BacklogShow {
  * la vue Fiches ne les montre plus en idées (fiche 20261103191932070).
  */
 const CLOSED_STATUSES: ReadonlySet<string> = new Set(['superseded', 'merged', 'split']);
+
+/**
+ * Les fiches livrées que la méthode publie en résumé (fiche 20261103191932064). Une entrée mal formée
+ * est ignorée, jamais devinée ; sans liste (méthode plus ancienne), aucune.
+ */
+function readLivrees(value: unknown): FicheDetailData[] {
+  if (!Array.isArray(value)) return [];
+  const out: FicheDetailData[] = [];
+  for (const entry of value) {
+    if (!isRecord(entry)) continue;
+    const { id, title, priority, version, pr } = entry;
+    if (
+      typeof id !== 'string' ||
+      typeof title !== 'string' ||
+      typeof priority !== 'string' ||
+      typeof version !== 'string' ||
+      typeof pr !== 'string'
+    ) {
+      continue;
+    }
+    out.push({
+      id,
+      title,
+      prio: priority,
+      status: 'done',
+      ver: version,
+      enclair: '',
+      ctx: '',
+      crit: [],
+      verif: '',
+      ...(pr ? { pr } : {}),
+      blocked: '',
+    });
+  }
+  return out;
+}
 
 function ficheStatus(f: BacklogFiche): FicheDetailStatus {
   if (f.done) return 'done';
@@ -238,6 +276,10 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
     if (f.done || CLOSED_STATUSES.has(f.status)) continue;
     const verdict = verdicts[f.id];
     fiches[f.id] = verdict ? { ...toFicheDetail(f), verdict } : toFicheDetail(f);
+  }
+  for (const f of readLivrees(backlog.livrees)) {
+    const verdict = verdicts[f.id];
+    fiches[f.id] = verdict ? { ...f, verdict } : f;
   }
 
   return {

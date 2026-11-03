@@ -118,10 +118,43 @@
         ]
       },
       "description": "Les fiches de features/, hors done/, triées par id."
+    },
+    "livrees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version de la livraison telle qu'écrite, '' sans version."
+          },
+          "pr": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "priority",
+          "version",
+          "pr"
+        ]
+      },
+      "description": "Les fiches livrées (rangées dans done/, statut shipped), en résumé, triées par id."
     }
   },
   "required": [
     "schema_version",
-    "fiches"
+    "fiches",
+    "livrees"
   ]
 }

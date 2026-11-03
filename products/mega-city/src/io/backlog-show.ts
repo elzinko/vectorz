@@ -12,6 +12,7 @@ import {
   type BacklogShowFiche,
   type BacklogShowListe,
   buildFicheDetail,
+  type FicheLivree,
 } from '../core/fiche-detail.js';
 import { type Fiche, loadFiches } from '../loaders/fiches.js';
 import { collectInProgressIds } from './sessions-collect.js';
@@ -26,13 +27,18 @@ export function backlogShowFiche(root: string, id: string): BacklogShowFiche | u
   return { schema_version: BACKLOG_SCHEMA_VERSION, ...detailOf(root, fiche, collectInProgressIds(root)) };
 }
 
-/** Le détail de toutes les fiches de `features/`, hors `done/`, triées par id, en un appel. */
+/**
+ * Le détail de toutes les fiches de `features/`, hors `done/`, triées par id, en un appel ; plus le
+ * résumé des fiches livrées, pour que mission control les montre (fiche 20261103191932064).
+ */
 export function backlogShowListe(root: string): BacklogShowListe {
   const inProgressIds = collectInProgressIds(root);
+  const fiches = loadFiches(root);
   return {
     schema_version: BACKLOG_SCHEMA_VERSION,
-    fiches: loadFiches(root)
-      .filter((f) => !f.done)
-      .map((f) => detailOf(root, f, inProgressIds)),
+    fiches: fiches.filter((f) => !f.done).map((f) => detailOf(root, f, inProgressIds)),
+    livrees: fiches
+      .filter((f) => f.done && f.status === 'shipped')
+      .map(({ id, title, priority, version, pr }): FicheLivree => ({ id, title, priority, version, pr })),
   };
 }

@@ -96,7 +96,9 @@ export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JS
     // elle reste joignable par le lot « sans version ». Quand le vrai read-model
     // injectera des fiches sans version en nombre, prévoir un toggle dédié.
     list = list.filter((f) => {
-      const c = verCat(project, f.ver);
+      // Une fiche livrée sans catégorie compte parmi les réalisées (fiche 20261103191932064) : sinon
+      // les centaines de fiches livrées sans version envahiraient la vue par défaut.
+      const c = verCat(project, f.ver) ?? (f.status === 'done' ? 'realisees' : null);
       return c ? fcat[c] : true;
     });
   }

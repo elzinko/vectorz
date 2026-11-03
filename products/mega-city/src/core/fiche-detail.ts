@@ -51,15 +51,34 @@ export const BacklogShowFicheSchema = z.strictObject({
   ...FicheDetailShape,
 });
 
-/** `ezk backlog show --json` : toutes les fiches de `features/`, hors `done/`, triées par id. */
+/**
+ * Une fiche livrée, en résumé (fiche 20261103191932064). Son détail complet reste servi par
+ * `ezk backlog show <id> --json` : la liste garde une taille raisonnable avec des centaines de fiches.
+ */
+export const FicheLivreeSchema = z.strictObject({
+  id: z.string(),
+  title: z.string(),
+  priority: z.string(),
+  version: z.string().describe("Version de la livraison telle qu'écrite, '' sans version."),
+  pr: z.string(),
+});
+
+/**
+ * `ezk backlog show --json` : toutes les fiches de `features/`, hors `done/`, triées par id, et le
+ * résumé des fiches livrées.
+ */
 export const BacklogShowListeSchema = z.strictObject({
   schema_version: z.literal(BACKLOG_SCHEMA_VERSION),
   fiches: z.array(FicheDetailSchema).describe('Les fiches de features/, hors done/, triées par id.'),
+  livrees: z
+    .array(FicheLivreeSchema)
+    .describe('Les fiches livrées (rangées dans done/, statut shipped), en résumé, triées par id.'),
 });
 
 export type FicheDetail = z.infer<typeof FicheDetailSchema>;
 export type BacklogShowFiche = z.infer<typeof BacklogShowFicheSchema>;
 export type BacklogShowListe = z.infer<typeof BacklogShowListeSchema>;
+export type FicheLivree = z.infer<typeof FicheLivreeSchema>;
 
 /** Le texte d'une section dont le titre comparable passe le test, sans blancs autour ; '' si absente. */
 const sectionText = (body: string, test: (plainTitle: string) => boolean): string =>
