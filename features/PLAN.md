@@ -53,7 +53,7 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 - ~~`20261102123552185` — retirer la page web de la méthode · groom (sprint 5, dépend de tout le reste)~~ — shipped
 
 **Milestone `exploration-app` — « Le carnet de tests »** (suite du carnet livré le 2026-11-02) :
-- `20261102182259505` — ezk-scout part du carnet pour choisir quoi tester · groom
+- ~~`20261102182259505` — ezk-scout part du carnet pour choisir quoi tester · groom~~ — shipped
 - `20261102182259592` — tenir le carnet de tests de mission control · groom
 - `20261102182259680` — faire expirer une preuve quand le code change · groom
 - `20261102183114656` — ezk-scout propose aussi des améliorations · groom
@@ -376,7 +376,7 @@ design-system, release macOS, coût `sprint:report`), `observabilite` (jetons pa
 > Exploration-app, redécoupée le 2026-11-02 (panel adverse + PO) : le carnet de tests d'abord, puis `ezk-scout` qui s'en sert, puis mission control et la mesure de valeur. L'expiration quand le code change attend cette mesure.
 - ~~`20261014113049954` — cache de cartographie, Pas 1 : index statique des routes + test de valeur · P2 · `groom`~~ — split (2026-11-02, panel adverse + PO) en :
 - ~~`20261102182259416` — le carnet de tests : arbre déclaré, journal, expiration par date, `status --todo` · P2 · `groom`~~ — shipped
-- `20261102182259505` — `ezk-scout` part du carnet et y note ses résultats · P2 · `groom`
+- ~~`20261102182259505` — `ezk-scout` part du carnet et y note ses résultats · P2 · `groom`~~ — shipped
 - `20261102182259592` — le carnet de mission control, et la mesure de valeur sur 3 passes · P2 · `groom`
 - ~~`20260821210633457` — l'explorateur de features par PR (à dé-parker) · P2 · `groom`~~ — recentré le 2026-11-02 sur le siège automatique, sorti de la version ; la lentille améliorations part dans `20261102183114656` (hors version, le PO slotte)
 > **Reste à caser** (le PO slotte) : `20261002130917993` (release local-first) — thème release, aiguillage en attente. (~~`20261011153019643` (step design-system dans `ezk-release`)~~ — shipped local `a55e4c27`.)

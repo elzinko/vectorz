@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102182259505_scout-lit-et-remplit-le-carnet.md](../20261102182259505_scout-lit-et-remplit-le-carnet.md)
+> 🗎 Rendu de la fiche [features/20261102182259505_scout-lit-et-remplit-le-carnet.md](../done/20261102182259505_scout-lit-et-remplit-le-carnet.md)
 
 # 20261102182259505 — ezk-scout part du carnet pour choisir quoi tester, et y note ses résultats
 

@@ -25,7 +25,7 @@ reste.
 **Si tu arrives frais.** Mission control est l'interface web de cop1
 (`products/cop1/packages/web`). Le carnet note ce qui est testé :
 [20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md). Le scout s'en
-sert : [20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md).
+sert : [20261102182259505](done/20261102182259505_scout-lit-et-remplit-le-carnet.md).
 
 ## Contexte / Problème
 
