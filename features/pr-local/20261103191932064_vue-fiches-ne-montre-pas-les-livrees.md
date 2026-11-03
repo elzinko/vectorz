@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103191932064_vue-fiches-ne-montre-pas-les-livrees.md](../20261103191932064_vue-fiches-ne-montre-pas-les-livrees.md)
+> 🗎 Rendu de la fiche [features/20261103191932064_vue-fiches-ne-montre-pas-les-livrees.md](../done/20261103191932064_vue-fiches-ne-montre-pas-les-livrees.md)
 
 # La vue Fiches de mission control ne montre jamais les fiches livrées
 

@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (7774944e)"
 evidence: before-after
 created: 2026-11-03
 ---
@@ -71,7 +71,7 @@ Le défaut a deux étages, et la correction aussi.
 - **Entrée au backlog le 2026-11-03** sur décision d'`ezk-pm`, en mode auto du run délégué par le PO
   (« continuer sans mon intervention »). Ce n'est aucune des quatre décisions humaines : c'est un bug,
   pas une idée produit. Le PO peut la retirer.
-- Voisine livrée : [la vue Fiches du board](done/20261012231419224_board-vue-fiches-filtre-categorie.md), dont un
+- Voisine livrée : [la vue Fiches du board](20261012231419224_board-vue-fiches-filtre-categorie.md), dont un
   critère disait « cocher réalisées les fait apparaître ». Régression probable depuis le branchement
   du board sur les données de la méthode.
 - Indice relevé avant le groom : `ezk backlog show --json` ne publie que les fiches actives

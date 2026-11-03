@@ -32,7 +32,7 @@ Sprint 23, le portier de sprint (dernière fiche constructible sans le PO) :
 - ~~`20261003011750433` — un `SPRINT.md` d'ancien format committé ne bloque plus `start` : la preuve · build~~ — shipped
 
 Passe scout du 2026-11-03 au soir, brouillons retenus par `ezk-pm` en mode auto (B2 laissé au PO) :
-- `20261103191932064` — la vue Fiches ne montre jamais les fiches livrées · build (sprint 24)
+- ~~`20261103191932064` — la vue Fiches ne montre jamais les fiches livrées · build (sprint 24)~~ — shipped
 - ~~`20261103191932067` — un pouce refusé cache sa raison derrière la bannière d'ezk · build (sprint 24)~~ — shipped
 - ~~`20261103191932070` — une fiche découpée est servie comme une idée · build (sprint 24)~~ — shipped
 - `20261103191932074` — la fenêtre d'une fiche affiche le Markdown brut · groom (sprint 25)
