@@ -7,8 +7,8 @@ product: mega-city
 milestone: preparation
 version:
 labels: [backlog, plan, decoupage]
-status: ready
-pr:
+status: shipped
+pr: "local (5022a2ea)"
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
 ---
@@ -71,7 +71,7 @@ ezk backlog plan-lot 1
 ## Notes
 
 - Née de la rétro légère du 2026-11-01 (P7 de la rétro), acceptée par le PO le même jour :
-  [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
+  [rétro du run des contrats JSON](../../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : proposition précisée d'après le code ; « 0 fiche hors plan sur
   5 découpages » passe en mesure de suivi, car elle ne se prouve pas au build.
