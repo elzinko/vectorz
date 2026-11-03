@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-03
@@ -36,15 +36,32 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+Le défaut a deux étages, et la correction aussi.
+
+- **La méthode publie les fiches livrées.** `ezk backlog show --json`, sans id, ajoute une liste
+  légère `livrees` : pour chaque fiche de `features/done/`, son id, son titre, sa priorité, sa version
+  et sa PR. Le champ s'ajoute au contrat sans changer `schema_version`, comme les ajouts précédents. Le
+  détail complet d'une fiche livrée reste servi par `ezk backlog show <id> --json`.
+- **Mission control les affiche.** Le traducteur lit `livrees` sans confiance aveugle : une entrée mal
+  formée est ignorée. Chaque fiche livrée devient une carte « Livrées » de la vue Fiches, rangée dans
+  sa version. Une méthode plus ancienne, sans `livrees`, garde l'affichage d'aujourd'hui.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] `ezk backlog show --json` publie `livrees`, une entrée par fiche de `features/done/`, avec id,
+      titre, priorité, version et PR. Le schéma et l'exemple du contrat le décrivent.
+- [ ] `/api/board` sert ces fiches au statut `done`.
+- [ ] Dans la vue Fiches, « réalisées » fait apparaître les fiches livrées, et le lot v0.22.0 montre
+      ses fiches.
+- [ ] Une réponse de la méthode sans `livrees` garde l'affichage d'aujourd'hui.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. `ezk --root . backlog show --json | python3 -c "import json,sys;d=json.load(sys.stdin);print(len(d['livrees']))"`
+   affiche le nombre de fiches de `features/done/`.
+2. Les tests du contrat, du traducteur et de la vue Fiches passent.
+3. Mission control lancé, la vue Fiches avec « réalisées » montre la colonne « Livrées » remplie.
+   Captures avant et après dans `docs/pr-evidence/<id>/`.
 
 ## Notes / décisions
 
@@ -58,3 +75,6 @@ Rejouer la reproduction ci-dessus.
 - Indice relevé avant le groom : `ezk backlog show --json` ne publie que les fiches actives
   (`backlog-show.ts`, filtre `!f.done`), et le traducteur de mission control saute aussi les fiches
   livrées (`ezkPlanTranslator.ts`, `if (f.done) continue`).
+- **Groomée `ready` le 2026-11-03** (run autonome) : une liste légère plutôt que le
+  détail complet de 360 fiches, pour garder la réponse de la méthode raisonnable. La fenêtre d'une
+  fiche livrée montre ce que la liste porte ; son détail complet reste à une commande.

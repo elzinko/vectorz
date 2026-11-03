@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: none # route d'API, sans écran
 created: 2026-11-03
@@ -35,15 +35,22 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+La bannière « ezk : dépôt visé : … » est voulue : une commande qui écrit dans le projet dit toujours
+où elle écrit (`ezk-cli.ts`). C'est donc mission control qui doit l'écarter. `verdictWriter.ts`
+ignore les lignes de bannière d'`ezk` et garde la première ligne qui porte la raison.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Un pouce refusé par la méthode reçoit 400 avec sa raison, par exemple « refusé : fiche
+      inconnue : 1234 », jamais la bannière.
+- [ ] Un échec d'`ezk` (code autre que 0 ou 1) garde son message 502, sans la bannière.
+- [ ] Sans autre ligne que la bannière, la réponse dit « refusé par la méthode ».
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests de `verdictWriter` passent.
+2. Mission control lancé, la reproduction de la fiche répond 400 avec « refusé : fiche inconnue :
+   1234 ».
 
 ## Notes / décisions
 
@@ -53,3 +60,5 @@ Rejouer la reproduction ci-dessus.
   pas une idée produit. Le PO peut la retirer.
 - Indice relevé avant le groom : `verdictWriter.ts` garde la première ligne non vide de la sortie
   d'erreur d'`ezk`.
+- **Groomée `ready` le 2026-11-03** (run autonome) : la bannière vient de `ezk-cli.ts`
+  et reste, c'est le lecteur qui l'écarte. Aucun écran ne change.

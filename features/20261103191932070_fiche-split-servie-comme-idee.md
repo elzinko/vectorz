@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: auto
 created: 2026-11-03
@@ -35,15 +35,20 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+Une fiche close sans être livrée, `split`, `superseded` ou `merged`, n'est pas du travail à faire. La
+vue d'ensemble ne la compte déjà pas. Le traducteur de mission control l'écarte aussi de la vue
+Fiches, au lieu de la ranger en idée.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Une fiche `split`, `superseded` ou `merged` publiée par la méthode n'apparaît pas dans
+      `/api/board`.
+- [ ] La vue Fiches et la vue d'ensemble comptent le même nombre de fiches à faire.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests du traducteur passent.
+2. Mission control lancé, la commande de la reproduction ne trouve plus la fiche 20261007135620590.
 
 ## Notes / décisions
 
@@ -53,3 +58,5 @@ Rejouer la reproduction ci-dessus.
   pas une idée produit. Le PO peut la retirer.
 - Indice relevé avant le groom : `ezkPlanTranslator.ts`, fonction `ficheStatus`, range tout statut
   autre que `ready` en idée.
+- **Groomée `ready` le 2026-11-03** (run autonome) : écarter plutôt que ranger en
+  « Livrées » : une fiche découpée n'a rien livré, ses sœurs portent le travail.
