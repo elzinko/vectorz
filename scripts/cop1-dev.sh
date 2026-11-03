@@ -27,6 +27,19 @@ for arg in "$@"; do
   [ "$arg" = "--no-build" ] && BUILD=0
 done
 
+# Un port mal écrit : refus net, avant tout le reste (fiche 20261102124306840). Sinon le contrôle
+# du port pris ne trouve rien, le daemon démarre pour rien et l'adresse affichée est fausse.
+refuse_bad_port() { # <port> <variable qui le règle>
+  local port="$1" var="$2"
+  if [[ "$port" =~ ^[1-9][0-9]{0,4}$ ]] && (( port <= 65535 )); then
+    return 0
+  fi
+  echo "✗ port invalide : $var=$port. Un port est un entier entre 1 et 65535." >&2
+  exit 1
+}
+refuse_bad_port "$WEB_PORT" COP1_WEB_PORT
+refuse_bad_port "$DAEMON_PORT" COP1_DAEMON_PORT
+
 # Un port déjà pris : refus net, avant de lancer quoi que ce soit. Sinon le daemon plante sur
 # « port déjà utilisé » et la page parle en silence à l'ancien, ou vite glisse au port suivant
 # et l'adresse affichée mène à une autre instance.
