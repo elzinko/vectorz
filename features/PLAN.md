@@ -22,7 +22,7 @@ version se pose à la construction (étiquette). Détail :
 Suite de la passe scout, tirée par priorité au run autonome du 2026-11-03 (sprint 21, une même passe) :
 - ~~`20261102100505774` — le board range une version « à clore » parmi les versions à venir · build~~ — shipped
 - ~~`20261102100506119` — résoudre un blocage avec un corps invalide répond « introuvable » · build~~ — shipped
-- `20261102100505955` — changer le statut d'une proposition de règle répond « OK » sans rien faire · build
+- ~~`20261102100505955` — changer le statut d'une proposition de règle répond « OK » sans rien faire · build~~ — shipped
 
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped

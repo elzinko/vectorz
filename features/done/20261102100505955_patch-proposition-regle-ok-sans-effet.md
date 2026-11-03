@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control, api]
-status: ready
-pr:
+status: shipped
+pr: "local (f1e4ceca)"
 evidence: none # route HTTP du daemon ; pas d'écran
 created: 2026-11-02
 ---

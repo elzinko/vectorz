@@ -106,7 +106,7 @@ signe que la requête a été traitée, et la seconde rend 200.
   [mission control pose le pouce de revue](20261102151630248_mission-control-pose-le-pouce-de-revue.md),
   qui réutilisera cette garde.
 - Deux bugs voisins touchent les mêmes routes, sans recouvrir celui-ci :
-  [une proposition de règle répond « OK » sans rien faire](../20261102100505955_patch-proposition-regle-ok-sans-effet.md)
+  [une proposition de règle répond « OK » sans rien faire](20261102100505955_patch-proposition-regle-ok-sans-effet.md)
   et [un corps invalide répond « introuvable »](20261102100506119_resolve-blocage-corps-invalide-404.md).
 - Priorité P1, fixée par le PO le 2026-11-02 : un trou de sécurité dans du code en service, à
   corriger avant le chantier « un seul écran ».

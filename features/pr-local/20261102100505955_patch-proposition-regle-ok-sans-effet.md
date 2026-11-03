@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102100505955_patch-proposition-regle-ok-sans-effet.md](../20261102100505955_patch-proposition-regle-ok-sans-effet.md)
+> 🗎 Rendu de la fiche [features/20261102100505955_patch-proposition-regle-ok-sans-effet.md](../done/20261102100505955_patch-proposition-regle-ok-sans-effet.md)
 
 # Changer le statut d'une proposition de règle répond « OK » sans rien faire
 
