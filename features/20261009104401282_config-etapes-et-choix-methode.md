@@ -7,7 +7,7 @@ product: mega-city
 milestone: methode-configurable
 version:
 labels: [fabrique]
-status: idea
+status: ready
 pr:
 evidence: none # config de méthode ; l'écran (éditeur visuel) est une Suite
 created: 2026-10-09
@@ -181,3 +181,7 @@ suffit au v1.
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
 - Recoupe [le schéma des étapes d'un skill](20260830110131228_schema-etapes-skill-configurables.md) : à fusionner
   ou à départager au groom.
+- Prête le 2026-11-03 pour son POC : porte « prête » passée en run autonome (ezk-pm GO). Conditions : les
+  critères se prouvent par les tests du résolveur, de `ezk config show` et du texte du skill ; ce qui ne
+  se prouve qu'après la fusion (un vrai auto-groom réglé) part en mesure de suivi. Les gros morceaux de
+  la Suite restent hors de ce sprint, en attente de panel.
