@@ -119,6 +119,60 @@ describe('BlocageApiHandler', () => {
     expect(res.getStatusCode()).toBe(404);
   });
 
+  // fiche 20261102100506119 — a malformed body is the client's error, never an unknown blocage
+  it.each([
+    ['no body', undefined],
+    ['broken JSON', '{pas du json'],
+    ['a JSON null', 'null'],
+    ['a JSON array', '[]'],
+    ['a JSON string', '"x"'],
+  ])('should return 400 "invalid JSON body" for %s', (_label, bodyStr) => {
+    const blocage = service.declare('E1-S1', 'technical', 'Build failure');
+    const req = createMockReq('POST', `/api/blocages/${blocage.id}/resolve`, bodyStr);
+    const res = createMockRes();
+    handler.handle(req, res);
+    req.triggerBody();
+
+    expect(res.getStatusCode()).toBe(400);
+    expect(JSON.parse(res.getBody()).error).toBe('invalid JSON body');
+    expect(service.getOpen().some((b) => b.id === blocage.id)).toBe(true);
+  });
+
+  it('should return 400 for an unknown blocage when the body is malformed', () => {
+    const req = createMockReq('POST', '/api/blocages/BLK-x/resolve');
+    const res = createMockRes();
+    handler.handle(req, res);
+    req.triggerBody();
+
+    expect(res.getStatusCode()).toBe(400);
+  });
+
+  it('should return 400 when the response field is not a non-empty string', () => {
+    const blocage = service.declare('E1-S1', 'technical', 'Build failure');
+    const req = createMockReq('POST', `/api/blocages/${blocage.id}/resolve`, '{"response":42}');
+    const res = createMockRes();
+    handler.handle(req, res);
+    req.triggerBody();
+
+    expect(res.getStatusCode()).toBe(400);
+    expect(JSON.parse(res.getBody()).error).toBe('response field required');
+  });
+
+  it('should return 500, not 404, when resolving fails for another reason', () => {
+    const failing = {
+      resolve: () => {
+        throw new Error('disk full');
+      },
+    } as unknown as BlockageService;
+    const req = createMockReq('POST', '/api/blocages/BLK-1/resolve', '{"response":"ok"}');
+    const res = createMockRes();
+    new BlocageApiHandler(failing).handle(req, res);
+    req.triggerBody();
+
+    expect(res.getStatusCode()).toBe(500);
+    expect(JSON.parse(res.getBody()).error).toBe('disk full');
+  });
+
   it('should return false for non-matching URL', () => {
     const req = createMockReq('GET', '/health');
     const res = createMockRes();

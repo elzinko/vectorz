@@ -5,6 +5,18 @@ import type { BlockageService } from '@cop1/sprint-core';
 // 127.0.0.1, so this guards against a runaway/buggy local client OOMing us.
 const MAX_BODY_SIZE = 10_240; // 10 KB
 
+/** The body as a JSON object, or `null` when it is empty, malformed, or not an object. */
+function parseJsonObject(body: string): Record<string, unknown> | null {
+  try {
+    const value: unknown = JSON.parse(body);
+    return value !== null && typeof value === 'object' && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export class BlocageApiHandler {
   constructor(private readonly blockageService: BlockageService) {}
 
@@ -38,19 +50,29 @@ export class BlocageApiHandler {
     });
     req.on('end', () => {
       if (bodySize > MAX_BODY_SIZE) return;
+      // fiche 20261102100506119 — a malformed request is the client's error (400), never an
+      // unknown blocage (404): the body is read before the blocage is looked up.
+      const parsed = parseJsonObject(body);
+      if (!parsed) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'invalid JSON body' }));
+        return;
+      }
+      const { response } = parsed;
+      if (typeof response !== 'string' || response === '') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'response field required' }));
+        return;
+      }
       try {
-        const { response } = JSON.parse(body) as { response: string };
-        if (!response) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'response field required' }));
-          return;
-        }
         const resolved = this.blockageService.resolve(blocageId, response);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(resolved));
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
-        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.writeHead(message.includes('not found') ? 404 : 500, {
+          'Content-Type': 'application/json',
+        });
         res.end(JSON.stringify({ error: message }));
       }
     });
