@@ -37,7 +37,7 @@ Passe scout du 2026-11-03 au soir, brouillons retenus par `ezk-pm` en mode auto 
 - ~~`20261103191932070` — une fiche découpée est servie comme une idée · build (sprint 24)~~ — shipped
 - ~~`20261103191932074` — la fenêtre d'une fiche affiche le Markdown brut · build (sprint 25)~~ — shipped
 - ~~`20261103191932077` — un « 0 » coupé dépasse au bout de la barre « Entonnoir » · build (sprint 25)~~ — shipped
-- `20261103191932080` — les lignes de version promettent un clic qui ne fait rien · build (sprint 25)
+- ~~`20261103191932080` — les lignes de version promettent un clic qui ne fait rien · build (sprint 25)~~ — shipped
 
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
 - ~~`20261016114857813` — lire `depends:` (avertissement) + désambiguïser « en cours » · build~~ — shipped

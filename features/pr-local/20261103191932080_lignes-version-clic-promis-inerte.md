@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103191932080_lignes-version-clic-promis-inerte.md](../20261103191932080_lignes-version-clic-promis-inerte.md)
+> 🗎 Rendu de la fiche [features/20261103191932080_lignes-version-clic-promis-inerte.md](../done/20261103191932080_lignes-version-clic-promis-inerte.md)
 
 # Les lignes de version promettent « clique pour le détail » mais ne réagissent pas
 
