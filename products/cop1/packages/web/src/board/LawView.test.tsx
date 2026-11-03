@@ -28,7 +28,7 @@ const rule = (id: string, portee: LawData['regles'][0]['portee'], appliqueePar: 
   portee,
 });
 const law: LawData = {
-  comptes: { total: 3, partout: 1, projet: 0, citee: 1, rangee: 1, orpheline: 0 },
+  comptes: { total: 3, partout: 1, projet: 0, demarrage: 0, citee: 1, rangee: 1, orpheline: 0 },
   regles: [
     rule('clean-code/no-dead-code', 'partout', ['skill:ezk-sprint', 'agent:ezk-reviewer']),
     rule('development/story-dans-un-worktree-dedie', 'citee', ['skill:ezk-sprint']),
@@ -48,12 +48,13 @@ function serve(body: unknown) {
 const links = () => document.querySelector('svg.lawlinks')?.querySelectorAll('line').length ?? 0;
 
 describe('LawView — les comptes de la méthode', () => {
-  it('les cinq compteurs valent ceux publiés', async () => {
+  it('les six compteurs valent ceux publiés', async () => {
     const fetchMock = serve({ state: 'ok', law });
     render(<LawView project={project} />);
     expect((await screen.findByLabelText('lues partout : 1')).textContent).toBe('1 lues partout');
     expect(screen.getByLabelText('citées sans être installées : 1')).toBeTruthy();
     expect(screen.getByLabelText('orphelines : 0')).toBeTruthy();
+    expect(screen.getByLabelText('lues au démarrage : 0')).toBeTruthy();
     expect(fetchMock).toHaveBeenCalledWith(`/api/law/${project.name}`);
   });
 
@@ -107,7 +108,7 @@ describe('LawView — jamais de faux chiffre', () => {
   });
 
   it('chaque portée se dit en une phrase, jamais par un code', () => {
-    for (const p of ['partout', 'projet', 'citee', 'rangee', 'orpheline'] as const) {
+    for (const p of ['partout', 'projet', 'demarrage', 'citee', 'rangee', 'orpheline'] as const) {
       const text = porteeText(rule('x', p, ['skill:ezk-sprint']));
       expect(text).not.toBe(p);
       expect(text.length).toBeGreaterThan(15);

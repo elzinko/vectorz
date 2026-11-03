@@ -3,8 +3,11 @@
  *
  * En clair : la méthode connaît chaque règle de son catalogue, qui l'applique et dans quel bundle
  * elle est rangée. Elle sait aussi lire les fichiers de loi installés. Ce module assemble ces faits
- * et dit, pour chaque règle, si elle est vraiment lue (`partout`, `projet`), seulement citée
- * (`citee`), rangée sans effet (`rangee`) ou orpheline. Fiche 20261101215342537, ADR-086.
+ * et dit, pour chaque règle, si elle est vraiment lue (`partout`, `projet`, `demarrage`), seulement
+ * citée (`citee`), rangée sans effet (`rangee`) ou orpheline. Fiche 20261101215342537, ADR-086.
+ *
+ * `demarrage` : la règle n'est installée nulle part, mais un skill ou un agent qui la cite ouvre son
+ * texte par `ezk law show <objet>` et la lit au moment où il démarre (fiche 20261102103553108).
  *
  * Le format est décrit UNE fois, ici, en zod. Le schéma JSON rangé dans `contracts/law-show/` en
  * est tiré (`pnpm law:contract --write`) : jamais écrit à la main. Même règle de version que le
@@ -21,7 +24,7 @@ import { ancestors, bundleRules, enforcingAgents, sourcePath, whoActivates } fro
 
 export const LAW_SHOW_SCHEMA_VERSION = 1;
 
-export const PORTEES = ['partout', 'projet', 'citee', 'rangee', 'orpheline'] as const;
+export const PORTEES = ['partout', 'projet', 'demarrage', 'citee', 'rangee', 'orpheline'] as const;
 export type Portee = (typeof PORTEES)[number];
 
 const count = (): z.ZodNumber => z.number().int().nonnegative();
@@ -57,6 +60,9 @@ const RegleSchema = z.strictObject({
 const ObjetSchema = z.strictObject({
   id: z.string().describe('`skill:<id>`, `agent:<id>`, `bundle:<id>` ou `profile:<id>`.'),
   type: z.enum(['skill', 'agent', 'bundle', 'profile']),
+  litSesRegles: z
+    .boolean()
+    .describe("Un skill ou un agent dont le texte lance `ezk law show <objet>` au démarrage. Faux pour un bundle ou un profil."),
   regles: z
     .array(LienSchema)
     .describe(
@@ -70,11 +76,12 @@ const ComptesSchema = z
     total: count().describe('Toutes les règles du catalogue.'),
     partout: count().describe('Titre présent dans la loi globale installée.'),
     projet: count().describe('Dans la loi du projet, pas dans la globale.'),
-    citee: count().describe('Citée par un skill ou un agent, installée nulle part.'),
+    demarrage: count().describe('Installée nulle part, lue au démarrage par un skill ou un agent qui la cite.'),
+    citee: count().describe('Citée par un skill ou un agent, installée nulle part, lue par personne.'),
     rangee: count().describe('Dans un bundle, ni installée ni citée.'),
     orpheline: count().describe('Dans aucun bundle, citée par personne.'),
   })
-  .describe('Les cinq portées se partagent les règles : leur somme vaut `total`.');
+  .describe('Les six portées se partagent les règles : leur somme vaut `total`.');
 
 export const LawShowSchema = z.strictObject({
   schema_version: z.literal(LAW_SHOW_SCHEMA_VERSION),
@@ -135,6 +142,21 @@ function uniqueLiens(liens: Lien[]): Lien[] {
     .sort(byIdThenVia);
 }
 
+/** La commande qu'un skill ou un agent lance au démarrage pour lire ses règles : `ezk law show <objet>`. */
+export const startupCommand = (objet: string): string => `ezk law show ${objet}`;
+
+/** Vrai si le texte d'un skill ou d'un agent lance la commande qui lui sert ses règles. */
+export function readsRulesAtStartup(texte: string, objet: string): boolean {
+  return texte.includes(`\`${startupCommand(objet)}\``);
+}
+
+/** Le texte d'un skill (`content`) ou d'un agent (`role`) du catalogue ; vide pour tout autre objet. */
+function objectText(catalog: Catalog, type: ObjetType, id: string): string {
+  if (type === 'skill') return catalog.skills.get(id)?.content ?? '';
+  if (type === 'agent') return catalog.agents.get(id)?.role ?? '';
+  return '';
+}
+
 const edgesFrom = (graph: CompiledGraph, link: Edge['link'], from: string): string[] =>
   graph.edges.filter((e) => e.link === link && e.from === from).map((e) => e.to);
 
@@ -172,7 +194,7 @@ function profileLiens(graph: CompiledGraph, id: string): Lien[] {
   return uniqueLiens([...fromBundles, ...direct]);
 }
 
-function buildObjets(graph: CompiledGraph): LawShow['objets'] {
+function buildObjets(graph: CompiledGraph, catalog: Catalog): LawShow['objets'] {
   const liensOf: Record<ObjetType, (id: string) => Lien[]> = {
     skill: (id) => appliedBy(graph, 'skill', id),
     agent: (id) => appliedBy(graph, 'agent', id),
@@ -182,12 +204,20 @@ function buildObjets(graph: CompiledGraph): LawShow['objets'] {
   const types = Object.keys(liensOf) as ObjetType[];
   return graph.nodes
     .filter((n): n is typeof n & { kind: ObjetType } => (types as string[]).includes(n.kind))
-    .map((n) => ({ id: `${n.kind}:${n.id}`, type: n.kind, regles: liensOf[n.kind](n.id) }));
+    .map((n) => {
+      const id = `${n.kind}:${n.id}`;
+      return { id, type: n.kind, litSesRegles: readsRulesAtStartup(objectText(catalog, n.kind, n.id), id), regles: liensOf[n.kind](n.id) };
+    });
 }
 
-function porteeOf(r: { id: string; applique: boolean; rangee: boolean }, globale: Set<string>, projet: Set<string>): Portee {
+function porteeOf(
+  r: { id: string; applique: boolean; lue: boolean; rangee: boolean },
+  globale: Set<string>,
+  projet: Set<string>,
+): Portee {
   if (globale.has(r.id)) return 'partout';
   if (projet.has(r.id)) return 'projet';
+  if (r.lue) return 'demarrage';
   if (r.applique) return 'citee';
   return r.rangee ? 'rangee' : 'orpheline';
 }
@@ -202,8 +232,8 @@ function buildRegles(input: LawShowInput, graph: CompiledGraph, objets: LawShow[
     .sort((a, b) => a.id.localeCompare(b.id))
     .map((rule) => {
       const bundles = graph.edges.filter((e) => e.link === 'bundle-rule' && e.to === rule.id).map((e) => e.from).sort();
-      const appliqueePar = objets
-        .filter((o) => o.type === 'skill' || o.type === 'agent')
+      const citants = objets.filter((o) => (o.type === 'skill' || o.type === 'agent') && o.regles.some((l) => l.id === rule.id));
+      const appliqueePar = citants
         .flatMap((o) => o.regles.filter((l) => l.id === rule.id).map((l) => ({ objet: o.id, via: l.via })))
         .sort((a, b) => a.objet.localeCompare(b.objet) || a.via.localeCompare(b.via));
       return {
@@ -216,13 +246,17 @@ function buildRegles(input: LawShowInput, graph: CompiledGraph, objets: LawShow[
         profils: profileIds.filter((p) => bundles.some((b) => bundlesOfProfile.get(p)?.has(b))).sort(),
         appliqueePar,
         verifieePar: enforcingAgents(graph, rule.id),
-        portee: porteeOf({ id: rule.id, applique: appliqueePar.length > 0, rangee: bundles.length > 0 }, globale, projet),
+        portee: porteeOf(
+          { id: rule.id, applique: citants.length > 0, lue: citants.some((o) => o.litSesRegles), rangee: bundles.length > 0 },
+          globale,
+          projet,
+        ),
       };
     });
 }
 
 function countPortees(regles: RegleEntry[]): LawShow['comptes'] {
-  const comptes = { total: regles.length, partout: 0, projet: 0, citee: 0, rangee: 0, orpheline: 0 };
+  const comptes = { total: regles.length, partout: 0, projet: 0, demarrage: 0, citee: 0, rangee: 0, orpheline: 0 };
   for (const r of regles) comptes[r.portee] += 1;
   return comptes;
 }
@@ -230,7 +264,7 @@ function countPortees(regles: RegleEntry[]): LawShow['comptes'] {
 /** Le contrat JSON de la loi : le catalogue de `input`, lu avec les deux fichiers de loi. */
 export function buildLawShow(input: LawShowInput): LawShow {
   const graph = compileGraph(input.catalog);
-  const objets = buildObjets(graph);
+  const objets = buildObjets(graph, input.catalog);
   const regles = buildRegles(input, graph, objets);
   return {
     schema_version: LAW_SHOW_SCHEMA_VERSION,
@@ -246,12 +280,13 @@ export function buildLawShow(input: LawShowInput): LawShow {
 
 const sourceOf = (a: { objet: string; via: string }): string => (a.via === 'direct' ? a.objet : `${a.objet} (via ${a.via})`);
 
-/** La sortie texte : « En clair » avec les cinq comptes, puis les règles citées sans être installées. */
+/** La sortie texte : « En clair » avec les six comptes, puis les règles citées sans être installées. */
 export function renderLawText(law: LawShow): string {
   const c = law.comptes;
   const lines = [
     `En clair : ${c.total} règles. ${c.partout} lues partout, ${c.projet} lues dans ce projet seulement, ` +
-      `${c.citee} citées sans être installées, ${c.rangee} rangées sans effet, ${c.orpheline} orphelines.`,
+      `${c.demarrage} lues au démarrage du skill ou de l'agent qui les cite, ${c.citee} citées sans être installées, ` +
+      `${c.rangee} rangées sans effet, ${c.orpheline} orphelines.`,
   ];
   if (!law.lois.globale.installee) {
     lines.push('', `Attention : loi globale non installée (rien à lire dans ${law.lois.globale.chemin}). Aucune règle n'est comptée « lue partout ».`);
@@ -267,5 +302,68 @@ export function renderLawText(law: LawShow): string {
   }
   lines.push('Règles citées sans être installées :');
   for (const r of citees) lines.push(`- ${r.id} — citée par ${r.appliqueePar.map(sourceOf).join(', ')}`);
+  return lines.join('\n');
+}
+
+/* ------------------------------------------------------------------------------------------------ */
+/* Les règles d'UN objet — `ezk law show skill:<id>` (fiche 20261102103553108)                      */
+/* ------------------------------------------------------------------------------------------------ */
+
+export const LAW_OBJECT_SCHEMA_VERSION = 1;
+
+const RegleObjetSchema = z.strictObject({
+  id: z.string(),
+  titre: z.string().describe("Le titre de la règle, à défaut son id."),
+  niveau: z.enum(['MUST', 'SHOULD', 'MAY']),
+  via: z.string().describe("`direct`, ou `bundle:<id>` quand c'est un bundle qui apporte la règle."),
+  installee: z
+    .enum(['partout', 'projet'])
+    .nullable()
+    .describe('La loi installée qui porte déjà la règle, ou `null` si aucune ne la porte.'),
+  texte: z
+    .string()
+    .nullable()
+    .describe("Le texte complet de la règle quand aucune loi installée ne la porte ; `null` sinon, la session l'a déjà."),
+});
+
+export const LawObjectSchema = z.strictObject({
+  schema_version: z.literal(LAW_OBJECT_SCHEMA_VERSION),
+  objet: z.string().describe('`skill:<id>` ou `agent:<id>`.'),
+  regles: z.array(RegleObjetSchema).describe("Les règles que l'objet applique, triées par id."),
+});
+
+export type LawObject = z.infer<typeof LawObjectSchema>;
+
+/** Les règles d'un skill ou d'un agent, avec le texte de celles que la loi installée ne porte pas. `null` si l'objet est inconnu. */
+export function buildLawObject(input: LawShowInput, objet: string): LawObject | null {
+  const law = buildLawShow(input);
+  const entry = law.objets.find((o) => o.id === objet && (o.type === 'skill' || o.type === 'agent'));
+  if (!entry) return null;
+  const globale = installedRuleIds(input.globale.texte);
+  const projet = installedRuleIds(input.projet.texte);
+  const regles = entry.regles
+    .filter((l, i, all) => all.findIndex((x) => x.id === l.id) === i)
+    .flatMap((l) => {
+      const rule = input.catalog.rules.get(l.id);
+      if (!rule) return [];
+      const installee: 'partout' | 'projet' | null = globale.has(l.id) ? 'partout' : projet.has(l.id) ? 'projet' : null;
+      return [{ id: l.id, titre: rule.title ?? l.id, niveau: rule.level, via: l.via, installee, texte: installee ? null : rule.content }];
+    });
+  return { schema_version: LAW_OBJECT_SCHEMA_VERSION, objet, regles };
+}
+
+/** La sortie texte : « En clair », une ligne par règle déjà installée, puis le texte complet des autres. */
+export function renderLawObjectText(view: LawObject): string {
+  const installees = view.regles.filter((r) => r.installee !== null);
+  const aLire = view.regles.filter((r) => r.installee === null);
+  const lines = [
+    `En clair : ${view.objet} applique ${view.regles.length} règle(s). ${installees.length} sont déjà dans ta loi, ` +
+      `${aLire.length} sont à lire ci-dessous.`,
+  ];
+  if (installees.length > 0) {
+    lines.push('', 'Déjà dans ta loi :');
+    for (const r of installees) lines.push(`- ${r.id} — ${r.titre} (${r.installee === 'partout' ? 'lue partout' : 'lue dans ce projet'})`);
+  }
+  for (const r of aLire) lines.push('', `## ${r.id}  \`[${r.niveau}]\``, '', r.texte ?? '');
   return lines.join('\n');
 }

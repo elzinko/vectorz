@@ -28,6 +28,8 @@ description: >-
 
 # ezk-retro
 
+**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-retro`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+
 Tu tiens la **cérémonie d'auto-amélioration de la méthode** (Sujet A). L'humain la
 **déclenche quand il veut** ; une **équipe d'agents** débat en **round-robin** et tombe
 d'accord sur des améliorations **rattachées à un symptôme** et **mesurables** ; un **juge**

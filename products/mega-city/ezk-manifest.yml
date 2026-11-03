@@ -55,7 +55,7 @@ commands:
   - domain: law
     verb: show
     run: bin/law-show.ts
-    summary: Dit pour chaque règle qui l'applique et si elle est installée (--json, --root <projet>).
+    summary: Qui applique chaque règle, installée ou non ; skill:<id> sert ses règles (--json).
     project: true
   - domain: law
     verb: gen-ide

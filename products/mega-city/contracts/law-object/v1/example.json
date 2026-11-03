@@ -1,0 +1,22 @@
+{
+ "schema_version": 1,
+ "objet": "skill:s3",
+ "regles": [
+  {
+   "id": "r/demarrage",
+   "titre": "Règle r/demarrage",
+   "niveau": "MUST",
+   "via": "direct",
+   "installee": null,
+   "texte": "Texte de r/demarrage."
+  },
+  {
+   "id": "r/globale",
+   "titre": "Règle r/globale",
+   "niveau": "MUST",
+   "via": "direct",
+   "installee": "partout",
+   "texte": null
+  }
+ ]
+}

@@ -3,11 +3,14 @@
  * (fiche 20261101215342537, ADR-086), et la fixture qui les produit.
  *
  * Tous GÉNÉRÉS, jamais écrits à la main (`pnpm law:contract --write`) :
- *   contracts/law-show/v1/schema.json   ← tiré du schéma zod
- *   contracts/law-show/v1/example.json  ← la sortie de la commande sur la fixture
+ *   contracts/law-show/v1/schema.json     ← tiré du schéma zod
+ *   contracts/law-show/v1/example.json    ← la sortie de la commande sur la fixture
+ *   contracts/law-object/v1/schema.json   ← les règles d'UN objet (`ezk law show skill:<id> --json`)
+ *   contracts/law-object/v1/example.json  ← cette sortie pour le skill `s3` de la fixture
  *
  * La fixture est un petit catalogue factice avec deux fichiers de loi factices : une règle par portée
- * (`partout`, `projet`, `citee` en direct et par bundle, `rangee`, `orpheline`). Elle ne touche jamais
+ * (`partout`, `projet`, `demarrage`, `citee` en direct et par bundle, `rangee`, `orpheline`). Le skill
+ * `s3` ouvre par `ezk law show skill:s3` : il lit ses règles au démarrage. Elle ne touche jamais
  * au vrai `~/.claude`. Les chemins de loi de l'exemple sont fixes, pour qu'il ne change pas d'une
  * machine à l'autre.
  */
@@ -15,7 +18,14 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { z } from 'zod';
-import { LAW_SHOW_SCHEMA_VERSION, LawShowSchema, buildLawShow } from '../core/law-show.js';
+import {
+  LAW_OBJECT_SCHEMA_VERSION,
+  LAW_SHOW_SCHEMA_VERSION,
+  LawObjectSchema,
+  LawShowSchema,
+  buildLawObject,
+  buildLawShow,
+} from '../core/law-show.js';
 import { loadCatalog } from '../loaders/catalog.js';
 import { tolerant } from './contract-files.js';
 import { globalLawPath, projectLawPath, readLawText } from './law-show.js';
@@ -23,6 +33,9 @@ import { globalLawPath, projectLawPath, readLawText } from './law-show.js';
 const LAW_DIR = `contracts/law-show/v${LAW_SHOW_SCHEMA_VERSION}`;
 export const LAW_SCHEMA_FILE = `${LAW_DIR}/schema.json`;
 export const LAW_EXAMPLE_FILE = `${LAW_DIR}/example.json`;
+const LAW_OBJECT_DIR = `contracts/law-object/v${LAW_OBJECT_SCHEMA_VERSION}`;
+export const LAW_OBJECT_SCHEMA_FILE = `${LAW_OBJECT_DIR}/schema.json`;
+export const LAW_OBJECT_EXAMPLE_FILE = `${LAW_OBJECT_DIR}/example.json`;
 
 const rule = (id: string, level: string, extra = ''): string =>
   `---\nid: ${id}\nkind: disposition\nlevel: ${level}\ntitle: Règle ${id}\n${extra}---\n\nTexte de ${id}.\n`;
@@ -30,6 +43,7 @@ const rule = (id: string, level: string, extra = ''): string =>
 const FIXTURE_CATALOG: Record<string, string> = {
   'rules/r/globale.md': rule('r/globale', 'MUST', 'enforcements:\n  - type: agent-check\n    agent: a1\n'),
   'rules/r/projet.md': rule('r/projet', 'SHOULD'),
+  'rules/r/demarrage.md': rule('r/demarrage', 'MUST'),
   'rules/r/citee.md': rule('r/citee', 'MUST'),
   'rules/r/citee-bundle.md': rule('r/citee-bundle', 'SHOULD'),
   'rules/r/rangee.md': rule('r/rangee', 'MAY'),
@@ -41,6 +55,8 @@ const FIXTURE_CATALOG: Record<string, string> = {
   'agents/a1.md': '---\nname: a1\ninteractions: [r/citee]\n---\n\nAgent de la fixture.\n',
   'skills/s1/SKILL.md': '---\nname: s1\napplies: [r/citee]\n---\n\nSkill de la fixture.\n',
   'skills/s2/SKILL.md': '---\nname: s2\napplies: [b2]\n---\n\nSkill de la fixture.\n',
+  'skills/s3/SKILL.md':
+    '---\nname: s3\napplies: [r/globale, r/demarrage]\n---\n\nAvant d’agir, lis tes règles : `ezk law show skill:s3`.\n',
 };
 
 const GLOBAL_LAW = '# La loi globale\n\n## r/globale  `[MUST]`\n\n- Texte.\n\n### Un sous-titre\n\n- Autre.\n';
@@ -77,14 +93,16 @@ export function renderLawContractFiles(): Record<string, string> {
   try {
     const globale = readLawText(globalLawPath(fixture.target));
     const projet = readLawText(projectLawPath(fixture.projectRoot));
-    const example = buildLawShow({
+    const input = {
       catalog: loadCatalog(fixture.catalogRoot),
       globale: { ...globale, chemin: '~/.claude/rules/iamthelaw.md' },
       projet: { ...projet, chemin: '.iamthelaw/ENTRY.md' },
-    });
+    };
     return {
       [LAW_SCHEMA_FILE]: `${JSON.stringify(tolerant(z.toJSONSchema(LawShowSchema)), null, 2)}\n`,
-      [LAW_EXAMPLE_FILE]: `${JSON.stringify(example, null, 1)}\n`,
+      [LAW_EXAMPLE_FILE]: `${JSON.stringify(buildLawShow(input), null, 1)}\n`,
+      [LAW_OBJECT_SCHEMA_FILE]: `${JSON.stringify(tolerant(z.toJSONSchema(LawObjectSchema)), null, 2)}\n`,
+      [LAW_OBJECT_EXAMPLE_FILE]: `${JSON.stringify(buildLawObject(input, 'skill:s3'), null, 1)}\n`,
     };
   } finally {
     rmSync(fixture.dir, { recursive: true, force: true });

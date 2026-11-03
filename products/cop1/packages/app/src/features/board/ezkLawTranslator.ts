@@ -7,7 +7,7 @@ import { EzkContractError } from './ezkPlanTranslator.js';
 
 const SUPPORTED_SCHEMA_VERSION = 1;
 const COMMANDE = 'ezk law show --json';
-export const PORTEES = ['partout', 'projet', 'citee', 'rangee', 'orpheline'] as const;
+export const PORTEES = ['partout', 'projet', 'demarrage', 'citee', 'rangee', 'orpheline'] as const;
 export type Portee = (typeof PORTEES)[number];
 
 export interface LawRule {

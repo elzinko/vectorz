@@ -2,7 +2,7 @@
  * lawModel — la forme de la loi que sert le daemon (`/api/law/<projet>`, fiche 20260826222044335), et
  * la portée d'une règle dite en mots. CŒUR PUR : la méthode publie un code, la vue dit une phrase.
  */
-export const PORTEES = ['partout', 'projet', 'citee', 'rangee', 'orpheline'] as const;
+export const PORTEES = ['partout', 'projet', 'demarrage', 'citee', 'rangee', 'orpheline'] as const;
 export type Portee = (typeof PORTEES)[number];
 
 export interface LawRule {
@@ -37,6 +37,7 @@ export const shortName = (objet: string): string => objet.replace(/^(skill|agent
 export const PORTEE_LABEL: Record<Portee, string> = {
   partout: 'lues partout',
   projet: 'lues dans ce projet',
+  demarrage: 'lues au démarrage',
   citee: 'citées sans être installées',
   rangee: 'rangées sans effet',
   orpheline: 'orphelines',
@@ -49,6 +50,8 @@ export function porteeText(rule: LawRule): string {
       return 'lue dans toutes tes sessions';
     case 'projet':
       return 'lue dans ce projet seulement';
+    case 'demarrage':
+      return `lue au démarrage de ${rule.appliqueePar.map(shortName).join(', ')}, qui la demande à la méthode`;
     case 'citee':
       return `citée par ${rule.appliqueePar.map(shortName).join(', ')}, absente de la loi installée`;
     case 'rangee':

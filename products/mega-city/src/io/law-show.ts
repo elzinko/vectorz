@@ -8,7 +8,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type LawShow, type LawText, buildLawShow } from '../core/law-show.js';
+import { type LawObject, type LawShow, type LawShowInput, type LawText, buildLawObject, buildLawShow } from '../core/law-show.js';
 import { loadCatalog } from '../loaders/catalog.js';
 
 export interface LawLocations {
@@ -26,11 +26,20 @@ export function readLawText(chemin: string): LawText {
 export const globalLawPath = (target: string): string => join(target, 'rules', 'iamthelaw.md');
 export const projectLawPath = (projectRoot: string): string => join(projectRoot, '.iamthelaw', 'ENTRY.md');
 
-/** Le contrat JSON de la loi : le catalogue de `catalogRoot`, lu avec les lois installées. */
-export function lawShowData(catalogRoot: string, where: LawLocations): LawShow {
-  return buildLawShow({
+function lawInput(catalogRoot: string, where: LawLocations): LawShowInput {
+  return {
     catalog: loadCatalog(catalogRoot),
     globale: readLawText(globalLawPath(where.target)),
     projet: readLawText(projectLawPath(where.projectRoot)),
-  });
+  };
+}
+
+/** Le contrat JSON de la loi : le catalogue de `catalogRoot`, lu avec les lois installées. */
+export function lawShowData(catalogRoot: string, where: LawLocations): LawShow {
+  return buildLawShow(lawInput(catalogRoot, where));
+}
+
+/** Les règles d'un skill ou d'un agent (`skill:<id>`, `agent:<id>`), ou `null` si l'objet est inconnu. */
+export function lawObjectData(catalogRoot: string, where: LawLocations, objet: string): LawObject | null {
+  return buildLawObject(lawInput(catalogRoot, where), objet);
 }

@@ -26,6 +26,8 @@ description: >-
 
 # ezk-product-build
 
+**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-product-build`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+
 Tu es un **product builder** : tu fais avancer un produit **en boucle**, sprint
 après sprint, en décidant **quoi** construire et en confiant le **comment** à
 l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune.

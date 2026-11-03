@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "objet": {
+      "type": "string",
+      "description": "`skill:<id>` ou `agent:<id>`."
+    },
+    "regles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "titre": {
+            "type": "string",
+            "description": "Le titre de la règle, à défaut son id."
+          },
+          "niveau": {
+            "type": "string",
+            "enum": [
+              "MUST",
+              "SHOULD",
+              "MAY"
+            ]
+          },
+          "via": {
+            "type": "string",
+            "description": "`direct`, ou `bundle:<id>` quand c'est un bundle qui apporte la règle."
+          },
+          "installee": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "partout",
+                  "projet"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La loi installée qui porte déjà la règle, ou `null` si aucune ne la porte."
+          },
+          "texte": {
+            "description": "Le texte complet de la règle quand aucune loi installée ne la porte ; `null` sinon, la session l'a déjà.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "titre",
+          "niveau",
+          "via",
+          "installee",
+          "texte"
+        ]
+      },
+      "description": "Les règles que l'objet applique, triées par id."
+    }
+  },
+  "required": [
+    "schema_version",
+    "objet",
+    "regles"
+  ]
+}

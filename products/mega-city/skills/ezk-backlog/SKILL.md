@@ -28,6 +28,8 @@ description: >-
 
 # ezk-backlog
 
+**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-backlog`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+
 > **Pas `ezk-pr`.** Ici = pile de **fiches** (*quoi* construire). `ezk-pr` =
 > stock de **PRs** (*comment* valider/merger). Intersection : `ship` /
 > `reconcile` autour du done — objets différents (ADR-0022). **Intention** :

@@ -70,11 +70,17 @@
           "maximum": 9007199254740991,
           "description": "Dans la loi du projet, pas dans la globale."
         },
+        "demarrage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Installée nulle part, lue au démarrage par un skill ou un agent qui la cite."
+        },
         "citee": {
           "type": "integer",
           "minimum": 0,
           "maximum": 9007199254740991,
-          "description": "Citée par un skill ou un agent, installée nulle part."
+          "description": "Citée par un skill ou un agent, installée nulle part, lue par personne."
         },
         "rangee": {
           "type": "integer",
@@ -93,11 +99,12 @@
         "total",
         "partout",
         "projet",
+        "demarrage",
         "citee",
         "rangee",
         "orpheline"
       ],
-      "description": "Les cinq portées se partagent les règles : leur somme vaut `total`."
+      "description": "Les six portées se partagent les règles : leur somme vaut `total`."
     },
     "regles": {
       "type": "array",
@@ -174,6 +181,7 @@
             "enum": [
               "partout",
               "projet",
+              "demarrage",
               "citee",
               "rangee",
               "orpheline"
@@ -212,6 +220,10 @@
               "profile"
             ]
           },
+          "litSesRegles": {
+            "type": "boolean",
+            "description": "Un skill ou un agent dont le texte lance `ezk law show <objet>` au démarrage. Faux pour un bundle ou un profil."
+          },
           "regles": {
             "type": "array",
             "items": {
@@ -237,6 +249,7 @@
         "required": [
           "id",
           "type",
+          "litSesRegles",
           "regles"
         ]
       }

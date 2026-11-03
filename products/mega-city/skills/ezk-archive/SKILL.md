@@ -24,6 +24,8 @@ description: >-
 
 # ezk-archive
 
+**Avant d'agir, lis tes règles :** `ezk law show skill:ezk-archive`. Elle affiche le texte complet des règles de ce skill que ta loi installée ne porte pas.
+
 **Ce skill ne *juge* jamais lui-même.** C'est l'invariant — il a remplacé « ce skill ne
 fait QUE déléguer », qui était posé à la mauvaise granularité et coûtait ~235 000 tokens
 par clôture (fiche mega-city 0088). Le partage, en trois verbes, suit ADR-0001 §2 :

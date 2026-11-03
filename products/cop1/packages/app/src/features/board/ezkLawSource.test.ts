@@ -21,12 +21,13 @@ const EXAMPLE = readFileSync(
 const example = (): any => JSON.parse(EXAMPLE);
 
 describe('translateLaw — les comptes et la portée viennent de la méthode', () => {
-  it('les cinq comptes et le total valent ceux du contrat', () => {
-    const { total, partout, projet, citee, rangee, orpheline } = example().comptes;
+  it('les six comptes et le total valent ceux du contrat', () => {
+    const { total, partout, projet, demarrage, citee, rangee, orpheline } = example().comptes;
     expect(translateLaw(example()).comptes).toEqual({
       total,
       partout,
       projet,
+      demarrage,
       citee,
       rangee,
       orpheline,

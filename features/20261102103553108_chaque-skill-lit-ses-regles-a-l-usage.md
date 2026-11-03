@@ -90,20 +90,20 @@ après         règle → ezk-sprint démarre → ezk law show skill:ezk-sprint 
 
 ## Critères d'acceptation
 
-- [ ] **Les règles d'un objet, par commande.** `ezk law show skill:ezk-sprint` affiche le texte complet
+- [x] **Les règles d'un objet, par commande.** `ezk law show skill:ezk-sprint` affiche le texte complet
       des règles absentes de la loi installée, dont `development/story-dans-un-worktree-dedie`. Chaque
       règle déjà installée tient sur une ligne. `--json` rend la même liste, conforme au contrat.
-- [ ] **Objet inconnu.** `ezk law show skill:inconnu` dit que l'objet est inconnu et sort en erreur,
+- [x] **Objet inconnu.** `ezk law show skill:inconnu` dit que l'objet est inconnu et sort en erreur,
       sans rien afficher d'autre.
-- [ ] **Les onze objets lisent leurs règles.** Les sept skills et les quatre agents qui déclarent des
+- [x] **Les onze objets lisent leurs règles.** Les sept skills et les quatre agents qui déclarent des
       règles ouvrent par la ligne qui lance la commande.
-- [ ] **Un test garde la ligne.** Retirer la ligne d'un skill qui déclare des règles fait échouer la
+- [x] **Un test garde la ligne.** Retirer la ligne d'un skill qui déclare des règles fait échouer la
       gate.
-- [ ] **La carte compte juste.** `ezk law show` compte 0 règle « citée sans être installée ». Les 17
+- [x] **La carte compte juste.** `ezk law show` compte 0 règle « citée sans être installée ». Les 17
       apparaissent comme lues au démarrage de leur skill ou de leur agent.
-- [ ] **La loi globale ne grossit pas.** Après `ezk law bind-global global --link`,
+- [x] **La loi globale ne grossit pas.** Après `ezk law bind-global global --link`,
       `~/.claude/rules/iamthelaw.md` garde ses 10 règles.
-- [ ] **Le coût est mesuré.** La taille de la sortie de `ezk law show` pour l'objet le plus lourd est
+- [x] **Le coût est mesuré.** La taille de la sortie de `ezk law show` pour l'objet le plus lourd est
       écrite dans cette fiche, en octets et en jetons (repère d'ADR-0056). Si elle dépasse le coût de
       l'option écartée, on revient à « élargir la loi globale ».
 
@@ -135,3 +135,16 @@ compte 0 règle citée sans être installée. La troisième ne signale aucun éc
      test couvre les 11 objets.
   3. L'ADR d'amendement d'ADR-0056 dit comment revenir en arrière : retirer les 11 lignes et le verbe.
   Construite après la fiche « La gate ne dépend ni de l'index généré ni du retard sur GitHub ».
+- **Preuves du build (2026-11-03).**
+  - `ezk law show skill:ezk-sprint` affiche 3 règles déjà installées en une ligne, et le texte complet
+    des 4 autres, dont `development/story-dans-un-worktree-dedie`. `skill:inconnu` sort en code 1, sans
+    rien sur la sortie.
+  - Sur le vrai catalogue : 17 règles « lues au démarrage », 0 « citée sans être installée ».
+  - Retirer la ligne d'ouverture de `ezk-retro` fait tomber le test de garde, qui nomme `skill:ezk-retro`.
+  - La loi globale compilée dans un dossier jetable (`lawgiver bind-global global --target <tmp>`) garde
+    ses 10 règles ; aucun bundle ni profil n'a changé. Le vrai `~/.claude` n'a pas été touché.
+- **Coût mesuré (7e critère)**, avec la loi globale installée, au repère d'ADR-0056 (16 Ko font environ
+  4 000 jetons) : l'objet le plus lourd, `agent:ezk-reviewer`, sort 7 705 octets, environ 1 900 jetons.
+  Suivent `agent:ezk-dev` (7 700 octets) et `skill:ezk-sprint` (6 540 octets). Le coût n'est payé que par
+  une session qui lance l'objet ; l'option écartée coûtait 7 500 jetons à chaque session. Décision et
+  retour en arrière : [ADR-0087](../products/mega-city/docs/adr/0087-regles-lues-au-demarrage-du-skill.md).

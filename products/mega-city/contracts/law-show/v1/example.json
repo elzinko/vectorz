@@ -11,9 +11,10 @@
   }
  },
  "comptes": {
-  "total": 6,
+  "total": 7,
   "partout": 1,
   "projet": 1,
+  "demarrage": 1,
   "citee": 2,
   "rangee": 1,
   "orpheline": 1
@@ -66,6 +67,23 @@
    "portee": "citee"
   },
   {
+   "id": "r/demarrage",
+   "titre": "Règle r/demarrage",
+   "niveau": "MUST",
+   "categorie": "r",
+   "fichier": "products/mega-city/rules/r/demarrage.md",
+   "bundles": [],
+   "profils": [],
+   "appliqueePar": [
+    {
+     "objet": "skill:s3",
+     "via": "direct"
+    }
+   ],
+   "verifieePar": [],
+   "portee": "demarrage"
+  },
+  {
    "id": "r/globale",
    "titre": "Règle r/globale",
    "niveau": "MUST",
@@ -77,7 +95,12 @@
    "profils": [
     "p1"
    ],
-   "appliqueePar": [],
+   "appliqueePar": [
+    {
+     "objet": "skill:s3",
+     "via": "direct"
+    }
+   ],
    "verifieePar": [
     "a1"
    ],
@@ -132,6 +155,7 @@
   {
    "id": "agent:a1",
    "type": "agent",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/citee",
@@ -142,6 +166,7 @@
   {
    "id": "skill:s1",
    "type": "skill",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/citee",
@@ -152,6 +177,7 @@
   {
    "id": "skill:s2",
    "type": "skill",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/citee",
@@ -164,8 +190,24 @@
    ]
   },
   {
+   "id": "skill:s3",
+   "type": "skill",
+   "litSesRegles": true,
+   "regles": [
+    {
+     "id": "r/demarrage",
+     "via": "direct"
+    },
+    {
+     "id": "r/globale",
+     "via": "direct"
+    }
+   ]
+  },
+  {
    "id": "bundle:b2",
    "type": "bundle",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/citee",
@@ -180,6 +222,7 @@
   {
    "id": "bundle:b3",
    "type": "bundle",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/rangee",
@@ -190,6 +233,7 @@
   {
    "id": "bundle:base",
    "type": "bundle",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/globale",
@@ -204,6 +248,7 @@
   {
    "id": "profile:p1",
    "type": "profile",
+   "litSesRegles": false,
    "regles": [
     {
      "id": "r/globale",

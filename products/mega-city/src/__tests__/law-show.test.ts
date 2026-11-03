@@ -3,7 +3,7 @@
  *
  * En clair : la commande dit, pour chaque règle du catalogue, où elle est rangée, qui l'applique et si
  * elle est vraiment installée. On le prouve sur un petit catalogue factice et des fichiers de loi
- * factices, jamais sur le vrai ~/.claude : les cinq portées sont couvertes, un fichier de loi absent est
+ * factices, jamais sur le vrai ~/.claude : les six portées sont couvertes, un fichier de loi absent est
  * signalé, une règle ajoutée apparaît tout de suite, et la sortie JSON passe un tuyau en entier.
  */
 import { spawnSync } from 'node:child_process';
@@ -13,16 +13,28 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { type LawShow, LawShowSchema, installedRuleIds, renderLawText } from '../core/law-show.js';
+import {
+  type LawObject,
+  LawObjectSchema,
+  type LawShow,
+  LawShowSchema,
+  buildLawObject,
+  installedRuleIds,
+  readsRulesAtStartup,
+  renderLawObjectText,
+  renderLawText,
+} from '../core/law-show.js';
 import {
   LAW_EXAMPLE_FILE,
+  LAW_OBJECT_EXAMPLE_FILE,
+  LAW_OBJECT_SCHEMA_FILE,
   LAW_SCHEMA_FILE,
   type LawFixture,
   makeLawFixture,
   renderLawContractFiles,
   writeLawFixtureFile,
 } from '../io/law-contract-files.js';
-import { lawShowData } from '../io/law-show.js';
+import { globalLawPath, lawShowData, projectLawPath, readLawText } from '../io/law-show.js';
 import { loadCatalog } from '../loaders/catalog.js';
 
 vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 });
@@ -48,19 +60,20 @@ describe('law show --json — la portée vraie', () => {
     expect(LawShowSchema.safeParse(data).success).toBe(true);
   });
 
-  it('range chaque règle dans la bonne portée, les cinq portées couvertes', () => {
+  it('range chaque règle dans la bonne portée, les six portées couvertes', () => {
     expect(regle('r/globale')?.portee).toBe('partout');
     expect(regle('r/projet')?.portee).toBe('projet');
+    expect(regle('r/demarrage')?.portee).toBe('demarrage');
     expect(regle('r/citee')?.portee).toBe('citee');
     expect(regle('r/citee-bundle')?.portee).toBe('citee');
     expect(regle('r/rangee')?.portee).toBe('rangee');
     expect(regle('r/orpheline')?.portee).toBe('orpheline');
   });
 
-  it('les cinq comptes somment au total', () => {
+  it('les six comptes somment au total', () => {
     const c = data.comptes;
-    expect(c).toEqual({ total: 6, partout: 1, projet: 1, citee: 2, rangee: 1, orpheline: 1 });
-    expect(c.partout + c.projet + c.citee + c.rangee + c.orpheline).toBe(c.total);
+    expect(c).toEqual({ total: 7, partout: 1, projet: 1, demarrage: 1, citee: 2, rangee: 1, orpheline: 1 });
+    expect(c.partout + c.projet + c.demarrage + c.citee + c.rangee + c.orpheline).toBe(c.total);
   });
 
   it('dit qui applique chaque règle, en direct ou par un bundle, et qui la vérifie', () => {
@@ -91,6 +104,7 @@ describe('law show --json — la portée vraie', () => {
     expect(objet('bundle:b3')).toEqual({
       id: 'bundle:b3',
       type: 'bundle',
+      litSesRegles: false,
       regles: [{ id: 'r/rangee', via: 'direct' }],
     });
     expect(objet('profile:p1')?.regles.map((r) => r.id)).toEqual(['r/globale', 'r/projet', 'r/rangee']);
@@ -114,7 +128,7 @@ describe('law show — un fichier de loi absent est signalé, jamais compté zé
       expect(d.lois.projet.installee).toBe(false);
       expect(d.comptes.partout).toBe(0);
       expect(d.comptes.projet).toBe(0);
-      expect(d.comptes.total).toBe(6);
+      expect(d.comptes.total).toBe(7);
       const texte = renderLawText(d);
       expect(texte).toContain('loi globale non installée');
       expect(texte).toContain('loi du projet non installée');
@@ -134,7 +148,7 @@ describe('law show — jamais périmé', () => {
     try {
       const d = lawShowData(fx.catalogRoot, { target: fx.target, projectRoot: fx.projectRoot });
       expect(d.regles.find((r) => r.id === 'r/nouvelle')?.portee).toBe('orpheline');
-      expect(d.comptes.total).toBe(7);
+      expect(d.comptes.total).toBe(8);
     } finally {
       rmSync(join(fx.catalogRoot, 'rules', 'r', 'nouvelle.md'));
     }
@@ -142,10 +156,10 @@ describe('law show — jamais périmé', () => {
 });
 
 describe('law show — le texte', () => {
-  it('ouvre par « En clair » avec les cinq comptes, puis liste les règles citées avec leur source', () => {
+  it('ouvre par « En clair » avec les six comptes, puis liste les règles citées avec leur source', () => {
     const texte = renderLawText(data);
     expect(texte.split('\n')[0]).toBe(
-      'En clair : 6 règles. 1 lues partout, 1 lues dans ce projet seulement, 2 citées sans être installées, 1 rangées sans effet, 1 orphelines.',
+      "En clair : 7 règles. 1 lues partout, 1 lues dans ce projet seulement, 1 lues au démarrage du skill ou de l'agent qui les cite, 2 citées sans être installées, 1 rangées sans effet, 1 orphelines.",
     );
     expect(texte).toContain('r/citee');
     expect(texte).toContain('agent:a1');
@@ -220,6 +234,13 @@ describe('law show — schéma et exemple rangés', () => {
     expect(LawShowSchema.safeParse(exemple).success).toBe(true);
   });
 
+  it('le contrat des règles d’un objet est à jour, et son exemple respecte le schéma', () => {
+    const files = renderLawContractFiles();
+    expect(readFileSync(join(megaCity, LAW_OBJECT_SCHEMA_FILE), 'utf8')).toBe(files[LAW_OBJECT_SCHEMA_FILE]);
+    expect(readFileSync(join(megaCity, LAW_OBJECT_EXAMPLE_FILE), 'utf8')).toBe(files[LAW_OBJECT_EXAMPLE_FILE]);
+    expect(LawObjectSchema.safeParse(JSON.parse(files[LAW_OBJECT_EXAMPLE_FILE] as string)).success).toBe(true);
+  });
+
   it('le schéma publié déclare le champ regles de chaque objet et tolère un champ ajouté', () => {
     const schema = JSON.stringify(JSON.parse(readFileSync(join(megaCity, LAW_SCHEMA_FILE), 'utf8')));
     expect(schema).toContain('"regles"');
@@ -253,6 +274,117 @@ describe('law show — les règles héritées par extends', () => {
       expect(ids('profile:poste')).toContain('r/heritee');
     } finally {
       rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('law show <objet> — les règles d’un skill ou d’un agent (fiche 20261102103553108)', () => {
+  const input = () => ({
+    catalog: loadCatalog(fx.catalogRoot),
+    globale: readLawText(globalLawPath(fx.target)),
+    projet: readLawText(projectLawPath(fx.projectRoot)),
+  });
+
+  it('un skill qui ouvre par sa commande lit ses règles ; les autres non', () => {
+    expect(objet('skill:s3')?.litSesRegles).toBe(true);
+    expect(objet('skill:s1')?.litSesRegles).toBe(false);
+    expect(objet('agent:a1')?.litSesRegles).toBe(false);
+    expect(objet('profile:p1')?.litSesRegles).toBe(false);
+  });
+
+  it('donne le texte complet d’une règle non installée, une ligne pour une règle installée', () => {
+    const view = buildLawObject(input(), 'skill:s3') as LawObject;
+    expect(LawObjectSchema.safeParse(view).success).toBe(true);
+    expect(view.regles).toEqual([
+      { id: 'r/demarrage', titre: 'Règle r/demarrage', niveau: 'MUST', via: 'direct', installee: null, texte: 'Texte de r/demarrage.' },
+      { id: 'r/globale', titre: 'Règle r/globale', niveau: 'MUST', via: 'direct', installee: 'partout', texte: null },
+    ]);
+    const texte = renderLawObjectText(view);
+    expect(texte.split('\n')[0]).toBe(
+      'En clair : skill:s3 applique 2 règle(s). 1 sont déjà dans ta loi, 1 sont à lire ci-dessous.',
+    );
+    expect(texte).toContain('- r/globale — Règle r/globale (lue partout)');
+    expect(texte).toContain('## r/demarrage  `[MUST]`\n\nTexte de r/demarrage.');
+    expect(texte).not.toContain('Texte de r/globale');
+  });
+
+  it('un objet inconnu, un bundle ou un profil : rien', () => {
+    expect(buildLawObject(input(), 'skill:inconnu')).toBeNull();
+    expect(buildLawObject(input(), 'bundle:b3')).toBeNull();
+    expect(buildLawObject(input(), 'profile:p1')).toBeNull();
+  });
+
+  it('la commande doit nommer CET objet, entre accents graves', () => {
+    expect(readsRulesAtStartup('Lis : `ezk law show skill:s3`.', 'skill:s3')).toBe(true);
+    expect(readsRulesAtStartup('Lis : `ezk law show skill:s3`.', 'skill:s1')).toBe(false);
+    expect(readsRulesAtStartup('Lis : ezk law show skill:s3', 'skill:s3')).toBe(false);
+  });
+});
+
+describe('law show <objet> — la commande, sur le vrai catalogue', () => {
+  const run = (args: string[]) =>
+    spawnSync(process.execPath, [tsxCli, join(megaCity, 'bin', 'law-show.ts'), ...args], {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  let vide: string;
+  beforeAll(() => {
+    vide = mkdtempSync(join(tmpdir(), 'law-cible-'));
+  });
+  afterAll(() => rmSync(vide, { recursive: true, force: true }));
+
+  it('skill:ezk-sprint sans loi installée : le texte complet de ses règles, dont celle du worktree dédié', () => {
+    const r = run(['skill:ezk-sprint', '--target', vide, '--root', fx.projectRoot]);
+    expect(r.status).toBe(0);
+    expect(r.stdout.startsWith('En clair : skill:ezk-sprint applique ')).toBe(true);
+    expect(r.stdout).toContain('## development/story-dans-un-worktree-dedie  `[');
+  });
+
+  it('--json : la même liste, conforme au contrat', () => {
+    const r = run(['skill:ezk-sprint', '--json', '--target', vide, '--root', fx.projectRoot]);
+    expect(r.status).toBe(0);
+    const view = JSON.parse(r.stdout) as LawObject;
+    expect(LawObjectSchema.safeParse(view).success).toBe(true);
+    expect(view.regles.find((x) => x.id === 'development/story-dans-un-worktree-dedie')?.texte).toBeTruthy();
+  });
+
+  it('un objet inconnu sort en erreur, sans rien sur la sortie', () => {
+    const r = run(['skill:inconnu', '--target', vide, '--root', fx.projectRoot]);
+    expect(r.status).toBe(1);
+    expect(r.stdout).toBe('');
+    expect(r.stderr).toContain('objet inconnu « skill:inconnu »');
+  });
+
+  it('un bundle ou un profil est refusé, jamais ignoré en silence', () => {
+    for (const objet of ['bundle:base', 'profile:global']) {
+      const r = run([objet, '--target', vide, '--root', fx.projectRoot]);
+      expect(r.status).toBe(1);
+      expect(r.stdout).toBe('');
+      expect(r.stderr).toContain(`objet inconnu « ${objet} »`);
+    }
+  });
+});
+
+describe('law show — chaque skill et chaque agent qui déclare des règles les lit au démarrage (fiche 20261102103553108)', () => {
+  const catalog = loadCatalog(megaCity);
+  /** L'ouverture d'un texte : tout ce qui précède sa première section `## `. */
+  const opening = (texte: string): string => texte.split(/\n## /)[0] as string;
+
+  it('la ligne « ezk law show <objet> » ouvre chaque objet qui déclare des règles', () => {
+    const declarants = [
+      ...[...catalog.skills.values()].filter((s) => (s.applies ?? []).length > 0).map((s) => ({ objet: `skill:${s.id}`, texte: s.content })),
+      ...[...catalog.agents.values()].filter((a) => a.interactions.length > 0).map((a) => ({ objet: `agent:${a.id}`, texte: a.role })),
+    ];
+    expect(declarants.length).toBeGreaterThan(0);
+    expect(declarants.filter((d) => !readsRulesAtStartup(opening(d.texte), d.objet)).map((d) => d.objet)).toEqual([]);
+  });
+
+  it('aucune règle n’est citée sans être lue', () => {
+    const vide = mkdtempSync(join(tmpdir(), 'law-cible-'));
+    try {
+      expect(lawShowData(megaCity, { target: vide, projectRoot: fx.projectRoot }).comptes.citee).toBe(0);
+    } finally {
+      rmSync(vide, { recursive: true, force: true });
     }
   });
 });
