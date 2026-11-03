@@ -2,10 +2,10 @@
 name: supervision-analyze
 argument-hint: "[chemin-projet=.]"
 description: >-
-  Post-mortem Moniteur / supervision : quand le Moniteur dit « Silence prolongé »,
+  Post-mortem de supervision : quand mission control dit « Silence prolongé »,
   qu’un run semble figé, ou qu’on ne comprend pas ce qui a été émis. Lance le kit
   d’analyse déterministe (journal `.supervision/runs` + transcript Claude Code) —
-  pas de LLM. Déclencheurs : « pourquoi silence Moniteur », « analyze supervision »,
+  pas de LLM. Déclencheurs : « pourquoi silence de mission control », « analyze supervision »,
   « moniteur confus », « supervision:analyze », « post-mortem run ».
 ---
 
@@ -43,6 +43,6 @@ absolu.
 
 ## Ce que tu n’es pas
 
-- Pas un remplacement du Moniteur live.
+- Pas un remplacement de mission control live.
 - Pas le harness E2E-LLM (fiche 2103).
 - Pas une méthode de prod : tu diagnostiques, tu ne rejoues pas le sprint.

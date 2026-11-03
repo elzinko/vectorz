@@ -1,4 +1,4 @@
-# "Qualité — la méthode exécute, un tiers mesure, le moniteur agrège (flux)"
+# "Qualité — la méthode exécute, un tiers mesure, mission control agrège (flux)"
 
 > Diagramme généré par **ezk-diagram**. Source de vérité : [`description.md`](description.md) (prose).
 > Ce fichier est **généré** (explication comprise) — ne pas l’éditer à la main (il serait écrasé au prochain `publish`).
@@ -13,10 +13,10 @@ tire une décision.
 Le point clé, **corrigé par le panel adverse** : **lancer l'outil ≠ écrire le chiffre**. La
 méthode *exécute* l'outil (elle seule peut, pendant le build) et garantit qu'il tourne ; mais
 c'est un **tiers neutre** qui *note* le résultat dans le journal — sinon l'élève corrigerait sa
-propre copie. Ni la méthode auditée, ni le moniteur n'écrivent la mesure.
+propre copie. Ni la méthode auditée, ni mission control n'écrivent la mesure.
 
 Deux mots à ne pas confondre : le **silo** est le *magasin* (le journal qui garde chaque mesure,
-collée à un commit/PR) ; le **moniteur** (mission-control) est l'*écran* qui lit ce magasin et
+collée à un commit/PR) ; **mission control** est l'*écran* qui lit ce magasin et
 affiche les courbes.
 
 
@@ -27,7 +27,7 @@ sequenceDiagram
     participant O as Outil d'analyse<br/>(Codecov · Sonar)
     participant T as Mesureur tiers<br/>(neutre)
     participant S as Silo<br/>(journal — le magasin)
-    participant Mon as Moniteur<br/>(mission-control — l'écran)
+    participant Mon as mission control<br/>(l'écran)
     participant PO as PO
 
     Note over M,O: au build de chaque PR
@@ -36,7 +36,7 @@ sequenceDiagram
     Note over M,T: lancer l'outil ≠ écrire le chiffre
     M->>T: fournit l'artefact
     T->>S: écrit la mesure, collée au commit/PR
-    Note over T,S: le TIERS écrit — ni la méthode auditée, ni le moniteur
+    Note over T,S: le TIERS écrit — ni la méthode auditée, ni mission control
     Mon->>S: lit (lecture seule)
     S-->>Mon: les mesures historisées
     Mon->>Mon: agrège en KPI (commit → PR → sprint → version)

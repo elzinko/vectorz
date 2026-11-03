@@ -166,7 +166,7 @@ on utilise le Playwright MCP partagé comme `ezk-bug` et `ezk-qa`) · le démarr
 l'émulateur Android (la fiche 20260906135450000 a livré la recette
 `recipes/emulateur-android-test-device.md` ; le scout la lit mais ne la lance pas encore) · l'appel
 depuis `ezk-product-build` quand le
-backlog est bloqué · l'émission vers le Moniteur de supervision (une passe de fond y serait
+backlog est bloqué · l'émission vers mission control (une passe de fond y serait
 visible) : elle suivra le contrat d'émission d'`ezk-sprint`, qui impose de la déclarer au kit.
 
 ## Garde-fous

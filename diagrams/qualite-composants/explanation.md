@@ -5,7 +5,7 @@ trichotomie **règle / capacité / config** :
 
 - **bleu = la méthode** (la règle-loi + les hooks qui lancent l'outil) ;
 - **ambre = la capacité** (les outils, sous forme d'adaptateurs, + la config) ;
-- **vert = le moniteur** (KPI, courbes, agent d'analyse).
+- **vert = mission control** (KPI, courbes, agent d'analyse).
 
 En gris, trois pièces neutres : le **MetricPort** (le contrat abstrait — c'est lui qui rend
 l'ensemble *language-agnostic*), le **Mesureur tiers** et le **Silo** (le magasin des mesures).

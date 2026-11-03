@@ -550,7 +550,7 @@ bruit** :
   long)** — fiche 0103 : `heartbeat {note: "<une ligne>"}` au début de chaque sprint
   délégué **et** au plus toutes les ~2–3 min d'activité utile (jamais ≥
   `presumed_dead_after_min`, défaut **5 min**). Ça évite le faux « Silence prolongé »
-  du Moniteur. Ce n'est pas un jalon : tu continues.
+  de mission control. Ce n'est pas un jalon : tu continues.
 - **Si `run_start` est refusé (« un run est déjà ouvert »), deux cas — ne les confonds
   pas.** L'état est relu du **disque**, donc un run peut survivre à la session qui l'a
   ouvert :

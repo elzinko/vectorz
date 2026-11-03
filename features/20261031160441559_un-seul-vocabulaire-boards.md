@@ -53,19 +53,26 @@ Un passage, dans cet ordre, après [le retrait de la page web](done/202611021235
 
 ## Critères d'acceptation
 
-- [ ] `grep` ne trouve plus `ezk:map`, `ezk dashboard` ni « Moniteur » dans un document actif, hors
-      glossaire et historique.
-- [ ] Chaque commande citée dans un document actif s'exécute.
-- [ ] Les ADR-074 et ADR-021 renvoient vers l'ADR-086.
-- [ ] La copie `public/v1` est tranchée, et la décision écrite.
-- [ ] Les mémoires de l'assistant ne se contredisent plus sur les boards : chaque mémoire qui parle
+- [x] `grep` ne trouve plus `ezk:map`, `ezk dashboard` ni « Moniteur » dans un document actif, hors
+      glossaire et historique. Exceptions bornées : les cinq guides de l'ancien écran, marqués « Ancien
+      écran, retiré », en attente de [leur réécriture](20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+- [x] Chaque commande citée dans un document actif s'exécute, hors les cinq mêmes guides, dont le
+      bandeau dit que leurs commandes ne sont plus garanties.
+- [x] Les ADR-074 et ADR-021 renvoient vers l'ADR-086.
+- [x] La copie `public/v1` est tranchée, et la décision écrite.
+- [x] Les mémoires de l'assistant ne se contredisent plus sur les boards : chaque mémoire qui parle
       des boards est relue, et le corps de PR liste les lignes corrigées.
 
 ## Comment vérifier
 
 ```bash
-grep -rnE "ezk:map|ezk dashboard|Moniteur" --include='*.md' --include='*.yml' . | grep -vE "node_modules|features/done|docs/sessions|docs/captures|glossaire"
+grep -rnE "ezk:map|ezk dashboard|\bMoniteo?u?r\b" --include='*.md' --include='*.yml' --include='*.yaml' . \
+  | grep -vE "node_modules|\.claude/|features/|docs/(sessions|captures|adr|runs|plans|benchmarks)/|products/mega-city/docs/adr/|retro-notes/traitees|glossaire|public/v1|backlog-carte" \
+  | grep -vE "docs/(DOGFOOD|demo-desktop-checklist|USER-GUIDE-web-ui)\.md|docs/tests/(moniteur-smoke|auth-panel)\.md"
 ```
+
+Signal observable : la commande ne rend rien. Les deux filtres sont l'historique (premier), puis les
+cinq guides en attente de réécriture (second).
 
 ## Notes
 
@@ -84,3 +91,7 @@ grep -rnE "ezk:map|ezk dashboard|Moniteur" --include='*.md' --include='*.yml' . 
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). `public/v1` = archive
   assumée, confirmé. Coupe si la story gonfle : les messages affichés par le code passent dans une
   fiche à part.
+- Revue adverse du 2026-11-03 : NO-GO sur les cinq guides de l'ancien écran (le mot remplacé y
+  rendait des phrases fausses). Décision ezk-pm, option A : texte d'origine, bandeau « Ancien écran,
+  retiré », réécriture dans la fiche sœur. `docs/backlog-carte.md` est un instantané daté du 2026-08-05 :
+  de l'historique, laissé tel quel.

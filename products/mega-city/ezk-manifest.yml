@@ -389,7 +389,7 @@ commands:
   # --- sessions, config, vues générées, supervision ---
   - domain: sessions
     run: bin/ezk-sessions.ts
-    summary: Cockpit des sessions Claude Code (qui travaille sur quoi).
+    summary: Vue des sessions Claude Code (qui travaille sur quoi).
   - domain: config
     run: bin/ezk-config.ts
     summary: Lit (show, --json) et pilote (github) les capacités GitHub (dépôt où tu es, ou --root).

@@ -57,7 +57,7 @@ flowchart TB
 
 ## Couche 2 — Le contrat (les événements émis)
 
-*Ce que la méthode **émet** pour qu'une app moniteur — **aveugle à la méthode** — puisse suivre
+*Ce que la méthode **émet** pour qu'une app de suivi (mission control) — **aveugle à la méthode** — puisse suivre
 l'avancement. Le vocabulaire est gelé (contrat de supervisabilité, 2026-07-13). **C'est la méthode
 elle-même qui parle** : les consignes d'émission vivent **dans** ses skills — ou y sont
 **installées par le sidecar** quand on ne possède pas la méthode. Elle appelle le **kit émetteur**,
@@ -76,7 +76,7 @@ flowchart LR
     subgraph CON["JOURNAL — vocabulaire du CONTRAT (gelé)"]
         J["events.jsonl : run.started · gate.reached ·<br/>gate.resumed · escalation · run.finished · heartbeat<br/>📎 + report_ref (PR · démo · rapport — contenu libre)"]
     end
-    MON["🖥️ app moniteur<br/>aveugle à la méthode · rend les artefacts tels quels"]
+    MON["🖥️ app de suivi (mission control)<br/>aveugle à la méthode · rend les artefacts tels quels"]
 
     M1 -->|appelle| K
     M2 -->|appelle| K

@@ -58,8 +58,15 @@ Ce document couvre le jargon du commentaire [PR #37](https://github.com/elzinko/
 | **Rétro — Sujet A** | Amélioration **déclenchée par toi** (cérémonie `ezk-retro`). | **traduire** — « amélioration manuelle de la méthode » |
 | **Rétro — Sujet B** | Amélioration **déclenchée par un chiffre** (mesureur tiers) — contrat d'améliorabilité, plus tard. | **traduire** — « améioration pilotée par métrique » |
 | **Worktree** | Copie de travail git isolée (souvent une branche dans un dossier à part). | **garder** — terme git standard |
-| **Moniteur** | Application qui lit le journal de supervision et affiche les runs — aveugle à la méthode. | **garder** |
-| **Carte (Moniteur)** | Bloc UI par run : état, gate en cours, projet, durée. | **traduire** — « fiche de run » — ne pas confondre avec *carte backlog* |
+| **Mission control** | Le seul écran (cop1, ADR-086 amendé le 2026-11-02) : runs en direct, fiches, pilotage, process, loi, cartes de la méthode. Il lit la méthode par `ezk … --json`, n'écrit que par une commande `ezk`. | **garder** |
+| **Board de la méthode** | Ce que la méthode publie sur un projet : `ezk board show` (texte) et ses contrats `--json`. Plus une page web. | **garder** |
+| **Vue des sessions** | Qui travaille sur quoi, par dossier de travail : `ezk sessions map` (page) ou `ezk sessions state` (texte). | **garder** |
+| **Sélecteur de projet** | Le choix du projet affiché, en haut de mission control. | **garder** |
+| **Moniteur** | Ancien nom de l'écran de cop1. | **retiré** — dire « mission control » |
+| **Cockpit** | Ancien nom, pour deux choses : la vue des sessions, et le choix de projet de l'ancienne page de la méthode. | **retiré** — dire « vue des sessions » ou « sélecteur de projet » |
+| **Dashboard, tableau de bord** | Ancien nom de l'écran, ou de l'ancienne page web de la méthode (`ezk board open`, retirée). | **retiré** — dire « mission control » |
+| **Kanban** | Ancien nom des colonnes de fiches. | **retiré** — dire « board de la méthode » (texte) ou la vue « Fiches » de mission control |
+| **Fiche de run** | Bloc par run dans mission control : état, gate en cours, projet, durée. Ne pas confondre avec *carte backlog*. | **garder** |
 | **Carte (backlog / doc)** | Vue d'ensemble courte (ce fichier [`backlog-carte.md`](backlog-carte.md), captures `docs/captures/`). | **traduire** — « vue d'ensemble » |
 | **Carte d'émission** | Adaptateur qui traduit une surface observable → événements du contrat (ADR-032). | **garder** — sens technique distinct |
 | **Kit émetteur** | Outils MCP qui écrivent le journal (`run_start`, `gate_reached`, …) — passage obligatoire. | **traduire** — « outils d'émission du journal » |

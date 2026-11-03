@@ -41,7 +41,7 @@ ezk-commits/
 | `ezk-scout` | chasser les bugs en tâche de fond sur une app qui tourne, sans rien corriger | global | fiche 20260910165637000 |
 | `ezk-chef` | gérer les recettes : en extraire une d'une fiche livrée, la vérifier, les lister | global | fiche 20260824122629794 |
 | `ezk-bug` | cadrer un bug signalé en fiche reproductible, puis la ranger au backlog | global | — |
-| `supervision-analyze` | comprendre pourquoi le Moniteur affiche « Silence prolongé » (post-mortem du journal) | opt-in | fiche 0104 |
+| `supervision-analyze` | comprendre pourquoi mission control affiche « Silence prolongé » (post-mortem du journal) | opt-in | fiche 0104 |
 | `supervision-demo` | banc d'essai jetable du kit de supervision : une méthode jouet, pas du vrai travail | opt-in | — |
 | `vz-product-builder` | variante autonome de `ezk-product-build` : convoque seule ses relecteurs, s'arrête sur 4 décisions humaines | opt-in | fiche 0164 |
 

@@ -25,7 +25,7 @@ claude -p "say OK"   # must succeed before any agent session
 
 1. **`ezk-sprint:check`** — opening guard: dirty tree, worktrees, fiches `in-progress`, handoff, PLAN head.
 2. **`ezk-sprint`** — pick next ready fiche from `PLAN.md`, branch `feat/<id>-<slug>`, implement, PR, CI, ship fiche.
-3. **`cop1 start`** — run the supervision daemon while the Moniteor watches runs/journal.
+3. **`cop1 start`** — run the supervision daemon while mission control watches runs/journal.
 4. **`ezk-archive`** — close the session (handoff, optional session log in `docs/sessions/`).
 
 Backlog rules: one fiche = one PR ; ship = separate docs PR after merge (`ezk-backlog ship`).
@@ -39,7 +39,7 @@ node products/cop1/packages/app/dist/cli/index.js start
 
 - Health: `cop1 health` (JSON)
 - Lifecycle: `cop1 status`, `cop1 stop`
-- Supervision API: Moniteor / `GET /api/supervision/runs` (see [ADR-028](adr/ADR-028-lecteur-journal-mode-moniteur.md))
+- Supervision API: mission control / `GET /api/supervision/runs` (see [ADR-028](adr/ADR-028-lecteur-journal-mode-moniteur.md))
 
 Artifacts under `.cop1/` (journal, metrics, history) follow the supervisability contract — the method emits; cop1 observes and gates.
 
@@ -50,7 +50,7 @@ Artifacts under `.cop1/` (journal, metrics, history) follow the supervisability 
 | Definition of Ready | `ezk-backlog ready <id>` before a fiche is tirable |
 | Sprint coherence | `ezk-sprint:check` alert before parallel sprints |
 | Code quality | CI on each feature PR (lint · build · test) |
-| Supervision | Journal messages + Moniteor run state |
+| Supervision | Journal messages + mission control run state |
 | Ship | Fiche → `features/done/` only after merge + explicit `ship` |
 
 The removed BMAD runner gates (evidence / verify / review-verdict on `sprint-status.yaml`) applied to epoch 1 only. Story state now lives in fiche front-matter + git.
@@ -69,7 +69,7 @@ Ancien playbook BMAD époque-1 retiré du dépôt le 2026-10-11 (fiche 202610071
 
 ## 6. Observe a run
 
-- **Moniteor** — open the web UI (when running) for runs, journal tail, gates.
+- **mission control** — open the web UI (when running) for runs, journal tail, gates.
 - **Journal** — `.cop1/events.jsonl` (and related tracks per project config).
 - **Backlog state** — `features/BACKLOG.md`, `features/PLAN.md`.
 

@@ -1,5 +1,9 @@
 # Dogfood — vérifier que ça marche (15–30 min)
 
+> **Ancien écran, retiré.** Ce guide décrit le Moniteur, l'ancien écran de cop1, remplacé par
+> mission control. Ses étapes et ses commandes ne sont plus garanties. Réécriture :
+> [fiche](../features/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+
 **Point d’entrée unique** pour tester la chaîne méthode → journal → Moniteur
 sans se perdre dans le programme de refonte.
 

@@ -8,7 +8,7 @@ complet (0038).
 
 | Chemin | Rôle |
 |--------|------|
-| `fixtures/seed-run/events.jsonl` | Journal de supervision nominal (seed Moniteur) |
+| `fixtures/seed-run/events.jsonl` | Journal de supervision nominal (seed de mission control) |
 | `reset.sh` | Remet le banc à l'état vierge (runtime seulement) |
 
 Le runtime (`.supervision/`, `.claude/`, `.cop1/`) n'est **pas** commité — le smoke le
@@ -24,7 +24,7 @@ bash cobaye/reset.sh
 pnpm cobaye:reset
 ```
 
-## Smoke (mécanique + Moniteur)
+## Smoke (mécanique + mission control)
 
 ```bash
 pnpm install && pnpm build && pnpm --filter @cop1/web build

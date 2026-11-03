@@ -1,6 +1,6 @@
 # Getting Started with vectorz (epoch 2)
 
-> **Status (2026-08):** Dogfood method = **mega-city** (`ezk-backlog`, `ezk-sprint`, `ezk-sprint:check`, `ezk-archive`). Supervision = **cop1** daemon + Moniteur. The epoch-1 BMAD orchestrator (`cop1 orchestrator run`) was removed from prod — those CLI commands now print an epoch-2 hint.
+> **Status (2026-08):** Dogfood method = **mega-city** (`ezk-backlog`, `ezk-sprint`, `ezk-sprint:check`, `ezk-archive`). Supervision = **cop1** daemon + mission control. The epoch-1 BMAD orchestrator (`cop1 orchestrator run`) was removed from prod — those CLI commands now print an epoch-2 hint.
 
 ## Comprendre la méthode (avant de lancer)
 
@@ -28,7 +28,7 @@ pnpm typecheck
 |---|---|---|
 | **Backlog** | Features, plan, ship | `features/` + skill `ezk-backlog` |
 | **Sprint** | Build one fiche end-to-end | skill `ezk-sprint` (intake starts with `ezk-sprint:check`) |
-| **Supervision** | Journal, runs, gates | `cop1 start` → Moniteur UI / API |
+| **Supervision** | Journal, runs, gates | `cop1 start` → mission control (UI / API) |
 | **External BMAD** | Optional sidecar on another repo | `cop1 init-bmad-bridge` — not vectorz dogfood |
 
 ### 1. Backlog (ezk-backlog)
@@ -54,7 +54,7 @@ node products/cop1/packages/app/dist/cli/index.js status
 node products/cop1/packages/app/dist/cli/index.js stop
 ```
 
-The daemon exposes health and supervision APIs consumed by Moniteor. Runs emit to `.cop1/` (journal, metrics) per the supervisability contract ([ADR-028](adr/ADR-028-lecteur-journal-mode-moniteur.md)).
+The daemon exposes health and supervision APIs consumed by mission control. Runs emit to `.cop1/` (journal, metrics) per the supervisability contract ([ADR-028](adr/ADR-028-lecteur-journal-mode-moniteur.md)).
 
 ### 4. Removed epoch-1 commands
 
@@ -73,7 +73,7 @@ products/cop1/packages/
   sprint-core/          — supervision adapters (hex architecture)
   llm-intelligence/     — LLM gateway
   app/                  — CLI (start, init, init-bmad-bridge, …)
-  web/                  — Moniteur (React)
+  web/                  — mission control (React)
 ```
 
 mega-city skills and profiles live under `products/mega-city/`.

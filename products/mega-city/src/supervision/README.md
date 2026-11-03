@@ -88,7 +88,7 @@ jour les chemins (utile après un changement de version de Node) sans rien casse
 
 Puis : rouvre Claude Code **dans ce projet** (le `.mcp.json` est chargé au démarrage),
 autorise le serveur `supervision`, et lance ta méthode (`/ezk-sprint`, ou
-`/supervision-demo` pour un essai). Le côté **lecture** (le Moniteur cop1) reste un
+`/supervision-demo` pour un essai). Le côté **lecture** (mission control cop1) reste un
 observateur externe : ajoute le projet aux `supervision.watch_roots` du daemon — modèle à
 deux clés, fiche 0082.
 
@@ -127,7 +127,7 @@ n'écrit rien sous `.supervision/` (invariant couvert par un test).
 > exactement la panne qu'il existe pour attraper (le `pnpm` nu qui résout dans un shell et
 > échoue au PATH minimal d'une app GUI).
 
-### Ne pas comprendre le Moniteur — `supervision:analyze` (fiche 0104)
+### Comprendre un « Silence prolongé » de mission control — `supervision:analyze` (fiche 0104)
 
 Depuis la **racine du projet supervisé** (ex. vectorz) :
 
@@ -196,7 +196,7 @@ cette section sans bruit :
   **requis** ; `seat` est optionnel, défaut `human`).
 - **Pendant le travail long (entre deux jalons)** — fiche 0103 : `heartbeat
   {note: "<une ligne>"}` au moins à chaque étape majeure, et **au plus toutes les
-  ~2–3 min** (jamais ≥ le seuil Moniteur `presumed_dead_after_min`, défaut **5 min** —
+  ~2–3 min** (jamais ≥ le seuil de mission control `presumed_dead_after_min`, défaut **5 min** —
   sinon faux « Silence prolongé »). Ce n'est **pas** un jalon : tu continues. Pas de
   heartbeat pendant un gate ouvert (silence voulu).
 - **À chaque point d'arrêt de ta méthode** (checkpoint, fin d'étape) :

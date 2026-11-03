@@ -27,6 +27,6 @@ Cinq zones :
   deny-all avec preuve externe.
 
 Invariants portés par le schéma : la méthode auditée n'écrit jamais son chiffre (writer =
-tiers) ; le moniteur n'écrit jamais ; le gate n'appelle jamais un adaptateur ; tout franchit les
+tiers) ; mission control n'écrit jamais ; le gate n'appelle jamais un adaptateur ; tout franchit les
 frontières par **fichiers** (journaux + config), jamais par imports de code ; le SaaS est
 toujours optionnel et gated.

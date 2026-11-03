@@ -1,6 +1,8 @@
 # ADR-021 — Frontière d'intégration cop1 ↔ mega-city
 
 Statut : **Accepté** (2026-07-15, fiche 0035 — était Proposé du 2026-06-26).
+**Amendé par l'[ADR-086](ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)** (décision 2) : cop1
+n'importe aucun code de mega-city ; il appelle la commande `ezk` et lit son JSON versionné.
 Justification : le contrat de couture défini ici est référencé « inchangé » par les
 en-têtes d'ADR-023 et ADR-025, et étendu sans révision par ADR-027 — la frontière fait
 consensus dans les décisions ultérieures, elle est actée. (Le merge du document, commit

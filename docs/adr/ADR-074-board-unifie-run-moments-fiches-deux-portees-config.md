@@ -1,6 +1,7 @@
 # ADR-074 — Le board unifié : run → moments → fiches, et deux portées de configuration
 
 - **Statut** : Accepté (2026-10-13)
+- **Amendé par l'[ADR-086](ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)** (décision 1) : la méthode publie ses données par `ezk … --json` ; mission control est le seul écran et les lit par ce contrat. Le vocabulaire de l'ADR-086 remplace celui de cet ADR (« Moniteur », « cockpit », « dashboard »).
 - **Compose** (sans les rouvrir) :
   - [ADR-036](ADR-036-transport-emission-separable-du-runtime.md) — noyau d'émission ↔ transports interchangeables (monitoring live). Le board **lit** le journal, il ne l'écrit pas.
   - [ADR-038](ADR-038-pack-review-markdown-first-reporting-vs-monitoring.md) — reporting post-hoc vs monitoring live. Le board est la surface de **monitoring** (vivacité, où en est chaque projet), distincte du pack de review.

@@ -14,7 +14,7 @@
 
 moments:
   # — Supervision (kit émetteur livré, ADR-0032/0036) : les six événements du contrat
-  #   cop1/supervisability@0.1. Clients : le journal + le Moniteur.
+  #   cop1/supervisability@0.1. Clients : le journal + mission control.
   - nom: run.started
     sorte: evenement
     etape: ouverture-du-run

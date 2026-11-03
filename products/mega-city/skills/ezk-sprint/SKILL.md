@@ -338,7 +338,7 @@ bruit** :
   qu'ils refusent un run qui n'est pas le tien.
 - **Pendant le travail long (étapes 1–8, best-effort)** — fiche 0103 : appelle `heartbeat
   {note: "<étape en cours, une ligne>"}` **au moins une fois par étape majeure**, et en
-  tout cas **au plus toutes les ~2–3 min** d'activité utile (jamais ≥ le seuil Moniteur
+  tout cas **au plus toutes les ~2–3 min** d'activité utile (jamais ≥ le seuil de mission control
   `presumed_dead_after_min`, défaut **5 min** — sinon faux « Silence prolongé »). Ce
   n'est **pas** un jalon : tu continues sans attendre de réponse. Pas de heartbeat
   obligatoire en standby humain ni pendant un gate ouvert (le silence y est voulu côté

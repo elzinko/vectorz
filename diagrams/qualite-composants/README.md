@@ -1,4 +1,4 @@
-# "Qualité — diagramme de composants (port · adaptateurs · tiers · silo · moniteur)"
+# "Qualité — diagramme de composants (port · adaptateurs · tiers · silo · mission control)"
 
 > Diagramme généré par **ezk-diagram**. Source de vérité : [`description.md`](description.md) (prose).
 > Ce fichier est **généré** (explication comprise) — ne pas l’éditer à la main (il serait écrasé au prochain `publish`).
@@ -12,7 +12,7 @@ trichotomie **règle / capacité / config** :
 
 - **bleu = la méthode** (la règle-loi + les hooks qui lancent l'outil) ;
 - **ambre = la capacité** (les outils, sous forme d'adaptateurs, + la config) ;
-- **vert = le moniteur** (KPI, courbes, agent d'analyse).
+- **vert = mission control** (KPI, courbes, agent d'analyse).
 
 En gris, trois pièces neutres : le **MetricPort** (le contrat abstrait — c'est lui qui rend
 l'ensemble *language-agnostic*), le **Mesureur tiers** et le **Silo** (le magasin des mesures).
@@ -41,7 +41,7 @@ flowchart LR
     end
     T["Mesureur tiers<br/>lit la valeur · écrit la mesure"]
     S[("Silo<br/>journal des mesures")]
-    subgraph MON[Moniteur · mission-control]
+    subgraph MON[mission control]
         K["Projection KPI<br/>vues colonne"]
         U["Onglet qualité<br/>courbes"]
         AG["Agent d'analyse<br/>propose · gate PO"]

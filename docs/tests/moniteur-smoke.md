@@ -1,5 +1,9 @@
 # E2E manuel — Moniteur cobaye (Pareto)
 
+> **Ancien écran, retiré.** Ce guide décrit le Moniteur, l'ancien écran de cop1, remplacé par
+> mission control. Ses étapes et ses commandes ne sont plus garanties. Réécriture :
+> [fiche](../../features/20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+
 Fiche backlog **0041**. Validation visuelle en **moins de 2 minutes**, sans BMAD.
 
 > Scénario dark-mode → fiche **0017** (hors scope 0041).

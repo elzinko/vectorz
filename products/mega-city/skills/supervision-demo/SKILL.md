@@ -40,7 +40,7 @@ dans le contexte : **STOP** — explique la config manquante, n'émets rien.
    et **garde-le** : `run_finished` l'exige pour ne fermer que ce run (fiche 20261002133125444).
 2. **Étape 1 (travail simulé)** : produis 3-5 lignes sur le sujet donné en argument
    (n'importe quoi de plausible — c'est un jouet). Émets un **`heartbeat`**
-   `{note: "étape 1 en cours"}` pendant ce travail (signe de vie Moniteur). Si le sujet
+   `{note: "étape 1 en cours"}` pendant ce travail (signe de vie pour mission control). Si le sujet
    s'y prête, émets une **`escalate`** `{type: "blocked", detail: …}` factice pour tester
    le signal non-bloquant (et continue — une escalade n'arrête jamais).
 3. **`gate_reached`** `{gate_id: "demo-gate-1", outcome: "ok", report_markdown: <ton

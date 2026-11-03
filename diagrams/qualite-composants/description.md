@@ -8,7 +8,7 @@ Trois zones de couleur :
   `products/mega-city/rules/`) et les **Hooks CI** (qui *lancent* l'outil).
 - **Capacité (côté produit)** : les **Adaptateurs** d'outils (Codecov, Sonar, CodeQL) et la
   **Config** (le seuil ; les « chemins exclus » sont un arbitrage ouvert, peut-être surface gelée).
-- **Moniteur (mission-control)** : la **Projection KPI** (vues colonne), l'**Onglet qualité**
+- **mission control** : la **Projection KPI** (vues colonne), l'**Onglet qualité**
   (courbes) et l'**Agent d'analyse** (propose, sous gate PO).
 
 Au centre, trois pièces neutres : le **MetricPort** (le contrat abstrait, language-agnostic), le
@@ -16,6 +16,6 @@ Au centre, trois pièces neutres : le **MetricPort** (le contrat abstrait, langu
 **lancent** les adaptateurs ; les adaptateurs **implémentent** le port (inversion de dépendance) ;
 le **mesureur tiers lit la valeur** via le port et **écrit la mesure** dans le silo — **lui seul
 écrit** ; la règle DoD **lit la valeur déjà mesurée** (elle ne pilote pas l'adaptateur en direct) ;
-la config **paramètre** la règle et **provisionne** les adaptateurs ; côté moniteur, la projection
+la config **paramètre** la règle et **provisionne** les adaptateurs ; côté mission control, la projection
 **lit** le silo, l'onglet **affiche** la projection, l'agent la **lit**. Le port et le silo sont la
-seule chose que la règle et le moniteur connaissent — jamais un outil précis.
+seule chose que la règle et mission control connaissent — jamais un outil précis.
