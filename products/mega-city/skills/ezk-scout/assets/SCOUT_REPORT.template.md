@@ -22,6 +22,7 @@ tant que tu n'as pas dit lesquelles entrent au backlog. Invariant : N = M + K.
 - **Cible** : ‹app, version ou SHA testé, comment elle a été lancée›
 - **Lentille** : bugs
 - **Bornes** : sondes ‹utilisées›/‹max› · durée ‹utilisée›/‹max› min
+- **Carnet** : ‹actif — app (zone : nœud | tout) | absent›
 - **Garde find-only** : ‹coller la ligne « find-only : OK — … » de find-only-guard.sh verify›
 
 ## Isolation de l'état
@@ -31,6 +32,14 @@ tant que tu n'as pas dit lesquelles entrent au backlog. Invariant : N = M + K.
 
 - ‹état mutable› : ‹comment il a été isolé (dossier tmp, base jetable, stack préfixée…)›
 - ‹état NON isolable› : NON ISOLÉ — chemin non sondé (‹raison›)
+
+## Couverture
+
+<!-- Seulement quand le carnet est actif (`ezk carto status`) : retire la section s'il est absent. -->
+
+- **Avant** : ‹X› sur ‹Y› testés
+- **Après** : ‹X› sur ‹Y› testés
+- **Notés au carnet** : ‹N› nœuds, SHA ‹SHA de la photo›
 
 ## Brouillons de fiche
 

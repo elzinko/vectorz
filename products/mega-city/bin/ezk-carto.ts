@@ -2,20 +2,30 @@
 /**
  * `ezk carto status|record` — le carnet de tests (fiche 20261102182259416).
  *
- *   ezk carto status [<app>] [--todo] [--json] [--root <projet>]
+ *   ezk carto status [<app>] [--todo] [--json] [--zone <nœud>] [--root <projet>]
  *   ezk carto record <nœud> --axis <visuel|fonctionnel> --verdict <valide|echec> --proof <fichier>
  *                    [--app <app>] [--sha <sha>] [--root <projet>]
  *
  * `status` lit l'arbre déclaré et le journal, puis calcule l'état de chaque contrôle : jamais testé,
- * valide, en échec, expiré. `--todo` ne garde que ce qui reste à tester. `--json` rend le même
- * contenu, avec `schema_version`. `record` ajoute une ligne au journal et copie la preuve.
+ * valide, en échec, expiré. `--todo` ne garde que ce qui reste à tester. `--zone` restreint à une
+ * branche de l'arbre (le nœud et sa descendance). `--json` rend le même contenu, avec `schema_version`. `record` ajoute une ligne au journal et copie la preuve.
  *
  * Bord I/O mince : le calcul est dans `src/core/carto.ts`, les fichiers et git dans
  * `src/io/carto-store.ts`. Horloge : `EZK_CARTO_NOW` (date ISO) remplace « maintenant », pour les
  * tests seulement. Codes : 0 ok · 1 refus (config, arbre, nœud, preuve) · 2 usage.
  */
 import { resolve } from 'node:path';
-import { AXES, type Axis, type CartoEntry, VERDICTS, type Verdict, computeStatus, isTodo, renderStatus } from '../src/core/carto.js';
+import {
+  AXES,
+  type Axis,
+  type CartoEntry,
+  VERDICTS,
+  type Verdict,
+  computeStatus,
+  isTodo,
+  renderStatus,
+  restrictToZone,
+} from '../src/core/carto.js';
 import {
   CartoError,
   appendEntry,
@@ -30,7 +40,7 @@ import {
 import { projectRootOrExit } from '../src/io/project-root.js';
 
 const USAGE = [
-  'usage : ezk carto status [<app>] [--todo] [--json] [--root <projet>]',
+  'usage : ezk carto status [<app>] [--todo] [--json] [--zone <nœud>] [--root <projet>]',
   '        ezk carto record <nœud> --axis <visuel|fonctionnel> --verdict <valide|echec> --proof <fichier>',
   '                         [--app <app>] [--sha <sha>] [--root <projet>]',
 ].join('\n');
@@ -68,17 +78,23 @@ function parseArgs(args: readonly string[], withValue: string[], booleans: strin
 }
 
 function status(args: readonly string[]): number {
-  const { positional, flags } = parseArgs(args, [], ['todo', 'json']);
+  const { positional, flags, options } = parseArgs(args, ['zone'], ['todo', 'json']);
   if (positional.length > 1) throw new UsageError('une seule app à la fois');
   const loaded = loadTree(root, positional[0]);
+  const { zone } = options;
+  if (zone !== undefined && !loaded.tree.nodes.some((n) => n.id === zone)) {
+    const known = loaded.tree.nodes.map((n) => n.id);
+    throw new CartoError(`branche inconnue « ${zone} » dans ${loaded.file} (connus : ${known.join(', ')})`);
+  }
   const { entries } = readEntries(storeDir(root, loaded.app));
   const now = process.env.EZK_CARTO_NOW ? new Date(process.env.EZK_CARTO_NOW) : new Date();
   if (Number.isNaN(now.getTime())) throw new CartoError(`EZK_CARTO_NOW : date ISO illisible « ${process.env.EZK_CARTO_NOW} »`);
-  const computed = computeStatus(loaded.tree, entries, {
+  const full = computeStatus(loaded.tree, entries, {
     now,
     validityDays: loaded.validityDays,
     commitsSince: commitsSinceIn(root),
   });
+  const computed = zone === undefined ? full : restrictToZone(full, zone);
   const todo = flags.has('todo');
   if (flags.has('json')) {
     const checks = todo ? computed.checks.filter(isTodo) : computed.checks;

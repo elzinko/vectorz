@@ -10,6 +10,8 @@
 #     d'anti-doublon ; une capture ou une localisation déclarée est vide / sans `fichier:ligne` ;
 #   - les bornes sont dépassées, la lentille est inconnue, la garde find-only est absente ou violée ;
 #   - la section d'isolation de l'état manque ;
+#   - le carnet de tests est déclaré actif, mais la section « Couverture » manque ou ment (avant,
+#     après « X sur Y testés », même Y, nombre de nœuds notés) — fiche 20261102182259505 ;
 #   - un ‹placeholder› du gabarit est resté en place.
 # Les commentaires HTML sont retirés AVANT l'analyse (ils ne prouvent ni ne cassent rien).
 #
@@ -92,6 +94,11 @@ sec == "Cadre de la passe" && /^- \*\*/ {
       else if (u[1] + 0 > u[2] + 0) err("bornes : durée " u[1] "/" u[2] " dépasse le maximum")
     } else err("bornes : « durée utilisée/max min » attendu (ex. durée 4/15 min)")
   }
+  else if ($0 ~ /^- \*\*Carnet\*\*/) {
+    has_carnet = 1
+    if (v ~ /^actif/) carnet_active = 1
+    else if (v !~ /^absent/) err("carnet : « actif — <app> … » ou « absent » attendu")
+  }
   else if ($0 ~ /^- \*\*Garde find-only\*\*/) {
     has_guard = 1
     if (v !~ /find-only : OK/) err("garde find-only : la ligne doit reprendre « find-only : OK — … » de find-only-guard.sh verify")
@@ -100,6 +107,22 @@ sec == "Cadre de la passe" && /^- \*\*/ {
 }
 
 sec == "Isolation de l\047état" && /^- / { niso++; next }
+sec == "Couverture" && /^- \*\*/ {
+  v = val($0)
+  if ($0 ~ /^- \*\*Avant\*\*/ || $0 ~ /^- \*\*Après\*\*/) {
+    which = ($0 ~ /Avant/) ? "avant" : "apres"
+    if (match(v, /^[0-9]+ sur [0-9]+ testés/)) {
+      t = substr(v, 1, RLENGTH); split(t, u, " ")
+      cov_x[which] = u[1] + 0; cov_y[which] = u[3] + 0; cov_seen[which] = 1
+      if (cov_x[which] > cov_y[which]) err("couverture : " which " — " u[1] " testés sur " u[3] " est impossible")
+    } else err("couverture : « X sur Y testés » attendu pour " ($0 ~ /Avant/ ? "« Avant »" : "« Après »"))
+  }
+  else if ($0 ~ /^- \*\*Notés au carnet\*\*/) {
+    if (v ~ /^[0-9]+/) cov_noted = 1
+    else err("couverture : « Notés au carnet » attend un nombre de nœuds")
+  }
+  next
+}
 
 sec == "Brouillons de fiche" && /^### / {
   close_block()
@@ -130,8 +153,9 @@ sec == "Écartées" && /^- / { if ($0 !~ /^- \(?aucune\)?/) nec++; next }
 END {
   close_block()
   if (order[1] != "En clair") err("« En clair » doit ouvrir le rapport (première section après le titre)")
-  n = split("En clair|Cadre de la passe|Isolation de l\047état|Brouillons de fiche|Écartées|Pour valider (toi)", req, "|")
-  for (i = 1; i <= n; i++) if (!(req[i] in seen)) err("section « " req[i] " » absente")
+  n = split("En clair|Cadre de la passe|Isolation de l\047état|Couverture|Brouillons de fiche|Écartées|Pour valider (toi)", req, "|")
+  # « Couverture » n est exigée que si le carnet est actif (fiche 20261102182259505).
+  for (i = 1; i <= n; i++) if (!(req[i] in seen) && (req[i] != "Couverture" || carnet_active)) err("section « " req[i] " » absente")
   # Ordre du gabarit : le rapport se lit dans le même sens que le gabarit (revue adverse, P2).
   prev = 0; prevname = ""
   for (i = 1; i <= n; i++) {
@@ -152,6 +176,13 @@ END {
   if (!has_len) err("cadre : ligne « Lentille » absente (lentille : bugs)")
   if (!has_bornes) err("cadre : ligne « Bornes » absente (sondes U/M · durée U/M min)")
   if (!has_guard) err("garde find-only : ligne « Garde find-only » absente du cadre de la passe")
+  if (carnet_active && ("Couverture" in seen)) {
+    if (!cov_seen["avant"]) err("couverture : ligne « Avant » absente (X sur Y testés avant la passe)")
+    if (!cov_seen["apres"]) err("couverture : ligne « Après » absente (X sur Y testés après la passe)")
+    if (cov_seen["avant"] && cov_seen["apres"] && cov_y["avant"] != cov_y["apres"])
+      err("couverture : avant et après ne comptent pas le même arbre (" cov_y["avant"] " ≠ " cov_y["apres"] ")")
+    if (!cov_noted) err("couverture : ligne « Notés au carnet » absente (nombre de nœuds notés par ezk carto record)")
+  }
   if (violated) err("find-only : VIOLÉ — une passe qui modifie la cible est invalide, ne rapporte pas")
   if (ph != "") err("gabarit non rempli : un ‹placeholder› est resté en place : « " ph " »")
   if (errs > 0) { printf "\ncheck-report : REFUSÉ (%d motif(s)).\n", errs; exit 1 }

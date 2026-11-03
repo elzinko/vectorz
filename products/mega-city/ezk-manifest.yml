@@ -306,7 +306,7 @@ commands:
   - domain: carto
     verb: status
     run: bin/ezk-carto.ts status
-    summary: Carnet de tests — ce qui est testé, ce qui reste à tester ou a expiré (--todo, --json).
+    summary: Carnet de tests — ce qui est testé, à tester ou expiré (--todo, --zone, --json).
     root: none
     project: true
   - domain: carto

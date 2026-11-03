@@ -48,7 +48,7 @@ globale) ou `products/mega-city/skills/ezk-scout` (dans vectorz).
 | Sous-commande | Effet |
 |---|---|
 | `help` (ou **sans argument**) | Affiche ce tableau — ne lance rien |
-| `run [<cible>] [--ui] [--locate] [--max-probes N] [--max-min T]` (**défaut**) | La passe : photo find-only → banc isolé → sondes → brouillons → rapport contrôlé. **Ne crée aucune carte.** Défauts : 30 sondes, 15 minutes |
+| `run [<cible>] [--ui] [--locate] [--zone <nœud>] [--max-probes N] [--max-min T]` (**défaut**) | La passe : photo find-only → carnet → banc isolé → sondes → brouillons → carnet noté → rapport contrôlé. **Ne crée aucune carte.** `--zone` limite la passe à une branche de l'arbre du carnet. Défauts : 30 sondes, 15 minutes |
 | `check <rapport.md>` | Contrôle de forme d'un rapport (`scripts/check-report.sh`). Lecture seule |
 | `file <rapport.md> <B1 B3…>` | **Après ton accord sur ces brouillons-là** : `ezk-backlog add` pour chacun. C'est le seul verbe qui écrit au backlog |
 
@@ -85,6 +85,16 @@ Si le backlog vit dans un autre dépôt que la cible, **ajoute-le** : sans lui, 
 *(Bind par projet : seul ce `SKILL.md` est matérialisé. Note alors à la main `git rev-parse HEAD`,
 `git symbolic-ref -q HEAD`, `git rev-parse 'HEAD^{tree}'`, `git for-each-ref refs/heads refs/tags`,
 `git ls-files -s` et `git status --porcelain=v1 --untracked-files=all`, puis compare-les à la fin.)*
+
+**1 bis. Le carnet** (fiche 20261102182259505). Note le SHA testé : `git -C <dépôt cible> rev-parse HEAD`,
+celui de la photo. Puis lis ce qui reste à tester :
+`ezk --root <dépôt cible> carto status --todo --json [--zone <nœud>]`.
+- Code 0 : le carnet est **actif**. Note « X sur Y testés » (champ `counts`) : c'est l'**avant**.
+  Sonde **d'abord** les nœuds de cette liste, dans son ordre, puis le reste si la borne le permet.
+  Avec `--zone`, ne sonde **que** cette branche.
+- Code 1 avec « aucun arbre déclaré » : le carnet est **absent**. La passe tourne comme avant.
+Le carnet vit dans le dossier git commun (`<git-common-dir>/ezk/carto/`), hors de l'arbre de travail :
+la garde find-only n'en voit rien.
 
 **2. Isoler l'état.** Inventorie ce que l'app touche, puis isole **chaque** ligne :
 
@@ -126,8 +136,14 @@ sécurité, app inutilisable) · *majeure* (fonction cassée, erreur opaque sur 
 rapport dans `$RUN/report.md`. Exemple complet et réel : `examples/demo-report.md`
 (l'app jouet `examples/demo-app.mjs` porte trois défauts connus).
 
-**5. Contrôler, rendre, ranger.**
-`bash $SCOUT/scripts/find-only-guard.sh verify $RUN/snapshot.txt` : colle la ligne
+**5. Noter au carnet, contrôler, rendre, ranger.**
+Carnet actif : chaque nœud sondé reçoit une ligne, valide ou en échec, avec sa preuve (l'extrait de
+`$RUN/sondes.log` ou la capture) et le SHA de la photo :
+`ezk --root <dépôt cible> carto record <nœud> --axis <fonctionnel|visuel> --verdict <valide|echec> --proof <preuve> --sha <SHA>`.
+Relis ensuite `ezk --root <dépôt cible> carto status [--zone <nœud>]` : c'est l'**après**. Remplis la
+section « Couverture » (avant, après, nombre de nœuds notés) et la ligne « Carnet » du cadre. Carnet
+absent : « **Carnet** : absent », et retire la section « Couverture ».
+Puis `bash $SCOUT/scripts/find-only-guard.sh verify $RUN/snapshot.txt` : colle la ligne
 `find-only : OK — …` dans « Cadre de la passe ». Si elle dit **VIOLÉ**, c'est un incident : ne
 rends pas de trouvailles, rapporte ce qui a bougé. Puis
 `bash $SCOUT/scripts/check-report.sh $RUN/report.md` doit répondre `✓ rapport valide`. Rends :

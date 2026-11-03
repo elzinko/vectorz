@@ -52,13 +52,13 @@ début de passe          pendant                     fin de passe
 
 ## Critères d'acceptation
 
-- [ ] Sans `--zone`, une passe commence par la liste « à tester » du carnet, et la sonde en premier.
-- [ ] Avec `--zone <nœud>`, la passe ne sonde que cette branche de l'arbre.
-- [ ] À la fin de la passe, chaque nœud sondé a une ligne au carnet, avec le SHA du début de passe et
+- [x] Sans `--zone`, une passe commence par la liste « à tester » du carnet, et la sonde en premier.
+- [x] Avec `--zone <nœud>`, la passe ne sonde que cette branche de l'arbre.
+- [x] À la fin de la passe, chaque nœud sondé a une ligne au carnet, avec le SHA du début de passe et
       sa preuve.
-- [ ] Le rapport porte un bloc « Couverture », avec « X sur Y testés » avant et après la passe.
+- [x] Le rapport porte un bloc « Couverture », avec « X sur Y testés » avant et après la passe.
       `check-report.sh` refuse un rapport sans ce bloc quand le carnet est actif.
-- [ ] Carnet absent ou désactivé : la passe tourne comme avant, sans erreur. La garde find-only reste
+- [x] Carnet absent ou désactivé : la passe tourne comme avant, sans erreur. La garde find-only reste
       OK dans les deux cas.
 
 ## Comment vérifier

@@ -295,6 +295,8 @@ export interface CartoStatus {
   counts: { tested: number; total: number; jamais: number; valide: number; echec: number; expire: number };
   /** Lignes du journal sur un nœud ou un axe absent de l'arbre. */
   ignored_entries: number;
+  /** La branche de l'arbre à laquelle l'état est restreint (`--zone`), absente sinon. */
+  zone?: string;
   checks: CheckStatus[];
 }
 
@@ -359,6 +361,25 @@ export function computeStatus(tree: CartoTree, entries: CartoEntry[], options: S
   };
 }
 
+/** Le nœud et sa descendance (fiche 20261102182259505) : `export` couvre `export` et `export/bpm-invalide`. */
+export function inZone(node: string, zone: string): boolean {
+  return node === zone || node.startsWith(`${zone}/`);
+}
+
+/** L'état restreint à une branche de l'arbre : les contrôles hors de la branche sortent, les comptes suivent. */
+export function restrictToZone(status: CartoStatus, zone: string): CartoStatus {
+  const checks = status.checks.filter((c) => inZone(c.node, zone));
+  const count = (state: CheckState): number => checks.filter((c) => c.state === state).length;
+  const valide = count('valide');
+  const echec = count('echec');
+  return {
+    ...status,
+    zone,
+    counts: { tested: valide + echec, total: checks.length, jamais: count('jamais'), valide, echec, expire: count('expire') },
+    checks,
+  };
+}
+
 /** Ce qui reste à tester : jamais testé, ou preuve expirée. */
 export function isTodo(check: CheckStatus): boolean {
   return check.state === 'jamais' || check.state === 'expire';
@@ -381,6 +402,7 @@ export function renderStatus(status: CartoStatus, options: { todo: boolean }): s
     "Le carnet ne compte que les passes d'exploration (scout, tests à la main), pas les tests automatisés du code.",
     `App ${status.app} · une preuve vaut ${status.validity_days} jours · un contrôle = une fonctionnalité sur un axe.`,
   ];
+  if (status.zone !== undefined) lines.push(`Branche de l'arbre : ${status.zone} et sa descendance.`);
   if (status.ignored_entries > 0) {
     lines.push(
       `${status.ignored_entries} ligne(s) du journal portent sur un nœud ou un axe absent de l'arbre : ignorée(s).`,

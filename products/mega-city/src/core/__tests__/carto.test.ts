@@ -17,10 +17,12 @@ import {
   type CartoTree,
   DEFAULT_VALIDITY_DAYS,
   computeStatus,
+  inZone,
   parseCartoTree,
   parseJournal,
   renderStatus,
   resolveCartoConfig,
+  restrictToZone,
   serializeEntry,
 } from '../carto.js';
 
@@ -241,6 +243,34 @@ describe('computeStatus — ce qui est testé, et ce qui a expiré', () => {
     );
     expect(s.ignored_entries).toBe(2);
     expect(s.counts.tested).toBe(0);
+  });
+});
+
+describe('restrictToZone — une branche de l’arbre (fiche 20261102182259505)', () => {
+  const tree = treeOf(TREE_YAML);
+  const now = new Date('2026-11-10T12:00:00.000Z');
+  const entries: CartoEntry[] = [
+    { node: 'sante', axis: 'fonctionnel', verdict: 'valide', at: '2026-11-09T12:00:00.000Z', sha: 'aaa1111', proof: 'a.log' },
+    { node: 'export/bpm-invalide', axis: 'fonctionnel', verdict: 'echec', at: '2026-11-09T12:00:00.000Z', sha: 'aaa1111', proof: 'b.log' },
+  ];
+  const full = computeStatus(tree, entries, { now, validityDays: 14, commitsSince: () => 0 });
+
+  it('le nœud et sa descendance, rien d’autre : un préfixe ne déborde pas sur un voisin', () => {
+    expect(inZone('export', 'export')).toBe(true);
+    expect(inZone('export/bpm-invalide', 'export')).toBe(true);
+    expect(inZone('exporter', 'export')).toBe(false);
+    expect(inZone('sante', 'export')).toBe(false);
+  });
+
+  it('les contrôles hors de la branche sortent, et les comptes suivent', () => {
+    const z = restrictToZone(full, 'export');
+    expect(z.zone).toBe('export');
+    expect(z.checks.map((c) => c.node)).toEqual(['export', 'export/bpm-invalide', 'export/dossier-ferme']);
+    expect(z.counts).toEqual({ tested: 1, total: 3, jamais: 2, valide: 0, echec: 1, expire: 0 });
+  });
+
+  it('le rendu nomme la branche', () => {
+    expect(renderStatus(restrictToZone(full, 'export'), { todo: false })).toContain("Branche de l'arbre : export et sa descendance.");
   });
 });
 

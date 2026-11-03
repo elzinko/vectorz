@@ -3,8 +3,9 @@
 # sans IA ni navigateur, sur l'arbre de l'app jouet du scout (4 nœuds, axe fonctionnel).
 # Cas : A arbre mal formé refusé avec sa ligne · B record refuse un nœud inconnu et une preuve
 # absente · C 3 échecs + 1 valide donnent « 4 sur 4 testés » · D la preuve est copiée hors de
-# l'arbre de travail, git status propre · E l'horloge avancée au-delà de 14 jours fait tout expirer,
-# et --todo liste les 4 · F --json porte schema_version et le même compte.
+# l'arbre de travail, git status propre, garde find-only du scout OK · E l'horloge avancée au-delà de 14 jours fait tout expirer,
+# et --todo liste les 4 · F --json porte schema_version et le même compte · G --zone restreint à une
+# branche de l'arbre (fiche 20261102182259505), et refuse une branche inconnue.
 set -euo pipefail
 
 MEGA="$(cd "$(dirname "$0")/.." && pwd)"          # products/mega-city
@@ -32,6 +33,8 @@ EOF
   git -c user.email=t@test -c user.name=test add -A
   git -c user.email=t@test -c user.name=test commit -qm init
 )
+GUARD="$MEGA/skills/ezk-scout/scripts/find-only-guard.sh"
+bash "$GUARD" snapshot "$PROJ" > "$TMP/snapshot.txt"   # la photo du scout, avant toute note au carnet
 mkdir -p "$TMP/preuves"
 for n in sante bpm dossier export; do echo "curl … → réponse de la sonde $n" > "$TMP/preuves/$n.log"; done
 
@@ -73,9 +76,22 @@ check "D — git status propre"                               '[ -z "$(git -C "$
 out_e="$(EZK_CARTO_NOW="$(date -u -v+15d +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -d '+15 days' +%Y-%m-%dT%H:%M:%SZ)" carto status --todo 2>/dev/null)"
 check "E — « 0 sur 4 testés », 4 expirés"                  'echo "$out_e" | head -1 | grep -q "^En clair : 0 sur 4 testés — 0 jamais testé(s), 4 expiré(s)"'
 check "E — --todo liste les 4 nœuds expirés"               '[ "$(echo "$out_e" | grep -c " expirée (dernier verdict")" -eq 4 ]'
+# Le scout note au carnet pendant sa passe (fiche 20261102182259505) : sa garde find-only doit rester OK.
+set +e; out_guard="$(bash "$GUARD" verify "$TMP/snapshot.txt" 2>&1)"; code_guard=$?; set -e
+check "D — la garde find-only du scout reste OK après les notes" '[ "$code_guard" -eq 0 ] && echo "$out_guard" | grep -q "find-only : OK"'
+
 
 # ── F : le JSON porte son numéro de format et le même compte ──────────────────
 out_f="$(carto status --json 2>/dev/null)"
 check "F — schema_version et compte 4 sur 4"               'echo "$out_f" | node -e "const s=JSON.parse(require(\"fs\").readFileSync(0,\"utf8\")); process.exit(s.schema_version===1 && s.counts.tested===4 && s.counts.total===4 && s.scope===\"exploration\" ? 0 : 1)"'
+
+# ── G : --zone restreint l'état à une branche de l'arbre ──────────────────────
+out_g="$(carto status --zone export 2>/dev/null)"
+check "G — la branche export compte 3 contrôles"           'echo "$out_g" | head -1 | grep -q "^En clair : 3 sur 3 testés"'
+check "G — sante sort de la branche"                       '! echo "$out_g" | grep -Eq "^  sante "'
+out_gj="$(carto status --zone export --json 2>/dev/null)"
+check "G — le JSON nomme la branche, ses nœuds en sont"    'echo "$out_gj" | node -e "const s=JSON.parse(require(\"fs\").readFileSync(0,\"utf8\")); process.exit(s.zone===\"export\" && s.counts.total===3 && s.checks.every(c=>c.node===\"export\"||c.node.startsWith(\"export/\")) ? 0 : 1)"'
+set +e; out_g2="$(carto status --zone exp 2>&1)"; code_g2=$?; set -e
+check "G — une branche inconnue est refusée (code 1)"      '[ "$code_g2" -eq 1 ] && echo "$out_g2" | grep -q "branche inconnue « exp »"'
 
 if [ "$FAIL" -eq 0 ]; then echo "test-ezk-carto.sh : OK"; else echo "test-ezk-carto.sh : ÉCHEC" >&2; exit 1; fi

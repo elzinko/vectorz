@@ -5,7 +5,8 @@
 # gravité inventée, bornes dépassées, garde find-only absente ou violée, gabarit non rempli).
 # Cas : (a) rapport valide · (b..o) une seule entorse à la fois → refusé avec le bon motif ·
 # (p) commentaires HTML ignorés · (q) erreurs d'usage · (r) le gabarit livré et l'exemple
-# livré restent alignés sur le contrôle (anti-dérive).
+# livré restent alignés sur le contrôle (anti-dérive) · (s..w) le carnet de tests : couverture
+# exigée quand il est actif, refus d'une couverture qui ment (fiche 20261102182259505).
 set -uo pipefail
 
 CHECK="$(cd "$(dirname "$0")" && pwd)/check-report.sh"
@@ -153,6 +154,28 @@ mutate p 's/(## En clair)/<!-- ‹placeholder› find-only : VIOLÉ -->\n\n$1/'
 # Le commentaire est AVANT « En clair » : il ne doit ni casser l'ordre ni déclencher les motifs.
 out="$(bash "$CHECK" "$TMP/p.md" 2>&1)"; rc=$?
 check "commentaire HTML neutralisé → code 0" "[ $rc -eq 0 ]"
+
+echo "Cas s (carnet actif, couverture complète — fiche 20261102182259505) :"
+mutate s 's/(- \*\*Garde find-only\*\*)/- **Carnet** : actif — demo-app (zone : tout)\n$1/; s/(## Brouillons de fiche)/## Couverture\n\n- **Avant** : 1 sur 4 testés\n- **Après** : 4 sur 4 testés\n- **Notés au carnet** : 3 nœuds, SHA 1234567\n\n$1/'
+out="$(bash "$CHECK" "$TMP/s.md" 2>&1)"; rc=$?
+check "carnet actif + couverture → code 0" "[ $rc -eq 0 ]"
+
+echo "Cas t (carnet actif, sans couverture) :"
+mutate t 's/(- \*\*Garde find-only\*\*)/- **Carnet** : actif — demo-app (zone : tout)\n$1/'
+refuse "carnet actif sans « Couverture »" t "section « Couverture » absente"
+
+echo "Cas u (couverture : avant et après sur deux arbres différents) :"
+perl -0pe 's/Après\*\* : 4 sur 4/Après** : 4 sur 5/' "$TMP/s.md" > "$TMP/u.md"
+refuse "avant et après ne comptent pas le même arbre" u "même arbre"
+
+echo "Cas v (carnet : valeur inconnue) :"
+perl -0pe 's/\*\*Carnet\*\* : actif[^\n]*/**Carnet** : peut-être/' "$TMP/s.md" > "$TMP/v.md"
+refuse "carnet ni actif ni absent" v "carnet"
+
+echo "Cas w (carnet absent : pas de couverture exigée) :"
+mutate w 's/(- \*\*Garde find-only\*\*)/- **Carnet** : absent\n$1/'
+out="$(bash "$CHECK" "$TMP/w.md" 2>&1)"; rc=$?
+check "carnet absent sans couverture → code 0" "[ $rc -eq 0 ]"
 
 echo "Cas p2 (sections réordonnées) :"
 mutate p2 's/\A(.*?)(## Cadre de la passe.*?)(## Pour valider \(toi\).*)\z/$1$3\n$2/s'
