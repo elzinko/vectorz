@@ -56,7 +56,6 @@ describe('HttpServer — la garde des requêtes', () => {
   const abandon = vi.fn(async () => ({ status: 200 as const, body: { ok: true } }));
   const anchor = vi.fn(async () => ({ status: 200 as const, body: { ok: true } }));
   const blocages = vi.fn(() => false);
-  const updateStatus = vi.fn();
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -64,7 +63,6 @@ describe('HttpServer — la garde des requêtes', () => {
     server.setRunAbandonHandler({ execute: abandon });
     server.setProjectAnchorHandler({ execute: anchor });
     server.setBlocageApiHandler({ handle: blocages });
-    server.setRuleProposalProvider({ getAll: () => [], updateStatus });
     server.setBoardProvider(() => ({ vectorz: {} }));
     await server.start(PORT);
   });
@@ -85,12 +83,6 @@ describe('HttpServer — la garde des requêtes', () => {
       path: '/api/supervision/projects/anchor',
       body: '{"projectRoot":"/tmp/x"}',
       called: () => anchor,
-    },
-    {
-      method: 'PATCH',
-      path: '/api/rules/proposals/r1',
-      body: '{"status":"approved"}',
-      called: () => updateStatus,
     },
     {
       method: 'POST',

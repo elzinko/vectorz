@@ -55,15 +55,17 @@ Le jour où mission control montrera les propositions de rétro, il les lira par
 
 - [ ] `PATCH /api/rules/proposals/<id>` répond 404 `not_found`, quel que soit l'identifiant.
 - [ ] `GET /api/rules/proposals` répond 404 aussi : la route n'existe plus.
-- [ ] Plus aucun fichier de cop1 ne cite `RuleProposal`, ni dans le code, ni dans les tests.
+- [ ] Plus aucun fichier de cop1 ne cite `RuleProposalService`, `RuleProposalProvider` ni la route,
+      hors le test qui vérifie le 404.
 - [ ] Le test du garde-fou contre les écritures d'un autre site vise une route qui existe encore.
 
 ## Comment vérifier
 
-1. `grep -rn RuleProposal products/cop1/packages --include='*.ts' --include='*.tsx'` ne rend rien,
-   hors `node_modules` et `dist`.
+1. `grep -rnE 'RuleProposal(Service|Provider)|rules/proposals' products/cop1/packages --include='*.ts'`
+   ne rend que le test du 404, hors `node_modules` et `dist`.
 2. Les tests du daemon passent : `pnpm --dir products/cop1 exec vitest run packages/app/src/features/daemon`.
-3. Mission control lancé, la reproduction de la fiche répond 404.
+3. Mission control lancé, la reproduction de la fiche répond 404, avec l'en-tête
+   `-H 'Content-Type: application/json'`. Sans lui, le garde-fou répond 415 avant la route.
 
 ## Notes / décisions
 
@@ -72,3 +74,6 @@ Le jour où mission control montrera les propositions de rétro, il les lira par
   `products/cop1/packages/app/src/features/daemon/infrastructure/HttpServer.ts:338`.
 - **Groomée le 2026-11-03** (run autonome) : retirer plutôt que répondre honnêtement.
   Une route qui répond 404 « non branché » resterait du code sans usage. Aucun écran ne change.
+- **Vu au build le 2026-11-03** : le module `rule-application` de cop1 (`RuleApplicationService`) n'est
+  appelé par aucun code de production non plus, seulement par son test. Il sort du périmètre de cette
+  fiche : il est signalé à la rétro du sprint, pas retiré ici.

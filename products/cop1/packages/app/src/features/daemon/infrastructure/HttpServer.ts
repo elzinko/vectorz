@@ -6,8 +6,6 @@ import type { AuthCheckResult } from './AuthChecker.js';
 import { guardRequest } from './requestGuard.js';
 
 const MAX_BODY_SIZE = 10_240; // 10 KB
-const VALID_STATUSES = ['pending', 'approved', 'rejected', 'debated'] as const;
-type RuleProposalStatus = (typeof VALID_STATUSES)[number];
 
 /**
  * fiche 0031 (ADR-028) — hydrate `GET /api/supervision/runs` au montage du
@@ -30,22 +28,6 @@ export type ProjectsProvider = () => SupervisionProjectDto[];
 
 /** fiche board (ADR-074) — GET /api/board : la donnée du board, projets indexés par nom. */
 export type BoardProvider = () => Record<string, unknown>;
-
-export interface RuleProposalRecord {
-  ruleId: string;
-  type: string;
-  description: string;
-  reason: string;
-  submittedBy: string;
-  submittedAt: string;
-  status: RuleProposalStatus;
-  rejectionReason?: string;
-}
-
-export interface RuleProposalProvider {
-  getAll(): RuleProposalRecord[];
-  updateStatus(ruleId: string, status: RuleProposalStatus, reason?: string): RuleProposalRecord;
-}
 
 /**
  * Minimal request-handler port for the blocage API (fiche 0021). Structurally
@@ -98,7 +80,6 @@ export class HttpServer {
   private historyProvider: HistoryProvider | null = null;
   private projectsProvider: ProjectsProvider | null = null;
   private boardProvider: BoardProvider | null = null;
-  private ruleProposalProvider: RuleProposalProvider | null = null;
   private authChecker: (() => Promise<AuthCheckResult>) | null = null;
   private blocageApiHandler: BlocageApiPort | null = null;
   private runAbandonHandler: RunAbandonHandler | null = null;
@@ -133,10 +114,6 @@ export class HttpServer {
   /** fiche board (ADR-074) — GET /api/board */
   setBoardProvider(provider: BoardProvider): void {
     this.boardProvider = provider;
-  }
-
-  setRuleProposalProvider(provider: RuleProposalProvider): void {
-    this.ruleProposalProvider = provider;
   }
 
   setAuthChecker(checker: () => Promise<AuthCheckResult>): void {
@@ -268,20 +245,6 @@ export class HttpServer {
       return;
     }
 
-    if (req.method === 'GET' && req.url === '/api/rules/proposals') {
-      const data = this.ruleProposalProvider?.getAll() ?? [];
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(data));
-      return;
-    }
-
-    const patchMatch = req.url?.match(/^\/api\/rules\/proposals\/(.+)$/);
-    if (patchMatch && req.method === 'PATCH') {
-      const ruleId = patchMatch[1] ?? '';
-      this.handleRuleProposalPatch(req, res, ruleId);
-      return;
-    }
-
     if (req.method === 'GET' && req.url === '/events') {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
@@ -343,7 +306,7 @@ export class HttpServer {
     res.end(JSON.stringify({ error: 'not_found' }));
   }
 
-  /** Chunked JSON body parse with a MAX_BODY_SIZE guard (mirrors the PATCH path). */
+  /** Chunked JSON body parse with a MAX_BODY_SIZE guard. */
   private readJsonBody(
     req: IncomingMessage,
     res: ServerResponse,
@@ -451,59 +414,6 @@ export class HttpServer {
         };
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(result));
-  }
-
-  private handleRuleProposalPatch(req: IncomingMessage, res: ServerResponse, ruleId: string): void {
-    let body = '';
-    let bodySize = 0;
-    req.on('data', (chunk: Buffer) => {
-      bodySize += chunk.length;
-      if (bodySize > MAX_BODY_SIZE) {
-        res.writeHead(413, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Request body too large' }));
-        req.destroy();
-        return;
-      }
-      body += chunk.toString();
-    });
-    req.on('end', () => {
-      if (bodySize > MAX_BODY_SIZE) return;
-      try {
-        const parsed = JSON.parse(body) as { status?: string; reason?: string };
-        if (!parsed.status) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'status field is required' }));
-          return;
-        }
-
-        if (!(VALID_STATUSES as readonly string[]).includes(parsed.status)) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(
-            JSON.stringify({
-              error: `Invalid status: must be one of ${VALID_STATUSES.join(', ')}`,
-            }),
-          );
-          return;
-        }
-
-        const updated = this.ruleProposalProvider?.updateStatus(
-          ruleId,
-          parsed.status as RuleProposalStatus,
-          parsed.reason,
-        );
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(updated));
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (message.includes('not found')) {
-          res.writeHead(404, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: message }));
-        } else {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: message }));
-        }
-      }
-    });
   }
 
   private async handleRunAbandon(req: IncomingMessage, res: ServerResponse): Promise<void> {

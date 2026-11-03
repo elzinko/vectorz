@@ -2,7 +2,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { EventBus } from '@cop1/shared-kernel';
-import { BlockageService, RuleProposalService } from '@cop1/sprint-core';
+import { BlockageService } from '@cop1/sprint-core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandler.js';
 import { HttpServer } from '../infrastructure/HttpServer.js';
@@ -153,146 +153,19 @@ describe('HttpServer', () => {
     await expect(server.stop()).resolves.toBeUndefined();
   });
 
-  describe('Rule Proposals API', () => {
-    let eventBus: EventBus;
-    let ruleProposalService: RuleProposalService;
-
-    beforeEach(() => {
-      eventBus = new EventBus();
-      ruleProposalService = new RuleProposalService(eventBus);
-      server.setRuleProposalProvider(ruleProposalService);
+  // fiche 20261102100505955 — the rule proposal routes answered 200 on a store nobody wired
+  it.each([
+    ['GET', '/api/rules/proposals'],
+    ['PATCH', '/api/rules/proposals/inexistante'],
+  ])('%s %s no longer exists: 404 not_found', async (method, path) => {
+    await server.start(TEST_PORT);
+    const res = await fetch(`http://127.0.0.1:${TEST_PORT}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      ...(method === 'PATCH' ? { body: JSON.stringify({ status: 'approved' }) } : {}),
     });
-
-    afterEach(() => {
-      eventBus.removeAllListeners();
-    });
-
-    it('should return empty array when no proposals exist', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals`);
-      expect(res.status).toBe(200);
-
-      const data = await res.json();
-      expect(data).toEqual([]);
-    });
-
-    it('should return all proposals', async () => {
-      ruleProposalService.submit({
-        type: 'architecture',
-        ruleId: 'RULE-001',
-        description: 'Test rule',
-        reason: 'Test reason',
-        submittedBy: 'dev-agent',
-      });
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals`);
-      expect(res.status).toBe(200);
-
-      const data = (await res.json()) as Array<{ ruleId: string; status: string }>;
-      expect(data).toHaveLength(1);
-      expect(data[0]?.ruleId).toBe('RULE-001');
-      expect(data[0]?.status).toBe('pending');
-    });
-
-    it('should update proposal status via PATCH', async () => {
-      ruleProposalService.submit({
-        type: 'architecture',
-        ruleId: 'RULE-001',
-        description: 'Test rule',
-        reason: 'Test reason',
-        submittedBy: 'dev-agent',
-      });
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals/RULE-001`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'approved' }),
-      });
-      expect(res.status).toBe(200);
-
-      const data = (await res.json()) as { ruleId: string; status: string };
-      expect(data.ruleId).toBe('RULE-001');
-      expect(data.status).toBe('approved');
-    });
-
-    it('should return 404 for unknown proposal id on PATCH', async () => {
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals/UNKNOWN`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'approved' }),
-      });
-      expect(res.status).toBe(404);
-    });
-
-    it('should return 400 for PATCH without status field', async () => {
-      ruleProposalService.submit({
-        type: 'architecture',
-        ruleId: 'RULE-001',
-        description: 'Test rule',
-        reason: 'Test reason',
-        submittedBy: 'dev-agent',
-      });
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals/RULE-001`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
-      });
-      expect(res.status).toBe(400);
-    });
-
-    it('should return 400 for PATCH with invalid status value', async () => {
-      ruleProposalService.submit({
-        type: 'architecture',
-        ruleId: 'RULE-001',
-        description: 'Test rule',
-        reason: 'Test reason',
-        submittedBy: 'dev-agent',
-      });
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals/RULE-001`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'garbage' }),
-      });
-      expect(res.status).toBe(400);
-
-      const data = (await res.json()) as { error: string };
-      expect(data.error).toContain('Invalid status');
-    });
-
-    it('should pass reason to updateStatus when rejecting', async () => {
-      ruleProposalService.submit({
-        type: 'architecture',
-        ruleId: 'RULE-001',
-        description: 'Test rule',
-        reason: 'Test reason',
-        submittedBy: 'dev-agent',
-      });
-      await server.start(TEST_PORT);
-
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}/api/rules/proposals/RULE-001`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'rejected', reason: 'Not aligned with goals' }),
-      });
-      expect(res.status).toBe(200);
-
-      const data = (await res.json()) as {
-        ruleId: string;
-        status: string;
-        rejectionReason?: string;
-      };
-      expect(data.status).toBe('rejected');
-      expect(data.rejectionReason).toBe('Not aligned with goals');
-    });
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({ error: 'not_found' });
   });
 
   it('should serve SSE events on /events', async () => {

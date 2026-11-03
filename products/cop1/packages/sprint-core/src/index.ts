@@ -157,15 +157,6 @@ export { SprintPlannerService } from './features/conflict-planner/application/Sp
 // PM Decision
 export { PMDecisionService } from './features/pm-decision/application/PMDecisionService.js';
 
-// Rule Proposal
-export { RuleProposalService } from './features/rule-proposal/application/RuleProposalService.js';
-export type {
-  RuleProposalRecord,
-  RuleProposalSubmission,
-  RuleProposalStatus,
-} from './features/rule-proposal/domain/RuleProposalTypes.js';
-export { VALID_RULE_PROPOSAL_STATUSES } from './features/rule-proposal/domain/RuleProposalTypes.js';
-
 // Quality Binding
 export { QualityBindingService } from './features/quality-binding/application/QualityBindingService.js';
 
