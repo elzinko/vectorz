@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103191932074_fenetre-fiche-markdown-brut.md](../20261103191932074_fenetre-fiche-markdown-brut.md)
+> 🗎 Rendu de la fiche [features/20261103191932074_fenetre-fiche-markdown-brut.md](../done/20261103191932074_fenetre-fiche-markdown-brut.md)
 
 # La fenêtre d'une fiche de mission control affiche le Markdown brut
 
