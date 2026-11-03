@@ -1,0 +1,55 @@
+---
+id: "20261103191932080"
+title: "Les lignes de version promettent « clique pour le détail » mais ne réagissent pas"
+type: bug
+priority: P3
+product: cop1
+milestone:
+version:
+labels: [scout, mission-control]
+status: idea
+pr:
+evidence: before-after
+created: 2026-11-03
+---
+
+# Les lignes de version promettent « clique pour le détail » mais ne réagissent pas
+
+**En clair.** Le tableau « Versions dans le process » de la vue d'ensemble annonce « clique pour le détail ».
+Cliquer une ligne ne fait rien. Seuls les boutons « Voir le run » et « ▸ Lancer » agissent, et ils
+n'apparaissent que sur certaines lignes.
+
+**Si tu arrives frais.** Mission control est l'écran de la méthode (cop1). Il lit ce que la méthode
+publie par `ezk … --json` et l'affiche, sans le recalculer (ADR-086).
+
+## Contexte / Problème
+
+Gravité : **mineure**.
+
+Reproduction :
+
+1. Ouvre la vue d'ensemble de vectorz.
+2. Clique la ligne « v0.24.0 », puis le nom « v0.22.0 ».
+3. La page ne change pas.
+
+## Proposition
+
+À groomer.
+
+## Critères d'acceptation
+
+- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+
+## Comment vérifier
+
+Rejouer la reproduction ci-dessus.
+
+## Notes / décisions
+
+- Trouvé par ezk-scout, rapport `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz/fa181bfb-37a3-4d65-93d6-545f3a00e4d1/scratchpad/scout-2026-11-03-soir/report.md` (brouillon B7), le 2026-11-03 au soir.
+- **Entrée au backlog le 2026-11-03** sur décision d'`ezk-pm`, en mode auto du run délégué par le PO
+  (« continuer sans mon intervention »). Ce n'est aucune des quatre décisions humaines : c'est un bug,
+  pas une idée produit. Le PO peut la retirer.
+- **Recadrée par `ezk-pm` le 2026-11-03** : le critère est de retirer la promesse du sous-titre.
+  Inventer un panneau de détail serait une idée produit, qui revient au PO.
+- Indice relevé avant le groom : `OverviewView.tsx`, sous-titre du tableau.
