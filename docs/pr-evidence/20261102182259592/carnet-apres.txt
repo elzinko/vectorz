@@ -1,0 +1,75 @@
+En clair : 19 sur 70 testés — 51 jamais testé(s), 0 expiré(s), 0 en échec.
+Le carnet ne compte que les passes d'exploration (scout, tests à la main), pas les tests automatisés du code.
+App mission-control · une preuve vaut 14 jours · un contrôle = une fonctionnalité sur un axe.
+
+Contrôles (70) :
+  fleet                       visuel       valide · il y a 0 j · 0 commit depuis · preuve 7630c681c1498e18e376c2735eaa753309c5eaaf14ba0b5e672f7718acd06363.png
+  fleet                       fonctionnel  jamais testé
+  fleet/ouvrir-projet         visuel       jamais testé
+  fleet/ouvrir-projet         fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve 9d757afc347336ddee2801e13bf24bd2f6a3fc007e296382f172d09154911394.png
+  overview                    visuel       valide · il y a 0 j · 0 commit depuis · preuve 9d757afc347336ddee2801e13bf24bd2f6a3fc007e296382f172d09154911394.png
+  overview                    fonctionnel  jamais testé
+  overview/lancer-version     visuel       jamais testé
+  overview/lancer-version     fonctionnel  jamais testé
+  overview/voir-run           visuel       jamais testé
+  overview/voir-run           fonctionnel  jamais testé
+  pilotage                    visuel       valide · il y a 0 j · 0 commit depuis · preuve c7b5b268efd00ef774df2c9522d45ac2fedf5f77e9ebfc0decf830edc588fc1d.png
+  pilotage                    fonctionnel  jamais testé
+  cadrage                     visuel       valide · il y a 0 j · 0 commit depuis · preuve cdf03e9fc1d82c84cd905b028c50b025adf9241a097e148eeb1e394afa67bf7f.png
+  cadrage                     fonctionnel  jamais testé
+  cadrage/ouvrir-run          visuel       jamais testé
+  cadrage/ouvrir-run          fonctionnel  jamais testé
+  dev                         visuel       valide · il y a 0 j · 0 commit depuis · preuve bd294d7fe99874383617a81abab281a420d2aee246cae34c59a1b30ede192af9.png
+  dev                         fonctionnel  jamais testé
+  dev/choisir-lot             visuel       jamais testé
+  dev/choisir-lot             fonctionnel  jamais testé
+  dev/lancer                  visuel       jamais testé
+  dev/lancer                  fonctionnel  jamais testé
+  fiches                      visuel       valide · il y a 0 j · 0 commit depuis · preuve 5e6d601cb58f31a0a8baf316a67e000e5d69db140687b546c3d7fe9f8ec49624.png
+  fiches                      fonctionnel  jamais testé
+  fiches/basculer-liste       visuel       jamais testé
+  fiches/basculer-liste       fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve 8b554fc65535e69a9286b66e198ca466ec5f6cbe47cc18ddfda3e65408782b07.png
+  fiches/filtrer-categorie    visuel       jamais testé
+  fiches/filtrer-categorie    fonctionnel  jamais testé
+  fiches/rechercher           visuel       jamais testé
+  fiches/rechercher           fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve 5e6d601cb58f31a0a8baf316a67e000e5d69db140687b546c3d7fe9f8ec49624.png
+  fiches/ouvrir-fiche         visuel       jamais testé
+  fiches/ouvrir-fiche         fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve b86a2457c9d2f421db636dadce23171046fd6f1dd4b88276b0c914997a053984.png
+  fiches/poser-pouce          visuel       jamais testé
+  fiches/poser-pouce          fonctionnel  jamais testé
+  timeline                    visuel       valide · il y a 0 j · 0 commit depuis · preuve 129b92049d3dbc8f9df7480823f29faab210b01a972dcfbf2f1f2e0037661cac.png
+  timeline                    fonctionnel  jamais testé
+  timeline/ouvrir-chantier    visuel       jamais testé
+  timeline/ouvrir-chantier    fonctionnel  jamais testé
+  timeline/filtrer-type       visuel       jamais testé
+  timeline/filtrer-type       fonctionnel  jamais testé
+  timeline/afficher-plus      visuel       jamais testé
+  timeline/afficher-plus      fonctionnel  jamais testé
+  config                      visuel       valide · il y a 0 j · 0 commit depuis · preuve f8366bea81cf974bd5e417aa388224b23544779d6b43e3fa0f04b3c6695eab81.png
+  config                      fonctionnel  jamais testé
+  config/changer-niveau-role  visuel       jamais testé
+  config/changer-niveau-role  fonctionnel  jamais testé
+  config/aller-reglages       visuel       jamais testé
+  config/aller-reglages       fonctionnel  jamais testé
+  process                     visuel       valide · il y a 0 j · 0 commit depuis · preuve 21d97193ebe3907b281971b41999cfa0e76ebde0d17a9cf23b9d92802f44e170.png
+  process                     fonctionnel  jamais testé
+  process/ouvrir-fiche        visuel       jamais testé
+  process/ouvrir-fiche        fonctionnel  jamais testé
+  law                         visuel       valide · il y a 0 j · 0 commit depuis · preuve dee920fd02a098396bedc8d58eb70d5d70350a2f4618b4f68fd3fb322cfd7399.png
+  law                         fonctionnel  jamais testé
+  law/filtrer-compteur        visuel       jamais testé
+  law/filtrer-compteur        fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve 782726d92659058fce7cc3098e2e5d106108ffb7d902292b44be460d1459a3e0.png
+  law/selectionner-objet      visuel       jamais testé
+  law/selectionner-objet      fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve dee920fd02a098396bedc8d58eb70d5d70350a2f4618b4f68fd3fb322cfd7399.png
+  law/selectionner-regle      visuel       jamais testé
+  law/selectionner-regle      fonctionnel  jamais testé
+  maps                        visuel       valide · il y a 0 j · 0 commit depuis · preuve d05dcc1884ba585e27272633cddef032406de4e389b282f0265bdbadb4898fc9.png
+  maps                        fonctionnel  jamais testé
+  maps/ouvrir-document        visuel       jamais testé
+  maps/ouvrir-document        fonctionnel  valide · il y a 0 j · 0 commit depuis · preuve 734884ab6acc54a9ac14cb64a32a732aebcf1f0a3772c1f061842e6553314c47.png
+  tool                        visuel       valide · il y a 0 j · 0 commit depuis · preuve 1673c5c23a0d43fc3f713600a17cee4fda5ac8e60d2dcbdbc8975023761113c9.png
+  tool                        fonctionnel  jamais testé
+  tool/changer-niveau-defaut  visuel       jamais testé
+  tool/changer-niveau-defaut  fonctionnel  jamais testé
+  tool/choisir-ide            visuel       jamais testé
+  tool/choisir-ide            fonctionnel  jamais testé

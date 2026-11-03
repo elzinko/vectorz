@@ -47,11 +47,11 @@ Le panel du 2026-11-02 a demandé une preuve de valeur avant d'aller plus loin. 
 
 ## Critères d'acceptation
 
-- [ ] L'arbre de mission control déclare ses 12 vues et les actions visibles de chacune.
-- [ ] Un test échoue si une vue de `ViewId` manque à l'arbre déclaré.
-- [ ] Une passe `--ui` du scout remplit l'axe visuel d'au moins une vue, avec sa capture copiée au
+- [x] L'arbre de mission control déclare ses 12 vues et les actions visibles de chacune.
+- [x] Un test échoue si une vue de `ViewId` manque à l'arbre déclaré.
+- [x] Une passe `--ui` du scout remplit l'axe visuel d'au moins une vue, avec sa capture copiée au
       carnet.
-- [ ] La première passe est notée dans cette fiche : « X sur Y » avant et après, et les défauts
+- [x] La première passe est notée dans cette fiche : « X sur Y » avant et après, et les défauts
       trouvés sur des nœuds jamais testés.
 
 **Mesure de suivi** — sur les 3 premières passes du scout sur mission control :
@@ -74,6 +74,29 @@ s'écrit dans cette fiche.
 ```bash
 pnpm --dir products/cop1/packages/web test
 ```
+
+## Première passe — 2026-11-03
+
+En clair : la passe a ouvert les 12 vues et joué 10 actions sans écriture. Tout marche, sans erreur
+console. Elle a trouvé un défaut mineur sur un nœud jamais testé, et elle en a écarté un faux.
+
+- **Avant** : 0 sur 70 testés. **Après** : 19 sur 70 testés.
+- **Notés** : les 12 vues sur l'axe visuel, 7 actions sur l'axe fonctionnel, sur le SHA de la branche.
+- **Défaut trouvé** en ouvrant la vue d'ensemble, jamais testée : l'en-tête, commun à tous les écrans,
+  s'appelle encore « board v0.17.0 », pas « mission control ». La vue elle-même s'affiche bien. Brouillon B1 du rapport, proposé pour enrichir
+  [Réécrire les guides de l'ancien écran de supervision](20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+- **Faux défaut écarté** : la Chronologie semblait vide. Le banc lisait la branche, qui n'a pas de
+  dossier de runs ; sur le dépôt principal, le même code trouve 3 chantiers. La note d'échec a été
+  retirée du carnet.
+- **Non sondé** : poser un pouce, lancer une session, changer un réglage. Ces actions écrivent dans le
+  dépôt.
+- **Preuves** : [avant](../docs/pr-evidence/20261102182259592/carnet-avant.txt),
+  [après](../docs/pr-evidence/20261102182259592/carnet-apres.txt),
+  [planche des 12 vues](../docs/pr-evidence/20261102182259592/planche-12-vues.jpg),
+  [rapport du scout](../docs/pr-evidence/20261102182259592/rapport-scout.md).
+
+**Leçon pour les passes suivantes** : le banc doit lire un dépôt qui a des runs. Sinon la
+Chronologie et le Développement paraissent vides à tort.
 
 ## Notes / décisions
 

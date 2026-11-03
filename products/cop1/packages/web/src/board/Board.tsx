@@ -24,6 +24,7 @@ import { MapsView } from './MapsView.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
+import type { ViewId } from './viewIds.js';
 
 const BRAND_VERSION = 'v0.17.0';
 
@@ -34,20 +35,6 @@ const LOADING_RETRY_MS = 2000;
 /** Rythme auquel une page ouverte redemande le board : la méthode a pu changer entre-temps. Chaque
  *  demande est servie depuis la copie du serveur, qui ne relit `ezk` qu'au plus toutes les 30 s. */
 const REFRESH_MS = 15_000;
-
-type ViewId =
-  | 'fleet'
-  | 'overview'
-  | 'pilotage'
-  | 'cadrage'
-  | 'dev'
-  | 'fiches'
-  | 'timeline'
-  | 'config'
-  | 'process'
-  | 'maps'
-  | 'law'
-  | 'tool';
 
 interface NavItem {
   id: ViewId;

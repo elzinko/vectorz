@@ -1,0 +1,91 @@
+# Arbre du carnet de tests de mission control — fiche 20261102182259592.
+#
+# Un écran par vue de mission control (`ViewId` de products/cop1/packages/web/src/board/Board.tsx),
+# puis les actions visibles de chacune. Un test de la suite web compare ces écrans aux vues du code :
+# une vue ajoutée sans son écran ici fait tomber le test.
+#
+# Axes : visuel (la vue s'affiche bien) et fonctionnel (l'action fait ce qu'elle doit).
+app: mission-control
+axes: [visuel, fonctionnel]
+screens:
+  - id: fleet
+    title: Tous les projets — un projet par ligne
+    actions:
+      - id: ouvrir-projet
+        title: Ouvrir un projet depuis la liste
+  - id: overview
+    title: Vue d'ensemble — entonnoir, versions, tuiles
+    actions:
+      - id: lancer-version
+        title: Lancer une version depuis le process des versions
+      - id: voir-run
+        title: Ouvrir le détail d'un run en cours
+  - id: pilotage
+    title: Pilotage — milestones et sessions closes
+  - id: cadrage
+    title: Cadrage — les fiches à mûrir
+    actions:
+      - id: ouvrir-run
+        title: Ouvrir le run d'un cadrage
+  - id: dev
+    title: Développement — lancer un lot
+    actions:
+      - id: choisir-lot
+        title: Choisir le lot à lancer
+      - id: lancer
+        title: Lancer le lot choisi
+  - id: fiches
+    title: Fiches — kanban et liste
+    actions:
+      - id: basculer-liste
+        title: Passer du kanban à la liste
+      - id: filtrer-categorie
+        title: Filtrer par catégorie de version
+      - id: rechercher
+        title: Chercher une fiche par la barre de recherche
+      - id: ouvrir-fiche
+        title: Ouvrir la fenêtre d'une fiche
+      - id: poser-pouce
+        title: Poser ou retirer le pouce de revue d'une fiche
+  - id: timeline
+    title: Chronologie — chantiers, sessions, évènements
+    actions:
+      - id: ouvrir-chantier
+        title: Ouvrir un chantier, puis une session
+      - id: filtrer-type
+        title: Filtrer les évènements par type
+      - id: afficher-plus
+        title: Afficher les évènements suivants
+  - id: config
+    title: Configuration du projet
+    actions:
+      - id: changer-niveau-role
+        title: Changer le niveau d'un rôle
+      - id: aller-reglages
+        title: Aller aux réglages de l'outil
+  - id: process
+    title: Process — chaque fiche sur son étape
+    actions:
+      - id: ouvrir-fiche
+        title: Ouvrir la fenêtre d'une fiche depuis sa colonne
+  - id: law
+    title: Loi — comptes, règles et liens
+    actions:
+      - id: filtrer-compteur
+        title: Filtrer les règles par un compteur
+      - id: selectionner-objet
+        title: Sélectionner un skill ou un agent, et voir ses traits
+      - id: selectionner-regle
+        title: Sélectionner une règle, et voir son détail
+  - id: maps
+    title: Cartes — les documents de la méthode
+    actions:
+      - id: ouvrir-document
+        title: Ouvrir un document dans son cadre isolé
+  - id: tool
+    title: Réglages de l'outil
+    actions:
+      - id: changer-niveau-defaut
+        title: Changer le niveau par défaut
+      - id: choisir-ide
+        title: Choisir l'éditeur
