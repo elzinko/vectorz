@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (8c017d8f)"
 evidence: before-after
 created: 2026-11-03
 ---
@@ -63,7 +63,7 @@ restent rendus en ligne ; « Comment vérifier » reste brut.
 - **Entrée au backlog le 2026-11-03** sur décision d'`ezk-pm`, en mode auto du run délégué par le PO
   (« continuer sans mon intervention »). Ce n'est aucune des quatre décisions humaines : c'est un bug,
   pas une idée produit. Le PO peut la retirer.
-- Suite de la fiche livrée [la fenêtre d'une fiche affiche le Markdown brut](done/20261103191932074_fenetre-fiche-markdown-brut.md),
+- Suite de la fiche livrée [la fenêtre d'une fiche affiche le Markdown brut](20261103191932074_fenetre-fiche-markdown-brut.md),
   qui couvrait le Markdown en ligne seulement.
 - Indice relevé avant le groom : `FicheModal.tsx`, le contexte est rendu dans un seul `<p>`.
 - **Groomée `ready` le 2026-11-03** (run autonome) : le contexte est la section où les listes

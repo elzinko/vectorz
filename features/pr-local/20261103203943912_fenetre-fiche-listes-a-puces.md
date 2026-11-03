@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103203943912_fenetre-fiche-listes-a-puces.md](../20261103203943912_fenetre-fiche-listes-a-puces.md)
+> 🗎 Rendu de la fiche [features/20261103203943912_fenetre-fiche-listes-a-puces.md](../done/20261103203943912_fenetre-fiche-listes-a-puces.md)
 
 # Les listes à puces d'une fiche s'affichent en un seul paragraphe dans mission control
 
