@@ -1,0 +1,54 @@
+---
+id: "20261103203943912"
+title: "Les listes à puces d'une fiche s'affichent en un seul paragraphe dans mission control"
+type: bug
+priority: P3
+product: cop1
+milestone:
+version:
+labels: [scout, mission-control]
+status: idea
+pr:
+evidence: before-after
+created: 2026-11-03
+---
+
+# Les listes à puces d'une fiche s'affichent en un seul paragraphe dans mission control
+
+**En clair.** La fenêtre d'une fiche rend le gras, l'italique et le code depuis le 2026-11-03. Ses listes à puces
+restent brutes : les lignes « - … » sont collées bout à bout dans un seul paragraphe, tirets compris.
+
+**Si tu arrives frais.** Mission control est l'écran de la méthode (cop1). Il lit ce que la méthode
+publie par `ezk … --json` et l'affiche, sans le recalculer (ADR-086).
+
+## Contexte / Problème
+
+Gravité : **mineure**.
+
+Reproduction :
+
+1. Ouvre mission control, projet muti, onglet « Process ».
+2. Clique la carte « Sortir la 1.8.0 (suivre le runbook de release) ».
+3. La section « Contexte » tient en un bloc : « - Le guide … - Les package.json … - Six fonctions … ».
+
+## Proposition
+
+À groomer.
+
+## Critères d'acceptation
+
+- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+
+## Comment vérifier
+
+Rejouer la reproduction ci-dessus.
+
+## Notes / décisions
+
+- Trouvé par ezk-scout, rapport `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz/fa181bfb-37a3-4d65-93d6-545f3a00e4d1/scratchpad/scout-2026-11-03-nuit/report.md` (brouillon B2), le 2026-11-03 dans la nuit.
+- **Entrée au backlog le 2026-11-03** sur décision d'`ezk-pm`, en mode auto du run délégué par le PO
+  (« continuer sans mon intervention »). Ce n'est aucune des quatre décisions humaines : c'est un bug,
+  pas une idée produit. Le PO peut la retirer.
+- Suite de la fiche livrée [la fenêtre d'une fiche affiche le Markdown brut](done/20261103191932074_fenetre-fiche-markdown-brut.md),
+  qui couvrait le Markdown en ligne seulement.
+- Indice relevé avant le groom : `FicheModal.tsx`, le contexte est rendu dans un seul `<p>`.
