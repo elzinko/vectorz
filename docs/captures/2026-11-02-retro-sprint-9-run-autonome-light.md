@@ -36,7 +36,7 @@ proposition attend la décision du PO ; aucune n'a été appliquée.
   pas une nouvelle.
 - Le compte rendu du sprint 9 est juste : 2 fiches livrées, 33 minutes. Ce contre-exemple affine la
   fiche existante
-  [un compte rendu de sprint non daté le dit d'emblée](../../features/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md) :
+  [un compte rendu de sprint non daté le dit d'emblée](../../features/done/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md) :
   le défaut dépend de la fenêtre, pas du ship local. C'est un enrichissement, pas une nouvelle décision.
 
 ## 2 · Tour 1 — chaque lentille propose

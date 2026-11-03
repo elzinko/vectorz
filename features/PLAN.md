@@ -64,7 +64,7 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 - `20261101162826995` — le dossier de contrat porte le nom de la méthode · groom
 
 **Milestone `observabilite`** :
-- `20261101131506082` — un compte rendu de sprint non daté le dit, sans faux zéro · groom
+- ~~`20261101131506082` — un compte rendu de sprint non daté le dit, sans faux zéro · groom~~ — shipped
 
 **Milestone `carte` — « La carte dit vrai »** :
 - ~~`20261015213921021` — aligner la carte de la méthode sur le code · build~~ — shipped

@@ -7,8 +7,8 @@ product: mega-city
 milestone: observabilite
 version:
 labels: [sprint, compte-rendu, supervision]
-status: ready
-pr:
+status: shipped
+pr: "local (c7b23798)"
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
 ---
@@ -41,7 +41,7 @@ faux :
 
 La fenêtre de mesure semble partir d'un point de passage bien plus ancien que le sprint. Ces chiffres
 empêchent aussi mission control d'afficher le temps et les jetons cumulés
-([vue d'ensemble : sprints et rétros réels](done/20261102104443762_vue-ensemble-sprints-retros-reels.md)).
+([vue d'ensemble : sprints et rétros réels](20261102104443762_vue-ensemble-sprints-retros-reels.md)).
 
 Revu le 2026-11-02 au soir, sprint 7 du run autonome : le compte rendu
 `2026-11-02-sprint-mission-control-se-prot-ge-et-compte-vrai.md` est daté (1 h 25, point de passage
@@ -116,7 +116,7 @@ ne sont pas régénérés : ils restent l'historique, avec leurs zéros d'époqu
 ## Notes
 
 - Née de la rétro légère du 2026-11-01 (P5 de la rétro), acceptée par le PO le même jour :
-  [rétro du run des contrats JSON](../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
+  [rétro du run des contrats JSON](../../docs/captures/2026-11-01-retro-run-contrats-json-light.md).
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : causes lues dans le code. La cause n° 1 vient de la rétro du
   sprint 12 du 2026-11-03 (proposition P1 en attente du PO), qui la décrit comme un défaut neuf : elle

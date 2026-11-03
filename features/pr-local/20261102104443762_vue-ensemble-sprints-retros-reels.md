@@ -75,7 +75,7 @@ Ouvrir http://localhost:5273, vue d'ensemble de vectorz. Signal observable : les
 
 - Priorité P1, fixée par le PO le 2026-11-02.
 - Le temps et les jetons attendent une mesure fiable :
-  [Un compte rendu de sprint non daté le dit d'emblée](../20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md).
+  [Un compte rendu de sprint non daté le dit d'emblée](../done/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md).
   Une fois cette mesure réparée, une fiche courte branchera ces trois tuiles.
 - Le détail des jetons par run est une autre fiche, bloquée par un panel :
   [Board : enrichir les runs (moments + jetons)](../20261026132118384_board-enrichir-runs-moments-jetons.md).

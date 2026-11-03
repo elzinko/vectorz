@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md](../20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md)
+> 🗎 Rendu de la fiche [features/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md](../done/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md)
 
 ## En clair
 

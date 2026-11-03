@@ -34,7 +34,7 @@ attend la décision du PO ; aucune n'a été appliquée.
   arrêté, tournait encore dans le même dossier.
 - Le compte rendu du sprint 8 se trompe comme celui du sprint 7 : 1 fiche annoncée, celle d'une autre
   session, pour 2 livrées. Le cas est ajouté à la fiche existante
-  [un compte rendu de sprint non daté le dit d'emblée](../../features/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md) :
+  [un compte rendu de sprint non daté le dit d'emblée](../../features/done/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md) :
   un enrichissement, pas une nouvelle décision.
 - Le groom du sprint 9 a confronté les fiches au code, et en a tiré un vrai défaut : la collecte du
   « process » de la méthode appelle GitHub même sur un projet `github: false`. Il est devenu un

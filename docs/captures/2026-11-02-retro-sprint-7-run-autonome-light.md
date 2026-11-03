@@ -49,7 +49,7 @@ propositions attendent la décision du PO ; aucune n'a été appliquée.
   daemon est retombé sur ses valeurs par défaut sans le dire.
 - Le compte rendu du sprint 7 se trompe : il annonce « 0 fiche livrée » et 306 millions de jetons,
   pour deux fiches livrées. Ce cas a été ajouté à la fiche existante
-  [un compte rendu de sprint non daté le dit d'emblée](../../features/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md) :
+  [un compte rendu de sprint non daté le dit d'emblée](../../features/done/20261101131506082_compte-rendu-de-sprint-non-date-sans-faux-zero.md) :
   un enrichissement, pas une nouvelle décision.
 - Ce qui a marché : le décideur a confirmé chaque porte « prête » en un appel court ; la capture
   « avant » a été prise avant de toucher au code, comme il l'avait demandé.
