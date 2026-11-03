@@ -7,7 +7,7 @@ product: mega-city
 milestone: preparation
 version:
 labels: [backlog, plan, decoupage]
-status: idea
+status: ready
 pr:
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
@@ -75,3 +75,5 @@ ezk backlog plan-lot 1
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : proposition précisée d'après le code ; « 0 fiche hors plan sur
   5 découpages » passe en mesure de suivi, car elle ne se prouve pas au build.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Condition : un test sur la
+  fonction pure, un sur la sortie de `apply split --dry-run`, un sur celle de `plan-lot`.
