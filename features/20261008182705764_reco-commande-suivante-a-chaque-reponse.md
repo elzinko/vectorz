@@ -5,6 +5,7 @@ type: feature
 priority: P3
 product: mega-city
 status: idea
+blocked: design
 pr:
 evidence: none # restitution de méthode, sans écran
 created: 2026-10-08
@@ -65,3 +66,8 @@ bloc « Et maintenant ? » pertinent peut apparaître, et qu'il se tait quand au
   extension.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
+- **Mise en attente le 2026-11-03** (run autonome) : le mécanisme passerait par un hook
+  ou un style de sortie, comme la fiche sœur
+  [garder les sessions dans le cadre de la méthode](20261008182705749_forcer-sessions-dans-la-methode-debrayage-config.md),
+  déjà en attente d'un design. Poser un hook ou un style de sortie change la config du poste : le choix
+  te revient, pour les deux fiches à la fois.

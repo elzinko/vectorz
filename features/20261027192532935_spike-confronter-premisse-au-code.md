@@ -9,6 +9,7 @@ version:
 labels: [methode, dor, spike]
 depends:
 status: idea
+blocked: panel
 pr:
 evidence: none # investigation de méthode, pas d'écran ; preuve = verdict écrit + mesure
 created: 2026-10-27
@@ -78,3 +79,6 @@ cat features/20261002155911271_trier-sorties-retro-par-nature.md
   (la panne 2 — caveat en prose — a été livrée comme signal le même jour).
 - Sujet d'architecture incertain : à groomer (et sans doute à passer en panel) avant toute construction.
   Ne pas forcer `ready` sur la foi de ce brouillon.
+- **Mise en attente le 2026-11-03** (run autonome) : la fiche le dit elle-même, le sujet
+  d'architecture est incertain et passera sans doute en panel avant toute construction. L'ADR-085 a
+  différé cette voie. Le panel se tient avec toi.

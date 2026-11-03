@@ -5,6 +5,7 @@ type: feature
 priority: P3
 product: mega-city
 status: idea
+blocked: deferred
 pr:
 evidence: none # capability de méthode, sans écran
 created: 2026-10-08
@@ -63,3 +64,7 @@ groomées sont committées sur `main` sans passage par `ezk-archive`.
 - Capturée en `idea` sur demande PO (2026-10-08), P3 : direction à garder, pas pressante.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
+- **Mise en attente le 2026-11-03** (run autonome) : la voie rapide d'`ezk-archive`
+  compte une fiche groomée comme « travaillée » (raison `worked`). Une session de grooming déroule donc
+  la clôture complète. Deux issues : garder la convention actuelle, ou ajouter une sortie légère pour
+  une session qui n'a fait que groomer. La seconde change le contrat de clôture : le choix te revient.
