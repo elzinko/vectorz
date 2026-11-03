@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103203943909_fenetre-fiche-bloquee-deborde.md](../20261103203943909_fenetre-fiche-bloquee-deborde.md)
+> 🗎 Rendu de la fiche [features/20261103203943909_fenetre-fiche-bloquee-deborde.md](../done/20261103203943909_fenetre-fiche-bloquee-deborde.md)
 
 # La fenêtre d'une fiche bloquée déborde à droite dans mission control
 
