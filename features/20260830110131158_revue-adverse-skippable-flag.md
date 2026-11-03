@@ -56,14 +56,14 @@ Distinction inchangée : ça ne concerne que la revue adverse **interne** (`ezk-
 
 ## Critères d'acceptation
 
-- [ ] **Skip en POC** — avec `review.adverse: skip` dans `.vectorz/config.yml`, un sprint saute
+- [x] **Skip en POC** — avec `review.adverse: skip` dans `.vectorz/config.yml`, un sprint saute
       l'étape reviewer **mais garde la gate locale verte** (tests / lint / build).
-- [ ] **Tracé** — le skip apparaît dans `SPRINT.md` (`## Notes / décisions`) et au résumé de
+- [x] **Tracé** — le skip apparaît dans `SPRINT.md` (`## Notes / décisions`) et au résumé de
       checkpoint (« revue adverse SKIPPÉE — mode POC »).
-- [ ] **Plancher par défaut** — sans le réglage POC, la revue adverse tourne et bloque (GO/NO-GO).
-- [ ] **Jamais en auto tout seul** — en `--mode auto`, le skip n'est pris **que** si le réglage POC
+- [x] **Plancher par défaut** — sans le réglage POC, la revue adverse tourne et bloque (GO/NO-GO).
+- [x] **Jamais en auto tout seul** — en `--mode auto`, le skip n'est pris **que** si le réglage POC
       est explicitement posé ; `ezk-pm` ne le décide jamais seul.
-- [ ] **Garde — le POC ne retire QUE le reviewer** — un sprint POC dont la gate locale échoue (tests
+- [x] **Garde — le POC ne retire QUE le reviewer** — un sprint POC dont la gate locale échoue (tests
       rouges) est **bloqué quand même**. Sans ce critère, « POC » deviendrait « aucune sécurité ».
 
 ## Plan de build (grooming du 2026-11-03, run autonome)
@@ -143,3 +143,18 @@ porte POC (flag au lancement ? valeur de config ?).
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : le réglage n'est
   posé que par un humain, jamais écrit ni déduit par un agent ; la gate locale n'est jamais sautée ; chaque
   saut est tracé ; l'amendement d'ADR-0059 part avec le code ; le run qui la construit garde sa revue.
+- **Preuves du build (2026-11-03).**
+  - Sur un projet jetable, `ezk config show --root <projet>` dit `review.adverse skip` avec
+    `review: { adverse: skip }`, et `run` avec `adverse: Skip` ou sans clé ; `--json` porte `adverseReview`.
+  - Le résolveur garde `run` pour toute autre forme (9 cas testés).
+  - `ezk-sprint` porte la règle du mode POC : sauter `ezk-reviewer`, jamais la gate locale, tracer le
+    saut, réglage posé par un humain seul ; `ezk-product-build` dit qu'aucun agent ne saute la revue
+    d'office. Le test du plancher (`review-floor-contract.test.ts`) garde ces phrases et l'amendement
+    d'ADR-0059.
+  - Limite : le comportement d'un vrai sprint POC est porté par le texte du skill, que l'agent suit. Il
+    n'a pas été rejoué de bout en bout ; le réglage n'est posé dans aucun projet.
+- **Après la revue (NO-GO, 2026-11-03).** L'étape 10 d'`ezk-sprint` exigeait encore la revue avant toute
+  fusion, en contradiction avec l'étape 7. Elle dit maintenant : en mode POC, la revue est sautée et
+  tracée, la validation verte reste exigée, le checkpoint redit le saut. Un test garde l'accord des deux
+  étapes, un autre la ligne `review.adverse skip` de `ezk config show`. La preuve des critères « skip »
+  et « tracé » reste le texte du skill, cohérent à chaque point de décision et gardé par des tests.

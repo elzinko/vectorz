@@ -8,7 +8,7 @@
 import { relative } from 'node:path';
 import { type ConfigShow, buildConfigShow } from '../core/config-contract.js';
 import { loadModelConfig } from '../loaders/model-config.js';
-import { findProjectConfigFile, githubCapabilities, integrationStrategy } from '../loaders/project-config.js';
+import { adverseReview, findProjectConfigFile, githubCapabilities, integrationStrategy } from '../loaders/project-config.js';
 import { releaseConfig } from '../loaders/release-passes.js';
 
 /** Le contrat JSON de la config du projet `root`. Un YAML malformé lève l'erreur qui nomme le fichier. */
@@ -19,6 +19,7 @@ export function configShowData(root: string): ConfigShow {
     github: githubCapabilities(root),
     integration: integrationStrategy(root),
     release: releaseConfig(root),
+    adverseReview: adverseReview(root),
     models: loadModelConfig(root),
   });
 }

@@ -74,12 +74,19 @@ describe('config show --json — le contrat', () => {
       github: { pr: true, ci: true, codexReview: true },
       integration: 'local-squash',
       release: { gate: true },
+      adverseReview: 'run',
       models: { roles: { 'ezk-dev': 'enorme' as never } },
     });
     expect(ConfigShowSchema.parse(data)).toEqual(data);
     const dev = data.agents.find((a) => a.agent === 'ezk-dev');
     expect(dev).toEqual({ agent: 'ezk-dev', error: expect.stringContaining('enorme') });
     expect(data.agents.find((a) => a.agent === 'ezk-pm')).toMatchObject({ source: 'defaut' });
+  });
+
+  it('la revue adverse : run par défaut, skip seulement si la config le pose (fiche 20260830110131158)', () => {
+    expect(configShowData(project()).adverseReview).toBe('run');
+    expect(configShowData(project('review:\n  adverse: skip\n')).adverseReview).toBe('skip');
+    expect(configShowData(project('review:\n  adverse: oui\n')).adverseReview).toBe('run');
   });
 
   it('un YAML malformé lève une erreur qui nomme le fichier, jamais les défauts en silence', () => {

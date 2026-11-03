@@ -108,3 +108,26 @@ Le verdict local ne se perd pas : commentaire de PR (`gh pr review --comment`) p
 - **À entretenir.** La qualité du filet local dépend d'un prompt : la liste des angles morts doit suivre les défauts que Codex trouve et que le local rate.
 - **Touché dans cette PR.** L'agent `ezk-reviewer` (section « Angles morts mesurés », description alignée), le skill `ezk-sprint` (étape Revue : plancher et trace ; invariant « une PR » précisé), une note de précision sur ADR-037, et un test qui garde les quatre familles.
 - **Suite, hors de cette PR.** L'archive structurée des verdicts et son index ; le run de re-mesure ; l'axe « installer un plugin par projet » de la fiche chapeau.
+
+## Amendement du 2026-11-03 — la seule dérogation : le mode POC
+
+**En clair.** La revue locale reste le plancher de toute fusion. Une seule exception existe : un projet
+en mode POC, où l'humain choisit la vitesse plutôt qu'une seconde opinion. Il le dit dans sa config ;
+aucun agent ne le décide à sa place, et la gate locale ne se saute jamais.
+
+- **Décision du PO du 2026-10-09**, écrite dans la fiche
+  [Revue adverse skippable par un flag](../../../../features/20260830110131158_revue-adverse-skippable-flag.md) :
+  « on doit pouvoir overrider le fonctionnement, revue adverse comprise, en mode POC, par un geste
+  explicite et tracé ».
+- **Le geste.** `review: { adverse: skip }` dans `.vectorz/config.yml`. Toute autre valeur, une faute de
+  frappe ou l'absence de clé gardent le plancher (`run`). `ezk config show` affiche la ligne
+  `review.adverse`, et le contrat JSON le champ `adverseReview`.
+- **Ce qui ne bouge pas.** La gate locale (tests, typecheck, scripts) tourne et bloque, POC compris.
+  `ezk-pm` et `ezk-product-build` ne sautent jamais la revue d'eux-mêmes, et aucun agent n'écrit ce
+  réglage.
+- **La trace.** Chaque sprint qui saute la revue l'écrit dans `SPRINT.md` (« revue adverse SKIPPÉE —
+  mode POC ») et le redit au checkpoint, avec les critères que personne n'a prouvés.
+- **Revenir en arrière.** Retirer la clé de la config rétablit le plancher tout de suite. Retirer la
+  dérogation de la méthode, c'est retirer ce paragraphe d'`ezk-sprint`, le résolveur
+  `resolveAdverseReview` et le champ du contrat.
+

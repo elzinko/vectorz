@@ -87,3 +87,36 @@ describe('ADR-0059', () => {
     expect(adr037).toContain('Précisé le 2026-10-01 par [ADR-0059]');
   });
 });
+
+describe('la seule dérogation au plancher : le mode POC (fiche 20260830110131158, amendement ADR-0059)', () => {
+  const sprint = read('skills', 'ezk-sprint', 'SKILL.md');
+  const build = read('skills', 'ezk-product-build', 'SKILL.md');
+  const adr = existsSync(ADR) ? readFileSync(ADR, 'utf8') : '';
+
+  it('ezk-sprint saute la revue en mode POC, garde la gate locale et trace le saut', () => {
+    expect(sprint).toContain('**Seule dérogation : le mode POC**');
+    expect(sprint).toContain('`review.adverse skip`');
+    expect(sprint).toContain('**jamais la gate locale**');
+    expect(sprint).toContain('« revue adverse SKIPPÉE — mode POC »');
+    expect(sprint).toContain('seul un humain le pose');
+  });
+
+  it('l’étape 10 ne contredit pas l’étape 7 : en mode POC, la revue sautée ne bloque pas la fusion, la validation si', () => {
+    const etape10 = sprint.split('10. **Intégration')[1]?.split('\n## ')[0] ?? '';
+    expect(etape10).toContain('**Avant de merger : validation verte ET revue adverse traitée**');
+    expect(etape10).toContain('en mode POC, `review.adverse skip` : la revue est sautée et tracée, cf. étape 7');
+    expect(etape10).toContain('la validation verte reste exigée');
+  });
+
+  it('ezk-product-build ne saute jamais la revue d’office, ni par ezk-pm', () => {
+    expect(build).toContain("**La revue adverse ne se saute jamais d'office**");
+    expect(build).toContain('posé par un humain');
+  });
+
+  it('l’ADR-0059 porte l’amendement daté, la décision du PO et le retour en arrière', () => {
+    expect(adr).toContain('## Amendement du 2026-11-03 — la seule dérogation : le mode POC');
+    expect(adr).toContain('Décision du PO du 2026-10-09');
+    expect(adr).toContain('**Revenir en arrière.**');
+  });
+});
+

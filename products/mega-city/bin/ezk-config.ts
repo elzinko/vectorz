@@ -21,6 +21,7 @@ import { resolve } from 'node:path';
 import {
   type GithubCapKey,
   type GithubMutation,
+  adverseReview,
   githubCapabilities,
   integrationStrategy,
   writeGithubConfig,
@@ -65,6 +66,13 @@ function printStatus(root: string): void {
   console.log(githubStatusText(`${root}/.vectorz/config.yml`, githubCapabilities(root)));
   // La stratégie d'intégration sans PR (ADR-0061 D3, fiche 20261004083838687).
   console.log(`integration          ${integrationStrategy(root)}   (sans PR : comment une story arrive sur main)`);
+  // La revue adverse locale : `run` (plancher, ADR-0059) ou `skip` (mode POC, fiche 20260830110131158).
+  const review = adverseReview(root);
+  console.log(
+    review === 'skip'
+      ? 'review.adverse       skip  (mode POC : ezk-reviewer est sauté, la gate locale reste)'
+      : 'review.adverse       run   (revue adverse ezk-reviewer, plancher de toute fusion)',
+  );
 }
 
 /**

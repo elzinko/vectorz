@@ -156,3 +156,21 @@ export const INTEGRATION_STRATEGIES: readonly IntegrationStrategy[] = ['local-sq
 export function resolveIntegration(raw: unknown): IntegrationStrategy {
   return raw === 'push-ff' ? 'push-ff' : 'local-squash';
 }
+
+/**
+ * La revue adverse locale (`ezk-reviewer`) d'un sprint : `run` (le plancher, ADR-0059) ou `skip`
+ * (mode POC). Fiche 20260830110131158, décision PO du 2026-10-09, amendement d'ADR-0059.
+ *
+ * Seul `review: { adverse: skip }` saute la revue. Toute autre forme, une faute de frappe ou l'absence
+ * de clé donnent `run` : on ne retire jamais le plancher par accident. Le réglage n'est posé que par un
+ * humain dans la config ; aucun agent ne l'écrit ni ne le déduit. La gate locale, elle, ne se saute pas.
+ * AUCUNE I/O : la lecture du fichier vit dans le loader.
+ */
+export type AdverseReview = 'run' | 'skip';
+
+export const ADVERSE_REVIEW_MODES: readonly AdverseReview[] = ['run', 'skip'];
+
+export function resolveAdverseReview(raw: unknown): AdverseReview {
+  if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return 'run';
+  return (raw as { adverse?: unknown }).adverse === 'skip' ? 'skip' : 'run';
+}

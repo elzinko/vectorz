@@ -44,6 +44,14 @@
       "type": "boolean",
       "description": "La gate de release bloque-t-elle le tag d’une version ?"
     },
+    "adverseReview": {
+      "type": "string",
+      "enum": [
+        "run",
+        "skip"
+      ],
+      "description": "La revue adverse locale d’un sprint : `run` (le plancher) ou `skip` (mode POC, posé par un humain)."
+    },
     "agents": {
       "type": "array",
       "items": {
@@ -117,6 +125,7 @@
     "github",
     "integration",
     "releaseGate",
+    "adverseReview",
     "agents"
   ]
 }

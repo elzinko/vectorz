@@ -4,6 +4,7 @@ import {
   SCRUM_GROUPED,
   SCRUM_LEGACY,
   type ScrumPaths,
+  resolveAdverseReview,
   resolveGithub,
   resolveIntegration,
   resolveScrumPaths,
@@ -120,5 +121,17 @@ describe('resolveIntegration — stratégie sans PR (ADR-0061 D3, fiche 20261004
 
   it('« push-ff » est la seule valeur qui bascule en avance rapide', () => {
     expect(resolveIntegration('push-ff')).toBe('push-ff');
+  });
+});
+
+describe('resolveAdverseReview — la revue adverse saute en mode POC seulement (fiche 20260830110131158)', () => {
+  it('défaut = run : clé absente, forme inattendue ou faute de frappe ne retirent jamais le plancher', () => {
+    for (const raw of [undefined, null, 'skip', true, [], {}, { adverse: 'run' }, { adverse: 'Skip' }, { adverse: true }]) {
+      expect(resolveAdverseReview(raw), JSON.stringify(raw)).toBe('run');
+    }
+  });
+
+  it('« review: { adverse: skip } » est la seule forme qui saute la revue', () => {
+    expect(resolveAdverseReview({ adverse: 'skip' })).toBe('skip');
   });
 });

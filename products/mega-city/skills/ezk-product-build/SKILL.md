@@ -278,6 +278,9 @@ chaud (option `[Passer en auto]` / `[Repasser en manuel]` proposée à un checkp
   **n'existe pas**, le tampon `ready` passe par la concurrence `ezk-pm` (ADR-0016 révisé par
   [ADR-0028](../../docs/adr/0028-product-builder-auto-groom-ready.md), défaut basculé par
   [ADR-0053](../../docs/adr/0053-check-ready-devient-review-defaut-autonome.md)).
+  **La revue adverse ne se saute jamais d'office** : ni toi ni `ezk-pm` ne la retirez d'un sprint.
+  Seul le réglage `review.adverse: skip`, posé par un humain dans `.vectorz/config.yml`, la saute
+  (mode POC, amendement d'ADR-0059 du 2026-11-03) ; la gate locale, elle, tourne toujours.
 
 En `auto`, chaque moment d'arrêt se résout ainsi :
 

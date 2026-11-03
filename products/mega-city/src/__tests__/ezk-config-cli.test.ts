@@ -72,6 +72,24 @@ describe('ezk config — aide et options (fiche 20261004083838781)', () => {
     expect(r.code).toBe(0);
     expect(r.out).toMatch(/github/i);
   });
+
+  it('show dit la revue adverse : run par défaut, le plancher (fiche 20260830110131158)', () => {
+    const r = cfg(['show']);
+    expect(r.out).toMatch(/^review\.adverse\s+run\s/m);
+    expect(r.out).not.toMatch(/review\.adverse\s+skip/);
+  });
+
+  it('show dit « skip » quand un humain pose le mode POC, et seulement avec la forme exacte', () => {
+    const config = join(repo, '.vectorz', 'config.yml');
+    try {
+      writeFileSync(config, 'github: false\nreview:\n  adverse: skip\n');
+      expect(cfg(['show']).out).toMatch(/^review\.adverse\s+skip\s+\(mode POC/m);
+      writeFileSync(config, 'github: false\nreview:\n  adverse: Skip\n');
+      expect(cfg(['show']).out).toMatch(/^review\.adverse\s+run\s/m);
+    } finally {
+      writeFileSync(config, 'github: false\n');
+    }
+  });
 });
 
 describe('ezk config show --json — le contrat lu par mission control (ADR-086)', () => {

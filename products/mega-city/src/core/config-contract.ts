@@ -13,7 +13,13 @@
  */
 import { z } from 'zod';
 import { EFFORTS, type ModelConfig, ROLES, TIERS, resolveAgent } from './model-config.js';
-import { type GithubCapabilities, INTEGRATION_STRATEGIES, type IntegrationStrategy } from './project-config.js';
+import {
+  ADVERSE_REVIEW_MODES,
+  type AdverseReview,
+  type GithubCapabilities,
+  INTEGRATION_STRATEGIES,
+  type IntegrationStrategy,
+} from './project-config.js';
 import type { ReleaseConfig } from './release-gate.js';
 
 /** La version du format. Un consommateur qui lit une autre valeur le dit, et n'affiche rien de faux. */
@@ -43,6 +49,9 @@ export const ConfigShowSchema = z.strictObject({
   github: z.strictObject({ pr: z.boolean(), ci: z.boolean(), codexReview: z.boolean() }),
   integration: z.enum(INTEGRATION_STRATEGIES).describe('Sans PR : comment une story arrive sur main.'),
   releaseGate: z.boolean().describe('La gate de release bloque-t-elle le tag d’une version ?'),
+  adverseReview: z
+    .enum(ADVERSE_REVIEW_MODES)
+    .describe('La revue adverse locale d’un sprint : `run` (le plancher) ou `skip` (mode POC, posé par un humain).'),
   agents: z.array(z.union([AgentResolvedSchema, AgentInvalidSchema])),
 });
 
@@ -54,6 +63,7 @@ export interface ConfigShowInput {
   github: GithubCapabilities;
   integration: IntegrationStrategy;
   release: ReleaseConfig;
+  adverseReview: AdverseReview;
   models: ModelConfig;
 }
 
@@ -65,6 +75,7 @@ export function buildConfigShow(input: ConfigShowInput): ConfigShow {
     github: { pr: input.github.pr, ci: input.github.ci, codexReview: input.github.codexReview },
     integration: input.integration,
     releaseGate: input.release.gate,
+    adverseReview: input.adverseReview,
     agents: ROLES.map((agent) => {
       try {
         const r = resolveAgent(input.models, agent);

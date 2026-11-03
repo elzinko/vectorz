@@ -13,9 +13,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { Document, isMap, parseDocument, parse as parseYaml } from 'yaml';
 import {
+  type AdverseReview,
   type GithubCapabilities,
   type IntegrationStrategy,
   type ScrumPaths,
+  resolveAdverseReview,
   resolveGithub,
   resolveIntegration,
   resolveScrumPaths,
@@ -77,6 +79,15 @@ export function integrationStrategy(projectRoot: string): IntegrationStrategy {
   const config = loadProjectConfig(projectRoot);
   const integration = (config as { integration?: unknown } | undefined)?.integration;
   return resolveIntegration(integration);
+}
+
+/**
+ * La revue adverse effective du projet à `projectRoot` : `run` par défaut, `skip` seulement si la
+ * config pose `review: { adverse: skip }` (mode POC, fiche 20260830110131158).
+ */
+export function adverseReview(projectRoot: string): AdverseReview {
+  const config = loadProjectConfig(projectRoot);
+  return resolveAdverseReview((config as { review?: unknown } | undefined)?.review);
 }
 
 /** Les trois capacités pilotables de la famille `github` (clés YAML canoniques, kebab). */
