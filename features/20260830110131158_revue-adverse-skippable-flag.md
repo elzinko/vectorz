@@ -8,7 +8,7 @@ milestone: methode-configurable
 version:
 epic:
 labels: [revue]
-status: idea
+status: ready
 pr:
 created: 2026-08-30
 ---
@@ -140,3 +140,6 @@ porte POC (flag au lancement ? valeur de config ?).
 > l'ADR-0059 ; le PO lève ce blocage le 2026-10-09 en amendant l'ADR.
 - Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
   périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : le réglage n'est
+  posé que par un humain, jamais écrit ni déduit par un agent ; la gate locale n'est jamais sautée ; chaque
+  saut est tracé ; l'amendement d'ADR-0059 part avec le code ; le run qui la construit garde sa revue.
