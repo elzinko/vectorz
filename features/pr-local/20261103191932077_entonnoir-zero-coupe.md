@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261103191932077_entonnoir-zero-coupe.md](../20261103191932077_entonnoir-zero-coupe.md)
+> 🗎 Rendu de la fiche [features/20261103191932077_entonnoir-zero-coupe.md](../done/20261103191932077_entonnoir-zero-coupe.md)
 
 # Un « 0 » coupé dépasse au bout de la barre « Entonnoir » de mission control
 
