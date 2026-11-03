@@ -17,12 +17,16 @@
  * Codes de sortie : 0 fait · 1 refusé ou usage (rien écrit) · 2 échec pendant l'application (retour arrière).
  */
 import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type ApplyGesture, planAggregateApply } from '../src/backlog/aggregate-apply.js';
+import { parsePlanOrder } from '../src/backlog/plan-order.js';
+import { formatPlanProposals, proposePlanLines } from '../src/backlog/plan-proposal.js';
 import { ShipFailure, ShipRefusal, applyShip } from '../src/backlog/ship-fiche.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { nodeRepoFs, nodeShipIo } from '../src/io/ship-fiche-io.js';
+import { loadFiches } from '../src/loaders/fiches.js';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -81,6 +85,23 @@ function describe(gesture: ApplyGesture, n: number): string {
     : `En clair : découpage de ${gesture.source} en ${gesture.into.length} fiches. Elle passe « split » et part dans features/done/.`;
 }
 
+/**
+ * Après un découpage, les lignes de plan des sœurs absentes de `features/PLAN.md`, à copier sous leur
+ * milestone (fiche 20261101131506254). Rien n'est écrit dans le plan : il reste tenu à la main.
+ * « Au plan » veut dire que l'id y figure, barré compris : une sœur déjà livrée n'est pas reproposée.
+ */
+function siblingPlanLines(root: string, children: readonly string[]): string[] {
+  const wanted = new Set(children);
+  const candidates = loadFiches(root)
+    .filter((f) => wanted.has(f.id))
+    .map((f) => ({ id: f.id, title: f.title, status: f.status, milestone: f.milestone }));
+  const planPath = join(root, 'features', 'PLAN.md');
+  // Pas de PLAN.md : toutes les sœurs sont proposées. Un plan illisible, lui, fait échouer la commande :
+  // le rattraper proposerait aussi les sœurs déjà au plan, sans le dire.
+  const planIds = existsSync(planPath) ? parsePlanOrder(readFileSync(planPath, 'utf8')) : [];
+  return formatPlanProposals(proposePlanLines(candidates, planIds));
+}
+
 function main(): void {
   const { gesture, root, dryRun, barPlan } = parseArgs(process.argv.slice(2).filter((a) => a !== '--'));
   const fs = nodeRepoFs(root);
@@ -96,6 +117,8 @@ function main(): void {
         ? `  provenance : merged_into sur chaque source, merged_from sur ${gesture.into}`
         : `  provenance : split_into sur ${gesture.source}, split_from sur chaque enfant`,
     );
+    const planLines = gesture.kind === 'split' ? siblingPlanLines(root, gesture.into) : [];
+    for (const l of planLines) console.log(`  ${l}`);
     if (dryRun) return;
 
     const regen = (): void => {

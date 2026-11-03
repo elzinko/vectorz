@@ -74,6 +74,7 @@ const cards = kept.map((f) => ({
   done: f.done,
   // L'id s'affiche en lien vers la fiche, relatif au dossier d'où la commande est lancée.
   path: relative(invokedFrom, join(root, f.file)),
+  milestone: f.milestone,
 }));
 const lot = selectLot(scopedPlanIds, cards, Number(sizeArg));
 // sprint.sh se lance depuis la racine du projet (c'est là qu'il écrit SPRINT.md).

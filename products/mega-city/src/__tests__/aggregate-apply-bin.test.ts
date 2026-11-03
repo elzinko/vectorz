@@ -144,6 +144,22 @@ describe('backlog:apply — le découpage, de bout en bout', () => {
     expect(run('check', '--strict').code).toBe(0);
   });
 
+  it('propose la ligne de plan de chaque sœur absente du plan, sous sa milestone, sans écrire le plan (fiche 20261101131506254)', () => {
+    put('features/20260101000000003_f3.md', fm(I(3), 'milestone: board\n', 'idea'));
+    git('add', '.');
+    git('commit', '--quiet', '-m', 'chore: milestone');
+    const plan = read('features/PLAN.md');
+    const r = run('apply', 'split', I(1), '--into', `${I(2)},${I(3)}`, '--dry-run');
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("Au plan : ces fiches n'y sont pas.");
+    expect(r.out).toContain('milestone `board` :');
+    expect(r.out).toContain(`- \`${I(3)}\` — Fiche ${I(3)} · groom`);
+    // La sœur 2 est déjà au plan : elle n'est pas reproposée.
+    expect(r.out).not.toContain(`- \`${I(2)}\` — Fiche ${I(2)}`);
+    expect(read('features/PLAN.md')).toBe(plan);
+    expect(git('status', '--porcelain')).toBe('');
+  });
+
   it('refuse un découpage à un seul enfant (code 1)', () => {
     const r = run('apply', 'split', I(1), '--into', I(2));
     expect(r.code).toBe(1);

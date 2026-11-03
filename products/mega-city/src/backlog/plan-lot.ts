@@ -9,6 +9,7 @@
  * passées `shipped` ; aucun objet « sprint » n'est créé.
  */
 import type { PlanCard } from './plan-head.js';
+import { formatPlanProposals, proposePlanLines } from './plan-proposal.js';
 
 export interface LotCard extends PlanCard {
   title: string;
@@ -20,6 +21,8 @@ export interface LotCard extends PlanCard {
   done: boolean;
   /** Chemin du fichier de la fiche, relatif au dossier d'où l'on lance la commande : l'id devient un lien. */
   path?: string;
+  /** La milestone de la fiche, `''` si absente : elle dit où inscrire une fiche hors plan. */
+  milestone?: string;
 }
 
 /** Une fiche prête que le lot a passée, avec la raison. Elle est montrée, jamais tue. */
@@ -142,6 +145,9 @@ export function formatLot(lot: Lot, opts: FormatOptions): string[] {
   if (lot.outsidePlan.length > 0) {
     out.push('hors plan (prêtes, non retenues : la séquence vient du PLAN) :');
     for (const c of lot.outsidePlan) out.push(`  · ${line(c)}`);
+    // Dire comment l'inscrire, plutôt que la laisser à deviner (fiche 20261101131506254).
+    const candidates = lot.outsidePlan.map((c) => ({ id: c.id, title: c.title, status: c.status, milestone: c.milestone ?? '' }));
+    out.push(...formatPlanProposals(proposePlanLines(candidates, [])));
   }
   if (lot.unresolved.length > 0) {
     out.push(`introuvables (dans le plan, absentes de features/) : ${lot.unresolved.join(', ')}`);

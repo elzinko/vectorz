@@ -123,6 +123,8 @@ describe('formatLot — la sortie lue par l’humain et par ezk-sprint', () => {
     expect(out).toContain('0002 (mega-city · P2) — Fiche 0002 — drapeau blocked: attend 0009');
     expect(out).toContain('hors plan');
     expect(out).toContain('0006 (mega-city · P0)');
+    // Une fiche hors plan reçoit la ligne à copier, sous sa milestone (fiche 20261101131506254).
+    expect(out).toContain('    - `0006` — Fiche 0006 · build');
     expect(out).toContain('introuvables (dans le plan, absentes de features/) : 4242');
     expect(out).toContain(`start --lot 0003`);
   });

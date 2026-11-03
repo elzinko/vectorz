@@ -55,10 +55,10 @@ après         split → « au plan, sous milestone `board` : - `<id>` — <titr
 
 ## Critères d'acceptation
 
-- [ ] Après un découpage, la sortie propose la ligne de plan de chaque sœur absente du plan, rangée
+- [x] Après un découpage, la sortie propose la ligne de plan de chaque sœur absente du plan, rangée
       sous sa milestone ; une sœur déjà au plan n'est pas reproposée.
-- [ ] `plan-lot` donne, pour chaque fiche prête « hors plan », la ligne à copier et sa milestone.
-- [ ] Aucune écriture du plan : `features/PLAN.md` ne change pas, hors l'entrée barrée de la source.
+- [x] `plan-lot` donne, pour chaque fiche prête « hors plan », la ligne à copier et sa milestone.
+- [x] Aucune écriture du plan : `features/PLAN.md` ne change pas, hors l'entrée barrée de la source.
 
 **Mesure de suivi** : sur les 5 prochains découpages, 0 fiche prête « hors plan » juste après.
 
@@ -77,3 +77,7 @@ ezk backlog plan-lot 1
   5 découpages » passe en mesure de suivi, car elle ne se prouve pas au build.
 - Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Condition : un test sur la
   fonction pure, un sur la sortie de `apply split --dry-run`, un sur celle de `plan-lot`.
+- **Preuves du build (2026-11-03).** Tests : la fonction pure (`plan-proposal.test.ts`), la sortie de
+  `apply split --dry-run` sur un dépôt jetable (la sœur absente est proposée sous sa milestone, la sœur
+  déjà au plan ne l'est pas, `PLAN.md` inchangé), et la sortie de `plan-lot` (ligne à copier sous une
+  fiche hors plan).
