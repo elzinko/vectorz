@@ -4,7 +4,7 @@ title: "Pouvoir sauter volontairement la revue adverse"
 type: feature
 priority: P2
 product: mega-city
-milestone: parked
+milestone: methode-configurable
 version:
 epic:
 labels: [revue]
@@ -17,10 +17,10 @@ created: 2026-08-30
 
 ## En clair
 
-La revue adverse est **déjà obligatoire** : chaque sprint la fait (étape 7 d'`ezk-sprint`,
-déléguée à `ezk-reviewer`, verdict GO/NO-GO bloquant). On veut juste pouvoir la **sauter
-volontairement** par un flag, pour rester souple sur du trivial ou du jetable — sans jamais
-la sauter en silence.
+La revue adverse est **déjà obligatoire** à chaque sprint (étape 7 d'`ezk-sprint`, déléguée à
+`ezk-reviewer`, verdict GO/NO-GO bloquant). On veut pouvoir la **sauter en mode POC** — quand on
+bricole du jetable — par un réglage **explicite et tracé** dans la config du projet, jamais en
+silence. Le plancher reste la règle ; le POC est la seule dérogation.
 
 ## Contexte / Problème
 
@@ -35,29 +35,53 @@ concerne que la première. Codex reste géré par composition (`ezk-codex`), hor
 
 ## Proposition
 
-- **Flag `--review adverse|skip`** (défaut `adverse`) sur `ezk-product-build`.
-- **Transmis à `ezk-sprint`** (frontière « compose, ne réimplémente rien ») : c'est `ezk-sprint`
-  qui possède l'étape 7 ; il gagne le skip explicite, `ezk-product-build` l'expose et le passe.
-- **`skip` retire le reviewer, PAS la gate locale.** Les tests / lint / build (étape 5)
-  restent obligatoires. On troque une seconde opinion contre de la vitesse, jamais la sécurité
-  de base.
-- **En `--mode auto`, jamais d'auto-skip.** Sauter la revue est un choix humain explicite au
-  lancement ; `ezk-pm` ne le décide pas seul. Le skip est **journalisé** dans `SPRINT.md` et
-  signalé au checkpoint (« revue adverse SKIPPÉE »).
+**POC (premier morceau) : sauter la revue adverse en mode POC, piloté par la config.** On déclare le
+mode POC dans `.vectorz/config.yml` (un réglage du cluster `methode-configurable`, p. ex.
+`review.adverse: skip`) ; en mode POC, `ezk-sprint` saute l'étape 7 (reviewer) **mais garde la gate
+locale** (tests / lint / build, étape 5). On troque une seconde opinion contre de la vitesse, jamais
+la sécurité de base.
+
+Garde-fous :
+- **Plancher préservé** — hors POC, la revue adverse reste bloquante (ADR-0059). Le mode POC en est
+  la **seule dérogation explicite** ; il **amende** l'ADR-0059, et l'amendement s'écrit au build.
+- **Explicite et tracé** — le skip est journalisé dans `SPRINT.md` et signalé au checkpoint
+  (« revue adverse SKIPPÉE — mode POC »).
+- **Jamais en silence ni en auto tout seul** — en `--mode auto`, `ezk-pm` ne saute pas la revue de
+  lui-même ; il faut le réglage POC **explicite** dans la config.
+- **La collision `--review` disparaît** — on passe par la **config**, pas par un nouveau flag
+  `--review` : plus de conflit avec le `--review` du ready-gate (ADR-0053).
+
+Distinction inchangée : ça ne concerne que la revue adverse **interne** (`ezk-reviewer`), pas Codex
+(géré hors méthode par `ezk-codex`).
 
 ## Critères d'acceptation
 
-- [ ] `ezk-product-build run --review skip` déroule un sprint **sans** l'étape reviewer, mais
-      **avec** la gate locale verte.
-- [ ] Le skip apparaît dans `SPRINT.md` (`## Notes / décisions`) et au résumé de checkpoint.
-- [ ] Défaut inchangé : sans flag, la revue adverse tourne (GO/NO-GO bloquant).
-- [ ] En `--mode auto`, le skip n'est jamais pris automatiquement (flag explicite requis).
+- [ ] **Skip en POC** — avec `review.adverse: skip` dans `.vectorz/config.yml`, un sprint saute
+      l'étape reviewer **mais garde la gate locale verte** (tests / lint / build).
+- [ ] **Tracé** — le skip apparaît dans `SPRINT.md` (`## Notes / décisions`) et au résumé de
+      checkpoint (« revue adverse SKIPPÉE — mode POC »).
+- [ ] **Plancher par défaut** — sans le réglage POC, la revue adverse tourne et bloque (GO/NO-GO).
+- [ ] **Jamais en auto tout seul** — en `--mode auto`, le skip n'est pris **que** si le réglage POC
+      est explicitement posé ; `ezk-pm` ne le décide jamais seul.
+- [ ] **Garde — le POC ne retire QUE le reviewer** — un sprint POC dont la gate locale échoue (tests
+      rouges) est **bloqué quand même**. Sans ce critère, « POC » deviendrait « aucune sécurité ».
 
 ## Comment vérifier
 
-Lancer un sprint sur une fiche triviale avec `--review skip` : vérifier l'absence de l'étape
-reviewer, la présence de la gate locale, et la trace du skip. Relancer sans le flag : la revue
-adverse bloque sur un défaut injecté.
+À rejouer une fois construit :
+- Poser `review.adverse: skip` dans `.vectorz/config.yml`, lancer un sprint POC → l'étape reviewer
+  est sautée, la gate locale (tests / lint / build) tourne, et le skip est tracé (`SPRINT.md` +
+  checkpoint).
+- Retirer le réglage → la revue adverse bloque sur un défaut injecté (plancher).
+- En `--mode auto` sans le réglage → la revue tourne (jamais d'auto-skip).
+- Casser la gate locale sur un sprint POC → bloqué quand même (le POC ne retire **que** le reviewer).
+
+## Suite (plus tard)
+
+- un **flag de lancement** one-shot pour sauter la revue hors mode POC (dépannage ponctuel), avec un
+  nom non ambigu (p. ex. `--skip-adverse-review`) — au-delà du POC piloté par config ;
+- le **contrôle générique** de n'importe quelle étape (activer / sauter), via le mécanisme « étapes
+  configurables » ([228](20260830110131228_schema-etapes-skill-configurables.md)).
 
 ## Notes / décisions
 
@@ -66,14 +90,12 @@ adverse bloque sur un défaut injecté.
   buildable tout de suite ; le schéma généralisera.
 - Touche **deux skills** (`ezk-product-build` + `ezk-sprint`). Origine : revue de conception
   de la bascule du défaut `--mode auto` (session 2026-08-30).
-- **⚠️ Collision de nom `--review` à réconcilier (retour Codex, PR #255, 2026-09-20).** L'ADR-0053
-  a renommé `--check-ready` → **`--review`** (le flag du *ready gate* de grooming, défaut autonome)
-  sur **le même skill** `ezk-product-build`. Or cette fiche réserve `--review adverse|skip` pour le
-  *contrôle de la revue adverse*. Résultat : `ezk-product-build run --review skip` devient **ambigu**
-  — `skip` vise-t-il le reviewer, ou le bare `--review` active-t-il le ready gate ? À trancher au
-  grooming, **avant de builder ce flag** : renommer l'un des deux (p. ex. le ready gate en
-  `--groom` / `--ready-gate`, ou la revue en `--adverse-review`) et aligner les critères ci-dessus
-  **avec l'ADR-0053**. Décision produit (PO).
+- **Collision de nom `--review` — RÉSOLUE par le choix config (grooming 2026-10-09).** Le POC passe
+  par la **config** (`review.adverse: skip` en mode POC), **pas** par un nouveau flag `--review` : la
+  collision avec le `--review` du ready-gate (ADR-0053) disparaît. *Historique* : l'ADR-0053 avait
+  renommé `--check-ready` → `--review` sur `ezk-product-build`, rendant un `--review skip` ambigu —
+  c'est ce qui bloquait la fiche. Le flag one-shot éventuel (Suite) prendra un nom non ambigu
+  (`--skip-adverse-review`).
 
 
 ## 🔄 Rescope — 2026-09-30 (audit de rationalisation du backlog)
@@ -85,12 +107,20 @@ adverse bloque sur un défaut injecté.
 > **Action** : au moment de groomer, réécrire l'« En clair » et les critères sur ce qui RESTE ;
 > ne pas reconstruire ce qui est déjà livré. Note issue de la passe du 2026-09-30 (PR #263).
 
-## ⚠️ À re-trancher par le PO — 2026-10-02
+## ✅ Tranché par le PO — 2026-10-09 (recadrée, sortie du parking)
 
-Laissée au parking. Cette fiche contredit désormais
-[l'ADR-0059](../products/mega-city/docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md),
-acceptée le 2026-10-01 : la revue locale (`ezk-reviewer`) est le plancher, aucun merge sans son
-`GO`. Sauter cette revue retirerait le plancher.
+Le PO tranche : **on recadre, on ne clôt pas**. On doit pouvoir **overrider** le fonctionnement,
+revue adverse comprise — en **mode POC**, par un geste explicite et tracé (jamais en silence, jamais
+en auto sans flag). Ça **amende l'ADR-0059** : la revue locale reste le plancher *sauf* dérogation
+POC explicite. L'amendement lui-même s'écrit **au build**, par l'architecte, pour ne pas retirer le
+plancher par accident.
 
-Ce qui reste réglable est déjà livré : couper la revue Codex ou la PR dans `.vectorz/config.yml`.
-Au PO de clore cette fiche (`superseded`) ou de la recadrer.
+Cette fiche est le cas précis ; elle s'inscrit dans la capacité plus large
+[Configurer les étapes et les choix de la méthode via le fichier de config](20261009104401282_config-etapes-et-choix-methode.md).
+Reste à trancher au grooming : la **collision de nom `--review`** (voir la note du 2026-09-20) et la
+porte POC (flag au lancement ? valeur de config ?).
+
+> Note historique (2026-10-02) : la fiche avait été laissée au parking car elle contredisait
+> l'ADR-0059 ; le PO lève ce blocage le 2026-10-09 en amendant l'ADR.
+- Rapatriée le 2026-11-03 de la branche `claude/ezk-grooming-sessions-dd9b52` (grooming du 2026-10-09, plan v0.11
+  périmé) : repassée en idée, à regroomer contre le code d'aujourd'hui.
