@@ -18,7 +18,40 @@ function unavailableReason(project: BoardProject): string | null {
 
 const pct = (part: number, total: number): string => (total > 0 ? `${Math.round((part / total) * 100)}%` : '0%');
 
-export function PilotageView({ project }: { project: BoardProject }): JSX.Element {
+export interface PilotageViewProps {
+  project: BoardProject;
+  /** Ouvre la fenêtre d'une fiche, comme la vue Fiches. */
+  onOpenFiche: (id: string) => void;
+}
+
+/**
+ * Les fiches d'une session, par leur titre cliquable (fiche 20261103203943915) : la règle de lisibilité
+ * interdit l'id nu. Une fiche que mission control ne connaît pas garde son id, sans titre inventé.
+ */
+function SessionFiches({ ids, project, onOpenFiche }: { ids: string[] } & PilotageViewProps): JSX.Element {
+  return (
+    <>
+      {ids.length} fiche(s) :{' '}
+      {ids.map((id, i) => {
+        const title = project.fiches?.[id]?.title;
+        return (
+          <span key={id}>
+            {i > 0 && ' · '}
+            {title ? (
+              <button type="button" className="doclink linkbtn" onClick={() => onOpenFiche(id)}>
+                {title}
+              </button>
+            ) : (
+              `${id} (titre indisponible)`
+            )}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+export function PilotageView({ project, onOpenFiche }: PilotageViewProps): JSX.Element {
   const reason = unavailableReason(project);
   return (
     <>
@@ -60,7 +93,11 @@ export function PilotageView({ project }: { project: BoardProject }): JSX.Elemen
                 <span>
                   <span className="ttl">{s.title}</span>
                   <span className="meta">
-                    {s.fiches.length > 0 ? `${s.fiches.length} fiche(s) : ${s.fiches.join(', ')}` : 'aucune fiche notée'}
+                    {s.fiches.length > 0 ? (
+                      <SessionFiches ids={s.fiches} project={project} onOpenFiche={onOpenFiche} />
+                    ) : (
+                      'aucune fiche notée'
+                    )}
                   </span>
                 </span>
                 <span className="meta">{s.prs.length > 0 ? s.prs.map((n) => `#${n}`).join(' ') : '—'}</span>

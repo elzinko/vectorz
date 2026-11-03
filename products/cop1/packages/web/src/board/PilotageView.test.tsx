@@ -30,36 +30,57 @@ const base = BOARD_DATA.vectorz as BoardProject;
 
 describe('PilotageView — ce que la méthode publie', () => {
   it('montre chaque milestone avec ses livrées sur son total', () => {
-    render(<PilotageView project={{ ...base, plan: { state: 'ok' }, pilotage }} />);
+    render(<PilotageView onOpenFiche={() => {}} project={{ ...base, plan: { state: 'ok' }, pilotage }} />);
     expect(screen.getByLabelText('board : 31 livrées sur 38').textContent).toBe('31/38 livrées');
     expect(screen.getByLabelText('fondation : 9 livrées sur 9')).toBeTruthy();
   });
 
   it('liste les sessions closes dans l’ordre publié, avec leurs fiches et leurs PR', () => {
-    render(<PilotageView project={{ ...base, plan: { state: 'ok' }, pilotage }} />);
+    render(<PilotageView onOpenFiche={() => {}} project={{ ...base, plan: { state: 'ok' }, pilotage }} />);
     expect(screen.getByText('Sessions closes — 2')).toBeTruthy();
     const titles = screen.getAllByText(/Run autonome du soir|Session du matin/).map((e) => e.textContent);
     expect(titles).toEqual(['Run autonome du soir', 'Session du matin']);
-    expect(screen.getByText('2 fiche(s) : 1, 2')).toBeTruthy();
+    expect(document.querySelector('.sessrow')?.textContent).toContain(
+      '2 fiche(s) : 1 (titre indisponible) · 2 (titre indisponible)',
+    );
     expect(screen.getByText('#171')).toBeTruthy();
   });
 });
 
 describe('PilotageView — jamais de faux chiffre', () => {
+  // fiche 20261103203943915 — une fiche connue se lit par son titre, et s'ouvre d'un clic
+  it('une fiche connue s’affiche par son titre cliquable, jamais par son id nu', async () => {
+    const onOpenFiche = vi.fn();
+    const known = {
+      ...base,
+      plan: { state: 'ok' as const },
+      fiches: {
+        '1': { id: '1', title: 'Le board dit vrai', prio: 'P2', status: 'done' as const, ver: 'v0.9.0', enclair: '', ctx: '', crit: [], verif: '' },
+      },
+      pilotage,
+    };
+    render(<PilotageView project={known} onOpenFiche={onOpenFiche} />);
+    const link = screen.getByRole('button', { name: 'Le board dit vrai' });
+    await userEvent.click(link);
+    expect(onOpenFiche).toHaveBeenCalledWith('1');
+    expect(document.querySelector('.sessrow')?.textContent).toContain('2 (titre indisponible)');
+    expect(screen.queryByText(/: 1, 2/)).toBeNull();
+  });
+
   it('une méthode qui ne publie pas les sessions : la vue le dit', () => {
-    render(<PilotageView project={{ ...base, plan: { state: 'ok' }, pilotage: undefined }} />);
+    render(<PilotageView onOpenFiche={() => {}} project={{ ...base, plan: { state: 'ok' }, pilotage: undefined }} />);
     expect(screen.getByRole('status').textContent).toMatch(/^pilotage indisponible : la méthode installée ne publie pas/);
     expect(screen.queryByText(/Sessions closes/)).toBeNull();
   });
 
   it('un plan indisponible : la vue donne la raison de la méthode', () => {
-    render(<PilotageView project={{ ...base, plan: { state: 'unavailable', reason: 'ezk introuvable' }, pilotage }} />);
+    render(<PilotageView onOpenFiche={() => {}} project={{ ...base, plan: { state: 'unavailable', reason: 'ezk introuvable' }, pilotage }} />);
     expect(screen.getByRole('status').textContent).toBe('pilotage indisponible : ezk introuvable');
     expect(screen.queryByText(/Milestones/)).toBeNull();
   });
 
   it('un plan en chargement : la vue attend, sans liste', () => {
-    render(<PilotageView project={{ ...base, plan: { state: 'loading' } }} />);
+    render(<PilotageView onOpenFiche={() => {}} project={{ ...base, plan: { state: 'loading' } }} />);
     expect(screen.getByRole('status').textContent).toBe('pilotage indisponible : plan en cours de chargement');
   });
 });

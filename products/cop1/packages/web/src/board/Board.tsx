@@ -402,7 +402,7 @@ export function Board(): JSX.Element {
               onViewRun={(runId) => setRunDetailId(runId)}
             />
           ) : view === 'pilotage' ? (
-            <PilotageView project={project} />
+            <PilotageView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'cadrage' ? (
             <CadrageView project={project} onOpenRun={(id) => setRunDetailId(id)} />
           ) : view === 'dev' ? (
