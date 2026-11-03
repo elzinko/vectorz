@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control, api]
-status: idea
+status: ready
 pr:
 evidence: none # route HTTP du daemon ; pas d'écran
 created: 2026-11-02
@@ -37,19 +37,38 @@ Attendu : 404 « proposition inconnue », 503 « non branché », ou la route re
 
 ## Proposition
 
-À trancher au groom : retirer la route tant qu'aucune source n'est branchée (pas de code mort), ou la
-faire répondre honnêtement.
+Décision du groom : **retirer**. La loi `clean-code/no-dead-code` tranche. Aucune source ne branche
+les propositions : `setRuleProposalProvider` n'est appelé que par les tests. Aucune page n'appelle les
+routes. Le daemon répond donc 200 sur un magasin qui n'existe pas.
+
+On retire :
+
+- les routes `GET` et `PATCH /api/rules/proposals` du daemon ;
+- l'interface `RuleProposalProvider` et son setter ;
+- le service `RuleProposalService` de sprint-core, ses types et ses tests, qu'aucun code de production
+  n'utilise.
+
+Le jour où mission control montrera les propositions de rétro, il les lira par la méthode
+(ADR-086), pas dans la mémoire du daemon.
 
 ## Critères d'acceptation
 
-- [ ] Un appel sur un identifiant inconnu ne répond plus 200.
+- [ ] `PATCH /api/rules/proposals/<id>` répond 404 `not_found`, quel que soit l'identifiant.
+- [ ] `GET /api/rules/proposals` répond 404 aussi : la route n'existe plus.
+- [ ] Plus aucun fichier de cop1 ne cite `RuleProposal`, ni dans le code, ni dans les tests.
+- [ ] Le test du garde-fou contre les écritures d'un autre site vise une route qui existe encore.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. `grep -rn RuleProposal products/cop1/packages --include='*.ts' --include='*.tsx'` ne rend rien,
+   hors `node_modules` et `dist`.
+2. Les tests du daemon passent : `pnpm --dir products/cop1 exec vitest run packages/app/src/features/daemon`.
+3. Mission control lancé, la reproduction de la fiche répond 404.
 
 ## Notes / décisions
 
 - Trouvé par ezk-scout, rapport `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz/50a740fe-2443-4e7f-bcb3-17d581e154ae/scratchpad/ezk-scout/cop1-2026-11-02/report.md` (brouillon B4), le 2026-11-02.
 - Indice de localisation, non garanti :
   `products/cop1/packages/app/src/features/daemon/infrastructure/HttpServer.ts:338`.
+- **Groomée le 2026-11-03** (run autonome) : retirer plutôt que répondre honnêtement.
+  Une route qui répond 404 « non branché » resterait du code sans usage. Aucun écran ne change.

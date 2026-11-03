@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control, api]
-status: idea
+status: ready
 pr:
 evidence: none # route HTTP du daemon ; pas d'écran
 created: 2026-11-02
@@ -38,16 +38,26 @@ Attendu : 400 « corps JSON invalide ». Obtenu : 404, avec le message brut du p
 
 ## Proposition
 
-Distinguer l'erreur de lecture du corps (400) du blocage inconnu (404).
+Le gestionnaire lit le corps à part, avant de chercher le blocage.
+
+- Corps absent, JSON cassé, ou JSON qui n'est pas un objet : 400 « corps JSON invalide ».
+- Champ `response` manquant : 400, comme aujourd'hui.
+- Blocage inconnu : 404, comme aujourd'hui.
+- Toute autre erreur pendant la résolution : 500, avec son message. Elle ne se déguise plus en 404.
 
 ## Critères d'acceptation
 
-- [ ] Un corps absent ou mal formé reçoit 400, avec un message clair.
+- [ ] Un corps absent ou mal formé reçoit 400, avec le message « corps JSON invalide ».
+- [ ] Un corps JSON qui n'est pas un objet (`null`, `[]`, `"x"`) reçoit 400 aussi.
 - [ ] Un blocage inconnu, avec un corps valide, reçoit toujours 404.
+- [ ] Une autre erreur pendant la résolution reçoit 500, jamais 404.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus, puis le même appel avec un corps valide sur un identifiant inconnu.
+1. Les tests du gestionnaire passent :
+   `pnpm --dir products/cop1 exec vitest run packages/app/src/features/blocage-api`.
+2. Mission control lancé, les deux appels de la reproduction répondent 400. Le même appel avec
+   `{"response":"ok"}` sur un identifiant inconnu répond 404.
 
 ## Notes / décisions
 
@@ -55,3 +65,5 @@ Rejouer la reproduction ci-dessus, puis le même appel avec un corps valide sur 
 - Indice de localisation, non garanti :
   `products/cop1/packages/app/src/features/blocage-api/application/BlocageApiHandler.ts:53`.
 - Voisine livrée : [câbler la boucle de blocage](done/0021-cabler-boucle-blocage.md).
+- **Groomée le 2026-11-03** (run autonome) : la cause est un seul `catch` pour la
+  lecture du corps et la résolution (`BlocageApiHandler.ts`). Aucun écran ne change.

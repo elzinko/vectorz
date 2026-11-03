@@ -7,9 +7,9 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control, board]
-status: idea
+status: ready
 pr:
-evidence: auto
+evidence: before-after
 created: 2026-11-02
 ---
 
@@ -39,18 +39,31 @@ Attendu : la version apparaît « à clore », ou parmi les écartées. Obtenu :
 
 ## Proposition
 
-Faire lire au traducteur du plan les champs `ecartees` et `etat` que la méthode publie déjà, au lieu
-de reclasser les versions lui-même.
+Le traducteur du plan lit l'état que la méthode publie pour chaque lot, le champ `etat`. Il ne
+reclasse rien lui-même.
+
+- Un lot « à clore » a toutes ses fiches livrées, mais pas encore d'étiquette. Il quitte « à venir »
+  et rejoint les versions réalisées. Il porte une marque « à clore ».
+- La vue d'ensemble écrit « à clore » dans la colonne « Versionné », à la place de « — ». La version
+  courante aussi, quand la méthode la dit à clore : c'est le cas de v0.23.0 aujourd'hui.
+- « ✓ taguée » reste réservé à une version qui a son étiquette.
+- Un lot sans `etat`, publié par une méthode plus ancienne, garde le classement d'aujourd'hui.
 
 ## Critères d'acceptation
 
 - [ ] Une version que la méthode dit « à clore » n'apparaît pas dans « à venir » sur le board.
-- [ ] Le board montre cette version avec son état « à clore ».
+- [ ] Le board montre cette version avec la mention « à clore », la version courante comprise.
+- [ ] Une version taguée garde « ✓ taguée », et une version à venir garde « — ».
+- [ ] Un lot publié sans `etat` est rangé comme aujourd'hui.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus, puis ouvrir le board dans le navigateur et comparer avec
-`ezk board show --json`.
+1. Les tests du traducteur et de la vue d'ensemble passent :
+   `pnpm --dir products/cop1 exec vitest run packages/app/src/features/board packages/web/src/board`.
+2. Mission control lancé, `curl -s http://127.0.0.1:<port>/api/board` ne cite plus v0.24.0 dans
+   `versions.upcoming`.
+3. La vue d'ensemble montre v0.23.0 et v0.24.0 avec « à clore ». Capture avant et après dans
+   `docs/pr-evidence/20261102100505774/`.
 
 ## Notes / décisions
 
@@ -60,3 +73,7 @@ Rejouer la reproduction ci-dessus, puis ouvrir le board dans le navigateur et co
   et `etat`.
 - Voisine : le contrat JSON de la méthode (ADR-086). Si une fiche de traduction du plan existe au
   moment du groom, enrichir celle-là plutôt que garder deux fiches.
+- **Groomée le 2026-11-03** (run autonome) : le défaut est confirmé dans le code. Le
+  traducteur range un lot selon sa seule étiquette (`ezkPlanTranslator.ts`, `upcoming` et `past`), sans
+  lire `etat`. Aucune autre fiche ne traduit le plan : rien à fusionner. L'écran change : preuve avant et
+  après exigée.
