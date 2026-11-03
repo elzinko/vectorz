@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-03
@@ -35,15 +35,21 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+Dans la barre « Entonnoir » de la vue d'ensemble, un segment vide n'affiche plus son chiffre. C'est
+déjà le cas du segment « en cours » ; les segments « idées » et « prêtes » font de même. La légende
+sous la barre garde tous les comptes, zéros compris.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Avec 0 fiche prête, la barre n'affiche aucun « 0 » coupé.
+- [ ] Un segment non vide garde son chiffre.
+- [ ] La légende sous la barre affiche toujours les trois comptes, zéros compris.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests de la page web passent : `pnpm --dir products/cop1/packages/web exec vitest run src/board`.
+2. Mission control lancé, la vue d'ensemble d'un projet sans fiche prête ne montre aucun « 0 » au bout
+   de la barre. Captures avant et après dans `docs/pr-evidence/<id>/`.
 
 ## Notes / décisions
 
@@ -53,3 +59,5 @@ Rejouer la reproduction ci-dessus.
   pas une idée produit. Le PO peut la retirer.
 - Indice relevé avant le groom : `OverviewView.tsx`, rendu de la barre « Entonnoir ». Le segment
   « en cours » n'affiche déjà rien quand il est vide.
+- **Groomée `ready` le 2026-11-03** (run autonome) : cause dans `OverviewView.tsx`,
+  barre « Entonnoir » : seul le segment « en cours » masque son zéro.

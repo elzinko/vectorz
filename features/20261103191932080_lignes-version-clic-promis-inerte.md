@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-03
@@ -34,15 +34,20 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+Recadrée par `ezk-pm` : on retire la promesse, on n'invente pas de panneau. Le sous-titre du tableau
+« Versions dans le process » perd « clique pour le détail ». Il garde « où en est chaque version » et
+« ligne verte = en run ». Les boutons « Voir le run » et « ▸ Lancer » restent les seuls gestes.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Le sous-titre du tableau ne promet plus de détail au clic.
+- [ ] Les boutons « Voir le run » et « ▸ Lancer » marchent comme avant.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests de la page web passent : `pnpm --dir products/cop1/packages/web exec vitest run src/board`.
+2. Mission control lancé, le sous-titre de la vue d'ensemble ne dit plus « clique pour le détail ».
+   Captures avant et après dans `docs/pr-evidence/<id>/`.
 
 ## Notes / décisions
 
@@ -53,3 +58,5 @@ Rejouer la reproduction ci-dessus.
 - **Recadrée par `ezk-pm` le 2026-11-03** : le critère est de retirer la promesse du sous-titre.
   Inventer un panneau de détail serait une idée produit, qui revient au PO.
 - Indice relevé avant le groom : `OverviewView.tsx`, sous-titre du tableau.
+- **Groomée `ready` le 2026-11-03** (run autonome) : un panneau de détail de version
+  reste une idée produit pour le PO, si elle lui sert.

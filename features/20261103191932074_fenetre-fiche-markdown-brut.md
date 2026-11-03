@@ -7,7 +7,7 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-03
@@ -34,15 +34,24 @@ Reproduction :
 
 ## Proposition
 
-À groomer.
+Un petit rendu en ligne, dans la page web de mission control : le gras (`**…**`), l'italique (`*…*`)
+et le code (`` `…` ``) deviennent des éléments React. Aucun HTML n'est injecté : le texte reste du texte.
+Un signe sans partenaire reste affiché tel quel. Il s'applique à « En clair », au contexte et aux
+critères de la fenêtre d'une fiche. « Comment vérifier » reste un bloc de code brut, c'est voulu.
 
 ## Critères d'acceptation
 
-- [ ] *(à groomer)* La reproduction ci-dessus ne montre plus le défaut.
+- [ ] Dans la fenêtre d'une fiche, le gras, l'italique et le code s'affichent mis en forme, sans leurs
+      signes, dans « En clair », le contexte et les critères.
+- [ ] Un texte qui contient du HTML l'affiche comme du texte, sans l'interpréter.
+- [ ] Un signe sans partenaire, comme un astérisque isolé, reste affiché.
+- [ ] « Comment vérifier » garde son texte brut.
 
 ## Comment vérifier
 
-Rejouer la reproduction ci-dessus.
+1. Les tests de la page web passent : `pnpm --dir products/cop1/packages/web exec vitest run src/board`.
+2. Mission control lancé, la fiche « article — émettre des events… » s'ouvre sans astérisques ni
+   accents graves visibles. Captures avant et après dans `docs/pr-evidence/<id>/`.
 
 ## Notes / décisions
 
@@ -51,3 +60,6 @@ Rejouer la reproduction ci-dessus.
   (« continuer sans mon intervention »). Ce n'est aucune des quatre décisions humaines : c'est un bug,
   pas une idée produit. Le PO peut la retirer.
 - Indice relevé avant le groom : `FicheModal.tsx` affiche le texte sans le mettre en forme.
+- **Groomée `ready` le 2026-11-03** (run autonome) : aucun rendu Markdown n'existe dans
+  la page web, et ses seules dépendances sont react et react-dom. Un rendu en ligne maison, petit et
+  sûr, plutôt qu'une bibliothèque de plus.
