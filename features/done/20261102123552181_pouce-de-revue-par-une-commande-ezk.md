@@ -105,7 +105,7 @@ montre que ce fichier.
 - Aucun pouce posé à ce jour. Le PO a tranché le 2026-11-02, au grooming : on garde le pouce (voir
   « Valeur »). Ne pas rouvrir la question sans nouveau fait.
 - Le nom de la commande est à confirmer au build, avec la fiche
-  [un seul vocabulaire pour les boards](../20261031160441559_un-seul-vocabulaire-boards.md).
+  [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md).
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.
 - Décision du build (2026-11-02, run autonome) : la commande accepte aussi `none`, qui retire le pouce.
   La page web le permettait ; sans `none`, son retrait aurait perdu ce geste.

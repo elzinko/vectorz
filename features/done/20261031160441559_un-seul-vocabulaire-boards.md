@@ -8,8 +8,8 @@ milestone: board
 version:
 depends: ["20261102123552185"]
 labels: [board, documentation, vocabulaire]
-status: ready
-pr:
+status: shipped
+pr: "local (6203ec0a)"
 evidence: none # documentation et messages ; pas d'écran nouveau
 created: 2026-10-31
 ---
@@ -30,8 +30,8 @@ L'enquête du 2026-10-31 a examiné environ 1 440 occurrences. Elle a trouvé :
 - des mots à plusieurs sens : *board*, *cockpit*, *dashboard*, *Moniteur*, *mission-control* ;
 - des mémoires de l'assistant contradictoires ou périmées.
 
-Liste complète, avec fichier et ligne : [les deux boards](../docs/captures/2026-10-30-enquete-boards/README.md),
-constat 4. Vocabulaire : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md),
+Liste complète, avec fichier et ligne : [les deux boards](../../docs/captures/2026-10-30-enquete-boards/README.md),
+constat 4. Vocabulaire : [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md),
 section « Un seul vocabulaire ».
 
 ## Valeur
@@ -41,7 +41,7 @@ marchent.
 
 ## Proposition
 
-Un passage, dans cet ordre, après [le retrait de la page web](done/20261102123552185_retirer-la-page-web-de-la-methode.md) :
+Un passage, dans cet ordre, après [le retrait de la page web](20261102123552185_retirer-la-page-web-de-la-methode.md) :
 
 1. corriger ou retirer les commandes mortes, dont les scripts `ezk:map` des deux `package.json` et
    l'aide de `bin/ezk-map.ts` ;
@@ -55,7 +55,7 @@ Un passage, dans cet ordre, après [le retrait de la page web](done/202611021235
 
 - [x] `grep` ne trouve plus `ezk:map`, `ezk dashboard` ni « Moniteur » dans un document actif, hors
       glossaire et historique. Exceptions bornées : les cinq guides de l'ancien écran, marqués « Ancien
-      écran, retiré », en attente de [leur réécriture](20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+      écran, retiré », en attente de [leur réécriture](../20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 - [x] Chaque commande citée dans un document actif s'exécute, hors les cinq mêmes guides, dont le
       bandeau dit que leurs commandes ne sont plus garanties.
 - [x] Les ADR-074 et ADR-021 renvoient vers l'ADR-086.
@@ -78,9 +78,9 @@ cinq guides en attente de réécriture (second).
 
 - Fiche sœur du milestone `board`, découpée le 2026-10-31 (ADR-086).
 - Indépendante des trois autres : elle peut se construire à tout moment.
-- 2026-11-02 : [l'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) retire la page web de la méthode. « Board de la
+- 2026-11-02 : [l'amendement de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) retire la page web de la méthode. « Board de la
   méthode » désigne désormais ce que publient `ezk board show` et les contrats, plus une page. La
-  commande `ezk board open` part avec [le retrait](done/20261102123552185_retirer-la-page-web-de-la-methode.md).
+  commande `ezk board open` part avec [le retrait](20261102123552185_retirer-la-page-web-de-la-methode.md).
 - Groom du 2026-11-03 (run autonome) : la fiche se construit après le retrait de la page web, qui
   supprime déjà `bin/ezk-map.ts` et les scripts `ezk:map`. Il reste les mots et les renvois. Un
   « document actif » est un skill, un agent, une règle, un guide de `docs/` hors `adr/`, `captures/`

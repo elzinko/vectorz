@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261031160441559_un-seul-vocabulaire-boards.md](../20261031160441559_un-seul-vocabulaire-boards.md)
+> 🗎 Rendu de la fiche [features/20261031160441559_un-seul-vocabulaire-boards.md](../done/20261031160441559_un-seul-vocabulaire-boards.md)
 
 ## En clair
 

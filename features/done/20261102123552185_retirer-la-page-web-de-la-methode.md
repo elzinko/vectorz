@@ -80,7 +80,7 @@ trouve plus de mention hors historique.
   [vue « Loi » de mission control](20260826222044335_carte-la-loi-graphe-visuel.md).
 - Rend sans objet [le serveur de test ezk-map orphelin](20261101131506169_serveur-de-test-ezk-map-orphelin.md).
   Tant que la page existe, cette fiche reste utile.
-- La fiche [un seul vocabulaire pour les boards](../20261031160441559_un-seul-vocabulaire-boards.md)
+- La fiche [un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md)
   corrige les mots ; celle-ci retire la commande.
 - Un projet hôte sans mission control garde le terminal : `ezk board show` et les commandes `--json`.
 - Priorité P2, fixée par le PO le 2026-11-02 pour tout le chantier.

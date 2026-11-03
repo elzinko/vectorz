@@ -49,7 +49,7 @@ Un sprint = deux fiches de la milestone, dans cet ordre, qui suit les dépendanc
 - ~~`20261102123552183` — mission control montre le process · groom (sprint 3)~~ — shipped
 - ~~`20261102123552184` — mission control montre les cartes de la méthode · groom (sprint 4)~~ — shipped
 - ~~`20260826222044335` — mission control montre la loi · groom (sprint 4)~~ — shipped
-- `20261031160441559` — un seul vocabulaire pour les boards · groom (sprint 5)
+- ~~`20261031160441559` — un seul vocabulaire pour les boards · groom (sprint 5)~~ — shipped
 - ~~`20261102123552185` — retirer la page web de la méthode · groom (sprint 5, dépend de tout le reste)~~ — shipped
 
 **Milestone `exploration-app` — « Le carnet de tests »** (suite du carnet livré le 2026-11-02) :
