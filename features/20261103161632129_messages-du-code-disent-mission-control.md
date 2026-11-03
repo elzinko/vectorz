@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [board, vocabulaire]
-status: idea
+status: ready
 pr:
 evidence: none # messages de terminal et de journal ; aucun écran ne change
 created: 2026-11-03
@@ -79,3 +79,6 @@ grep -rniwE "moniteur|cockpit|dashboard" products/cop1/packages/*/src products/m
 - **Trou trouvé au grooming (2026-11-03)** : mission control n'a pas repris le bouton « Abandonner ce
   run » de l'ancien écran (ADR-035, décision 4). La route du daemon existe encore, mais aucun écran ne
   l'appelle. À trancher par le PO : reprendre ce geste dans mission control, ou l'assumer retiré.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : vérifier dans le
+  code que `run_finished` (status abandoned) et la route d'abandon existent avant de les citer ; prouver
+  le critère (a) par un grep des trois mots sur les neuf messages.
