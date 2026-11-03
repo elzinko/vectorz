@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261102182259592_carnet-mission-control-premiere-app-mesure.md](../20261102182259592_carnet-mission-control-premiere-app-mesure.md)
+> 🗎 Rendu de la fiche [features/20261102182259592_carnet-mission-control-premiere-app-mesure.md](../done/20261102182259592_carnet-mission-control-premiere-app-mesure.md)
 
 # 20261102182259592 — Tenir le carnet de tests de mission control, et mesurer s'il sert
 

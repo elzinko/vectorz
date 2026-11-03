@@ -132,7 +132,7 @@ pnpm --dir products/mega-city typecheck
   sur un disque réseau.
 - **Hors périmètre** : le câblage du scout
   ([20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md)), mission control
-  ([20261102182259592](../20261102182259592_carnet-mission-control-premiere-app-mesure.md)),
+  ([20261102182259592](20261102182259592_carnet-mission-control-premiere-app-mesure.md)),
   l'expiration quand le code change
   ([20261102182259680](../20261102182259680_carnet-expiration-quand-le-code-change.md)).
 - **Estimation du panel** : environ 150 000 à 200 000 jetons.

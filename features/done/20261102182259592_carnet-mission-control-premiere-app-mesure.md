@@ -8,8 +8,8 @@ milestone: exploration-app
 version: v0.23.0
 depends: ["20261102182259505"]
 labels: [test-local, exploration-app]
-status: ready
-pr:
+status: shipped
+pr: "local (94d8c82f)"
 evidence: none # aucun écran modifié ; les captures vont au carnet
 created: 2026-11-02
 split_from: "20261014113049954"
@@ -24,8 +24,8 @@ reste.
 
 **Si tu arrives frais.** Mission control est l'interface web de cop1
 (`products/cop1/packages/web`). Le carnet note ce qui est testé :
-[20261102182259416](done/20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md). Le scout s'en
-sert : [20261102182259505](done/20261102182259505_scout-lit-et-remplit-le-carnet.md).
+[20261102182259416](20261102182259416_carnet-de-tests-arbre-declare-expiration-date.md). Le scout s'en
+sert : [20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md).
 
 ## Contexte / Problème
 
@@ -84,16 +84,16 @@ console. Elle a trouvé un défaut mineur sur un nœud jamais testé, et elle en
 - **Notés** : les 12 vues sur l'axe visuel, 7 actions sur l'axe fonctionnel, sur le SHA de la branche.
 - **Défaut trouvé** en ouvrant la vue d'ensemble, jamais testée : l'en-tête, commun à tous les écrans,
   s'appelle encore « board v0.17.0 », pas « mission control ». La vue elle-même s'affiche bien. Brouillon B1 du rapport, proposé pour enrichir
-  [Réécrire les guides de l'ancien écran de supervision](20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
+  [Réécrire les guides de l'ancien écran de supervision](../20261102234112839_reecrire-guides-ancien-ecran-supervision.md).
 - **Faux défaut écarté** : la Chronologie semblait vide. Le banc lisait la branche, qui n'a pas de
   dossier de runs ; sur le dépôt principal, le même code trouve 3 chantiers. La note d'échec a été
   retirée du carnet.
 - **Non sondé** : poser un pouce, lancer une session, changer un réglage. Ces actions écrivent dans le
   dépôt.
-- **Preuves** : [avant](../docs/pr-evidence/20261102182259592/carnet-avant.txt),
-  [après](../docs/pr-evidence/20261102182259592/carnet-apres.txt),
-  [planche des 12 vues](../docs/pr-evidence/20261102182259592/planche-12-vues.jpg),
-  [rapport du scout](../docs/pr-evidence/20261102182259592/rapport-scout.md).
+- **Preuves** : [avant](../../docs/pr-evidence/20261102182259592/carnet-avant.txt),
+  [après](../../docs/pr-evidence/20261102182259592/carnet-apres.txt),
+  [planche des 12 vues](../../docs/pr-evidence/20261102182259592/planche-12-vues.jpg),
+  [rapport du scout](../../docs/pr-evidence/20261102182259592/rapport-scout.md).
 
 **Leçon pour les passes suivantes** : le banc doit lire un dépôt qui a des runs. Sinon la
 Chronologie et le Développement paraissent vides à tort.
@@ -101,7 +101,7 @@ Chronologie et le Développement paraissent vides à tort.
 ## Notes / décisions
 
 - **Née du découpage** de
-  [Carte de l'app et suivi de ce qui est testé](done/20261014113049954_cache-cartographie-app.md), le
+  [Carte de l'app et suivi de ce qui est testé](20261014113049954_cache-cartographie-app.md), le
   2026-11-02.
 - **Choix de l'app** (décision PO du 2026-11-02) : le PO s'en sert chaque jour, et une passe y a
   trouvé six défauts le 2026-11-02.

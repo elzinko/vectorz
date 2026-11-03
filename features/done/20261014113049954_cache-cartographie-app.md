@@ -575,7 +575,7 @@ Deux échecs sur ces quatre points, et on retire l'outil.
    carnet qui note ce qui est testé dans l'app, et quand la preuve expire.
 2. [20261102182259505](20261102182259505_scout-lit-et-remplit-le-carnet.md) — `ezk-scout` part du
    carnet pour choisir quoi tester, et y note ses résultats.
-3. [20261102182259592](../20261102182259592_carnet-mission-control-premiere-app-mesure.md) — Tenir le
+3. [20261102182259592](20261102182259592_carnet-mission-control-premiere-app-mesure.md) — Tenir le
    carnet de tests de mission control, et mesurer s'il sert.
 4. [20261102182259680](../20261102182259680_carnet-expiration-quand-le-code-change.md) — Faire expirer
    une preuve quand le code de la fonctionnalité change. Différée derrière la mesure.
