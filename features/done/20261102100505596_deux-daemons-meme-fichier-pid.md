@@ -7,8 +7,8 @@ product: cop1
 milestone:
 version:
 labels: [scout, mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (e2e6084b)"
 evidence: none # fichier d'état du daemon ; pas d'écran
 created: 2026-11-02
 ---

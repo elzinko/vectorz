@@ -25,7 +25,7 @@ Suite de la passe scout, tirée par priorité au run autonome du 2026-11-03 (spr
 - ~~`20261102100505955` — changer le statut d'une proposition de règle répond « OK » sans rien faire · build~~ — shipped
 
 Sprint 22, même passe scout, le lanceur de mission control :
-- `20261102100505596` — deux daemons du même dossier se partagent un seul fichier de pid · build
+- ~~`20261102100505596` — deux daemons du même dossier se partagent un seul fichier de pid · build~~ — shipped
 - ~~`20261102124306840` — le lanceur accepte un port qui n'est pas un nombre · build~~ — shipped
 
 **Milestone `preparation` — « Préparer une milestone »** (compose en premier) :
