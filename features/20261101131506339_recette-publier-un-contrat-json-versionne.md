@@ -7,7 +7,7 @@ product: mega-city
 milestone: recettes
 version:
 labels: [recette, contrat, json]
-status: idea
+status: ready
 pr:
 evidence: none # outillage et documents, sans écran
 created: 2026-11-01
@@ -75,3 +75,5 @@ ezk recipes
 - Priorité P2 par défaut, comme les fiches de la rétro précédente : à ajuster au grooming.
 - Groomée le 2026-11-03 (run autonome) : sept contrats existent désormais ; un troisième piège (énumération
   élargie, sprint 13 du 2026-11-03) rejoint les deux d'origine.
+- Prête le 2026-11-03 : porte « prête » passée en run autonome (ezk-pm GO). Conditions : `fichier:ligne`
+  relus le jour du build, sans code recopié ; chaque piège porte sa date et sa source.
