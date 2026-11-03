@@ -91,7 +91,7 @@ export async function startCommand(options: { port?: string }): Promise<void> {
     process.exit(1);
   }
 
-  const pidManager = new PidFileManager(projectPath);
+  const pidManager = new PidFileManager(projectPath, port);
 
   const existingPid = pidManager.read();
   if (existingPid !== null && pidManager.isProcessAlive(existingPid)) {

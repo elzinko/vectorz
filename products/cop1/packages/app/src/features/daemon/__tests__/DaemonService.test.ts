@@ -29,7 +29,7 @@ describe('DaemonService', () => {
   it('should start and create PID file', async () => {
     await daemon.start();
 
-    const pidManager = new PidFileManager(testDir);
+    const pidManager = new PidFileManager(testDir, TEST_PORT);
     const pid = pidManager.read();
     expect(pid).toBe(process.pid);
   });
@@ -57,11 +57,27 @@ describe('DaemonService', () => {
   it('should clean up PID file on stop', async () => {
     await daemon.start();
 
-    const pidManager = new PidFileManager(testDir);
+    const pidManager = new PidFileManager(testDir, TEST_PORT);
     expect(pidManager.exists()).toBe(true);
 
     await daemon.stop();
     expect(pidManager.exists()).toBe(false);
+  });
+
+  it('two daemons of one folder keep one pid file each; stopping one keeps the other (fiche 20261102100505596)', async () => {
+    const OTHER_PORT = 14298;
+    const other = new DaemonService({ port: OTHER_PORT, projectPath: testDir });
+    await daemon.start();
+    await other.start();
+    try {
+      expect(PidFileManager.list(testDir).map((i) => i.port)).toEqual([TEST_PORT, OTHER_PORT]);
+
+      await other.stop();
+      expect(new PidFileManager(testDir, OTHER_PORT).exists()).toBe(false);
+      expect(new PidFileManager(testDir, TEST_PORT).read()).toBe(process.pid);
+    } finally {
+      await other.stop();
+    }
   });
 
   it('should not throw when stopping without starting', async () => {

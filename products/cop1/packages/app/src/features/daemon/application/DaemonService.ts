@@ -53,7 +53,7 @@ export class DaemonService {
     const projectPath = options.projectPath ?? process.cwd();
     this.httpServer = new HttpServer();
     if (options.webPort !== undefined) this.httpServer.setWebPort(options.webPort);
-    this.pidManager = new PidFileManager(projectPath);
+    this.pidManager = new PidFileManager(projectPath, this.port);
 
     this.eventBus = options.eventBus ?? new EventBus();
     this.httpServer.setEventBus(this.eventBus);

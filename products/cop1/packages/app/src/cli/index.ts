@@ -25,9 +25,16 @@ program
   )
   .action(startCommand);
 
-program.command('stop').description('Stop the cop1 daemon').action(stopCommand);
+program
+  .command('stop')
+  .description('Stop the cop1 daemon of this folder')
+  .option('-p, --port <port>', 'The daemon to stop, when several run from this folder')
+  .action(stopCommand);
 
-program.command('status').description('Check if the daemon is running').action(statusCommand);
+program
+  .command('status')
+  .description('List the daemons of this folder, with their port')
+  .action(statusCommand);
 
 program
   .command('health')
