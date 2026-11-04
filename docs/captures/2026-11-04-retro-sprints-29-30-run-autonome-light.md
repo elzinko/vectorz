@@ -8,7 +8,9 @@ actions:
   - proposition: "Le portier de sprint reconnaît le dossier jetable où tourne la gate (`.claude/worktrees/gate-*`, détaché) comme une réserve du run, pas comme une session parallèle. Au sprint 30, il a levé une alerte sur le dossier de la gate du run lui-même."
     kind: feature
     by: [dev, architecture]
-    status: ⏳
+    status: ❌
+    decision: "Écartée (PO, 2026-11-04, au moment de la classer en fiche) : le portier classe déjà ce dossier « reserve » dès que son commit est absorbé dans main, constaté avec une copie témoin posée puis retirée. Les ouvertures forcées des sprints 30 et 32 portaient sur le point 3 seul (ALERT points=3, stories codées avant l'ouverture) : c'est la proposition suivante qui les couvre."
+    date: 2026-11-04
   - proposition: "Pendant la gate d'un sprint, le pilote prépare le suivant (groom, second regard d'ezk-pm, lecture du code) mais n'en code pas les stories avant de l'ouvrir. Au sprint 30, des stories codées avant l'ouverture ont fait refuser `start` par le portier, et l'ouverture a dû passer en force, journalisée."
     kind: action
     by: [qualite, po]
