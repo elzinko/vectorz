@@ -27,23 +27,33 @@ s'est arrêté pour faire tamponner les fiches. Détail dans la fiche mère.
 
 ## Proposition
 
-- Choisir le nom au grooming. Pistes : `--ask-ready`, `--stamp-ready`, `--tamponne-moi`.
-- `--review` et `--check-ready true` restent acceptés et mappent sur le nouveau nom ; le contexte de run
-  dit « `--review` est l'ancien nom de `--X` ».
-- La skill `ezk-product-build` (texte et `argument-hint`) et un amendement court de l'ADR-0053 emploient
-  le nouveau nom.
+Le nom retenu est **`--stamp-ready`** (décision `ezk-pm`, mode auto, le 2026-11-04).
+
+- `ezk run context` lit `--stamp-ready`. `--review` et `--check-ready true` restent acceptés et mappent
+  dessus ; quand l'un d'eux est employé, le contexte de run ajoute une ligne : « `--review` est l'ancien
+  nom de `--stamp-ready` ».
+- La ligne d'arrêt du contrat (fiche [Le contrat du run annonce l'arrêt](done/20261104095815710_contrat-run-annonce-arret-review.md))
+  cite `--stamp-ready`.
+- La skill `ezk-product-build` emploie `--stamp-ready` partout ; une phrase garde l'ancien nom lisible.
+  Son ouverture parle des cas d'arrêt du contrat, pas de « 4 STOP » figés.
+- Un amendement court de l'ADR-0053 note le renommage et sa raison.
+
+Deux surfaces : la commande et le texte (skill + ADR).
 
 ## Critères d'acceptation
 
-- [ ] Le réglage porte un nom sans « review », choisi au grooming.
-- [ ] `--review` et `--check-ready true` restent acceptés et le contexte de run les nomme comme anciens noms.
-- [ ] La skill et l'ADR-0053 (amendement) emploient le nouveau nom.
-- [ ] Les tests du contexte de run couvrent le nouveau nom et l'ancien.
+- [ ] `ezk run context … --stamp-ready` annonce l'arrêt après chaque grooming, en citant `--stamp-ready`.
+- [ ] `--review` et `--check-ready true` donnent le même contrat, plus une ligne qui les nomme anciens noms de `--stamp-ready`.
+- [ ] La skill `ezk-product-build` (texte et `argument-hint`) emploie `--stamp-ready` ; `--review` n'y apparaît plus que comme ancien nom.
+- [ ] L'ADR-0053 porte un amendement daté qui note le renommage.
+- [ ] Les tests du contexte de run couvrent le nouveau nom et les deux anciens.
 
 ## Comment vérifier
 
 ```bash
+ezk run context --mode auto --tokens lean --delivery per-feature --no-fetch --stamp-ready
 ezk run context --mode auto --tokens lean --delivery per-feature --no-fetch --review
+grep -c -- '--stamp-ready' products/mega-city/skills/ezk-product-build/SKILL.md
 pnpm --dir products/mega-city vitest run src/core/__tests__/run-context.test.ts
 ```
 
