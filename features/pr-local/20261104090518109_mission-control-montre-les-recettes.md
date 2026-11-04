@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104090518109_mission-control-montre-les-recettes.md](../20261104090518109_mission-control-montre-les-recettes.md)
+> 🗎 Rendu de la fiche [features/20261104090518109_mission-control-montre-les-recettes.md](../done/20261104090518109_mission-control-montre-les-recettes.md)
 
 # 20261104090518109 — Mission control montre les recettes de chaque projet
 

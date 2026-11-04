@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version:
 labels: [recettes, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (84c37430)"
 evidence: before-after
 created: 2026-11-04
 depends: ["20261104090518008"]
@@ -65,14 +65,14 @@ sélecteur.
 
 Avant / après, mission control sur vectorz (2026-11-04) :
 
-- avant : la section Méthode n'a que Process, Loi et Cartes, aucune recette visible — ![avant](../docs/pr-evidence/20261104090518109/recettes-avant.jpg)
-- après : l'entrée « Recettes », la partie « Dans ce projet » (vectorz n'en déclare aucune, la vue dit comment en déclarer une) et le catalogue de 16 recettes, chacune avec ce qu'elle fabrique, son statut, ses champs manquants et son implémentation de référence — ![après](../docs/pr-evidence/20261104090518109/recettes-apres.jpg)
+- avant : la section Méthode n'a que Process, Loi et Cartes, aucune recette visible — ![avant](../../docs/pr-evidence/20261104090518109/recettes-avant.jpg)
+- après : l'entrée « Recettes », la partie « Dans ce projet » (vectorz n'en déclare aucune, la vue dit comment en déclarer une) et le catalogue de 16 recettes, chacune avec ce qu'elle fabrique, son statut, ses champs manquants et son implémentation de référence — ![après](../../docs/pr-evidence/20261104090518109/recettes-apres.jpg)
 
 Constat du 2026-11-04 : aucun des trois projets enregistrés (vectorz, samplerz, muti) ne déclare encore de `RECIPE.md` ; la partie « Dans ce projet » est donc vide partout, et c'est la vérité.
 
 ## Notes / décisions
 
-- Dépend de [`ezk recipes --json`](done/20261104090518008_ezk-recipes-json.md).
-- Découpée de la fiche [Suggérer les recettes à implémenter par projet](20261029093423195_suggerer-recettes-par-projet-dashboard.md) :
+- Dépend de [`ezk recipes --json`](20261104090518008_ezk-recipes-json.md).
+- Découpée de la fiche [Suggérer les recettes à implémenter par projet](../20261029093423195_suggerer-recettes-par-projet-dashboard.md) :
   l'affichage part maintenant, la suggestion attend sa maquette.
 - Preuve avant/après : capture de la barre de gauche et de la vue.

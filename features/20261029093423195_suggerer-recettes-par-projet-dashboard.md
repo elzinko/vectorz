@@ -69,5 +69,5 @@ maquette d'abord.
 - **Affichage découpé le 2026-11-04** (run autonome, sur demande du PO : « recettes affichées et
   leurs implémentations indiquées pour chaque projet »). L'affichage part dans deux fiches :
   [`ezk recipes --json`](done/20261104090518008_ezk-recipes-json.md) et
-  [Mission control montre les recettes de chaque projet](20261104090518109_mission-control-montre-les-recettes.md).
+  [Mission control montre les recettes de chaque projet](done/20261104090518109_mission-control-montre-les-recettes.md).
   Cette fiche garde la **suggestion** par projet, toujours en attente de sa maquette.
