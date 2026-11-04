@@ -65,7 +65,7 @@ sélecteur.
 
 ## Notes / décisions
 
-- Dépend de [`ezk recipes --json`](20261104090518008_ezk-recipes-json.md).
+- Dépend de [`ezk recipes --json`](done/20261104090518008_ezk-recipes-json.md).
 - Découpée de la fiche [Suggérer les recettes à implémenter par projet](20261029093423195_suggerer-recettes-par-projet-dashboard.md) :
   l'affichage part maintenant, la suggestion attend sa maquette.
 - Preuve avant/après : capture de la barre de gauche et de la vue.
