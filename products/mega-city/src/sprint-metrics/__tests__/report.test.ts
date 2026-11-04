@@ -45,6 +45,30 @@ describe('renderSprintReportMarkdown', () => {
     expect(renderSprintReportMarkdown(report)).toMatch(/repli honnête/);
   });
 
+  it('jetons au grain de la session ou total nul : « pas mesurés », jamais « 0 tokens » (fiche 20261104095401066)', () => {
+    const session = renderSprintReportMarkdown(
+      buildSprintReport({
+        ...baseInput,
+        tokens: { grain: 'session', inputTokens: 0, outputTokens: 0, cacheRead: 0, cacheCreation: 0, totalTokens: 0, note: 'repli au grain session' },
+      }),
+    );
+    const enClair = session.slice(session.indexOf('## En clair'), session.indexOf('## Lot'));
+    expect(enClair).toMatch(/pas mesurés pour ce sprint/);
+    expect(enClair).not.toMatch(/0 tokens/);
+    // Le détail garde ses chiffres bruts, grain compris.
+    expect(session).toMatch(/total 0 \(grain `session`\)/);
+  });
+
+  it('jetons mesurés au grain du sprint : le chiffre reste en ouverture', () => {
+    const md = renderSprintReportMarkdown(
+      buildSprintReport({
+        ...baseInput,
+        tokens: { grain: 'sprint', inputTokens: 300, outputTokens: 70, cacheRead: 0, cacheCreation: 0, totalTokens: 370 },
+      }),
+    );
+    expect(md.slice(md.indexOf('## En clair'), md.indexOf('## Lot'))).toMatch(/consommé \*\*370 tokens\*\*/);
+  });
+
   it('rapporte le cache à part et ventile les jetons par mode (fiche 20261017110956989)', () => {
     const report = buildSprintReport({
       ...baseInput,

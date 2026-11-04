@@ -24,9 +24,14 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
         'ne le borne dans le journal de supervision. Durée, jetons et fiches livrées sont donc non mesurés ; son lot scellé suit.',
     );
   } else {
+    // Jetons mesurés au grain du sprint : on les dit. Sinon (repli au grain de la session, ou total nul),
+    // le total ne dit rien du sprint : on écrit « non mesurés », jamais un faux zéro (fiche 20261104095401066).
+    const tokensMeasured = report.tokens.grain === 'sprint' && report.tokens.totalTokens > 0;
+    const tokensPhrase = tokensMeasured
+      ? `consommé **${report.tokens.totalTokens} tokens** (grain \`sprint\`${report.tokens.note ? `, ${report.tokens.note}` : ''})`
+      : `ses jetons ne sont **pas mesurés pour ce sprint**${report.tokens.note ? ` (${report.tokens.note})` : ''}`;
     lines.push(
-      `Le sprint **${report.sprint.slug}** a duré **${fmtDuration(report.duration.ms)}** et consommé ` +
-        `**${report.tokens.totalTokens} tokens** (grain \`${report.tokens.grain}\`${report.tokens.note ? `, ${report.tokens.note}` : ''}). ` +
+      `Le sprint **${report.sprint.slug}** a duré **${fmtDuration(report.duration.ms)}**, et ${tokensPhrase}. ` +
         `Il a livré **${report.kpi.shippedFeatures.count} fiche(s)**, essuyé **${report.kpi.blockages.count} blocage(s)** ` +
         `et mergé **${report.kpi.prRetouches.total} PR** sur la fenêtre.`,
     );

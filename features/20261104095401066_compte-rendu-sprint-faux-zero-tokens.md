@@ -37,10 +37,10 @@ absent = dit en mots.
 
 ## Critères d'acceptation
 
-- [ ] Un compte rendu dont les jetons retombent au grain de la session n'écrit pas « 0 tokens » en ouverture, mais « jetons non mesurés pour ce sprint ».
-- [ ] Un compte rendu mesuré au grain du sprint garde son chiffre en ouverture.
-- [ ] Le bloc « Détail » garde ses chiffres bruts, grain compris.
-- [ ] Les tests du rendu couvrent les deux cas.
+- [x] Un compte rendu dont les jetons retombent au grain de la session n'écrit pas « 0 tokens » en ouverture, mais « jetons non mesurés pour ce sprint ».
+- [x] Un compte rendu mesuré au grain du sprint garde son chiffre en ouverture.
+- [x] Le bloc « Détail » garde ses chiffres bruts, grain compris.
+- [x] Les tests du rendu couvrent les deux cas.
 
 ## Comment vérifier
 
