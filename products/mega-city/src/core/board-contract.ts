@@ -26,6 +26,7 @@ import type { Fiche } from '../loaders/fiches.js';
 import type { RunReport } from '../loaders/runs.js';
 import { buildAvancementData } from './avancement-data.js';
 import { isParked, TERMINAUX } from './fiche-schema.js';
+import type { SprintSummary } from './sprint-report-summary.js';
 import type { VerdictsData } from './verdicts.js';
 
 /** La version du format. Un consommateur qui lit une autre valeur le dit, et n'affiche rien de faux. */
@@ -134,6 +135,25 @@ export const BoardContractSchema = z.strictObject({
       retros: count().describe('Captures de rétro (`AAAA-MM-JJ-retro-<slug>.md`, dossier `scrum:` du projet).'),
     })
     .describe('Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762).'),
+  derniersSprints: z
+    .array(
+      z.strictObject({
+        slug: z.string(),
+        fichier: z.string().describe('Le compte rendu, relatif à la racine du projet.'),
+        jour: z.string().describe('Le jour du compte rendu (`AAAA-MM-JJ`), tiré de son nom.'),
+        fin: z.string().nullable().describe('Fin de la fenêtre du sprint (ISO 8601) ; `null` si non datée.'),
+        dureeMs: z.number().nullable().describe('Durée du sprint ; `null` si non mesurée (jamais un faux zéro).'),
+        tokens: z
+          .number()
+          .nullable()
+          .describe('Jetons du sprint, au grain `sprint` seulement ; `null` sinon (le grain session compte tout le run).'),
+        livrees: z
+          .array(z.strictObject({ id: z.string(), title: z.string() }))
+          .describe('Les fiches livrées du lot scellé.'),
+        blocages: z.number().nullable().describe('Blocages essuyés ; `null` si le compte rendu ne le dit pas.'),
+      }),
+    )
+    .describe('Les 5 derniers comptes rendus de sprint, le plus récent d’abord (fiche 20261104090517904).'),
   sessions: z
     .array(SessionSchema)
     .describe('Sessions closes, une par récit du dossier `scrum:` du projet, la plus récente d’abord (fiche 20261102123552182).'),
@@ -154,6 +174,8 @@ export interface BoardContractInput {
   historique: { sprints: number; retros: number };
   /** Récits des sessions closes, lus au bord (`loaders/runs.ts`), la plus récente d'abord. */
   sessions: readonly RunReport[];
+  /** Les derniers sprints, résumés au bord depuis leurs comptes rendus (`core/sprint-report-summary.ts`). */
+  derniersSprints?: readonly SprintSummary[];
 }
 
 const ids = (fs: readonly Fiche[]): string[] => fs.map((f) => f.id);
@@ -178,7 +200,7 @@ function colonneOf(f: Fiche, inProgressIds: ReadonlySet<string>): Colonne {
 
 /** Compile le contrat. Tout est trié : la même entrée donne toujours la même sortie. */
 export function buildBoardContract(input: BoardContractInput): BoardContract {
-  const { fiches, inProgressIds, tags, verdicts, historique, sessions } = input;
+  const { fiches, inProgressIds, tags, verdicts, historique, sessions, derniersSprints = [] } = input;
   const board = buildAvancementData([...fiches], inProgressIds);
   const report = buildVersions(fiches, tags);
   const scope = versionScope(report);
@@ -225,6 +247,7 @@ export function buildBoardContract(input: BoardContractInput): BoardContract {
     verdicts: Object.fromEntries(Object.entries(verdicts.verdicts).sort(([a], [b]) => (a < b ? -1 : 1))),
     verdictsIllisibles: [...verdicts.illisibles].sort(),
     historique: { sprints: historique.sprints, retros: historique.retros },
+    derniersSprints: derniersSprints.map((s) => ({ ...s, livrees: s.livrees.map((f) => ({ ...f })) })),
     sessions: sessions.map((s) => ({ date: s.date, title: s.title, file: s.file, fiches: s.fiches, prs: s.prs })),
   };
 }

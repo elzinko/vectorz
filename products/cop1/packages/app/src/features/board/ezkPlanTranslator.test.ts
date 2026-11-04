@@ -221,6 +221,23 @@ describe('translatePlan — l’état « parkée » vient de la méthode (fiche 
   });
 });
 
+describe('translatePlan — les derniers sprints publiés (fiche 20261104090517904)', () => {
+  it('passe les sprints tels que la méthode les publie, null compris', () => {
+    const { plan } = translatePlan(board(), backlog());
+    expect(plan.lastSprints?.[0]).toMatchObject({ slug: 'second', dureeMs: 2520000, tokens: 100, blocages: 0 });
+    expect(plan.lastSprints?.[1]).toMatchObject({ slug: 'premier', fin: null, dureeMs: null, tokens: null });
+  });
+
+  it('une méthode plus ancienne, ou une entrée mal formée : pas de sprints, jamais une liste inventée', () => {
+    const ancien = board();
+    delete ancien.derniersSprints;
+    expect(translatePlan(ancien, backlog()).plan.lastSprints).toBeUndefined();
+    const casse = board();
+    casse.derniersSprints = [{ ...board().derniersSprints[0], tokens: -3 }];
+    expect(translatePlan(casse, backlog()).plan.lastSprints).toBeUndefined();
+  });
+});
+
 describe('translatePlan — format inconnu', () => {
   it('refuse un schema_version différent de 1 dans board show', () => {
     const b = { ...board(), schema_version: 2 };

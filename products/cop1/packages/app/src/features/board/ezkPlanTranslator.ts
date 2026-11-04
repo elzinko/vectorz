@@ -11,6 +11,7 @@ import type {
   PlanMilestone,
   PlanPilotage,
   PlanSession,
+  PlanSprint,
   PlanVersion,
 } from './planTypes.js';
 
@@ -47,6 +48,8 @@ interface BoardShow {
   milestones?: unknown;
   /** Ajouté au contrat v1 (fiche 20261102123552182) : absent d'une méthode plus ancienne. */
   sessions?: unknown;
+  /** Ajouté au contrat v1 (fiche 20261104090517904) : absent d'une méthode plus ancienne. */
+  derniersSprints?: unknown;
 }
 
 interface BacklogFiche {
@@ -217,6 +220,37 @@ function readHistory(value: unknown): PlanData['history'] {
   return { sprints: value.sprints, retros: value.retros };
 }
 
+const isNullableCount = (value: unknown): value is number | null => value === null || isCount(value);
+
+function readSprint(value: unknown): PlanSprint | undefined {
+  if (!isRecord(value) || typeof value.slug !== 'string' || typeof value.fichier !== 'string') return undefined;
+  if (typeof value.jour !== 'string' || !(value.fin === null || typeof value.fin === 'string')) return undefined;
+  if (!isNullableCount(value.dureeMs) || !isNullableCount(value.tokens) || !isNullableCount(value.blocages))
+    return undefined;
+  if (!Array.isArray(value.livrees)) return undefined;
+  const livrees = value.livrees.filter(
+    (f): f is { id: string; title: string } => isRecord(f) && typeof f.id === 'string' && typeof f.title === 'string',
+  );
+  if (livrees.length !== value.livrees.length) return undefined;
+  return {
+    slug: value.slug,
+    fichier: value.fichier,
+    jour: value.jour,
+    fin: value.fin,
+    dureeMs: value.dureeMs,
+    tokens: value.tokens,
+    livrees: livrees.map((f) => ({ id: f.id, title: f.title })),
+    blocages: value.blocages,
+  };
+}
+
+/** Les derniers sprints publiés, ou `undefined` si le champ manque ou porte une entrée mal formée. */
+function readLastSprints(value: unknown): PlanSprint[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const sprints = value.map(readSprint);
+  return sprints.every((s): s is PlanSprint => s !== undefined) ? sprints : undefined;
+}
+
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((v) => typeof v === 'string');
 
@@ -262,6 +296,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
   const history = readHistory(board.historique);
   const verdicts = readVerdicts(board.verdicts);
   const pilotage = readPilotage(board.milestones, board.sessions);
+  const lastSprints = readLastSprints(board.derniersSprints);
 
   const funnel: PlanFunnel = {
     idea: comptes.idees,
@@ -303,6 +338,7 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
       done: comptes.livrees,
       ...(history ? { history } : {}),
       ...(pilotage ? { pilotage } : {}),
+      ...(lastSprints ? { lastSprints } : {}),
     },
     fiches,
   };

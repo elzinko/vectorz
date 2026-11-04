@@ -294,6 +294,8 @@ export interface BoardProject {
   configState?: PlanState;
   /** Publié par la méthode avec le plan ; absent si elle ne le publie pas (la vue le dit). */
   pilotage?: Pilotage;
+  /** Les derniers sprints et leurs indicateurs, publiés par la méthode (fiche 20261104090517904). */
+  lastSprints?: SprintSummary[];
   /** État de la lecture du process. Absent = process reçu. Sinon `process` est absent. */
   processState?: PlanState;
   /** Chaque fiche sur son étape (vue « Process »). */
@@ -302,3 +304,15 @@ export interface BoardProject {
 
 /** L'ensemble des projets, indexés par leur nom (clé de navigation). */
 export type BoardData = Record<string, BoardProject>;
+
+/** Un sprint résumé par la méthode. `null` = non mesuré par son compte rendu, jamais un faux zéro. */
+export interface SprintSummary {
+  slug: string;
+  fichier: string;
+  jour: string;
+  fin: string | null;
+  dureeMs: number | null;
+  tokens: number | null;
+  livrees: { id: string; title: string }[];
+  blocages: number | null;
+}

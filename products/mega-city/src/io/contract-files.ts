@@ -183,7 +183,26 @@ export function makeContractFixture(): string {
   write('.vectorz/config.yml', FIXTURE_CONFIG);
   // Ce que la méthode a mené (fiche 20261102104443762) : 2 comptes rendus, 1 rétro, et un intrus par dossier.
   write('docs/sprints/2026-10-30-sprint-premier.md', '# Rapport de sprint — premier\n');
-  write('docs/sprints/2026-10-31-sprint-second.md', '# Rapport de sprint — second\n');
+  write(
+    'docs/sprints/2026-10-31-sprint-second.md',
+    [
+      '# Rapport de sprint — second',
+      '',
+      '## Lot scellé',
+      '',
+      '- `20990101000000001` — Une fiche livrée (PR local (abc1234)) — **livrée**',
+      '- `20990101000000002` — Une fiche reportée — **reportée**',
+      '',
+      '## Détail',
+      '',
+      '- **Fenêtre** : 2026-10-31T09:00:00.000Z → 2026-10-31T09:42:00.000Z',
+      '- **Durée** : 2520000 ms',
+      '- **Tokens** : entrée 10 / sortie 20 / cache lu 30 / cache créé 40 / total 100 (grain `sprint`)',
+      '- **Fiches livrées** (1) : 20990101000000001',
+      '- **Blocages** (0)',
+      '',
+    ].join('\n'),
+  );
   write('docs/sprints/notes.md', '# Notes libres, pas un compte rendu\n');
   write('docs/captures/2026-10-31-retro-premiere.md', '# Rétro\n');
   write('docs/captures/2026-10-31-panel-board.md', '# Panel, pas une rétro\n');

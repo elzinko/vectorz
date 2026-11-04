@@ -47,15 +47,15 @@ passer le champ, sans logique, et découper laisserait un contrat publié sans l
 
 ## Critères d'acceptation
 
-- [ ] `ezk board show --json` publie `derniersSprints` : au plus 5 comptes rendus, du plus récent au
+- [x] `ezk board show --json` publie `derniersSprints` : au plus 5 comptes rendus, du plus récent au
       plus ancien, avec slug, fin, durée, jetons, fiches livrées et blocages ; le contrat versionné et
       son schéma le décrivent.
-- [ ] Une valeur absente d'un compte rendu est publiée comme absente, jamais comme zéro.
-- [ ] La Vue d'ensemble montre la carte « Dernier sprint » avec ces chiffres et les titres des fiches
+- [x] Une valeur absente d'un compte rendu est publiée comme absente, jamais comme zéro.
+- [x] La Vue d'ensemble montre la carte « Dernier sprint » avec ces chiffres et les titres des fiches
       livrées.
-- [ ] Les 4 sprints précédents s'affichent en une ligne chacun sous la carte.
-- [ ] Sans compte rendu publié, la carte dit « aucun sprint publié » au lieu de disparaître.
-- [ ] Les tests de la méthode, du traducteur et de la vue couvrent ces cas.
+- [x] Les 4 sprints précédents s'affichent en une ligne chacun sous la carte.
+- [x] Sans compte rendu publié, la carte dit « aucun sprint publié » au lieu de disparaître.
+- [x] Les tests de la méthode, du traducteur et de la vue couvrent ces cas.
 
 ## Comment vérifier
 
@@ -66,6 +66,11 @@ pnpm --dir products/cop1/packages/web exec vitest run src/board/OverviewView.tes
 ```
 
 Puis ouvrir la Vue d'ensemble : la carte « Dernier sprint » montre le sprint le plus récent.
+
+Avant / après, Vue d'ensemble de vectorz (2026-11-04) :
+
+- avant : « 49 sprints » et « non mesuré », rien sur le dernier sprint — ![avant](../docs/pr-evidence/20261104090517904/vue-ensemble-avant.jpg)
+- après : la carte « Dernier sprint » (21 min, 2 fiches livrées par leur titre, jetons « non mesurés », 0 blocage) et les 4 sprints précédents — ![après](../docs/pr-evidence/20261104090517904/vue-ensemble-apres.jpg)
 
 ## Notes / décisions
 

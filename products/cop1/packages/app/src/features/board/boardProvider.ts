@@ -27,7 +27,13 @@ import type { EzkPlanSource, PlanSnapshot } from './ezkPlanSource.js';
 import type { EzkProcessSource, ProcessSnapshot } from './ezkProcessSource.js';
 import type { ProcessViewData } from './ezkProcessTranslator.js';
 import type { SourceReading } from './ezkSource.js';
-import type { FicheDetailData, PlanFunnel, PlanPilotage, PlanVersions } from './planTypes.js';
+import type {
+  FicheDetailData,
+  PlanFunnel,
+  PlanPilotage,
+  PlanSprint,
+  PlanVersions,
+} from './planTypes.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
 export interface BoardProjectInput {
@@ -80,6 +86,8 @@ export interface BoardPlanProject {
   fiches: Record<string, FicheDetailData>;
   /** Milestones et sessions closes publiées par la méthode (vue « Pilotage ») ; absent sinon. */
   pilotage?: PlanPilotage;
+  /** Les derniers sprints et leurs indicateurs publiés par la méthode (Vue d'ensemble) ; absent sinon. */
+  lastSprints?: PlanSprint[];
   /** Le process est-il arrivé (`ezk board process --json`) ? Sinon `process` est absent. */
   processState: BoardPlanState;
   /** Chaque fiche sur son étape, telle que la méthode la place (vue « Process »). */
@@ -147,6 +155,7 @@ export function shapeProject(
     ...(live.chantiers.length > 0 ? { chantiers: live.chantiers } : {}),
     fiches: received ? received.fiches : {},
     ...(received?.plan.pilotage ? { pilotage: received.plan.pilotage } : {}),
+    ...(received?.plan.lastSprints ? { lastSprints: received.plan.lastSprints } : {}),
     configState: readState(config),
     ...(config.state === 'ok' ? { config: config.config } : {}),
     processState: readState(process),

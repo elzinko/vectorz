@@ -6,7 +6,7 @@
  * version ; la version en run est surlignée et porte « Voir le run », une version
  * cadrée non livrée porte « ▸ Lancer »).
  */
-import type { BoardProject, Version } from './types.js';
+import type { BoardProject, SprintSummary, Version } from './types.js';
 import { allVersions, cadre, groomed, isPastVer, runByVer, svCmp } from './helpers.js';
 import { isLaunchable } from './pipeline.js';
 
@@ -111,6 +111,79 @@ function VersionsInProcess({ project, onLaunch, onViewRun }: OverviewViewProps):
   );
 }
 
+/** Une durée lisible ; `null` = non mesurée, dit en mots (fiche 20261104090517904). */
+export function fmtDuree(ms: number | null): string {
+  if (ms === null) return 'non mesurée';
+  const min = Math.max(1, Math.round(ms / 60_000));
+  return min < 60 ? `${min} min` : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, '0')}`;
+}
+
+/** Des jetons lisibles ; `null` = non mesurés, dit en mots. */
+export function fmtTokens(n: number | null): string {
+  if (n === null) return 'non mesurés';
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`;
+  if (n >= 1_000) return `${Math.round(n / 1_000)} k`;
+  return String(n);
+}
+
+/** Le slug d'un sprint, lu comme son objectif. */
+const objectif = (s: SprintSummary): string => s.slug.replace(/-/g, ' ');
+
+/** La carte « Dernier sprint » : le plus récent en grand, les précédents en une ligne chacun. */
+function LastSprint({ sprints }: { sprints: SprintSummary[] | undefined }): JSX.Element {
+  const [last, ...previous] = sprints ?? [];
+  return (
+    <section className="card clip" aria-label="Dernier sprint">
+      <h3>Dernier sprint</h3>
+      {last === undefined ? (
+        <p className="mnote">aucun sprint publié par la méthode</p>
+      ) : (
+        <>
+          <div className="ls-head">
+            <b className="ls-obj">{objectif(last)}</b>
+            <span className="sub">{last.jour}</span>
+          </div>
+          <div className="mgrid">
+            {(
+              [
+                [fmtDuree(last.dureeMs), 'durée'],
+                [String(last.livrees.length), 'fiches livrées'],
+                [fmtTokens(last.tokens), 'jetons'],
+                [last.blocages === null ? 'non dit' : String(last.blocages), 'blocages'],
+              ] as const
+            ).map(([value, label]) => (
+              <div className="mcell" key={label}>
+                <div className="mv">{value}</div>
+                <div className="mk">{label}</div>
+              </div>
+            ))}
+          </div>
+          {last.livrees.length > 0 && (
+            <ul className="ls-fiches" aria-label="Fiches livrées par le dernier sprint">
+              {last.livrees.map((f) => (
+                <li key={f.id}>{f.title}</li>
+              ))}
+            </ul>
+          )}
+          {previous.length > 0 && (
+            <div className="ls-prev" aria-label="Sprints précédents">
+              {previous.map((s) => (
+                <div className="ls-row" key={s.fichier}>
+                  <span className="faint">{s.jour}</span>
+                  <span className="ls-name">{objectif(s)}</span>
+                  <span>{s.livrees.length} livrée(s)</span>
+                  <span>{fmtDuree(s.dureeMs)}</span>
+                  <span>{fmtTokens(s.tokens)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
 export function OverviewView(props: OverviewViewProps): JSX.Element {
   const { project } = props;
   const f = project.funnel;
@@ -158,6 +231,8 @@ export function OverviewView(props: OverviewViewProps): JSX.Element {
           </p>
         ))}
       </section>
+
+      {planKnown && <LastSprint sprints={project.lastSprints} />}
 
       <section className="funnel">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 6 }}>

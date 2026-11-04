@@ -45,6 +45,11 @@ export interface PlanData {
    */
   history?: { sprints: number; retros: number };
   /**
+   * Les derniers sprints et leurs indicateurs, tels que la méthode les publie (fiche 20261104090517904).
+   * Absent quand la méthode installée ne les publie pas.
+   */
+  lastSprints?: PlanSprint[];
+  /**
    * L'avancement par milestone et les sessions closes, tels que la méthode les publie (fiche
    * 20261102123552182). Absent quand la méthode installée ne publie pas les sessions : la vue
    * « Pilotage » le dit, jamais une liste vide présentée comme réelle.
@@ -93,4 +98,16 @@ export interface FicheDetailData {
   blocked: string;
   /** Le pouce de revue posé (fiche 20261102151630248) ; absent s'il n'y en a pas. */
   verdict?: 'up' | 'down';
+}
+
+/** Un sprint résumé par la méthode. `null` = non mesuré par son compte rendu, jamais un faux zéro. */
+export interface PlanSprint {
+  slug: string;
+  fichier: string;
+  jour: string;
+  fin: string | null;
+  dureeMs: number | null;
+  tokens: number | null;
+  livrees: { id: string; title: string }[];
+  blocages: number | null;
 }

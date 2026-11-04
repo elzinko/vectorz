@@ -453,6 +453,83 @@
       ],
       "description": "Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762)."
     },
+    "derniersSprints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "fichier": {
+            "type": "string",
+            "description": "Le compte rendu, relatif à la racine du projet."
+          },
+          "jour": {
+            "type": "string",
+            "description": "Le jour du compte rendu (`AAAA-MM-JJ`), tiré de son nom."
+          },
+          "fin": {
+            "description": "Fin de la fenêtre du sprint (ISO 8601) ; `null` si non datée.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dureeMs": {
+            "description": "Durée du sprint ; `null` si non mesurée (jamais un faux zéro).",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "tokens": {
+            "description": "Jetons du sprint, au grain `sprint` seulement ; `null` sinon (le grain session compte tout le run).",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "livrees": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title"
+              ]
+            },
+            "description": "Les fiches livrées du lot scellé."
+          },
+          "blocages": {
+            "description": "Blocages essuyés ; `null` si le compte rendu ne le dit pas.",
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "fichier",
+          "jour",
+          "fin",
+          "dureeMs",
+          "tokens",
+          "livrees",
+          "blocages"
+        ]
+      },
+      "description": "Les 5 derniers comptes rendus de sprint, le plus récent d’abord (fiche 20261104090517904)."
+    },
     "sessions": {
       "type": "array",
       "items": {
@@ -514,6 +591,7 @@
     "versions",
     "verdicts",
     "historique",
+    "derniersSprints",
     "sessions",
     "verdictsIllisibles"
   ]
