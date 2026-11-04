@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104095401066_compte-rendu-sprint-faux-zero-tokens.md](../20261104095401066_compte-rendu-sprint-faux-zero-tokens.md)
+> 🗎 Rendu de la fiche [features/20261104095401066_compte-rendu-sprint-faux-zero-tokens.md](../done/20261104095401066_compte-rendu-sprint-faux-zero-tokens.md)
 
 # 20261104095401066 — Le compte rendu de sprint écrit « 0 tokens » quand il ne mesure pas
 

@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version:
 labels: [theme:mission-control, retro]
-status: ready
-pr:
+status: shipped
+pr: "local (8e46ada2)"
 evidence: none # texte d'un compte rendu, pas d'écran
 created: 2026-11-04
 ---
@@ -32,7 +32,7 @@ mesure rien du sprint. La règle `human-facing-lisibility` interdit le faux zér
 
 Quand les jetons ne sont pas mesurés au grain du sprint, l'ouverture écrit « jetons non mesurés pour ce
 sprint » et garde le détail chiffré en bas, sous le bloc « Détail ». Même règle que la Vue d'ensemble
-(fiche [Le dernier sprint et ses indicateurs](done/20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md)) :
+(fiche [Le dernier sprint et ses indicateurs](20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md)) :
 absent = dit en mots.
 
 ## Critères d'acceptation
