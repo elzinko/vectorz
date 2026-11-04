@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (d192a386)"
 evidence: before-after
 created: 2026-11-04
 ---
@@ -71,8 +71,8 @@ Puis ouvrir mission control, vue Process : le schéma est en tête, ses nombres 
 
 Avant / après, vue Process de vectorz (2026-11-04) :
 
-- avant : cinq colonnes, sans chemin ni étapes de sprint — ![avant](../docs/pr-evidence/20261104090517801/process-avant.jpg)
-- après : le schéma Idée 18 → Prête 3 → En sprint 2 → En revue 0 → Livrée 369, les étapes du sprint, les parkées hors flux — ![après](../docs/pr-evidence/20261104090517801/process-apres.jpg)
+- avant : cinq colonnes, sans chemin ni étapes de sprint — ![avant](../../docs/pr-evidence/20261104090517801/process-avant.jpg)
+- après : le schéma Idée 18 → Prête 3 → En sprint 2 → En revue 0 → Livrée 369, les étapes du sprint, les parkées hors flux — ![après](../../docs/pr-evidence/20261104090517801/process-apres.jpg)
 
 ## Notes / décisions
 
