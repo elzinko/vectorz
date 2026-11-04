@@ -262,6 +262,28 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 @media (max-width: 760px) { .maps { grid-template-columns: 1fr; } }
 .kanban.process { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .kanban.k5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+/* --- Vue Recettes (fiche 20261104090518109) --- */
+.rc-list { border-top: 1px solid var(--line); }
+.rc-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 12px; align-items: center; padding: 10px 16px; border-top: 1px solid var(--surface-2); }
+.rc-row:first-child { border-top: 0; }
+.rc-main { display: flex; flex-direction: column; min-width: 0; }
+.rc-makes { font-size: 12.5px; color: var(--muted); margin: 0; }
+.rc-dir { font-family: var(--font-data); font-size: 12px; background: var(--surface-2); border-radius: 6px; padding: 2px 8px; white-space: nowrap; }
+.rc-h { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); margin: 0 0 10px; display: flex; gap: 8px; }
+.rc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.rc-card { padding: 13px 15px; display: flex; flex-direction: column; gap: 8px; }
+.rc-card.used { border-color: var(--go); box-shadow: 0 0 0 1px var(--go-soft) inset; }
+.rc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.rc-foot { display: flex; gap: 6px; flex-wrap: wrap; }
+.rc-src { font-size: 12px; color: var(--faint); margin-top: auto; overflow-wrap: anywhere; }
+.rc-src code { font-family: var(--font-data); color: var(--muted); }
+.pill.rc-used { background: var(--go-soft); color: var(--go); }
+.pill.rc-missing { background: var(--warn-soft); color: var(--warn); white-space: normal; }
+.pill.rc-status { background: var(--surface-2); color: var(--muted); }
+.pill.rc-ready { background: var(--go-soft); color: var(--go); }
+.pill.rc-draft { background: var(--groom-soft); color: var(--groom); }
+@media (max-width: 620px) { .rc-row { grid-template-columns: 1fr; } }
+
 /* --- Vue Process : le schéma du workflow (fiche 20261104090517801) --- */
 .wflow { padding: 14px 16px; margin-bottom: 12px; }
 .wf-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }

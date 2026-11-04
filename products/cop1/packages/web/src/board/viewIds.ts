@@ -15,6 +15,7 @@ export const VIEW_IDS = [
   'process',
   'maps',
   'law',
+  'recipes',
   'tool',
 ] as const;
 

@@ -20,6 +20,7 @@ import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
 import { PilotageView } from './PilotageView.js';
 import { LawView } from './LawView.js';
+import { RecipesView } from './RecipesView.js';
 import { MapsView } from './MapsView.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
@@ -57,6 +58,7 @@ const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les proj
 const METHOD_NAV: NavItem[] = [
   { id: 'process', icon: '❖', label: 'Process' },
   { id: 'law', icon: '§', label: 'Loi' },
+  { id: 'recipes', icon: '✦', label: 'Recettes' },
   { id: 'maps', icon: '▤', label: 'Cartes' },
 ];
 
@@ -426,6 +428,8 @@ export function Board(): JSX.Element {
             />
           ) : view === 'law' ? (
             <LawView project={project} />
+          ) : view === 'recipes' ? (
+            <RecipesView project={project} />
           ) : view === 'maps' ? (
             <MapsView project={project} />
           ) : view === 'tool' ? (

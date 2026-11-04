@@ -62,10 +62,16 @@ export interface MapsHandler {
   ): Promise<{ status: number; contentType: string; body: string }>;
 }
 
-/** fiche 20260826222044335 — la loi d'un projet, lue depuis la mémoire du daemon (jamais d'attente). */
-export interface LawHandler {
+/**
+ * Une lecture par projet, servie depuis la mémoire du daemon (jamais d'attente) : la loi (fiche
+ * 20260826222044335) et les recettes (fiche 20261104090518109) passent par elle.
+ */
+export interface ProjectReadHandler {
   read(projet: string): { status: number; body: unknown };
 }
+
+/** fiche 20260826222044335 — la loi d'un projet. */
+export type LawHandler = ProjectReadHandler;
 
 /** fiche 0063 — ancrage projet (geste humain depuis le Moniteur). */
 export interface ProjectAnchorHandler {
@@ -87,6 +93,7 @@ export class HttpServer {
   private verdictHandler: VerdictHandler | null = null;
   private mapsHandler: MapsHandler | null = null;
   private lawHandler: LawHandler | null = null;
+  private recipesHandler: ProjectReadHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -147,6 +154,11 @@ export class HttpServer {
   /** fiche 20260826222044335 — GET /api/law/<projet>. */
   setLawHandler(handler: LawHandler): void {
     this.lawHandler = handler;
+  }
+
+  /** fiche 20261104090518109 — GET /api/recipes/<projet>. */
+  setRecipesHandler(handler: ProjectReadHandler): void {
+    this.recipesHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -291,7 +303,13 @@ export class HttpServer {
 
     // fiche 20260826222044335 — la loi d'un projet, servie depuis la mémoire du daemon
     if (req.method === 'GET' && req.url?.startsWith('/api/law/')) {
-      this.handleLaw(req.url, res);
+      this.handleProjectRead('/api/law/', 'law_unavailable', this.lawHandler, req.url, res);
+      return;
+    }
+
+    // fiche 20261104090518109 — les recettes d'un projet, servies depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/recipes/')) {
+      this.handleProjectRead('/api/recipes/', 'recipes_unavailable', this.recipesHandler, req.url, res);
       return;
     }
 
@@ -336,22 +354,26 @@ export class HttpServer {
     });
   }
 
-  private handleLaw(url: string, res: ServerResponse): void {
-    if (!this.lawHandler) {
+  private handleProjectRead(
+    prefix: string,
+    unavailable: string,
+    handler: ProjectReadHandler | null,
+    url: string,
+    res: ServerResponse,
+  ): void {
+    if (!handler) {
       res.writeHead(503, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'law_unavailable' }));
+      res.end(JSON.stringify({ error: unavailable }));
       return;
     }
     let projet = '';
     try {
-      projet = decodeURIComponent((url.split('?')[0] ?? '').slice('/api/law/'.length));
+      projet = decodeURIComponent((url.split('?')[0] ?? '').slice(prefix.length));
     } catch {
       projet = '';
     }
     const { status, body } =
-      projet && !projet.includes('/')
-        ? this.lawHandler.read(projet)
-        : { status: 404, body: { error: 'not_found' } };
+      projet && !projet.includes('/') ? handler.read(projet) : { status: 404, body: { error: 'not_found' } };
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(body));
   }

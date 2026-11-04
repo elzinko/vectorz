@@ -6,6 +6,7 @@ import { type BoardProjectInput, composeBoardData } from '../../board/boardProvi
 import { EzkConfigSource } from '../../board/ezkConfigSource.js';
 import { execEzkRunner } from '../../board/ezkExec.js';
 import { EzkLawSource } from '../../board/ezkLawSource.js';
+import { EzkRecipesSource } from '../../board/ezkRecipesSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
 import { EzkProcessSource } from '../../board/ezkProcessSource.js';
 import { MapsService } from '../../board/mapsService.js';
@@ -47,6 +48,7 @@ export class DaemonService {
   private ezkConfigSource: EzkConfigSource | null = null;
   private ezkProcessSource: EzkProcessSource | null = null;
   private ezkLawSource: EzkLawSource | null = null;
+  private ezkRecipesSource: EzkRecipesSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -139,6 +141,18 @@ export class DaemonService {
         if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
         const snap = this.lawSource().get(root);
         if (snap.state === 'ok') return { status: 200, body: { state: 'ok', law: snap.law } };
+        if (snap.state === 'unavailable')
+          return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
+        return { status: 200, body: { state: 'loading' } };
+      },
+    });
+    // fiche 20261104090518109 — les recettes : servies depuis la mémoire, relues en arrière-plan.
+    this.httpServer.setRecipesHandler({
+      read: (projet) => {
+        const root = this.boardProjects(projectPath).find((p) => p.name === projet)?.root;
+        if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
+        const snap = this.recipesSource().get(root);
+        if (snap.state === 'ok') return { status: 200, body: { state: 'ok', recipes: snap.recipes } };
         if (snap.state === 'unavailable')
           return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
         return { status: 200, body: { state: 'loading' } };
@@ -253,6 +267,12 @@ export class DaemonService {
   private lawSource(): EzkLawSource {
     this.ezkLawSource ??= new EzkLawSource({ command: this.ezkCommand });
     return this.ezkLawSource;
+  }
+
+  /** La source des recettes (`ezk recipes --json`), créée au premier besoin comme les autres. */
+  private recipesSource(): EzkRecipesSource {
+    this.ezkRecipesSource ??= new EzkRecipesSource({ command: this.ezkCommand });
+    return this.ezkRecipesSource;
   }
 
   private boardProjects(projectPath: string): BoardProjectInput[] {

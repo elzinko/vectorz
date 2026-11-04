@@ -44,14 +44,14 @@ Deux surfaces : le serveur et l'écran.
 
 ## Critères d'acceptation
 
-- [ ] La barre de gauche propose une entrée « Recettes » qui ouvre la vue.
-- [ ] La vue liste les recettes déclarées par le projet affiché, chacune avec le dossier qui
+- [x] La barre de gauche propose une entrée « Recettes » qui ouvre la vue.
+- [x] La vue liste les recettes déclarées par le projet affiché, chacune avec le dossier qui
       l'implémente.
-- [ ] La vue liste le catalogue de la méthode, chaque recette avec ce qu'elle fabrique, son statut
+- [x] La vue liste le catalogue de la méthode, chaque recette avec ce qu'elle fabrique, son statut
       et son implémentation de référence ; celles que le projet déclare portent « utilisée ici ».
-- [ ] Changer de projet dans le sélecteur change la partie « Dans ce projet ».
-- [ ] Si la méthode ne répond pas, la vue affiche la raison au lieu d'une page vide.
-- [ ] Les tests du daemon et de la vue couvrent ces cas.
+- [x] Changer de projet dans le sélecteur change la partie « Dans ce projet ».
+- [x] Si la méthode ne répond pas, la vue affiche la raison au lieu d'une page vide.
+- [x] Les tests du daemon et de la vue couvrent ces cas.
 
 ## Comment vérifier
 
@@ -62,6 +62,13 @@ pnpm --dir products/cop1/packages/web exec vitest run src/board
 
 Puis ouvrir mission control, vue « Recettes » : le catalogue s'affiche, et la partie projet suit le
 sélecteur.
+
+Avant / après, mission control sur vectorz (2026-11-04) :
+
+- avant : la section Méthode n'a que Process, Loi et Cartes, aucune recette visible — ![avant](../docs/pr-evidence/20261104090518109/recettes-avant.jpg)
+- après : l'entrée « Recettes », la partie « Dans ce projet » (vectorz n'en déclare aucune, la vue dit comment en déclarer une) et le catalogue de 16 recettes, chacune avec ce qu'elle fabrique, son statut, ses champs manquants et son implémentation de référence — ![après](../docs/pr-evidence/20261104090518109/recettes-apres.jpg)
+
+Constat du 2026-11-04 : aucun des trois projets enregistrés (vectorz, samplerz, muti) ne déclare encore de `RECIPE.md` ; la partie « Dans ce projet » est donc vide partout, et c'est la vérité.
 
 ## Notes / décisions
 

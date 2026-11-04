@@ -77,6 +77,11 @@ screens:
         title: Sélectionner un skill ou un agent, et voir ses traits
       - id: selectionner-regle
         title: Sélectionner une règle, et voir son détail
+  - id: recipes
+    title: Recettes — ce que le projet implémente, et le catalogue de la méthode
+    actions:
+      - id: lire-recettes-projet
+        title: Lire les recettes du projet et le dossier qui implémente chacune
   - id: maps
     title: Cartes — les documents de la méthode
     actions:
