@@ -36,12 +36,20 @@ check "B — node_modules ignoré"                       '! echo "$out" | grep -
 check "C — recette de méthode nommée (makes ezk-secret, rejeu muti)" 'echo "$out" | grep -q "ezk-secret"'
 check "section projet présente"                        'echo "$out" | grep -q "Recettes déclarées dans ce projet"'
 
+# --json : la même découverte, en données (fiche 20261104090518008).
+json="$(cd "$MEGA" && pnpm exec tsx "$BIN" --root "$PROJ" --json 2>/dev/null)"
+check "J1 — --json rend un JSON au schéma v1"            'echo "$json" | node -e "const d=JSON.parse(require(\"fs\").readFileSync(0,\"utf8\"));process.exit(d.schema_version===1&&Array.isArray(d.catalogue)?0:1)"'
+check "J2 — la recette du projet et son dossier"        'echo "$json" | node -e "const d=JSON.parse(require(\"fs\").readFileSync(0,\"utf8\"));process.exit(d.projet.some(r=>r.dir===\"apps/outil\"&&r.complete)?0:1)"'
+check "J3 — node_modules ignoré en JSON aussi"           '! echo "$json" | grep -q "node_modules"'
+
 # ── E : parité avec le livre — autant de recettes de méthode que de recipes/*.md ──────────────
 REPO="$(cd "$MEGA/../.." && pwd)"
 # Attendu = recettes INDEXABLES (règle du livre : un `id` non vide), pas le brut `ls`.
 expected="$(grep -lE '^id:[[:space:]]*[^[:space:]]' "$REPO"/recipes/*.md 2>/dev/null | grep -v -e 'RECIPES.md' -e 'RECIPE_TEMPLATE.md' | wc -l | tr -d ' ')"
 got="$(echo "$out" | sed -n 's/^En clair : \([0-9][0-9]*\) recette.*/\1/p')"
 check "E — parité livre ($got recettes de méthode == $expected fichiers recipes/*.md)" '[ -n "$got" ] && [ "$got" = "$expected" ]'
+jgot="$(echo "$json" | node -e "console.log(JSON.parse(require(\"fs\").readFileSync(0,\"utf8\")).catalogue.length)")"
+check "J4 — parité livre en JSON ($jgot == $expected)"   '[ "$jgot" = "$expected" ]'
 
 # ── D : lecture seule — git status propre après exécution ─────────────────────
 (

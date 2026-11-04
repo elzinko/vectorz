@@ -7,7 +7,13 @@
  */
 import { describe, expect, it } from 'vitest';
 import type { ScanEntry } from '../recipe-contract.js';
-import { type DiscoveredRecipe, discover, renderDiscovery } from '../recipe-discovery.js';
+import {
+  type DiscoveredRecipe,
+  RecipesContractSchema,
+  discover,
+  recipesContract,
+  renderDiscovery,
+} from '../recipe-discovery.js';
 
 const disc = (over: Partial<DiscoveredRecipe> & { dir: string; id: string }): DiscoveredRecipe => ({
   title: `Titre ${over.id}`,
@@ -15,6 +21,7 @@ const disc = (over: Partial<DiscoveredRecipe> & { dir: string; id: string }): Di
   source: 's',
   status: 'ready',
   complete: true,
+  missing: [],
   ...over,
 });
 
@@ -76,5 +83,34 @@ describe('renderDiscovery — le rapport', () => {
     const out = renderDiscovery({ projectLabel: '/p', methodRecipes: [], projectRecipes: [] });
     expect(out).toContain('## Recettes de la méthode (globales)\n- aucune.');
     expect(out).toContain('en portant un fichier RECIPE.md');
+  });
+});
+
+describe('ezk recipes --json — la découverte en données (fiche 20261104090518008)', () => {
+  const complete: ScanEntry = {
+    dir: 'recipes/complete.md',
+    recipeMd: '---\nid: "1"\ntitle: Complète\nmakes: un outil\nsource: tools/outil\nstatus: ready\n---\n',
+  };
+  const brouillon: ScanEntry = { dir: 'recipes/brouillon.md', recipeMd: '---\nid: "2"\ntitle: Brouillon\n---\n' };
+  const projet: ScanEntry = {
+    dir: 'apps/outil',
+    recipeMd: '---\nid: "3"\ntitle: Du projet\nmakes: un harnais\nsource: apps/outil\nstatus: ready\n---\n',
+  };
+
+  it('un brouillon nomme ses champs manquants ; une recette complète n’en a aucun', () => {
+    const [c, b] = discover([complete, brouillon]);
+    expect(c.missing).toEqual([]);
+    expect(b.complete).toBe(false);
+    expect(b.missing).toEqual(['makes', 'source', 'status']);
+  });
+
+  it('publie le catalogue et les recettes du projet, avec leur implémentation, selon le schéma v1', () => {
+    const json = recipesContract({ methodRecipes: discover([complete, brouillon]), projectRecipes: discover([projet]) });
+    expect(RecipesContractSchema.parse(json)).toEqual(json);
+    expect(json.catalogue.map((r) => r.id)).toEqual(['1', '2']);
+    expect(json.catalogue[0]).toMatchObject({ source: 'tools/outil', dir: 'recipes/complete.md', complete: true });
+    expect(json.projet).toEqual([
+      expect.objectContaining({ id: '3', dir: 'apps/outil', source: 'apps/outil', complete: true, missing: [] }),
+    ]);
   });
 });

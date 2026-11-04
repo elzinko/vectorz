@@ -27,6 +27,7 @@ import { CONFIG_SCHEMA_VERSION, ConfigShowSchema } from '../core/config-contract
 import { MAPS_SCHEMA_VERSION, MapsContractSchema } from '../core/maps-contract.js';
 import { PROCESS_SCHEMA_VERSION, ProcessContractSchema } from '../core/process-contract.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
+import { RECIPES_SCHEMA_VERSION, RecipesContractSchema, discover, recipesContract } from '../core/recipe-discovery.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
 import { boardProcessData } from './board-process.js';
 import { boardShowData } from './board-show.js';
@@ -51,6 +52,35 @@ export const PROCESS_EXAMPLE_FILE = `${PROCESS_DIR}/example.json`;
 const MAPS_DIR = `contracts/board-maps/v${MAPS_SCHEMA_VERSION}`;
 export const MAPS_SCHEMA_FILE = `${MAPS_DIR}/schema.json`;
 export const MAPS_EXAMPLE_FILE = `${MAPS_DIR}/example.json`;
+const RECIPES_DIR = `contracts/recipes/v${RECIPES_SCHEMA_VERSION}`;
+export const RECIPES_SCHEMA_FILE = `${RECIPES_DIR}/schema.json`;
+export const RECIPES_EXAMPLE_FILE = `${RECIPES_DIR}/example.json`;
+
+/**
+ * L'exemple de `ezk recipes --json` part d'entrées écrites ici, pas de `recipes/` : l'exemple ne doit
+ * pas changer à chaque recette ajoutée. Une recette complète, un brouillon, une recette de projet.
+ */
+const recipesExample = () =>
+  recipesContract({
+    methodRecipes: discover([
+      {
+        dir: 'recipes/lanceur-dev-universel.md',
+        recipeMd:
+          '---\nid: "20261001004228784"\ntitle: Lancer l\'app de n\'importe quelle branche\nmakes: Une commande unique qui lance l\'app de la branche voulue\nsource: tools/launcher\nstatus: draft\n---\n',
+      },
+      {
+        dir: 'recipes/page-attente.md',
+        recipeMd: '---\nid: "20260830104013705"\ntitle: Mailing list sur une page d\'attente\nmakes: Une page d\'attente qui collecte des emails\n---\n',
+      },
+    ]),
+    projectRecipes: discover([
+      {
+        dir: 'apps/outil',
+        recipeMd:
+          '---\nid: "20261018110931402"\ntitle: Harnais de validation\nmakes: Une procédure de validation rejouable\nsource: apps/outil\nstatus: ready\n---\n',
+      },
+    ]),
+  });
 
 /**
  * La config de la fixture : chaque portée réglée au moins une fois (GitHub granulaire, intégration,
@@ -227,6 +257,8 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [PROCESS_EXAMPLE_FILE]: exampleText(boardProcessData(root, { github: false })),
       [MAPS_SCHEMA_FILE]: schemaText(MapsContractSchema),
       [MAPS_EXAMPLE_FILE]: exampleText(methodMapsData(join(root, 'diagrams'))),
+      [RECIPES_SCHEMA_FILE]: schemaText(RecipesContractSchema),
+      [RECIPES_EXAMPLE_FILE]: exampleText(recipesExample()),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

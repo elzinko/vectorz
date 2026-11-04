@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "catalogue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "makes": {
+            "type": "string",
+            "description": "Ce que la recette fabrique, en une phrase."
+          },
+          "status": {
+            "type": "string",
+            "description": "Le statut écrit (draft, ready…) ; vide si absent."
+          },
+          "source": {
+            "type": "string",
+            "description": "Où vit l'implémentation de référence, chemin relatif au dépôt de la recette."
+          },
+          "dir": {
+            "type": "string",
+            "description": "Où la recette est rangée : `recipes/<fichier>.md` pour la méthode, le dossier qui porte son `RECIPE.md` pour un projet."
+          },
+          "complete": {
+            "type": "boolean",
+            "description": "Les cinq champs requis sont présents et le YAML se lit (contrat de la fiche 002)."
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Les champs requis absents d'un brouillon ; vide si la recette est complète."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "makes",
+          "status",
+          "source",
+          "dir",
+          "complete",
+          "missing"
+        ]
+      },
+      "description": "Les recettes de la méthode (`recipes/*.md`), triées par id."
+    },
+    "projet": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "makes": {
+            "type": "string",
+            "description": "Ce que la recette fabrique, en une phrase."
+          },
+          "status": {
+            "type": "string",
+            "description": "Le statut écrit (draft, ready…) ; vide si absent."
+          },
+          "source": {
+            "type": "string",
+            "description": "Où vit l'implémentation de référence, chemin relatif au dépôt de la recette."
+          },
+          "dir": {
+            "type": "string",
+            "description": "Où la recette est rangée : `recipes/<fichier>.md` pour la méthode, le dossier qui porte son `RECIPE.md` pour un projet."
+          },
+          "complete": {
+            "type": "boolean",
+            "description": "Les cinq champs requis sont présents et le YAML se lit (contrat de la fiche 002)."
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Les champs requis absents d'un brouillon ; vide si la recette est complète."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "makes",
+          "status",
+          "source",
+          "dir",
+          "complete",
+          "missing"
+        ]
+      },
+      "description": "Les recettes déclarées dans le projet visé (dossiers portant un `RECIPE.md`), triées par id."
+    }
+  },
+  "required": [
+    "schema_version",
+    "catalogue",
+    "projet"
+  ]
+}

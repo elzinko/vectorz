@@ -13,11 +13,20 @@
  *
  * PUR : aucune I/O. Le bord (`bin/ezk-recipes.ts`) lit les fichiers et passe des entrées déjà lues.
  */
-import { type CatalogEntry, type ScanEntry, scanDeclaredRecipes, scanIndexedRecipes } from './recipe-contract.js';
+import { z } from 'zod';
+import {
+  type CatalogEntry,
+  type ScanEntry,
+  declaredRecipe,
+  scanDeclaredRecipes,
+  scanIndexedRecipes,
+} from './recipe-contract.js';
 
 export interface DiscoveredRecipe extends CatalogEntry {
   /** La déclaration est complète (les cinq champs, fiche 002) ? Sinon c'est un brouillon indexé. */
   complete: boolean;
+  /** Les champs requis absents d'un brouillon (tous, si son YAML ne se lit pas) ; vide si complète. */
+  missing: string[];
 }
 
 /**
@@ -26,7 +35,62 @@ export interface DiscoveredRecipe extends CatalogEntry {
  */
 export function discover(entries: ScanEntry[]): DiscoveredRecipe[] {
   const complete = new Set(scanDeclaredRecipes(entries).map((r) => r.id));
-  return scanIndexedRecipes(entries).map((r) => ({ ...r, complete: complete.has(r.id) }));
+  const missingByDir = new Map<string, string[]>();
+  for (const { dir, recipeMd } of entries) {
+    if (recipeMd === null) continue;
+    const check = declaredRecipe(recipeMd);
+    missingByDir.set(dir, check.declared ? [] : [...check.missing]);
+  }
+  return scanIndexedRecipes(entries).map((r) => {
+    const isComplete = complete.has(r.id);
+    return { ...r, complete: isComplete, missing: isComplete ? [] : (missingByDir.get(r.dir) ?? []) };
+  });
+}
+
+/** Version du contrat JSON de `ezk recipes --json` (fiche 20261104090518008, ADR-086). */
+export const RECIPES_SCHEMA_VERSION = 1;
+
+const RecipeJsonSchema = z.strictObject({
+  id: z.string(),
+  title: z.string(),
+  makes: z.string().describe('Ce que la recette fabrique, en une phrase.'),
+  status: z.string().describe('Le statut écrit (draft, ready…) ; vide si absent.'),
+  source: z.string().describe("Où vit l'implémentation de référence, chemin relatif au dépôt de la recette."),
+  dir: z
+    .string()
+    .describe('Où la recette est rangée : `recipes/<fichier>.md` pour la méthode, le dossier qui porte son `RECIPE.md` pour un projet.'),
+  complete: z.boolean().describe('Les cinq champs requis sont présents et le YAML se lit (contrat de la fiche 002).'),
+  missing: z.array(z.string()).describe("Les champs requis absents d'un brouillon ; vide si la recette est complète."),
+});
+
+/** `ezk recipes --json` : le catalogue de la méthode et les recettes que le projet déclare. */
+export const RecipesContractSchema = z.strictObject({
+  schema_version: z.literal(RECIPES_SCHEMA_VERSION),
+  catalogue: z.array(RecipeJsonSchema).describe('Les recettes de la méthode (`recipes/*.md`), triées par id.'),
+  projet: z
+    .array(RecipeJsonSchema)
+    .describe('Les recettes déclarées dans le projet visé (dossiers portant un `RECIPE.md`), triées par id.'),
+});
+export type RecipesContract = z.infer<typeof RecipesContractSchema>;
+
+const toJson = (r: DiscoveredRecipe): RecipesContract['catalogue'][number] => ({
+  id: r.id,
+  title: r.title,
+  makes: r.makes,
+  status: r.status,
+  source: r.source,
+  dir: r.dir,
+  complete: r.complete,
+  missing: r.missing,
+});
+
+/** La même découverte que `renderDiscovery`, en données : ce que mission control lit (ADR-086). */
+export function recipesContract(input: Omit<DiscoveryInput, 'projectLabel'>): RecipesContract {
+  return {
+    schema_version: RECIPES_SCHEMA_VERSION,
+    catalogue: input.methodRecipes.map(toJson),
+    projet: input.projectRecipes.map(toJson),
+  };
 }
 
 /** Une valeur sur UNE ligne : un `makes` ou un titre multiligne ne doit pas casser la liste. */

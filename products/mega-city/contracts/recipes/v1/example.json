@@ -1,0 +1,40 @@
+{
+ "schema_version": 1,
+ "catalogue": [
+  {
+   "id": "20260830104013705",
+   "title": "Mailing list sur une page d'attente",
+   "makes": "Une page d'attente qui collecte des emails",
+   "status": "",
+   "source": "",
+   "dir": "recipes/page-attente.md",
+   "complete": false,
+   "missing": [
+    "source",
+    "status"
+   ]
+  },
+  {
+   "id": "20261001004228784",
+   "title": "Lancer l'app de n'importe quelle branche",
+   "makes": "Une commande unique qui lance l'app de la branche voulue",
+   "status": "draft",
+   "source": "tools/launcher",
+   "dir": "recipes/lanceur-dev-universel.md",
+   "complete": true,
+   "missing": []
+  }
+ ],
+ "projet": [
+  {
+   "id": "20261018110931402",
+   "title": "Harnais de validation",
+   "makes": "Une procédure de validation rejouable",
+   "status": "ready",
+   "source": "apps/outil",
+   "dir": "apps/outil",
+   "complete": true,
+   "missing": []
+  }
+ ]
+}

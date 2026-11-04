@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * `ezk recipes [--root <projet>]` — la découverte, en LECTURE SEULE, des recettes utilisables depuis
+ * `ezk recipes [--root <projet>] [--json]` — la découverte, en LECTURE SEULE, des recettes utilisables depuis
  * un projet hôte (fiche 20261023120000001). Montre :
  *   - les recettes de la MÉTHODE (`recipes/*.md` de l'install ezk) — globales ;
  *   - les recettes DÉCLARÉES dans le projet (dossiers portant un `RECIPE.md`, contrat de la fiche 002).
@@ -14,7 +14,7 @@ import { type Dirent, existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type ScanEntry, RECIPE_DECLARATION_FILE } from '../src/core/recipe-contract.js';
-import { discover, renderDiscovery } from '../src/core/recipe-discovery.js';
+import { discover, recipesContract, renderDiscovery } from '../src/core/recipe-discovery.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 
 const base = process.env.INIT_CWD ?? process.cwd();
@@ -70,5 +70,10 @@ function projectRecipeEntries(root: string): ScanEntry[] {
 
 const methodRecipes = discover(methodRecipeEntries());
 const projectRecipes = discover(projectRecipeEntries(projectRoot));
-console.log(renderDiscovery({ projectLabel: projectRoot, methodRecipes, projectRecipes }));
+// `--json` : la même découverte en données, pour mission control (fiche 20261104090518008, ADR-086).
+if (process.argv.includes('--json')) {
+  console.log(JSON.stringify(recipesContract({ methodRecipes, projectRecipes }), null, 1));
+} else {
+  console.log(renderDiscovery({ projectLabel: projectRoot, methodRecipes, projectRecipes }));
+}
 process.exit(0);
