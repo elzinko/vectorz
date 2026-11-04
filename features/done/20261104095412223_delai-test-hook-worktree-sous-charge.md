@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [retro, gate]
-status: ready
-pr:
+status: shipped
+pr: "local (87b22080)"
 evidence: none # test, pas d'écran
 created: 2026-11-04
 ---

@@ -26,7 +26,7 @@ fonctionnel et graphiquement compréhensible) :
 - ~~`20261104095815710` — le contrat du run annonce l'arrêt de `--review` · build (sprint 30)~~ — shipped
 - ~~`20261104095401066` — le compte rendu de sprint écrit « 0 tokens » quand il ne mesure pas · build (sprint 30, rétro 27-28)~~ — shipped
 - `20261104095815808` — renommer `--review` d'un nom qui dit le geste · groom (choix du nom)
-- `20261104095412223` — deux tests à sous-process dépassent leur délai sous charge · groom (rétro 27-28)
+- ~~`20261104095412223` — deux tests à sous-process dépassent leur délai sous charge · groom (rétro 27-28)~~ — shipped
 
 **Correctifs de la passe scout du 2026-11-02** (hors milestone, en tête sur décision PO du 2026-11-02) :
 - ~~`20261102100505427` — le lanceur refuse un port web déjà pris, au lieu d'annoncer un port faux · build~~ — shipped
