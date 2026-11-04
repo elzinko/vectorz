@@ -93,3 +93,49 @@ describe('ProcessView — jamais de faux chiffre', () => {
     expect(screen.getByRole('status').textContent).toBe('process indisponible : process en cours de lecture');
   });
 });
+
+describe('ProcessView — le schéma du workflow (fiche 20261104090517801)', () => {
+  const strip = () => screen.getByRole('region', { name: 'Workflow de la méthode' });
+
+  it('une pastille par étape publiée, dans l’ordre, avec le nombre de sa colonne', () => {
+    show({ processState: { state: 'ok' }, process });
+    const nodes = within(strip()).getAllByRole('button');
+    expect(nodes.map((n) => n.getAttribute('aria-label'))).toEqual([
+      'Étape Idée : 1 fiches',
+      'Étape Prête : 0 fiches',
+      'Étape En sprint : 1 fiches',
+      'Étape En revue : 1 fiches',
+      'Étape Livrée : 336 fiches',
+    ]);
+    // Le même nombre que la colonne du kanban (coupée pour les livrées : « 1 / 336 »).
+    expect(column('Livrée').querySelector('.cnt')?.textContent).toBe('1 / 336');
+  });
+
+  it('des flèches relient les étapes, et le sprint montre ses étapes internes', () => {
+    const { container } = render(
+      <ProcessView project={{ ...base, processState: { state: 'ok' }, process }} onOpenFiche={vi.fn()} />,
+    );
+    expect(container.querySelectorAll('.wf-arrow')).toHaveLength(4);
+    const sprint = within(strip()).getByLabelText("Étapes d'un sprint");
+    expect(sprint.textContent).toBe('BDDTDDgaterevuemerge');
+  });
+
+  it('les parkées sont à part, hors flux', () => {
+    show({ processState: { state: 'ok' }, process, funnel: { ...base.funnel, parked: 85 } });
+    expect(within(strip()).getByText(/hors flux/).textContent).toBe('Parkées : 85 — hors flux, en attente du PO');
+  });
+
+  it('plan inconnu : pas de faux zéro de parkées', () => {
+    show({ processState: { state: 'ok' }, process, plan: { state: 'loading' } });
+    expect(within(strip()).queryByText(/Parkées/)).toBeNull();
+  });
+
+  it('cliquer une pastille amène à sa colonne', async () => {
+    const scroll = vi.fn();
+    Element.prototype.scrollIntoView = scroll;
+    show({ processState: { state: 'ok' }, process });
+    await userEvent.click(within(strip()).getByRole('button', { name: 'Étape En revue : 1 fiches' }));
+    expect(scroll).toHaveBeenCalledTimes(1);
+    expect(document.activeElement?.id).toBe('proc-col-en-revue');
+  });
+});

@@ -52,13 +52,14 @@ Une surface : l'écran.
 
 ## Critères d'acceptation
 
-- [ ] La vue Process montre en tête un schéma : une pastille par étape publiée, dans l'ordre, reliées
+- [x] La vue Process montre en tête un schéma : une pastille par étape publiée, dans l'ordre, reliées
       par des flèches, chacune avec son nombre de fiches.
-- [ ] Les nombres du schéma égalent ceux des colonnes du kanban.
-- [ ] Les étapes internes d'un sprint s'affichent sous l'étape « En sprint ».
-- [ ] Les fiches parkées apparaissent à part, avec leur nombre, hors du flux.
-- [ ] Cliquer une pastille amène à sa colonne.
-- [ ] Le schéma reste lisible en largeur réduite : il passe à la ligne au lieu de déborder.
+- [x] Les nombres du schéma égalent ceux des colonnes du kanban.
+- [x] Les étapes internes d'un sprint s'affichent sous l'étape « En sprint ».
+- [x] Les fiches parkées apparaissent à part, avec leur nombre, hors du flux.
+- [x] Cliquer une pastille amène à sa colonne.
+- [x] Le schéma reste lisible en largeur réduite : il passe à la ligne au lieu de déborder.
+      (Prouvé par la règle CSS `flex-wrap` et l'œil ; aucun test automatisé ne mesure la mise en page.)
 
 ## Comment vérifier
 
@@ -67,6 +68,11 @@ pnpm --dir products/cop1/packages/web exec vitest run src/board/ProcessView.test
 ```
 
 Puis ouvrir mission control, vue Process : le schéma est en tête, ses nombres égalent les colonnes.
+
+Avant / après, vue Process de vectorz (2026-11-04) :
+
+- avant : cinq colonnes, sans chemin ni étapes de sprint — ![avant](../docs/pr-evidence/20261104090517801/process-avant.jpg)
+- après : le schéma Idée 18 → Prête 3 → En sprint 2 → En revue 0 → Livrée 369, les étapes du sprint, les parkées hors flux — ![après](../docs/pr-evidence/20261104090517801/process-apres.jpg)
 
 ## Notes / décisions
 
