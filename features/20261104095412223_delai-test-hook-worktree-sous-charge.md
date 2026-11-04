@@ -7,7 +7,7 @@ product: mega-city
 milestone: qualite
 version:
 labels: [retro, gate]
-status: idea
+status: ready
 pr:
 evidence: none # test, pas d'écran
 created: 2026-11-04
