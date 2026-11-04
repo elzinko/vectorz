@@ -23,8 +23,13 @@ export interface RunSettings {
   mode: RunMode;
   delivery: Delivery;
   tokens: TokenSetting;
-  /** `--review` : le PO tamponne `ready` lui-même (absent par défaut). */
-  review?: boolean;
+  /** `--stamp-ready` : le PO tamponne `ready` lui-même (absent par défaut). */
+  stampReady?: boolean;
+  /**
+   * L'ancien nom employé pour `--stamp-ready`, quand c'en est un (`--review`, `--check-ready`) :
+   * le contexte de run le dit (fiche 20261104095815808, amendement de l'ADR-0053).
+   */
+  stampReadyAlias?: '--review' | '--check-ready';
   maxSprints?: number;
   /** La fiche visée, quand on la connaît. */
   fiche?: string;
@@ -109,8 +114,8 @@ function contractLines(s: RunSettings, seal: SealPolicy): string[] {
         : "En auto, je merge les fiches vertes (gate verte et revue GO), une PR par fiche, au fil de l'eau.";
   // `--review` ajoute un arrêt que le PO doit voir annoncé (fiche 20261104095815710) ; la revue adverse du
   // code, elle, ne dépend pas de ce réglage : le contrat le dit, avec ou sans.
-  const two = s.review
-    ? "Je m'arrête sur 5 cas : action irréversible ou sortante, hausse de budget, idée produit sur backlog vide, exigences contradictoires, et après chaque grooming pour que tu tamponnes la fiche prête (--review). La revue adverse du code tourne toujours ; --review ne la règle pas."
+  const two = s.stampReady
+    ? "Je m'arrête sur 5 cas : action irréversible ou sortante, hausse de budget, idée produit sur backlog vide, exigences contradictoires, et après chaque grooming pour que tu tamponnes la fiche prête (--stamp-ready). La revue adverse du code tourne toujours ; --stamp-ready ne la règle pas."
     : "Je m'arrête sur 4 cas : action irréversible ou sortante, hausse de budget, idée produit sur backlog vide, exigences contradictoires. La revue adverse du code tourne toujours.";
   const three =
     s.tokens === 'cap'
@@ -135,7 +140,7 @@ export function buildRunContext(settings: RunSettings, facts: RunFacts): RunCont
     `--mode ${settings.mode}`,
     `--tokens ${settings.tokens}`,
     `--delivery ${settings.delivery}`,
-    `--review ${settings.review ? 'présent' : 'absent'}`,
+    `--stamp-ready ${settings.stampReady ? 'présent' : 'absent'}`,
     ...(settings.maxSprints !== undefined ? [`--max-sprints ${settings.maxSprints}`] : []),
     ...(settings.sealVersions ? [`--seal-versions ${settings.sealVersions}`] : []),
   ];
@@ -152,6 +157,13 @@ export function buildRunContext(settings: RunSettings, facts: RunFacts): RunCont
     lines: [
       'Contexte de run',
       `  Réglages   ${flags.join(' · ')}${target}`,
+      ...(settings.stampReadyAlias
+        ? [
+            settings.stampReady
+              ? `  Ancien nom ${settings.stampReadyAlias} est l'ancien nom de --stamp-ready : écris --stamp-ready.`
+              : `  Ancien nom ${settings.stampReadyAlias} false est l'ancien réglage par défaut : n'écris rien, --stamp-ready reste absent.`,
+          ]
+        : []),
       baseLine(facts),
       `  Worktree   ${wt.kind === 'secondary' ? 'secondaire' : 'principal'} · ${branch} · ${wt.path}`,
       write,

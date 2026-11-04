@@ -3,7 +3,7 @@
  * run:context — le bloc « Contexte de run » à afficher AVANT un run autonome (fiche 20260906122942607).
  *
  *   pnpm --dir products/mega-city run:context [--mode auto|manuel] [--delivery per-feature|per-epic]
- *     [--tokens lean|cap|full] [--review] [--max-sprints N] [--fiche <id>] [--no-fetch] [--base <branche>]
+ *     [--tokens lean|cap|full] [--stamp-ready] [--max-sprints N] [--fiche <id>] [--no-fetch] [--base <branche>]
  *
  * Il dit d'où le run part (origin/main après un `git fetch`, le retard de HEAD), où il travaille
  * (worktree principal ou secondaire), qui écrit les fichiers (inline ou sous-agent), et le contrat en
@@ -25,7 +25,7 @@ import { githubCapabilities } from '../src/loaders/project-config.js';
 
 function usage(): never {
   console.error(`usage: run:context [--mode auto|manuel] [--delivery per-feature|per-epic] [--tokens lean|cap|full]
-                   [--review] [--seal-versions local] [--max-sprints N] [--fiche <id>] [--no-fetch] [--base <branche>]
+                   [--stamp-ready] [--seal-versions local] [--max-sprints N] [--fiche <id>] [--no-fetch] [--base <branche>]
 
   défauts : --mode auto --delivery per-feature --tokens lean (ceux d'ezk-product-build)
   --no-fetch    ne rafraîchit pas origin (hors ligne) : la base est alors lue telle qu'elle est`);
@@ -54,7 +54,15 @@ function main(): void {
     if (a === '--mode') settings.mode = oneOf<RunMode>(argv[++i], ['auto', 'manuel'], '--mode');
     else if (a === '--delivery') settings.delivery = oneOf<Delivery>(argv[++i], ['per-feature', 'per-epic'], '--delivery');
     else if (a === '--tokens') settings.tokens = oneOf<TokenSetting>(argv[++i], ['lean', 'cap', 'full'], '--tokens');
-    else if (a === '--review') settings.review = true;
+    else if (a === '--stamp-ready') settings.stampReady = true;
+    // Anciens noms, toujours lus (ADR-0053 amendé, fiche 20261104095815808) : le contexte les nomme.
+    else if (a === '--review') {
+      settings.stampReady = true;
+      settings.stampReadyAlias = '--review';
+    } else if (a === '--check-ready') {
+      settings.stampReady = oneOf<'true' | 'false'>(argv[++i], ['true', 'false'], '--check-ready') === 'true';
+      settings.stampReadyAlias = '--check-ready';
+    }
     else if (a === '--max-sprints') {
       const n = Number.parseInt(argv[++i] ?? '', 10);
       if (Number.isNaN(n) || n < 1) usage();

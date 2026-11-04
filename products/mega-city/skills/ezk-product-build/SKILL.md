@@ -4,7 +4,7 @@ name: ezk-product-build
 composes: [ezk-backlog, ezk-sprint, ezk-pr, ezk-retro]
 composes-external: [product-brainstorming, architecture]
 applies: [documentation-guidelines/human-facing-lisibility, documentation-guidelines/readable-deliverable-trio, token-economy/agent-call-budget, token-economy/retro-due-choix-chiffre, development/tenter-avant-de-parker, development/decision-informee-au-depart]
-argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
+argument-hint: "[help|run|status] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--stamp-ready] [--delivery per-feature|per-epic] [--retro end|every:N|off]"
 description: >-
   Couche PRODUCT-OWNER autonome qui construit un produit en enchaînant des
   sprints. A utiliser quand l'utilisateur veut « construis-moi ce produit »,
@@ -43,7 +43,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--mode manuel|auto] [--versions all|<liste>] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--review] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--versions all|<liste>] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--stamp-ready] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -59,7 +59,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 **Le levier principal, c'est `--mode` — une boîte de vitesses.** `manuel` (alias `ask`) : tu passes
 les vitesses toi-même, tu **valides à chaque checkpoint**. `auto` (**défaut**) : la boîte enchaîne
-pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready` **si tu passes `--review`**).
+pour toi, ne s'arrêtant que sur les **4 décisions humaines** (+ le gate `ready` **si tu passes `--stamp-ready`**).
 
 **Un sprint = un lot** (ADR-0054, Option A) : `ezk-backlog next --lot N` le choisit,
 `ezk-sprint start --lot` l'ouvre, `ezk-sprint close` le scelle.
@@ -78,10 +78,10 @@ sauf échec de cette livraison, **journalisé** (`SPRINT.md`). Sans borne, la bo
 backlog tirable**.
 
 **Réglages avancés** — `--tokens` règle **comment la boîte roule** (indépendant du `--mode`, cf. § dédié) ;
-`--review` règle **si tu t'arrêtes après le grooming pour tamponner `ready` toi-même** (cf. § dédié) ; `--delivery` règle le **grain de
+`--stamp-ready` règle **si tu t'arrêtes après le grooming pour tamponner `ready` toi-même** (cf. § dédié) ; `--delivery` règle le **grain de
 livraison** d'un lot cohérent (au fil de l'eau vs coordonné, cf. plus bas) ; `--retro` règle **si/quand une
 rétro se joue en fin d'itération** (cf. § dédié). Défauts : `--mode auto`, `--tokens lean`,
-`--review` **absent** (autonome), `--delivery per-feature`, `--retro end`.
+`--stamp-ready` **absent** (autonome), `--delivery per-feature`, `--retro end`.
 
 **Outils : la commande `ezk`.** Ce skill appelle ses outils par `ezk`, installée sur le poste : il
 marche depuis vectorz comme depuis un projet hôte. Une commande sur les fiches d'un projet reçoit
@@ -213,7 +213,7 @@ jamais par son id nu.
 |---|---|
 | **Inter-sprint** (après `close`, un par lot) | ✅ *Incrément scellé : ‹k› story(s) livrée(s) (tests verts, mergées).* → `[Sprint suivant : lot ‹ids›]` · `[Polir ‹story›]` · `[Idéer de nouvelles features]` · `[Stop]` |
 | **Idéation** (backlog vide / fiche vague) | *Plus de fiche claire / ‹fiche› est vague.* → `[Brainstormer pour la cadrer]` · `[Construire telle quelle]` · `[Tu donnes la prochaine idée]` |
-| **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — cet arrêt n'apparaît **qu'avec `--review`** ; **par défaut**, le tampon est pris sur concurrence `ezk-pm` sans s'arrêter. |
+| **Aucune fiche ready** (ADR-0016/0028) | 🚧 *Fiche de tête **auto-groomée** vers la DoR (cf. § « Auto-groom »).* → `[Tamponner ready ‹fiche› (gate)]` · `[Skip → fiche suivante (journalisé)]` · `[Groomer une autre fiche]` — cet arrêt n'apparaît **qu'avec `--stamp-ready`** ; **par défaut**, le tampon est pris sur concurrence `ezk-pm` sans s'arrêter. |
 | **Blocage** | ⚠️ *‹problématique›.* → `[Option A : …]` · `[Option B : …]` · `[Je délègue à un sous-agent pour avis]` · `[Tu tranches]` |
 | **Dérive / plafond tokens** | 💸 *‹N› tokens (seuil ‹M›).* → `[Augmenter le budget & continuer]` · `[Terminer l'en-cours puis stop]` · `[Stop net]` · `[Passer en `lean`]` — au **plafond `cap`**, l'arrêt se fait au **point sûr** le plus proche (jamais un sprint laissé à moitié) ; « augmenter le budget » est une **décision humaine** (cf. les 4 STOP). |
 | **Rétro d'itération** (fin de boucle ou palier `every:N`, ≥ 2 sprints) | 🔁 *Rétro jouée, ‹k› propositions (déjà rangées par `ezk-retro`).* → `[Enacter ces 2-3]` · `[Ajuster la sélection]` · `[Aucune pour l'instant]` — puis **reprends la boucle** (palier `every:N`) ou **clôture** (fin de run). |
@@ -274,7 +274,7 @@ chaud (option `[Passer en auto]` / `[Repasser en manuel]` proposée à un checkp
   les décisions techniques (au décideur **`ezk-pm`** et aux agents de rôle), tu
   **journalises** chaque décision dans `SPRINT.md` (`## Notes / décisions`), et tu ne
   t'arrêtes QUE sur les **4 décisions humaines** — **plus** la validation du gate `ready`
-  **uniquement si tu passes `--review`** ; **par défaut (sans `--review`)** ce stop
+  **uniquement si tu passes `--stamp-ready`** ; **par défaut (sans `--stamp-ready`)** ce stop
   **n'existe pas**, le tampon `ready` passe par la concurrence `ezk-pm` (ADR-0016 révisé par
   [ADR-0028](../../docs/adr/0028-product-builder-auto-groom-ready.md), défaut basculé par
   [ADR-0053](../../docs/adr/0053-check-ready-devient-review-defaut-autonome.md)).
@@ -289,7 +289,7 @@ En `auto`, chaque moment d'arrêt se résout ainsi :
 | **Inter-sprint** | enchaîne le **sprint suivant**, dans la limite de **`--max-sprints`** (sans borne : jusqu'au prochain checkpoint ou l'épuisement du backlog tirable). La discipline de coût vient de `--tokens` (indépendant) + des 4 STOP. Journalise. |
 | **Idéation — fiche vague** | délègue à `product-management:product-brainstorming` pour cadrer, puis construis. Journalise. |
 | **Idéation — backlog vide** | **STOP humain** — inventer la direction produit n'est jamais automatisable. |
-| **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-dev`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--review`** : **présent** → **STOP humain** pour tamponner ; **absent (défaut)** → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
+| **Aucune fiche ready** | **AUTO-GROOM** la fiche de tête vers la DoR (délègue `product-brainstorming`/`ezk-architect`/`ezk-dev`/`ezk-pm` — cf. § « Auto-groom vers la DoR ») au lieu de s'arrêter à vide. Puis, selon **`--stamp-ready`** : **présent** → **STOP humain** pour tamponner ; **absent (défaut)** → **auto-tampon** sur concurrence `ezk-pm`. **Plancher** : pas d'outcome testable dérivable → **skip + journal + surface**. Blocage réel → **skip** vers la fiche suivante ; **tout** skippe → **STOP humain**. (ADR-0028 révise A5.) |
 | **Blocage technique** | confie l'arbitrage à **`ezk-pm`** (qui peut demander l'avis d'`ezk-architect`/`ezk-reviewer`) ; il prend la 1re option recommandée et journalise. |
 | **Blocage = contradiction** | **STOP humain** — arbitrage de valeur. |
 | **Dérive / plafond tokens** | en `cap`, **arrête au point sûr et demande** (augmenter / terminer l'en-cours / stop). En `lean` (défaut) — **déjà le moins cher, rien à dégrader** — si la dérive **persiste** au-delà du seuil : **surface + STOP humain**, jamais de burn illimité en silence. Une **augmentation** de budget = **STOP humain** dans les deux cas. |
@@ -315,9 +315,9 @@ générique. On nomme toujours le remplacement (rétro 2026-10-26).
 tu composes son jugement, tu ne le réimplémentes pas (même doctrine que pour les 3 autres
 compétences).
 
-## Relecture du grooming — configurable (`--review`)
+## Relecture du grooming — configurable (`--stamp-ready`)
 
-Règle **si tu t'arrêtes après le grooming** pour poser le tampon `ready` toi-même. `--review` est
+Règle **si tu t'arrêtes après le grooming** pour poser le tampon `ready` toi-même. `--stamp-ready` est
 un **interrupteur nu** : présent, tu relis ; absent, la machine enchaîne. Adossé à
 [ADR-0028](../../docs/adr/0028-product-builder-auto-groom-ready.md) (auto-groom + garde-fous) et
 [ADR-0053](../../docs/adr/0053-check-ready-devient-review-defaut-autonome.md) (renommage + défaut
@@ -327,12 +327,15 @@ autonome). **Défaut : absent** (autonome).
   l'avancement). Tu poses `ready` **toi-même**, MAIS **seulement sur concurrence indépendante
   d'`ezk-pm`** : tu lui confies « la DoR de ‹fiche› est-elle atteinte ? » et il concourt (ou non).
   **Jamais un auto-tampon solo.** Puis tu construis, sans STOP pour le gate.
-- **`--review` (opt-in)** — après auto-grooming, **STOP humain** : tu présentes la fiche groomée
+- **`--stamp-ready` (opt-in)** — après auto-grooming, **STOP humain** : tu présentes la fiche groomée
   et l'humain **tamponne** `ready` (`ezk-backlog ready <id>`). C'est le gate humain d'A5, rendu
   **à la demande**.
 
-> **Rétro-compat.** L'ancien `--check-ready true|false` **reste lu** : `true` → `--review`,
-> `false` → absence de `--review`. Écris `--review` pour toute nouvelle commande.
+> **Rétro-compat.** Deux anciens noms **restent lus**. `--review` (2026-08 → 2026-11-04) se lisait
+> « revue du code » à tort : il mappe sur `--stamp-ready`. L'ancien `--check-ready true|false` aussi :
+> `true` → `--stamp-ready`, `false` → absence de `--stamp-ready`. Dans les deux cas, le contexte de run
+> dit « … est l'ancien nom de `--stamp-ready` » (ADR-0053 amendé le 2026-11-04). Écris `--stamp-ready`
+> pour toute nouvelle commande.
 
 **Pourquoi c'est sûr (anti-Goodhart).** Le gate humain mélangeait (a) *DoR complète* [mécanique,
 délégable] et (b) *ça vaut le coup* [humain]. Défaut autonome = le PO a déjà tranché (b) en
@@ -431,9 +434,9 @@ en **composant** (tu ne réimplémentes rien) :
 4. **Arbitrage PO du périmètre** — `ezk-pm` pour trancher une option / un seuil **dans** le lot
    pré-autorisé (il REFUSE les 4 décisions humaines).
 
-Tu itères jusqu'à DoR atteinte, puis tu appliques la règle `--review` (relire ou non). Écris le
+Tu itères jusqu'à DoR atteinte, puis tu appliques la règle `--stamp-ready` (relire ou non). Écris le
 grooming dans la fiche (`ezk-backlog groom`) ; **jamais** le tampon `ready` sans passer par cette
-règle (concurrence `ezk-pm` par défaut, gate humain si `--review`).
+règle (concurrence `ezk-pm` par défaut, gate humain si `--stamp-ready`).
 
 **⛔ Plancher outcome-testable (garde-fou n°1).** Une fiche doit contenir — ou permettre de dériver
 proprement — **au moins un critère de succès vérifiable**. En dessous, **tu n'inventes pas** la

@@ -24,7 +24,7 @@ sans attendre de validation (c'est un affichage, pas un checkpoint).
 
 | Ligne | Ce qu'elle dit |
 |---|---|
-| Réglages | `--mode`, `--tokens`, `--delivery`, `--review`, `--max-sprints`, la fiche visée |
+| Réglages | `--mode`, `--tokens`, `--delivery`, `--stamp-ready`, `--max-sprints`, la fiche visée |
 | Base | `origin/main` après `git fetch`, le retard de HEAD, et ce qu'on en fait |
 | Worktree | principal ou secondaire, la branche, le chemin |
 | Écriture | inline en worktree secondaire (un sous-agent écrirait chez lui), sous-agent possible sinon |

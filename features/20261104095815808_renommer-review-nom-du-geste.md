@@ -42,11 +42,11 @@ Deux surfaces : la commande et le texte (skill + ADR).
 
 ## Critères d'acceptation
 
-- [ ] `ezk run context … --stamp-ready` annonce l'arrêt après chaque grooming, en citant `--stamp-ready`.
-- [ ] `--review` et `--check-ready true` donnent le même contrat, plus une ligne qui les nomme anciens noms de `--stamp-ready`.
-- [ ] La skill `ezk-product-build` (texte et `argument-hint`) emploie `--stamp-ready` ; `--review` n'y apparaît plus que comme ancien nom.
-- [ ] L'ADR-0053 porte un amendement daté qui note le renommage.
-- [ ] Les tests du contexte de run couvrent le nouveau nom et les deux anciens.
+- [x] `ezk run context … --stamp-ready` annonce l'arrêt après chaque grooming, en citant `--stamp-ready`.
+- [x] `--review` et `--check-ready true` donnent le même contrat, plus une ligne qui les nomme anciens noms de `--stamp-ready`.
+- [x] La skill `ezk-product-build` (texte et `argument-hint`) emploie `--stamp-ready` ; `--review` n'y apparaît plus que comme ancien nom.
+- [x] L'ADR-0053 porte un amendement daté qui note le renommage.
+- [x] Les tests du contexte de run couvrent le nouveau nom et les deux anciens.
 
 ## Comment vérifier
 

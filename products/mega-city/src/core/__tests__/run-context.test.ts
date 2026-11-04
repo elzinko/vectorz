@@ -92,19 +92,33 @@ describe('buildRunContext — le contrat en trois lignes reflète les réglages 
     expect(c[2]).toContain('lean');
   });
 
-  it('--review ajoute un cinquième arrêt, annoncé, après chaque grooming (fiche 20261104095815710)', () => {
-    const avec = contract(settings({ review: true }))[1];
+  it('--stamp-ready ajoute un cinquième arrêt, annoncé, après chaque grooming (fiche 20261104095815710)', () => {
+    const avec = contract(settings({ stampReady: true }))[1];
     expect(avec).toMatch(/5 cas/);
-    expect(avec).toMatch(/après chaque grooming pour que tu tamponnes la fiche prête \(--review\)/);
-    const sans = contract(settings({ review: false }))[1];
+    expect(avec).toMatch(/après chaque grooming pour que tu tamponnes la fiche prête \(--stamp-ready\)/);
+    const sans = contract(settings({ stampReady: false }))[1];
     expect(sans).toMatch(/4 cas/);
     expect(sans).not.toMatch(/grooming/);
   });
 
-  it('avec ou sans --review, le contrat dit que la revue adverse du code tourne toujours', () => {
+  it('avec ou sans --stamp-ready, le contrat dit que la revue adverse du code tourne toujours', () => {
     for (const review of [true, false]) {
-      expect(contract(settings({ review }))[1], String(review)).toMatch(/revue adverse du code tourne toujours/);
+      expect(contract(settings({ stampReady: review }))[1], String(review)).toMatch(/revue adverse du code tourne toujours/);
     }
+  });
+
+  it('un ancien nom (--review, --check-ready) donne le même contrat, et le contexte le nomme (fiche 20261104095815808)', () => {
+    for (const alias of ['--review', '--check-ready'] as const) {
+      const out = text(settings({ stampReady: true, stampReadyAlias: alias }), facts());
+      expect(out).toContain(`${alias} est l'ancien nom de --stamp-ready`);
+      expect(out).toMatch(/5 cas/);
+    }
+    expect(text(settings({ stampReady: true }), facts())).not.toMatch(/ancien nom/);
+    // `--check-ready false` : l'ancien défaut ; conseiller --stamp-ready inverserait le comportement.
+    const off = text(settings({ stampReady: false, stampReadyAlias: '--check-ready' }), facts());
+    expect(off).toContain("--check-ready false est l'ancien réglage par défaut : n'écris rien");
+    expect(off).not.toContain('écris --stamp-ready');
+    expect(off).toMatch(/4 cas/);
   });
 
   it('auto + per-epic : les PR du lot restent ouvertes, rien n’est mergé au fil de l’eau', () => {
@@ -127,7 +141,7 @@ describe('buildRunContext — le contrat en trois lignes reflète les réglages 
 
 describe('buildRunContext — le briefing reste court', () => {
   it('rappelle les réglages et la fiche visée, en une dizaine de lignes au plus', () => {
-    const { lines } = buildRunContext(settings({ fiche: '0080', maxSprints: 2, review: false }), facts());
+    const { lines } = buildRunContext(settings({ fiche: '0080', maxSprints: 2, stampReady: false }), facts());
     const out = lines.join('\n');
     expect(out).toContain('--mode auto');
     expect(out).toContain('--tokens lean');

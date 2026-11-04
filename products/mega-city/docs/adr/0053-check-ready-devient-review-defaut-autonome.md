@@ -114,3 +114,18 @@ peut re-serrer d'un mot (`--review`) sans changer de configuration.
    [ADR-0016](0016-rituels-scrum-cycle-de-vie-backlog.md) (A5).
 3. [ ] Fiche backlog de suivi : complétion dynamique des paramètres (surface à trancher :
    CLI `ezk` vs `/slash`).
+
+## Amendement du 2026-11-04 — `--review` devient `--stamp-ready`
+
+Le nom `--review` a trompé à son tour : il se lit « revue du code », alors qu'il arrête le run après
+chaque grooming pour que le PO tamponne la fiche prête. Le 2026-10-30, le PO l'a passé en croyant
+activer la revue ; le run lui a rendu la main pour tamponner. La revue adverse du code, elle, ne dépend
+pas de ce réglage.
+
+Décision : le réglage s'appelle **`--stamp-ready`** (choix d'`ezk-pm` en mode auto, réversible). Il
+nomme le geste humain, comme le voulait déjà cet ADR. `--review` et `--check-ready true|false` restent
+lus, et le contexte de run dit qu'ils sont d'anciens noms. Le contrat du run annonce cet arrêt quand le
+réglage est posé, et dit toujours que la revue du code tourne
+(fiches [`20261104095815710`](../../../../features/done/20261104095815710_contrat-run-annonce-arret-review.md)
+et [`20261104095815808`](../../../../features/20261104095815808_renommer-review-nom-du-geste.md)).
+
