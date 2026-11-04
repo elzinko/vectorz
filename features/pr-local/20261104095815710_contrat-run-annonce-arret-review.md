@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104095815710_contrat-run-annonce-arret-review.md](../20261104095815710_contrat-run-annonce-arret-review.md)
+> 🗎 Rendu de la fiche [features/20261104095815710_contrat-run-annonce-arret-review.md](../done/20261104095815710_contrat-run-annonce-arret-review.md)
 
 # 20261104095815710 — Le contrat du run annonce l'arrêt de `--review`
 

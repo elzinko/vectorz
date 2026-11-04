@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [theme:autonomie]
-status: ready
-pr:
+status: shipped
+pr: "local (84802413)"
 evidence: none # sortie de commande, pas d'écran
 created: 2026-11-04
 split_from: "20261104085959892"
@@ -57,6 +57,6 @@ pnpm --dir products/mega-city vitest run src/core/__tests__/run-context.test.ts
 
 ## Notes / décisions
 
-- Découpée de la fiche [`--review` se lit « revue du code »](done/20261104085959892_review-se-lit-revue-du-code.md)
+- Découpée de la fiche [`--review` se lit « revue du code »](20261104085959892_review-se-lit-revue-du-code.md)
   le 2026-11-04 : le contrat part tout de suite ; le renommage, qui demande un choix de nom, est la fiche
-  sœur [Renommer `--review`](20261104095815808_renommer-review-nom-du-geste.md).
+  sœur [Renommer `--review`](../20261104095815808_renommer-review-nom-du-geste.md).
