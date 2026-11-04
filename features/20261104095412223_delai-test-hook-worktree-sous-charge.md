@@ -37,8 +37,8 @@ comme le fait déjà `backlog-show.test.ts`.
 
 ## Critères d'acceptation
 
-- [ ] Les deux tests portent un délai explicite, justifié en commentaire par leurs sous-process.
-- [ ] La gate complète passe sans dépassement de délai de ces tests.
+- [x] Les deux tests portent un délai explicite, justifié en commentaire par leurs sous-process.
+- [x] La gate complète passe sans dépassement de délai de ces tests.
 
 ## Comment vérifier
 

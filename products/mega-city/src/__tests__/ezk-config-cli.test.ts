@@ -15,7 +15,7 @@ import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 const megaCity = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const tsx = createRequire(import.meta.url).resolve('tsx/cli');
@@ -39,6 +39,12 @@ beforeAll(() => {
   writeFileSync(join(repo, '.vectorz', 'config.yml'), 'github: false\n');
 });
 afterAll(() => rmSync(repo, { recursive: true, force: true }));
+
+
+// Ces tests lancent de vrais sous-process (git, la commande ezk) : sous la charge de la gate complète,
+// ils ont dépassé le délai par défaut de 5 s (fiche 20261104095412223). Délai large, comme
+// backlog-show.test.ts.
+vi.setConfig({ testTimeout: 60_000 });
 
 describe('ezk config — aide et options (fiche 20261004083838781)', () => {
   it('--help affiche l’usage, code 0 (pas un faux statut « tout ON »)', () => {

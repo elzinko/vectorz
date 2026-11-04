@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import {
@@ -21,6 +21,12 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, '../..');
 
 // SEUL test impur : il monte un projet jouet dans un temp dir et touche le FS.
+
+// Ces tests lancent de vrais sous-process (git, la commande ezk) : sous la charge de la gate complète,
+// ils ont dépassé le délai par défaut de 5 s (fiche 20261104095412223). Délai large, comme
+// backlog-show.test.ts.
+vi.setConfig({ testTimeout: 60_000 });
+
 describe('applyPlan (coquille I/O, projet jouet)', () => {
   let projectDir: string;
 
