@@ -52,3 +52,5 @@ pnpm --dir products/mega-city vitest run src/core/__tests__/run-context.test.ts
 - Découpée de la fiche [`--review` se lit « revue du code »](done/20261104085959892_review-se-lit-revue-du-code.md)
   le 2026-11-04. Sœur : [Le contrat du run annonce l'arrêt de `--review`](20261104095815710_contrat-run-annonce-arret-review.md).
 - Le nom est un choix de vocabulaire : à trancher au grooming, par le PO ou par `ezk-pm` en mode auto.
+- 2026-11-04 : `ezk-pm` (mode auto) retient **`--stamp-ready`** : il nomme le geste humain, garde l'anglais
+  des réglages et suit l'ADR-0053. Réversible ; le PO peut en choisir un autre au grooming.

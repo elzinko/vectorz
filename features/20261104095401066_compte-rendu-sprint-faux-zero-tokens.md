@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [theme:mission-control, retro]
-status: idea
+status: ready
 pr:
 evidence: none # texte d'un compte rendu, pas d'écran
 created: 2026-11-04

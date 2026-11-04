@@ -7,7 +7,7 @@ product: mega-city
 milestone: qualite
 version:
 labels: [theme:autonomie]
-status: idea
+status: ready
 pr:
 evidence: none # sortie de commande, pas d'écran
 created: 2026-11-04
