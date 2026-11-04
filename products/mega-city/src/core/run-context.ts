@@ -107,8 +107,11 @@ function contractLines(s: RunSettings, seal: SealPolicy): string[] {
       : s.delivery === 'per-epic'
         ? "En auto avec livraison par lot, je laisse les PR du lot ouvertes jusqu'au lot complet ; ezk-pr les livre en cascade."
         : "En auto, je merge les fiches vertes (gate verte et revue GO), une PR par fiche, au fil de l'eau.";
-  const two =
-    "Je m'arrête sur 4 cas : action irréversible ou sortante, hausse de budget, idée produit sur backlog vide, exigences contradictoires.";
+  // `--review` ajoute un arrêt que le PO doit voir annoncé (fiche 20261104095815710) ; la revue adverse du
+  // code, elle, ne dépend pas de ce réglage : le contrat le dit, avec ou sans.
+  const two = s.review
+    ? "Je m'arrête sur 5 cas : action irréversible ou sortante, hausse de budget, idée produit sur backlog vide, exigences contradictoires, et après chaque grooming pour que tu tamponnes la fiche prête (--review). La revue adverse du code tourne toujours ; --review ne la règle pas."
+    : "Je m'arrête sur 4 cas : action irréversible ou sortante, hausse de budget, idée produit sur backlog vide, exigences contradictoires. La revue adverse du code tourne toujours.";
   const three =
     s.tokens === 'cap'
       ? "Plafond de jetons : cap — je m'arrête au point sûr le plus proche dès que le seuil est dépassé, et je demande (hausse de budget = décision humaine)."

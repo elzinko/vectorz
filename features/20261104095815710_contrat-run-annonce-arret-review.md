@@ -42,10 +42,10 @@ Une surface : la commande.
 
 ## Critères d'acceptation
 
-- [ ] Avec `--review`, le contrat liste l'arrêt après chaque grooming parmi ses cas d'arrêt.
-- [ ] Sans `--review`, le contrat garde ses 4 cas.
-- [ ] Le contrat dit, avec ou sans `--review`, que la revue adverse du code tourne toujours.
-- [ ] Les tests du contexte de run couvrent les deux cas.
+- [x] Avec `--review`, le contrat liste l'arrêt après chaque grooming parmi ses cas d'arrêt.
+- [x] Sans `--review`, le contrat garde ses 4 cas.
+- [x] Le contrat dit, avec ou sans `--review`, que la revue adverse du code tourne toujours.
+- [x] Les tests du contexte de run couvrent les deux cas.
 
 ## Comment vérifier
 

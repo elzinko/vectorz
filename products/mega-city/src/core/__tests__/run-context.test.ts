@@ -92,6 +92,21 @@ describe('buildRunContext — le contrat en trois lignes reflète les réglages 
     expect(c[2]).toContain('lean');
   });
 
+  it('--review ajoute un cinquième arrêt, annoncé, après chaque grooming (fiche 20261104095815710)', () => {
+    const avec = contract(settings({ review: true }))[1];
+    expect(avec).toMatch(/5 cas/);
+    expect(avec).toMatch(/après chaque grooming pour que tu tamponnes la fiche prête \(--review\)/);
+    const sans = contract(settings({ review: false }))[1];
+    expect(sans).toMatch(/4 cas/);
+    expect(sans).not.toMatch(/grooming/);
+  });
+
+  it('avec ou sans --review, le contrat dit que la revue adverse du code tourne toujours', () => {
+    for (const review of [true, false]) {
+      expect(contract(settings({ review }))[1], String(review)).toMatch(/revue adverse du code tourne toujours/);
+    }
+  });
+
   it('auto + per-epic : les PR du lot restent ouvertes, rien n’est mergé au fil de l’eau', () => {
     const c = contract(settings({ delivery: 'per-epic' }));
     expect(c[0]).toMatch(/ouvertes/);
