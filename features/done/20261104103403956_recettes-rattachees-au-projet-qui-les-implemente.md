@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version:
 labels: [recettes, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (2d450eb2)"
 evidence: before-after
 created: 2026-11-04
 ---
@@ -56,9 +56,9 @@ Puis ouvrir mission control, vue Recettes, projet muti.
 
 Avant / après, vue Recettes de muti (2026-11-04) :
 
-- avant : « Dans ce projet 0 » — ![avant](../docs/pr-evidence/20261104103403956/recettes-muti-avant.jpg)
-- après : « Dans ce projet 6 », chaque recette avec son implémentation dans `~/git/bacasable/muti`, et la marque « utilisée ici » au catalogue — ![après](../docs/pr-evidence/20261104103403956/recettes-muti-apres.jpg)
+- avant : « Dans ce projet 0 » — ![avant](../../docs/pr-evidence/20261104103403956/recettes-muti-avant.jpg)
+- après : « Dans ce projet 6 », chaque recette avec son implémentation dans `~/git/bacasable/muti`, et la marque « utilisée ici » au catalogue — ![après](../../docs/pr-evidence/20261104103403956/recettes-muti-apres.jpg)
 
 ## Notes / décisions
 
-- Suite de [Mission control montre les recettes de chaque projet](done/20261104090518109_mission-control-montre-les-recettes.md), demandée par le PO le 2026-11-04 (« leurs implémentations indiquées pour chaque projet »).
+- Suite de [Mission control montre les recettes de chaque projet](20261104090518109_mission-control-montre-les-recettes.md), demandée par le PO le 2026-11-04 (« leurs implémentations indiquées pour chaque projet »).

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104103403956_recettes-rattachees-au-projet-qui-les-implemente.md](../20261104103403956_recettes-rattachees-au-projet-qui-les-implemente.md)
+> 🗎 Rendu de la fiche [features/20261104103403956_recettes-rattachees-au-projet-qui-les-implemente.md](../done/20261104103403956_recettes-rattachees-au-projet-qui-les-implemente.md)
 
 # 20261104103403956 — Les recettes du catalogue rattachées au projet qui les implémente
 
