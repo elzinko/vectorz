@@ -7,10 +7,11 @@ product: mega-city
 milestone: qualite
 version:
 labels: [theme:autonomie]
-status: idea
-pr:
+status: split
+pr: "split — scindée en 20261104095815710, 20261104095815808"
 evidence: none # sortie de commande et texte de skill, pas d'écran
 created: 2026-11-04
+split_into: ["20261104095815710", "20261104095815808"]
 ---
 
 # 20261104085959892 — `--review` se lit « revue du code » alors qu'il arrête le run à chaque grooming
@@ -79,8 +80,8 @@ pnpm --dir products/mega-city test -- run-context
 
 ## Notes / décisions
 
-- Prédécesseurs : [ADR-0053](../products/mega-city/docs/adr/0053-check-ready-devient-review-defaut-autonome.md)
-  et la fiche [Product-builder — auto-groom vers la DoR + option --check-ready](done/20260813200137369_pb-auto-groom-ready-check-ready.md).
+- Prédécesseurs : [ADR-0053](../../products/mega-city/docs/adr/0053-check-ready-devient-review-defaut-autonome.md)
+  et la fiche [Product-builder — auto-groom vers la DoR + option --check-ready](20260813200137369_pb-auto-groom-ready-check-ready.md).
 - Code : `products/mega-city/bin/run-context.ts`, qui lit `--review` ligne 57.
 - Hors périmètre, vus le même jour : en `--tokens lean`, une rétro due devient une question même en
   mode auto ; et rien ne relance le run quand le modèle s'arrête de lui-même (le `/goal` de Claude

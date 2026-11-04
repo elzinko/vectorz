@@ -22,7 +22,11 @@ fonctionnel et graphiquement compréhensible) :
 - ~~`20261104090517904` — la Vue d'ensemble résume le dernier sprint et ses indicateurs · build (sprint 28)~~ — shipped
 - ~~`20261104090518008` — `ezk recipes --json` publie le catalogue et les recettes d'un projet · build (sprint 28)~~ — shipped
 - `20261104090518109` — mission control montre les recettes de chaque projet · build (sprint 29)
-- `20261104085959892` — `--review` se lit « revue du code » · groom (fiche demandée par le PO le 2026-11-04)
+- ~~`20261104085959892` — `--review` se lit « revue du code » · groom (fiche demandée par le PO le 2026-11-04)~~ — split
+- `20261104095815710` — le contrat du run annonce l'arrêt de `--review` · build (sprint 30)
+- `20261104095401066` — le compte rendu de sprint écrit « 0 tokens » quand il ne mesure pas · build (sprint 30, rétro 27-28)
+- `20261104095815808` — renommer `--review` d'un nom qui dit le geste · groom (choix du nom)
+- `20261104095412223` — deux tests à sous-process dépassent leur délai sous charge · groom (rétro 27-28)
 
 **Correctifs de la passe scout du 2026-11-02** (hors milestone, en tête sur décision PO du 2026-11-02) :
 - ~~`20261102100505427` — le lanceur refuse un port web déjà pris, au lieu d'annoncer un port faux · build~~ — shipped
