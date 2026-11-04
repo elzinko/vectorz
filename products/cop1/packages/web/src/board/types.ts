@@ -12,7 +12,7 @@
 import type { ProjectConfig } from './configModel.js';
 
 /** Les quatre états d'une fiche dans le pipeline. */
-export type FicheStatus = 'idea' | 'ready' | 'wip' | 'done';
+export type FicheStatus = 'idea' | 'ready' | 'wip' | 'done' | 'parked';
 
 /** Une version = un lot de fiches avec son décompte par état. */
 export interface Version {

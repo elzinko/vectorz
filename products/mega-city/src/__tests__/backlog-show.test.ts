@@ -250,3 +250,17 @@ describe('ezk backlog show — les fichiers rangés pour les consommateurs', () 
     }
   });
 });
+
+describe('backlog show publie l’état « parkée » de chaque fiche (fiche 20261104090517494)', () => {
+  const fiche = (status: string, milestone: string): string =>
+    `---\nid: "123"\ntitle: "Une fiche"\npriority: P2\nstatus: ${status}\nmilestone: ${milestone}\n---\n\n# 123\n`;
+
+  it('une idée de la milestone parked est publiée parkée', () => {
+    expect(detail(fiche('idea', 'parked')).parkee).toBe(true);
+  });
+
+  it('une idée ordinaire, ou une prête rangée dans parked, ne l’est pas', () => {
+    expect(detail(fiche('idea', 'board')).parkee).toBe(false);
+    expect(detail(fiche('ready', 'parked')).parkee).toBe(false);
+  });
+});

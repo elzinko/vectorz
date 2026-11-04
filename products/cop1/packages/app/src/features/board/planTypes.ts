@@ -75,7 +75,7 @@ export interface PlanPilotage {
 }
 
 /** Les quatre états du board (identiques au type `FicheStatus` du web). */
-export type FicheDetailStatus = 'idea' | 'ready' | 'wip' | 'done';
+export type FicheDetailStatus = 'idea' | 'ready' | 'wip' | 'done' | 'parked';
 
 /** Le détail d'une fiche tel que la modale du board le montre (forme `FicheDetail` du web, ADR-074). */
 export interface FicheDetailData {

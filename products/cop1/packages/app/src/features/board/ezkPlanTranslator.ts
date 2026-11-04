@@ -59,6 +59,8 @@ interface BacklogFiche {
   pr: string;
   enCours: boolean;
   done: boolean;
+  /** Ajouté au contrat v1 (fiche 20261104090517494) : absent d'une méthode plus ancienne. */
+  parkee?: boolean;
   enClair: string;
   contexte: string;
   criteres: { texte: string; coche: boolean }[];
@@ -152,6 +154,8 @@ function readLivrees(value: unknown): FicheDetailData[] {
 function ficheStatus(f: BacklogFiche): FicheDetailStatus {
   if (f.done) return 'done';
   if (f.enCours) return 'wip';
+  // La méthode dit quelles fiches sont parkées (ADR-086) : la page ne relit pas `milestone`.
+  if (f.parkee === true) return 'parked';
   return f.status === 'ready' ? 'ready' : 'idea';
 }
 

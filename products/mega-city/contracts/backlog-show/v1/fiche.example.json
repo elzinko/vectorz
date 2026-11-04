@@ -13,6 +13,7 @@
  "pr": "",
  "enCours": false,
  "done": false,
+ "parkee": false,
  "file": "features/20990101000000002_deux-points.md",
  "enClair": "Le tour guidé suit les clics.",
  "contexte": "Avant le bloc.\n\n```sh\n## installe\necho hi\n```\n\nAprès le bloc.",

@@ -201,6 +201,26 @@ describe('translatePlan — les fiches closes sans livraison (fiche 202611031919
   });
 });
 
+describe('translatePlan — l’état « parkée » vient de la méthode (fiche 20261104090517494)', () => {
+  it('une fiche publiée parkee est servie parked, sans relire sa milestone', () => {
+    const b = backlog();
+    b.fiches.push(
+      { ...b.fiches[0], id: 'parkee', status: 'idea', milestone: 'board', done: false, enCours: false, parkee: true },
+      { ...b.fiches[0], id: 'pas-parkee', status: 'idea', milestone: 'parked', done: false, enCours: false, parkee: false },
+    );
+    const { fiches } = translatePlan(board(), b);
+    expect(fiches.parkee?.status).toBe('parked');
+    expect(fiches['pas-parkee']?.status).toBe('idea');
+  });
+
+  it('une méthode plus ancienne, sans le champ, garde l’idée', () => {
+    const b = backlog();
+    const { parkee: _absent, ...sans } = { ...b.fiches[0], parkee: undefined };
+    b.fiches.push({ ...sans, id: 'ancienne', status: 'idea', done: false, enCours: false });
+    expect(translatePlan(board(), b).fiches.ancienne?.status).toBe('idea');
+  });
+});
+
 describe('translatePlan — format inconnu', () => {
   it('refuse un schema_version différent de 1 dans board show', () => {
     const b = { ...board(), schema_version: 2 };

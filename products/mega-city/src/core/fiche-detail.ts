@@ -11,6 +11,7 @@
  */
 import { z } from 'zod';
 import type { Fiche } from '../loaders/fiches.js';
+import { isParked } from './fiche-schema.js';
 import { ficheBodyText, sectionLines } from './fiche-sections.js';
 
 /** La version du format. Un consommateur qui lit une autre valeur le dit, et n'affiche rien de faux. */
@@ -35,6 +36,9 @@ const FicheDetailShape = {
   pr: z.string(),
   enCours: z.boolean().describe('Une branche de travail est ouverte pour la fiche (ADR-0077).'),
   done: z.boolean().describe('La fiche est rangée dans `features/done/`.'),
+  parkee: z
+    .boolean()
+    .describe('Idée rangée dans la milestone `parked` : hors flux, en attente du PO (règle `isParked`).'),
   file: z.string().describe('Chemin de la fiche, relatif à la racine du projet.'),
   enClair: z.string().describe('Section « En clair », ou paragraphe `**En clair.**` ; vide si absent.'),
   contexte: z.string().describe('Section dont le titre commence par « Contexte » ; vide si absente.'),
@@ -130,6 +134,7 @@ export function buildFicheDetail(fiche: Fiche, text: string, enCours: boolean): 
     pr: fiche.pr,
     enCours,
     done: fiche.done,
+    parkee: isParked(fiche),
     file: fiche.file,
     enClair: enClairOf(body),
     contexte: sectionText(body, (t) => t.startsWith('contexte')),

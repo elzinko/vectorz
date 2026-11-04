@@ -16,10 +16,13 @@ const COL_LABEL: Record<FicheStatus, string> = {
   ready: 'Prêtes',
   wip: 'En cours',
   done: 'Livrées',
+  parked: 'Parkées',
 };
 const COLS: FicheStatus[] = ['idea', 'ready', 'wip', 'done'];
+/** Les parkées sont hors flux (fiche 20261104090517494) : leur colonne n'apparaît qu'à la demande. */
+const COLS_WITH_PARKED: FicheStatus[] = [...COLS, 'parked'];
 const PRIO_N: Record<string, number> = { P0: 0, P1: 1, P2: 2, P3: 3 };
-const ST_N: Record<FicheStatus, number> = { idea: 0, ready: 1, wip: 2, done: 3 };
+const ST_N: Record<FicheStatus, number> = { idea: 0, ready: 1, wip: 2, done: 3, parked: 4 };
 
 type SortKey = 'prio' | 'statut' | 'version' | 'titre';
 const SORTERS: Record<SortKey, (a: FicheDetail, b: FicheDetail) => number> = {
@@ -72,6 +75,7 @@ export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JS
   const [fver, setFver] = useState<string>('all');
   const [fsort, setFsort] = useState<SortKey>('prio');
   const [fmode, setFmode] = useState<'status' | 'list'>('status');
+  const [showParked, setShowParked] = useState(false);
   const [fcat, setFcat] = useState<Record<VersionCategory, boolean>>({
     avenir: true,
     encours: true,
@@ -102,7 +106,11 @@ export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JS
       return c ? fcat[c] : true;
     });
   }
+  // Les parkées attendent le PO, hors flux : cachées par défaut, comme la Vue d'ensemble les compte à part.
+  const parkedCount = list.filter((f) => f.status === 'parked').length;
+  if (!showParked) list = list.filter((f) => f.status !== 'parked');
   list = list.slice().sort(SORTERS[fsort]);
+  const cols = showParked ? COLS_WITH_PARKED : COLS;
 
   function toggleCat(c: VersionCategory): void {
     setFcat((prev) => ({ ...prev, [c]: !prev[c] }));
@@ -156,6 +164,15 @@ export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JS
           <option value="titre">titre</option>
         </select>
 
+        <button
+          type="button"
+          className={showParked ? 'tgl on' : 'tgl'}
+          aria-pressed={showParked}
+          onClick={() => setShowParked((v) => !v)}
+        >
+          montrer les parkées ({parkedCount})
+        </button>
+
         <span className="seg" role="group" aria-label="Affichage">
           <button type="button" className={fmode === 'status' ? 'on' : undefined} aria-pressed={fmode === 'status'} onClick={() => setFmode('status')}>
             Par statut
@@ -167,8 +184,8 @@ export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JS
       </div>
 
       {fmode === 'status' ? (
-        <section className="kanban">
-          {COLS.map((c) => {
+        <section className={showParked ? 'kanban k5' : 'kanban'}>
+          {cols.map((c) => {
             const col = list.filter((f) => f.status === c);
             return (
               <div className="col" key={c}>

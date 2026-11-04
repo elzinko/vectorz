@@ -10,7 +10,7 @@
  * Testable sans vrai git. Le script range, l'IA juge (ADR-0001).
  */
 import type { Fiche } from '../loaders/fiches.js';
-import { TERMINAUX } from './fiche-schema.js';
+import { isParked, TERMINAUX } from './fiche-schema.js';
 import type { SessionRow } from './sessions-data.js';
 
 /** Les cinq étapes, de la moins avancée à la plus avancée (ordre d'affichage, gauche → droite). */
@@ -145,8 +145,6 @@ const prioRank = (p: string): number => {
   const i = PRIOS.indexOf(p);
   return i === -1 ? PRIOS.length : i;
 };
-
-const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
 
 /** Range par priorité (P0 d'abord), puis id — sortie stable. */
 function byPrioThenId(a: ProcessFiche, b: ProcessFiche): number {

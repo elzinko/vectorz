@@ -54,15 +54,15 @@ booléen calculé par une règle qui existe déjà ; le découper laisserait un 
 
 ## Critères d'acceptation
 
-- [ ] `ezk backlog show --json` publie `parkee: true` pour une idée de la milestone `parked`, et
+- [x] `ezk backlog show --json` publie `parkee: true` pour une idée de la milestone `parked`, et
       `false` pour toute autre fiche ; le schéma du contrat `backlog-show` v1 le décrit.
-- [ ] La règle « parkée » vit à un seul endroit de la méthode, partagé par `backlog show`,
+- [x] La règle « parkée » vit à un seul endroit de la méthode, partagé par `backlog show`,
       `board show` et le process.
-- [ ] Le traducteur du daemon donne l'état `parked` à une fiche publiée `parkee: true`, sans lire
+- [x] Le traducteur du daemon donne l'état `parked` à une fiche publiée `parkee: true`, sans lire
       `milestone` ; une fiche prête ou livrée garde son état.
-- [ ] Par défaut, la vue Fiches n'affiche pas les parkées, et son compte d'idées égale celui de la
+- [x] Par défaut, la vue Fiches n'affiche pas les parkées, et son compte d'idées égale celui de la
       Vue d'ensemble ; une case « montrer les parkées » fait apparaître la colonne « Parkées ».
-- [ ] Les tests de la méthode, du traducteur et de la vue couvrent ces cas.
+- [x] Les tests de la méthode, du traducteur et de la vue couvrent ces cas.
 
 ## Comment vérifier
 
@@ -75,6 +75,11 @@ pnpm --dir products/cop1/packages/web exec vitest run src/board
 
 Puis ouvrir mission control, vue Fiches de vectorz : le compte d'idées égale celui de la Vue
 d'ensemble, et la case montre la colonne « Parkées ».
+
+Avant / après, vue Fiches de vectorz (2026-11-04) :
+
+- avant : « Idées 103 », les 85 parkées mêlées aux idées — ![avant](../docs/pr-evidence/20261104090517494/fiches-avant.jpg)
+- après : « Idées 18 », comme la Vue d'ensemble, et la bascule « montrer les parkées (85) » — ![après](../docs/pr-evidence/20261104090517494/fiches-apres.jpg)
 
 ## Notes / décisions
 

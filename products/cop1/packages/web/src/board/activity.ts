@@ -27,6 +27,7 @@ export const STATUS_LABEL: Record<FicheStatus, string> = {
   ready: 'prête',
   wip: 'en cours',
   done: 'livrée',
+  parked: 'parkée',
 };
 
 const CAD_STEPS = ['ideation', 'grooming', 'ready', 'release'];

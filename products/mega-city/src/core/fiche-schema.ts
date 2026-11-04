@@ -75,6 +75,14 @@ export const STATUTS_CALCULES: readonly string[] = STATUT_DEFS.filter((d) => d.w
  */
 export const TERMINAUX: readonly string[] = STATUT_DEFS.filter((d) => d.terminal).map((d) => d.id);
 
+/**
+ * Fiche « parkée » : une idée rangée dans la milestone `parked`, jalon fermé par le PO, hors flux.
+ * Seule définition de la méthode : `backlog show`, `board show`, le process et l'avancement la
+ * partagent (fiche 20261104090517494).
+ */
+export const isParked = (f: { status: string; milestone: string }): boolean =>
+  f.status === 'idea' && f.milestone === 'parked';
+
 export interface ChampRetire {
   /** Nom du champ de front-matter qui n'existe plus. */
   field: string;

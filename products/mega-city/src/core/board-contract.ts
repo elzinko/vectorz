@@ -25,7 +25,7 @@ import { versionScope } from '../backlog/version-scope.js';
 import type { Fiche } from '../loaders/fiches.js';
 import type { RunReport } from '../loaders/runs.js';
 import { buildAvancementData } from './avancement-data.js';
-import { TERMINAUX } from './fiche-schema.js';
+import { isParked, TERMINAUX } from './fiche-schema.js';
 import type { VerdictsData } from './verdicts.js';
 
 /** La version du format. Un consommateur qui lit une autre valeur le dit, et n'affiche rien de faux. */
@@ -156,7 +156,6 @@ export interface BoardContractInput {
   sessions: readonly RunReport[];
 }
 
-const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
 const ids = (fs: readonly Fiche[]): string[] => fs.map((f) => f.id);
 
 /**

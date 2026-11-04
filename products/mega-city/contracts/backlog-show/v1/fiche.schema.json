@@ -53,6 +53,10 @@
       "type": "boolean",
       "description": "La fiche est rangée dans `features/done/`."
     },
+    "parkee": {
+      "type": "boolean",
+      "description": "Idée rangée dans la milestone `parked` : hors flux, en attente du PO (règle `isParked`)."
+    },
     "file": {
       "type": "string",
       "description": "Chemin de la fiche, relatif à la racine du projet."
@@ -106,6 +110,7 @@
     "pr",
     "enCours",
     "done",
+    "parkee",
     "file",
     "enClair",
     "contexte",

@@ -7,7 +7,7 @@
  * charge les fiches ; ici on ne fait que trier/compter/grouper.
  */
 import type { Fiche } from '../loaders/fiches.js';
-import { STATUTS, TERMINAUX } from './fiche-schema.js';
+import { isParked, STATUTS, TERMINAUX } from './fiche-schema.js';
 
 /**
  * STATUTS et TERMINAUX vivent dans `fiche-schema.ts` (LE schéma des fiches, fiche 20260823121712652) :
@@ -141,9 +141,6 @@ function deriveMilestoneStatus(
   const engaged = (counts.ready ?? 0) + (counts['in-progress'] ?? 0);
   return shipped > 0 || engaged > 0 ? 'in-progress' : 'idea';
 }
-
-/** Fiche « parkée » : `idea` + `milestone: parked` (jalon fermé par le PO, hors flux). */
-const isParked = (f: Fiche): boolean => f.status === 'idea' && f.milestone === 'parked';
 
 /** Compile le board. Tout est trié → sortie stable (F4). */
 export function buildAvancementData(
