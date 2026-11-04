@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (51e3e5d3)"
 evidence: before-after
 created: 2026-11-04
 ---
@@ -78,8 +78,8 @@ d'ensemble, et la case montre la colonne « Parkées ».
 
 Avant / après, vue Fiches de vectorz (2026-11-04) :
 
-- avant : « Idées 103 », les 85 parkées mêlées aux idées — ![avant](../docs/pr-evidence/20261104090517494/fiches-avant.jpg)
-- après : « Idées 18 », comme la Vue d'ensemble, et la bascule « montrer les parkées (85) » — ![après](../docs/pr-evidence/20261104090517494/fiches-apres.jpg)
+- avant : « Idées 103 », les 85 parkées mêlées aux idées — ![avant](../../docs/pr-evidence/20261104090517494/fiches-avant.jpg)
+- après : « Idées 18 », comme la Vue d'ensemble, et la bascule « montrer les parkées (85) » — ![après](../../docs/pr-evidence/20261104090517494/fiches-apres.jpg)
 
 ## Notes / décisions
 

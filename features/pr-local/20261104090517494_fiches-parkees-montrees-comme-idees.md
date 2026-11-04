@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104090517494_fiches-parkees-montrees-comme-idees.md](../20261104090517494_fiches-parkees-montrees-comme-idees.md)
+> 🗎 Rendu de la fiche [features/20261104090517494_fiches-parkees-montrees-comme-idees.md](../done/20261104090517494_fiches-parkees-montrees-comme-idees.md)
 
 # 20261104090517494 — La vue Fiches montre les fiches parkées comme des idées
 

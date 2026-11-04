@@ -17,7 +17,7 @@ version se pose à la construction (étiquette). Détail :
 
 **Mission control lisible** (milestone `board`, en tête sur demande du PO du 2026-11-04 : un produit
 fonctionnel et graphiquement compréhensible) :
-- `20261104090517494` — la vue Fiches montre les fiches parkées comme des idées · build (sprint 27)
+- ~~`20261104090517494` — la vue Fiches montre les fiches parkées comme des idées · build (sprint 27)~~ — shipped
 - `20261104090517801` — la vue Process montre le workflow en schéma · build (sprint 27)
 - `20261104090517904` — la Vue d'ensemble résume le dernier sprint et ses indicateurs · build (sprint 28)
 - `20261104090518008` — `ezk recipes --json` publie le catalogue et les recettes d'un projet · build (sprint 28)
