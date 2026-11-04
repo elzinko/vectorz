@@ -127,5 +127,5 @@ nomme le geste humain, comme le voulait déjà cet ADR. `--review` et `--check-r
 lus, et le contexte de run dit qu'ils sont d'anciens noms. Le contrat du run annonce cet arrêt quand le
 réglage est posé, et dit toujours que la revue du code tourne
 (fiches [`20261104095815710`](../../../../features/done/20261104095815710_contrat-run-annonce-arret-review.md)
-et [`20261104095815808`](../../../../features/20261104095815808_renommer-review-nom-du-geste.md)).
+et [`20261104095815808`](../../../../features/done/20261104095815808_renommer-review-nom-du-geste.md)).
 

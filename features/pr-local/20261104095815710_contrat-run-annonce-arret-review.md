@@ -45,7 +45,7 @@ pnpm --dir products/mega-city vitest run src/core/__tests__/run-context.test.ts
 
 - Découpée de la fiche [`--review` se lit « revue du code »](../done/20261104085959892_review-se-lit-revue-du-code.md)
   le 2026-11-04 : le contrat part tout de suite ; le renommage, qui demande un choix de nom, est la fiche
-  sœur [Renommer `--review`](../20261104095815808_renommer-review-nom-du-geste.md).
+  sœur [Renommer `--review`](../done/20261104095815808_renommer-review-nom-du-geste.md).
 
 
 ## Validation

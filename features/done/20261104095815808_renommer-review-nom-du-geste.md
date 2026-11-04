@@ -7,8 +7,8 @@ product: mega-city
 milestone: qualite
 version:
 labels: [theme:autonomie]
-status: ready
-pr:
+status: shipped
+pr: "local (7550b68f)"
 evidence: none # sortie de commande et texte de skill, pas d'écran
 created: 2026-11-04
 split_from: "20261104085959892"
@@ -32,7 +32,7 @@ Le nom retenu est **`--stamp-ready`** (décision `ezk-pm`, mode auto, le 2026-11
 - `ezk run context` lit `--stamp-ready`. `--review` et `--check-ready true` restent acceptés et mappent
   dessus ; quand l'un d'eux est employé, le contexte de run ajoute une ligne : « `--review` est l'ancien
   nom de `--stamp-ready` ».
-- La ligne d'arrêt du contrat (fiche [Le contrat du run annonce l'arrêt](done/20261104095815710_contrat-run-annonce-arret-review.md))
+- La ligne d'arrêt du contrat (fiche [Le contrat du run annonce l'arrêt](20261104095815710_contrat-run-annonce-arret-review.md))
   cite `--stamp-ready`.
 - La skill `ezk-product-build` emploie `--stamp-ready` partout ; une phrase garde l'ancien nom lisible.
   Son ouverture parle des cas d'arrêt du contrat, pas de « 4 STOP » figés.
@@ -59,8 +59,8 @@ pnpm --dir products/mega-city vitest run src/core/__tests__/run-context.test.ts
 
 ## Notes / décisions
 
-- Découpée de la fiche [`--review` se lit « revue du code »](done/20261104085959892_review-se-lit-revue-du-code.md)
-  le 2026-11-04. Sœur : [Le contrat du run annonce l'arrêt de `--review`](done/20261104095815710_contrat-run-annonce-arret-review.md).
+- Découpée de la fiche [`--review` se lit « revue du code »](20261104085959892_review-se-lit-revue-du-code.md)
+  le 2026-11-04. Sœur : [Le contrat du run annonce l'arrêt de `--review`](20261104095815710_contrat-run-annonce-arret-review.md).
 - Le nom est un choix de vocabulaire : à trancher au grooming, par le PO ou par `ezk-pm` en mode auto.
 - 2026-11-04 : `ezk-pm` (mode auto) retient **`--stamp-ready`** : il nomme le geste humain, garde l'anglais
   des réglages et suit l'ADR-0053. Réversible ; le PO peut en choisir un autre au grooming.

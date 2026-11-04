@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104095815808_renommer-review-nom-du-geste.md](../20261104095815808_renommer-review-nom-du-geste.md)
+> 🗎 Rendu de la fiche [features/20261104095815808_renommer-review-nom-du-geste.md](../done/20261104095815808_renommer-review-nom-du-geste.md)
 
 # 20261104095815808 — Renommer `--review` d'un nom qui dit le geste humain
 
