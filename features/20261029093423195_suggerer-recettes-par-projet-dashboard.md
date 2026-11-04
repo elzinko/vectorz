@@ -66,3 +66,8 @@ maquette d'abord.
   mécanisme. Depuis le 2026-10-28, `ezk recipes` montre déjà les recettes de la méthode et celles
   déclarées par un projet, en lecture seule. La suggestion par projet peut partir de là. La maquette
   et ce choix te reviennent.
+- **Affichage découpé le 2026-11-04** (run autonome, sur demande du PO : « recettes affichées et
+  leurs implémentations indiquées pour chaque projet »). L'affichage part dans deux fiches :
+  [`ezk recipes --json`](20261104090518008_ezk-recipes-json.md) et
+  [Mission control montre les recettes de chaque projet](20261104090518109_mission-control-montre-les-recettes.md).
+  Cette fiche garde la **suggestion** par projet, toujours en attente de sa maquette.
