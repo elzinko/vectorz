@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md](../20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md)
+> 🗎 Rendu de la fiche [features/20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md](../done/20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md)
 
 # 20261104090517904 — La Vue d'ensemble résume le dernier sprint et ses indicateurs
 

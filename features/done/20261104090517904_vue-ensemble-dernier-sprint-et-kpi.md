@@ -7,8 +7,8 @@ product: mega-city
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (d6ea3df8)"
 evidence: before-after
 created: 2026-11-04
 ---
@@ -69,12 +69,12 @@ Puis ouvrir la Vue d'ensemble : la carte « Dernier sprint » montre le sprint l
 
 Avant / après, Vue d'ensemble de vectorz (2026-11-04) :
 
-- avant : « 49 sprints » et « non mesuré », rien sur le dernier sprint — ![avant](../docs/pr-evidence/20261104090517904/vue-ensemble-avant.jpg)
-- après : la carte « Dernier sprint » (21 min, 2 fiches livrées par leur titre, jetons « non mesurés », 0 blocage) et les 4 sprints précédents — ![après](../docs/pr-evidence/20261104090517904/vue-ensemble-apres.jpg)
+- avant : « 49 sprints » et « non mesuré », rien sur le dernier sprint — ![avant](../../docs/pr-evidence/20261104090517904/vue-ensemble-avant.jpg)
+- après : la carte « Dernier sprint » (21 min, 2 fiches livrées par leur titre, jetons « non mesurés », 0 blocage) et les 4 sprints précédents — ![après](../../docs/pr-evidence/20261104090517904/vue-ensemble-apres.jpg)
 
 ## Notes / décisions
 
 - Lot « mission control lisible » du run du 2026-11-04.
-- Recoupe en partie la fiche [Mesurer le coût tokens des sprints/features](20261008182705779_adaptateur-cout-tokens-observabilite.md) :
+- Recoupe en partie la fiche [Mesurer le coût tokens des sprints/features](../20261008182705779_adaptateur-cout-tokens-observabilite.md) :
   ici on **affiche** ce que les comptes rendus mesurent déjà, sans changer la mesure.
 - Preuve avant/après : capture de la Vue d'ensemble.
