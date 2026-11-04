@@ -18,6 +18,8 @@ export interface Recipe {
   dir: string;
   complete: boolean;
   missing: string[];
+  /** Implémentée dans ce projet : déclarée par lui, ou sa source y mène (fiche 20261104103403956). */
+  ici?: boolean;
 }
 
 interface RecipesData {
@@ -95,16 +97,20 @@ export function RecipesView({ project }: { project: BoardProject }): JSX.Element
   }
 
   const { catalogue, projet } = state.recipes;
-  const usedHere = new Set(projet.map((r) => r.id));
+  // Ce que le projet implémente : ses recettes déclarées, puis celles du catalogue dont l'implémentation
+  // de référence vit ici (publié par la méthode, la page ne devine rien).
+  const fromCatalogue = catalogue.filter((r) => r.ici === true);
+  const usedHere = new Set([...projet.map((r) => r.id), ...fromCatalogue.map((r) => r.id)]);
+  const total = projet.length + fromCatalogue.length;
   return (
     <>
       {header}
 
       <section className="card clip" aria-label="Recettes du projet">
         <h3>
-          Dans ce projet <span className="cnt">{projet.length}</span>
+          Dans ce projet <span className="cnt">{total}</span>
         </h3>
-        {projet.length === 0 ? (
+        {total === 0 ? (
           <p className="mnote">
             ce projet ne déclare aucune recette : un dossier qui en implémente une porte un <code>RECIPE.md</code>
           </p>
@@ -118,6 +124,19 @@ export function RecipesView({ project }: { project: BoardProject }): JSX.Element
                 </div>
                 <code className="rc-dir" title="Dossier qui implémente la recette">
                   {r.dir}
+                </code>
+                <StatusPill status={r.status} />
+                <Missing r={r} />
+              </div>
+            ))}
+            {fromCatalogue.map((r) => (
+              <div className="rc-row" key={`cat:${r.id}`}>
+                <div className="rc-main">
+                  <b>{r.title || r.id}</b>
+                  <span className="rc-makes">{r.makes}</span>
+                </div>
+                <code className="rc-dir" title="Implémentation de référence, dans ce projet">
+                  {r.source}
                 </code>
                 <StatusPill status={r.status} />
                 <Missing r={r} />

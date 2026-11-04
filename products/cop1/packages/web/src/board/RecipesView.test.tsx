@@ -62,6 +62,19 @@ describe('RecipesView', () => {
     expect(fetchMock).toHaveBeenLastCalledWith('/api/recipes/muti');
   });
 
+  it('les recettes du catalogue implémentées ici apparaissent dans le projet, avec leur implémentation', async () => {
+    serve({
+      state: 'ok',
+      recipes: { catalogue: [recipe('a', { ici: true, source: '~/git/muti' }), recipe('b')], projet: [] },
+    });
+    render(<RecipesView project={project} />);
+    const projet = within(await screen.findByRole('region', { name: 'Recettes du projet' }));
+    expect(projet.getByText('Recette a')).toBeTruthy();
+    expect(projet.getByText('~/git/muti')).toBeTruthy();
+    expect(projet.queryByText('Recette b')).toBeNull();
+    expect(within(screen.getByRole('region', { name: 'Catalogue de la méthode' })).getByText('utilisée ici')).toBeTruthy();
+  });
+
   it('un projet sans recette le dit, avec le geste qui en déclare une', async () => {
     serve({ state: 'ok', recipes: { catalogue: [recipe('a')], projet: [] } });
     render(<RecipesView project={project} />);

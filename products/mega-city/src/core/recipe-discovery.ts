@@ -13,6 +13,7 @@
  *
  * PUR : aucune I/O. Le bord (`bin/ezk-recipes.ts`) lit les fichiers et passe des entrées déjà lues.
  */
+import { isAbsolute, join, relative, resolve } from 'node:path';
 import { z } from 'zod';
 import {
   type CatalogEntry,
@@ -60,6 +61,11 @@ const RecipeJsonSchema = z.strictObject({
     .string()
     .describe('Où la recette est rangée : `recipes/<fichier>.md` pour la méthode, le dossier qui porte son `RECIPE.md` pour un projet.'),
   complete: z.boolean().describe('Les cinq champs requis sont présents et le YAML se lit (contrat de la fiche 002).'),
+  ici: z
+    .boolean()
+    .describe(
+      "La recette est implémentée dans le projet visé : déclarée par lui, ou sa `source` y mène (fiche 20261104103403956).",
+    ),
   missing: z.array(z.string()).describe("Les champs requis absents d'un brouillon ; vide si la recette est complète."),
 });
 
@@ -73,7 +79,31 @@ export const RecipesContractSchema = z.strictObject({
 });
 export type RecipesContract = z.infer<typeof RecipesContractSchema>;
 
-const toJson = (r: DiscoveredRecipe): RecipesContract['catalogue'][number] => ({
+/**
+ * Le chemin absolu d'une `source` : `~/…` depuis le dossier personnel, absolue telle quelle, sinon
+ * relative à la racine de la méthode (là où vivent les recettes). Vide → `null`. Lecture lexicale, pur.
+ */
+export function resolveSource(source: string, methodRoot: string, home: string): string | null {
+  const s = source.trim();
+  if (s === '') return null;
+  if (s === '~' || s.startsWith('~/')) return resolve(join(home, s.slice(1)));
+  return isAbsolute(s) ? resolve(s) : resolve(methodRoot, s);
+}
+
+/** `path` est-il `root` ou dans `root` ? */
+export function isInside(path: string, root: string): boolean {
+  const rel = relative(resolve(root), path);
+  return rel === '' || (!rel.startsWith('..') && !isAbsolute(rel));
+}
+
+/** Où chercher les implémentations : le projet visé, la racine de la méthode, le dossier personnel. */
+export interface ImplementationScope {
+  projectRoot: string;
+  methodRoot: string;
+  home: string;
+}
+
+const toJson = (r: DiscoveredRecipe, ici: boolean): RecipesContract['catalogue'][number] => ({
   id: r.id,
   title: r.title,
   makes: r.makes,
@@ -82,14 +112,24 @@ const toJson = (r: DiscoveredRecipe): RecipesContract['catalogue'][number] => ({
   dir: r.dir,
   complete: r.complete,
   missing: r.missing,
+  ici,
 });
 
 /** La même découverte que `renderDiscovery`, en données : ce que mission control lit (ADR-086). */
-export function recipesContract(input: Omit<DiscoveryInput, 'projectLabel'>): RecipesContract {
+export function recipesContract(
+  input: Omit<DiscoveryInput, 'projectLabel'>,
+  scope?: ImplementationScope,
+): RecipesContract {
+  const here = (r: DiscoveredRecipe): boolean => {
+    if (!scope) return false;
+    const path = resolveSource(r.source, scope.methodRoot, scope.home);
+    return path !== null && isInside(path, scope.projectRoot);
+  };
   return {
     schema_version: RECIPES_SCHEMA_VERSION,
-    catalogue: input.methodRecipes.map(toJson),
-    projet: input.projectRecipes.map(toJson),
+    catalogue: input.methodRecipes.map((r) => toJson(r, here(r))),
+    // Une recette déclarée par le projet est, par construction, implémentée ici.
+    projet: input.projectRecipes.map((r) => toJson(r, true)),
   };
 }
 

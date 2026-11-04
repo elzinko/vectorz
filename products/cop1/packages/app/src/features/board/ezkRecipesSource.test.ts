@@ -18,7 +18,8 @@ describe('translateRecipes', () => {
     expect(catalogue.map((r) => r.id)).toEqual(['20260830104013705', '20261001004228784']);
     expect(catalogue[0]).toMatchObject({ complete: false, missing: ['source', 'status'] });
     expect(catalogue[1]).toMatchObject({ source: 'tools/launcher', complete: true });
-    expect(projet).toEqual([expect.objectContaining({ id: '20261018110931402', dir: 'apps/outil' })]);
+    expect(projet).toEqual([expect.objectContaining({ id: '20261018110931402', dir: 'apps/outil', ici: true })]);
+    expect(catalogue.every((r) => r.ici === false)).toBe(true);
   });
 
   it('refuse un schema_version inconnu ou une recette mal formée', () => {

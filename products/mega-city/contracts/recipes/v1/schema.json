@@ -37,6 +37,10 @@
             "type": "boolean",
             "description": "Les cinq champs requis sont présents et le YAML se lit (contrat de la fiche 002)."
           },
+          "ici": {
+            "type": "boolean",
+            "description": "La recette est implémentée dans le projet visé : déclarée par lui, ou sa `source` y mène (fiche 20261104103403956)."
+          },
           "missing": {
             "type": "array",
             "items": {
@@ -53,6 +57,7 @@
           "source",
           "dir",
           "complete",
+          "ici",
           "missing"
         ]
       },
@@ -89,6 +94,10 @@
             "type": "boolean",
             "description": "Les cinq champs requis sont présents et le YAML se lit (contrat de la fiche 002)."
           },
+          "ici": {
+            "type": "boolean",
+            "description": "La recette est implémentée dans le projet visé : déclarée par lui, ou sa `source` y mène (fiche 20261104103403956)."
+          },
           "missing": {
             "type": "array",
             "items": {
@@ -105,6 +114,7 @@
           "source",
           "dir",
           "complete",
+          "ici",
           "missing"
         ]
       },

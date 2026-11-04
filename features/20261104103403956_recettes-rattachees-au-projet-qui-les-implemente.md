@@ -39,11 +39,11 @@ Deux surfaces : la commande et l'écran (le daemon passe le champ tel quel).
 
 ## Critères d'acceptation
 
-- [ ] `ezk recipes --json --root <muti>` marque `ici: true` les recettes du catalogue dont la source est dans muti, et elles seules.
-- [ ] Une source relative se lit depuis la racine de la méthode ; une source `~/…` depuis le dossier personnel.
-- [ ] La vue Recettes de muti liste ces recettes sous « Dans ce projet », avec le chemin de leur implémentation.
-- [ ] Une méthode plus ancienne, sans le champ, garde l'affichage d'avant.
-- [ ] Les tests de la méthode, du daemon et de la vue couvrent ces cas.
+- [x] `ezk recipes --json --root <muti>` marque `ici: true` les recettes du catalogue dont la source est dans muti, et elles seules.
+- [x] Une source relative se lit depuis la racine de la méthode ; une source `~/…` depuis le dossier personnel.
+- [x] La vue Recettes de muti liste ces recettes sous « Dans ce projet », avec le chemin de leur implémentation.
+- [x] Une méthode plus ancienne, sans le champ, garde l'affichage d'avant.
+- [x] Les tests de la méthode, du daemon et de la vue couvrent ces cas.
 
 ## Comment vérifier
 
@@ -53,6 +53,11 @@ pnpm --dir products/mega-city vitest run src/core/__tests__/recipe-discovery.tes
 ```
 
 Puis ouvrir mission control, vue Recettes, projet muti.
+
+Avant / après, vue Recettes de muti (2026-11-04) :
+
+- avant : « Dans ce projet 0 » — ![avant](../docs/pr-evidence/20261104103403956/recettes-muti-avant.jpg)
+- après : « Dans ce projet 6 », chaque recette avec son implémentation dans `~/git/bacasable/muti`, et la marque « utilisée ici » au catalogue — ![après](../docs/pr-evidence/20261104103403956/recettes-muti-apres.jpg)
 
 ## Notes / décisions
 

@@ -11,8 +11,10 @@ import {
   type DiscoveredRecipe,
   RecipesContractSchema,
   discover,
+  isInside,
   recipesContract,
   renderDiscovery,
+  resolveSource,
 } from '../recipe-discovery.js';
 
 const disc = (over: Partial<DiscoveredRecipe> & { dir: string; id: string }): DiscoveredRecipe => ({
@@ -112,5 +114,39 @@ describe('ezk recipes --json — la découverte en données (fiche 2026110409051
     expect(json.projet).toEqual([
       expect.objectContaining({ id: '3', dir: 'apps/outil', source: 'apps/outil', complete: true, missing: [] }),
     ]);
+  });
+});
+
+describe('les recettes rattachées au projet qui les implémente (fiche 20261104103403956)', () => {
+  const scope = { projectRoot: '/home/t/git/muti', methodRoot: '/home/t/git/vectorz', home: '/home/t' };
+  const entry = (id: string, source: string): ScanEntry => ({
+    dir: `recipes/${id}.md`,
+    recipeMd: `---\nid: "${id}"\ntitle: R${id}\nmakes: m\nsource: ${source}\nstatus: ready\n---\n`,
+  });
+
+  it('résout une source ~/…, absolue ou relative à la méthode', () => {
+    expect(resolveSource('~/git/muti', '/m', '/home/t')).toBe('/home/t/git/muti');
+    expect(resolveSource('/opt/x', '/m', '/home/t')).toBe('/opt/x');
+    expect(resolveSource('tools/launcher', '/home/t/git/vectorz', '/home/t')).toBe('/home/t/git/vectorz/tools/launcher');
+    expect(resolveSource('  ', '/m', '/home/t')).toBeNull();
+    expect(isInside('/home/t/git/muti/app', '/home/t/git/muti')).toBe(true);
+    expect(isInside('/home/t/git/muti-bis', '/home/t/git/muti')).toBe(false);
+  });
+
+  it('marque ici les recettes du catalogue dont la source mène au projet, et les recettes déclarées', () => {
+    const json = recipesContract(
+      {
+        methodRecipes: discover([entry('1', '~/git/muti'), entry('2', '~/git/samplerz'), entry('3', 'tools/launcher')]),
+        projectRecipes: discover([{ ...entry('4', 'apps/outil'), dir: 'apps/outil' }]),
+      },
+      scope,
+    );
+    expect(json.catalogue.map((r) => [r.id, r.ici])).toEqual([
+      ['1', true],
+      ['2', false],
+      ['3', false],
+    ]);
+    expect(json.projet[0].ici).toBe(true);
+    expect(recipesContract({ methodRecipes: discover([entry('1', '~/git/muti')]), projectRecipes: [] }).catalogue[0].ici).toBe(false);
   });
 });

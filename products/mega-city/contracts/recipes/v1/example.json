@@ -12,7 +12,8 @@
    "missing": [
     "source",
     "status"
-   ]
+   ],
+   "ici": false
   },
   {
    "id": "20261001004228784",
@@ -22,7 +23,8 @@
    "source": "tools/launcher",
    "dir": "recipes/lanceur-dev-universel.md",
    "complete": true,
-   "missing": []
+   "missing": [],
+   "ici": false
   }
  ],
  "projet": [
@@ -34,7 +36,8 @@
    "source": "apps/outil",
    "dir": "apps/outil",
    "complete": true,
-   "missing": []
+   "missing": [],
+   "ici": true
   }
  ]
 }

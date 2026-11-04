@@ -11,6 +11,7 @@
  * catalogue d'outils (qui ne liste que les bin/scripts de la méthode).
  */
 import { type Dirent, existsSync, readFileSync, readdirSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type ScanEntry, RECIPE_DECLARATION_FILE } from '../src/core/recipe-contract.js';
@@ -72,7 +73,8 @@ const methodRecipes = discover(methodRecipeEntries());
 const projectRecipes = discover(projectRecipeEntries(projectRoot));
 // `--json` : la même découverte en données, pour mission control (fiche 20261104090518008, ADR-086).
 if (process.argv.includes('--json')) {
-  console.log(JSON.stringify(recipesContract({ methodRecipes, projectRecipes }), null, 1));
+  const scope = { projectRoot, methodRoot, home: homedir() };
+  console.log(JSON.stringify(recipesContract({ methodRecipes, projectRecipes }, scope), null, 1));
 } else {
   console.log(renderDiscovery({ projectLabel: projectRoot, methodRecipes, projectRecipes }));
 }

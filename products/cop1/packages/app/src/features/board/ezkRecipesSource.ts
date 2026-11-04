@@ -23,6 +23,8 @@ export interface RecipeView {
   dir: string;
   complete: boolean;
   missing: string[];
+  /** Implémentée dans le projet affiché (fiche 20261104103403956) ; `false` pour une méthode plus ancienne. */
+  ici: boolean;
 }
 
 export interface RecipesViewData {
@@ -57,6 +59,7 @@ function readRecipe(v: unknown): RecipeView {
     dir: text('dir'),
     complete,
     missing: [...missing],
+    ici: v.ici === true,
   };
 }
 
