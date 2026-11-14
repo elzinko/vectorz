@@ -1,6 +1,6 @@
 # ADR-086 — La méthode est le seul lecteur des fiches ; ses données sortent par `ezk … --json`
 
-Statut : accepté (PO, 2026-11-01) ; amendé le 2026-11-02, un seul écran (voir l'amendement en fin) ; amendé le 2026-11-14 par [ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) pour ce que la méthode publie sur les versions
+Statut : accepté (PO, 2026-11-01) ; amendé le 2026-11-02, un seul écran, et le 2026-11-14, les mots de l'écran (voir les amendements en fin) ; amendé le 2026-11-14 par [ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) pour ce que la méthode publie sur les versions
 Date : 2026-10-31 (remplace la version du 2026-10-29, « `ezk board` reste portable »)
 Décideurs : PO, après deux panels adverses et une enquête passée en revue adverse
 Amende : [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md) décision 1 ·
@@ -74,13 +74,17 @@ ADR gardait deux boards qui lisaient chacun les fiches. Cette version les récon
   leur détail, le plan et les versions, les cartes de `diagrams/`, la config en lecture, le pouce.
   Commandes : `ezk board open` (page web), `ezk board show` (texte, ou JSON avec `--json`),
   `ezk board check` (cohérence des vues).
-- **Mission control** montre ce qui se passe en direct : les runs, les sessions, la chronologie. Il
-  affiche aussi le board de la méthode, en le lisant par le contrat. Il garde son propre lanceur.
+- **Mission control** montre ce qui se passe en direct : les sprints, les sessions et leurs lancements, la
+  chronologie. Il affiche aussi le board de la méthode, en le lisant par le contrat. Il garde son propre
+  lanceur. *(Amendé le 2026-11-14 : « run » n'est plus un mot d'écran ; voir l'amendement en fin.)*
 
 ### 3. Un seul vocabulaire
 
 « Board de la méthode », « mission control », « vue des sessions », « sélecteur de projet ». Les mots
 *Moniteur*, *cockpit*, *dashboard* et *kanban* sont retirés ; le glossaire renvoie au bon mot.
+
+*Amendé le 2026-11-14 :* les mots d'écran sont ceux de Scrum, et « module » nomme ce qui se branche par
+projet ; la méthode n'en est pas un. La liste complète est dans l'amendement en fin.
 
 ### 4. Le découpage
 
@@ -205,3 +209,68 @@ Le retrait vient en dernier, quand toutes les fiches de portage sont livrées :
   « Pilotage » de mission control.
 - « Board de la méthode » (décision 3) désigne désormais ce que publient `ezk board show` et les
   contrats, plus une page.
+
+## Amendement du 2026-11-14 (décisions PO des 11, 12 et 14 novembre) — les mots de l'écran
+
+### En clair
+
+Mission control parle Scrum. Les mots d'écran sont fixés une fois : **sprint**, **but du sprint**, **lot**,
+**incrément**, **rétro**, **version**, **objectif**, **jalon**, **session**, **lancement**, **module**.
+« Run » n'est plus un objet d'écran : il se lit « lancement » dans le fil d'une session, et reste le mot
+du journal de supervision et de la ligne de commande. La méthode n'est pas un module de mission control :
+c'est ce que mission control lit.
+
+### Les mots, et ce qu'ils désignent
+
+| Mot d'écran | Ce qu'il désigne | Où c'est tranché |
+|---|---|---|
+| sprint, lot, incrément, rétro, version | les mots du Scrum Guide, tels que la méthode les joue | ADR-0054 § Nommage |
+| but du sprint | le Sprint Goal ; ce que `ezk-sprint start --objective` saisit (drapeau interne) | ADR-0054 § Nommage, amendement du 2026-11-14 ; confirmation du PO demandée le 14 novembre |
+| objectif | la milestone, unité de préparation (champ `milestone:` des fiches) | ADR-0083 ; décision PO du 11 novembre |
+| jalon | le gate : un arrêt du lancement où la méthode pose une question | mot d'écran déjà en place (chronologie) |
+| session | une branche et son dossier de travail, au sens de Claude Code | ADR-0054 § Nommage, ADR-079 |
+| lancement | une exécution de la méthode, tracée dans le journal (`run.started`…) | cet amendement |
+| module | ce qu'une configuration de projet allume ou éteint : GitHub, CI, Codex | glossaire du dépôt ; cet amendement remplace « plugin » et « intégration » dans la décision 3 |
+
+### Ce qui change dans la décision 2
+
+- Mission control montre des sprints, des sessions et leurs lancements, puis la chronologie ; plus « des runs ».
+- Le menu range par **portée**, pas par produit : « Global » (les projets, l'annuaire de la méthode) et
+  « Projet · <nom> » (ses vues). Le nom de la méthode ne sert plus que de titre à son annuaire.
+  Décision du panel du 11 novembre, amendée le 12 :
+  [capture](../captures/2026-11-11-panel-loi-projet-annuaire-maquette.md).
+
+### Ce qui n'est PAS renommé
+
+- l'évènement `run.started` et le contrat de supervisabilité gelé `cop1/supervisability@0.2`
+  ([ADR-084](ADR-084-surface-emission-declaree-et-moments.md) : aucun renommage interne) ;
+- l'alias `ezk-sprint run` et les verbes `ezk run …` (ADR-0054, périmètre du POC) ;
+- le mot « run » dans les ADR passés : ils se lisent avec cette table.
+
+### Décisions structurantes du PO du 14 novembre (matière d'ADR)
+
+Trois décisions prises par le PO le 14 novembre (déléguées à la session pilote). Les décisions 1 et 3 sont
+structurantes : le panel adverse de la coupe les a vérifiées le même jour, question 9 de sa
+[capture](../captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md) : cohérentes avec le modèle à deux plans, et renforcées par lui. La décision 5 est
+prise par le PO, hors panel.
+
+**Décision 1 — le numéro d'un sprint.** C'est le compte continu depuis le début du projet (…28, 29), calculé
+depuis l'historique des sprints scellés et émis par `ezk board show --json`. Le compteur qui repart à 1 par
+branche (journal de branche sous `<git-common-dir>/ezk/sprints/`) est un artefact local : il ne se publie
+jamais comme le numéro. Un sprint se rattache à un objectif, jamais à une version. Build :
+[Le sprint se publie avec son numéro continu, son but et sa branche](../../features/20261114131612204_sprint-publie-numero-but-branche.md).
+
+**Décision 3 — le graphe de la méthode.** Les liens se déclarent dans le front-matter des objets de process ;
+la méthode les compile en un seul bloc typé (adjacence, étage, orphelins, provenance) ; ce bloc compilé est
+le contrat publié ; `ezk graph check` le lit, il n'est pas un deuxième canal. Les objets se déclarent, la
+méthode extrait, mission control consomme (décision 1 de cet ADR). Build :
+[Le graphe de la méthode en un contrat compilé](../../features/20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
+
+**Décision 5 — `ezk rules show`.** Il reste, comme vue documentée et mince de `ezk law show` : un seul
+moteur, `rules show` = `law show` filtré ; ADR-0062 et la rétro s'en servent, donc ni retrait ni
+implémentation parallèle. Build :
+[Un seul lecteur de la loi du projet](../../features/20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md).
+
+La décision 2 (le nom en clair d'un objectif et d'une version vit dans le front-matter de l'objet lui-même,
+pas dans `PLAN.md`) est portée par l'[ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), la coupe, proposé le
+14 novembre après ce panel ; sa ratification par le PO est attendue.

@@ -65,7 +65,7 @@ const method: MethodDoc = {
 
 const step = (over: Partial<CycleStepDoc>): CycleStepDoc => ({
   n: 1,
-  t: 'Le run',
+  t: 'Le sprint',
   scrum: '≈ Sprint',
   p: 'texte',
   ceremonie: 'sprint',

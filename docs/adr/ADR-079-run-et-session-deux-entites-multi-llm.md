@@ -1,6 +1,7 @@
 # ADR-079 — Run et session : deux entités distinctes, pour superviser plusieurs LLM concurrents
 
 - **Statut** : Accepté (2026-10-15). Ratifié par **panel adverse** le 2026-10-14 (architecte + dev émetteur + dev board + juge → GO-avec-changements, **modèle B**) ; corrections du panel intégrées ; **attribution du chantier tranchée avec le PO** le 2026-10-15.
+- **Amendé le 2026-11-14** (décision PO du 12 novembre) : la chronologie du board passe de trois à **deux niveaux** ; voir D11.
 - **Cadre la fiche** : [20261014122044421 — Board : runs et sessions concurrents](../../features/done/20261014122044421_board-runs-concurrents-identite-lisible.md) (P1, v0.23.0, milestone board) ; conçu par maquette ([board-runs-concurrents.html](../maquettes/board-runs-concurrents.html), 8 cas).
 - **Amende de façon bornée** :
   - [ADR-074](ADR-074-board-unifie-run-moments-fiches-deux-portees-config.md):21 — « un run = une session » devient **« un run (chantier) réunit une ou plusieurs sessions »**.
@@ -104,6 +105,8 @@ Dans un worktree lié, `.git` est un **fichier** `gitdir:` → la branche se lit
 ### D11 — Représentation board (PO, sur maquette — hors débat panel)
 
 Servie **live** depuis les journaux, **jamais committée** (ADR-0043/0055). Chronologie **D+B à 3 niveaux** (les chantiers → un chantier avec ses sessions + son fil fusionné → une session) ; **accueil « Tous les projets »** ; rattachement par l'accueil (D3).
+
+**Amendement du 2026-11-14 (décision PO du 12 novembre).** La chronologie passe à **deux niveaux** : l'objectif en construction → ses sessions, chacune avec ses lancements. Le niveau « chantier » ne s'affiche plus comme tel : le chantier se lit par l'objectif qu'il construit (ADR-0083 ; la clé de chantier devient l'objectif par l'[ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), proposé le 14 novembre après le panel adverse de la coupe, qui amende D2), et « run » n'est plus un mot d'écran (ADR-086, amendement du 14 novembre). L'écran livré par [Board : chronologie à 3 niveaux](../../features/done/20261015082118382_board-chronologie-3-niveaux-accueil-projets.md) est à reprendre côté cop1 : cet amendement le nomme, une fiche cop1 le portera.
 
 ```mermaid
 flowchart TB

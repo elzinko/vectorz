@@ -66,7 +66,7 @@ elements:
 
   - id: sprint
     type: ceremonie
-    nom: Le run (« sprint » maison)
+    nom: Le sprint
     scrum: Sprint (le conteneur)
     etat: adapte
     implemente_par: [ezk-sprint:start, ezk-sprint:close, ezk-sprint:run, ezk-sprint:check, ezk-archive:run]

@@ -34,6 +34,11 @@ Le moteur modélise déjà « même outil, autre portée de déploiement » comm
 
 Il réutilise les constructeurs `entryFile` et `claudeMdFile` du cap `claude-code` (à extraire vers `law-content.ts`, qui possède déjà `compileRule`). Pas d'agents, pas de skills, pas de hooks.
 
+*Amendement du 2026-11-14 :* le cap livré **relaie les hooks** du catalogue (`src/caps/claude-code-law.ts`, et
+son test `src/__tests__/claude-code-law.test.ts` l'exige). Le `hooks: []` ci-dessus décrit l'intention du
+POC, pas le code : le texte s'aligne sur le code. Les hooks git propres à vectorz ne sont pas touchés par le
+bind de loi.
+
 ### 2. Portée du changement (minimal)
 
 | Changement | Fichier | Nature |
@@ -95,10 +100,13 @@ flowchart LR
 - Le cap law-only est **réutilisable** par tout projet qui veut la loi palpable sans la toolbox (pas que vectorz).
 
 **À assumer / garde-fous.**
-- `.iamthelaw/ENTRY.md` est un **artefact généré committé**. [ADR-0055](0055-artefacts-generes-hors-versionnage.md) le permet (on le commite **parce qu'un humain le lit**), mais il hérite du risque de dérive : si `rules/` change sans re-bind, le fichier ment. **Mesure (critère 3)** : une garde légère — étendre `doctor` à une cible projet, ou un check façon `views:check` qui recompile la loi et exige `git diff` propre sur `.iamthelaw/ENTRY.md`. À poser en suite, hors cœur du POC.
+- `.iamthelaw/ENTRY.md` est un **artefact généré committé**. [ADR-0055](0055-artefacts-generes-hors-versionnage.md) le permet (on le commite **parce qu'un humain le lit**), mais il hérite du risque de dérive : si `rules/` change sans re-bind, le fichier ment. **Mesure (critère 3)** : une garde légère — étendre `doctor` à une cible projet, ou un check façon `views:check` qui recompile la loi et exige `git diff` propre sur `.iamthelaw/ENTRY.md`. À poser en suite, hors cœur du POC. *Amendement du 2026-11-14 :* cette garde, l'en-tête estampillé
+  d'`ENTRY.md` (profil, hôte, commit) et la fraîcheur de la loi sont portés par la fiche
+  [`ezk law status` : le profil lié et la fraîcheur de la loi d'un projet](../../../../features/20261114131615164_ezk-law-status-profil-et-fraicheur.md).
 - Conflit git possible si deux sessions re-bindent en même temps : bruit pur, résolu en rejouant le bind (vérité dans `rules/`). Même nature que BACKLOG.md.
 - Le retrait des règles recopiées de `CLAUDE.md` est **manuel et unique** : le cap ne le fait pas.
-- Les **hooks** sont volontairement hors du law-only : vectorz gère ses propres hooks git, le bind de loi ne doit pas les bousculer.
+- Les **hooks** : le cap relaie les hooks du catalogue (amendement du 2026-11-14, texte aligné sur le code) ;
+  les hooks git propres à vectorz ne sont pas touchés par le bind de loi.
 
 ## Alternatives écartées
 

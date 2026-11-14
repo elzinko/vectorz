@@ -55,6 +55,10 @@ propre à un projet reste liée par projet. Un test garde les règles « un agen
   faut rejouer `bind-global`. Le doctor le voit (« loi périmée »).
 - Un projet lié par `bind` cumule la loi globale et la sienne : les règles du socle y figurent
   deux fois. Toléré pour ce lot ; dédoublonner viendra ensuite.
+  *Amendement du 2026-11-14 :* à la lecture, `ezk law show` compte une règle présente dans les deux lois
+  une seule fois (`src/core/law-show.ts`, portée globale d'abord) ; la session, elle, charge encore les
+  deux fichiers (sur le poste du PO, le 14 novembre, les dix règles de `.iamthelaw/ENTRY.md` sont les dix
+  de `~/.claude/rules/iamthelaw.md`). L'amendement décrit la lecture, pas le coût en jetons.
 - Le profil `global` se dit exhaustif : un test garde que tout `ezk-*` du catalogue y figure
   (`ezk-bug` et `ezk-chef` n'y étaient pas).
 

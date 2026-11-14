@@ -142,6 +142,16 @@ Cette section absorbe la fiche de nommage [20260903085150321](../../../../featur
 
 **Règle.** On prend le mot Scrum là où Scrum en a un : story, sprint, incrément, planning, rétro. Pour ce que Scrum n'a pas, la persistance d'outil, on garde le terme réel de l'outil : **session**, au sens de Claude Code. SAFe n'est emprunté que pour un étage au-dessus du sprint, et seulement s'il faut le nommer.
 
+**Amendement du 2026-11-14 (décisions PO des 11 et 12 novembre, maquette de mission control).** Trois mots
+d'écran, fixés une fois :
+- **But du sprint** = le Sprint Goal du Scrum Guide : ce que `ezk-sprint start --objective` saisit. Le
+  drapeau reste `--objective` (interne) ; l'écran dit « But du sprint ». Mot d'écran proposé le 12 novembre,
+  confirmation du PO demandée le 14 novembre.
+- **Objectif** = la milestone, unité de préparation ([ADR-0083](0083-version-etiquette-milestone-unite-de-preparation.md)) ;
+  décision PO du 11 novembre. Le champ des fiches reste `milestone:`. « Objectif » ne désigne donc jamais le
+  but d'un sprint ni un gate.
+- **Jalon** = le gate, un arrêt du lancement où la méthode pose une question ; c'est déjà le mot de l'écran.
+
 **Ce qui en découle.**
 - Les verbes du sprint sont des verbes d'événement Scrum : `start` et `close`. `stop` reste réservé à l'annulation, qui est une fin anormale.
 - La séparation tient : `ezk-product-build` **compose** `ezk-sprint` et n'en devient jamais un mode.
