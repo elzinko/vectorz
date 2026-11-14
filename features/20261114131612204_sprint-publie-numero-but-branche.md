@@ -82,7 +82,7 @@ Fiches livrées qui couvrent le besoin en partie :
    scellés et `ezk board show --json` l'émet. Le compteur qui repart à 1 par branche reste un
    artefact local : il ne se publie jamais comme LE numéro. Cette décision est à confirmer par le
    panel adverse avant d'être écrite en ADR, voir
-   [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md).
+   [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md).
 3. **Une lecture JSON.** Une commande à créer, `ezk sprint show <slug> --json` (`project: true`,
    lecture seule), sort le compte rendu sous un contrat `contracts/sprint-show/v1`, avec
    `schema_version`. Les sections (« En clair », « Lot scellé », « Détail », « Abandon ») sont des

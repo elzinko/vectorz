@@ -93,7 +93,7 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
   première coupe, le seul texte figé toléré est le « i » de l'entrée grisée.
 - Hors périmètre : le contenu de l'Annuaire ; l'amendement d'ADR-086 décision 3 et « module » côté
   méthode (`config.example.yml`, `ezk config github`), portés par
-  [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md) ; la
+  [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md) ; la
   chronologie à deux niveaux (ADR-079 D11) : elle reprend l'écran livré par
   [Board : chronologie à 3 niveaux](done/20261015082118382_board-chronologie-3-niveaux-accueil-projets.md), et aucune fiche du 14 novembre ne la porte.
 
@@ -148,7 +148,7 @@ Puis ouvrir mission control sur vectorz : la barre de gauche a deux groupes, « 
   horodatés restent ([Fiches datées](done/0180-idees-sans-numero.md) tient). Si l'écran affiche un
   numéro court, c'est un affichage calculé par cop1, pas un champ de la méthode ni d'un contrat. Une
   note, pas un critère.
-- Dépend de [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md)
+- Dépend de [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md)
   et, pour les textes des « i », de
   [`ezk glossaire show --json`](20261114131616634_ezk-glossaire-show-json.md).
 - Fiches voisines : [Une page d'accueil, une ligne par projet](20261002115451451_page-une-ligne-par-projet.md),

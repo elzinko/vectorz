@@ -144,7 +144,7 @@ Pas de preuve d'écran : la fiche livre une commande et un contrat. L'écran vie
   [les verdicts de revue](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md) ;
   et, pour `proposition-retro`, la dernière rétro seulement (proposé) ou toutes les captures.
 - Dépend de : [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et
-  [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md), où vivent les
+  [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md), où vivent les
   décisions en attente que la cloche affichera comme propositions de rétro ; elle les cite sans les recopier.
   Pour `sprint-sans-retro` : [Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md).
 - Fiches voisines : [Boussole de session](done/20261010091118580_boussole-session-quoi-faire-maintenant.md), livrée, la commande que cette fiche étend ;

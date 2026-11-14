@@ -267,7 +267,7 @@ d'être écrites en ADR. Les fiches les portent comme décisions du PO à confir
 | 8 | [Contrat `config-show` v2 : passes de la gate, commande de tests, niveaux en français](../../features/20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md) | P1 | mega-city | E5, E7, E6 |
 | 9 | [`ezk backlog version tag <v>` : un seul verbe pour la coupe](../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md) | P1 | mega-city | E4 |
 | 10 | [Trancher la coupe : committer le dossier du 10 novembre, panel adverse, ADR-0088](../../features/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) | P1 | mega-city | I4 |
-| 11 | [Amendements d'ADR du 12 novembre : vocabulaire Scrum à l'écran, lancements, module](../../features/20261114131614058_amendements-adr-du-12-novembre.md) | P1 | mega-city | I1, I3 |
+| 11 | [Amendements d'ADR du 12 novembre : vocabulaire Scrum à l'écran, lancements, module](../../features/done/20261114131614058_amendements-adr-du-12-novembre.md) | P1 | mega-city | I1, I3 |
 | 12 | [Le récit de session porte un en-tête structuré que `board show` publie](../../features/20261114131614243_recit-de-session-en-tete-structure.md) | P2 | mega-city | A5 |
 | 13 | [`ezk board session <branche> --json` : une session avec ses sprints, ses lancements et ses fiches](../../features/20261114131614424_ezk-board-session-json.md) | P2 | mega-city | A4 |
 | 14 | [« parked » n'est plus un pseudo-objectif ; `ezk backlog park` garde l'objectif d'origine](../../features/20261114131614612_parked-n-est-plus-un-pseudo-objectif.md) | P2 | mega-city | A6 |

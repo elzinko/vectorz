@@ -63,7 +63,7 @@ exemple. Mission control, l'écran de cop1, ne lit que ces contrats (ADR-086).
 ## Proposition
 
 - **Décision 3 du PO du 14 novembre, à confirmer par le panel adverse avant d'être écrite en ADR**
-  (fiche [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md)) : les liens se
+  (fiche [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md)) : les liens se
   déclarent dans le front-matter des objets de process ; la méthode les compile en UN bloc typé (adjacence, étage,
   orphelins, provenance) ; ce bloc compilé EST le contrat publié. `ezk graph check` le lit ; il n'est pas un deuxième
   canal. Cohérent avec la décision 2 du même jour : les objets se déclarent dans leur front-matter, la méthode extrait,
@@ -138,7 +138,7 @@ pnpm --dir products/mega-city test -- src/__tests__/graph.test.ts src/__tests__/
 - Origine : la [carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écarts C2 et C3 ; le panel du 11 novembre, § 4 « Santé » et § 6 ([capture](../docs/captures/2026-11-11-panel-loi-projet-annuaire-maquette.md), pas encore suivie par git).
 - Décision 3 du PO du 14 novembre : écrite dans la proposition ; à confirmer par le panel adverse, puis en ADR
-  par la fiche [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md), dont cette fiche dépend.
+  par la fiche [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md), dont cette fiche dépend.
 - Laissé au PO : la portée de « compétence sans agents déclarés » (23 compétences sur 26 sans `roles:`, dont ezk-retro qui
   convoque en prose) ; le sens de `liensAbsents[]` : la maquette donne « ezk-archive → agent », une convocation en prose
   sans `roles:`, que `pathRefs.undeclared` ne voit pas (0 aujourd'hui) ; la racine des recettes ; la découpe en deux sprints

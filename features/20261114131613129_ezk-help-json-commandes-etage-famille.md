@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, carte]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande publiée, aucun écran modifié
@@ -158,3 +158,11 @@ pnpm --dir products/mega-city test -- src/__tests__/ezk-cli.test.ts src/__tests_
 - Risques : une troisième lecture des `SKILL.md` (déjà `bin/ezk-help.ts` et `src/loaders/catalog.ts`) ;
   la carte et `help --json` qui divergent si la source n'est pas le même catalogue compilé ; un
   amendement de l'ADR-0039 si le PO veut « hôte » comme étage.
+
+## Journal
+
+- 2026-11-14 — créée depuis la carte des écarts (lot de 27 fiches validé par le PO le 14 novembre).
+- 2026-11-14 (soir) — groomée en autonomie (run du soir, mandat du PO jusqu'à minuit) : dépendances constatées
+  (`ezk-manifest.yml` et `taxonomie.yml` dans le dépôt, aucune dépendance hors dépôt), six critères prouvables
+  par commande, une seule surface. Passée « prête » sur tampon `ezk-pm` (mode auto) ; lot 2 du run avec
+  « La méthode émet ses étapes fines » : la méthode publie son process et son annuaire.

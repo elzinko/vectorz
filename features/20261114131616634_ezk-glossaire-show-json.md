@@ -55,7 +55,7 @@ Ce qui existe le 14 novembre :
 - [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), décision 3
   (lignes 80-83), dit « le glossaire renvoie au bon mot », sans nommer les mots d'écran. Son
   amendement est porté par
-  [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md), comme le
+  [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md), comme le
   renommage de « Le run » dans `products/mega-city/method/ceremonies.yml:69`.
 
 Ce qui manque : une source unique, possédée par la méthode, publiée par contrat, lue par les « i »
@@ -138,7 +138,7 @@ pnpm --dir products/mega-city test -- src/__tests__/glossaire-contract.test.ts  
 
 - Origine : la [carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md)
   du 14 novembre, écart I1, scindé en deux : les amendements d'ADR et le renommage dans
-  [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md), le
+  [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md), le
   glossaire publié ici. Pilote « Oui, crée-les ». Statut `idea` : le PO tranche.
 - Dépend de la fiche des amendements : les définitions des mots d'écran viennent des ADR amendés
   (ADR-086 décisions 2 et 3, ADR-079 D11, ADR-0054 section Nommage).
