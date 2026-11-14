@@ -29,7 +29,7 @@ Le run remplit des wagons. Il ne fait jamais partir un train.
 | Le run multi-versions du 20 octobre a parké des fiches **pour pouvoir sceller** v0.19 → v0.22 | 16 fiches passées `milestone: parked` dans un seul merge (11 « à découper », 2 « attend GitHub », 1 « différée PO », 1 « attend panel », 1 « attend dépendance ») | commit `783b663e` |
 | Depuis le 23 octobre, le numéro « posé à la construction » n'a **jamais été posé** | 85 fiches livrées depuis le tag v0.22.0 ; **76 sans numéro**, 9 en v0.23.0 ou v0.24.0 | `git log v0.22.0..HEAD` sur `features/done` |
 | Ces 76 fiches sont **invisibles** du suivi de version | `ezk backlog version list` les compte comme « historique d'avant le champ » et affiche « 2 versions à clore » (7 fiches) | [`versions.ts`](../../products/mega-city/src/backlog/versions.ts), compteur `history` |
-| Les runs des 3 et 4 novembre n'ont presque rien parké | arrêt sur « aucune fiche prête » : 4 têtes du plan en `blocked: deferred`, décisions du PO | fiche [« À trancher »](../../features/20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md) |
+| Les runs des 3 et 4 novembre n'ont presque rien parké | arrêt sur « aucune fiche prête » : 4 têtes du plan en `blocked: deferred`, décisions du PO | fiche [« À trancher »](../../features/done/20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md) |
 | Le tas parké est **intriable par milestone** | 85 parkées ; 62 sans raison typée (tri du 30 septembre), 23 avec (11 oversized, 4 panel, 3 github, 3 dependency, 1 review, 1 deferred) ; `park` a écrasé leur milestone d'origine | `grep '^milestone: parked' features/*.md` |
 
 Rejouer ces mesures depuis la racine du dépôt :
