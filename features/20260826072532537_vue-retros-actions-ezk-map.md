@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 labels: [carte]
-milestone: parked
+milestone: board
 version:
 epic:
 status: idea
@@ -152,3 +152,26 @@ regen ; la modifier sans regen → le test d'invariant rougit.
 
 [L'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) fait de mission control le seul écran : la page web de la méthode
 (`ezk:map`) sera retirée. Cette page des rétros se construira donc dans mission control.
+
+## Note du 2026-11-14 — sortie du parking, cible mission control
+
+Depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart F1.
+
+- **Ce qui existe déjà.** `ezk retro captures --json` tourne : 41 captures lisibles, 0 problème,
+  140 actions dont 57 à trancher, vérifié le 2026-11-14 sur vectorz. Chaque capture porte fichier,
+  date, thème, périmètre, participants et ses actions (proposition, nature, cible, auteur, statut
+  ✅/❌/⏳, décision du PO, date) : `products/mega-city/src/core/retro-capture.ts`. La lentille
+  `--check --lens` publie déjà les défauts de lisibilité dans `problems[]`.
+- **Ce qui manque.** Un contrat versionné (aucun dossier `contracts/retro-captures/`), les sprints
+  relus en donnée structurée (aucune des 41 captures n'a de clé `sprints:` ; le gabarit de capture
+  ne la définit pas), et la page.
+- **Rattachement.** La fiche sort du milestone `parked` et rejoint `board` : la page se construit
+  dans mission control (note du 2026-11-02), pas dans `ezk:map`, retiré par l'ADR-086.
+- **Découpage proposé au grooming**, sur le modèle de la paire recettes livrée le 2026-11-04 : côté
+  méthode, le contrat `contracts/retro-captures/v1` (schéma, exemple rangé, test « exemple ≡
+  commande ») ; côté cop1, la page Rétros (liste, décisions avec leur statut, lien vers la capture et
+  vers les sprints relus). Le champ `sprints[]` reste `[]` et la page dit « sprints non tracés » tant
+  que [Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md)
+  n'est pas livrée. Les critères `pnpm ezk:map retros` et `bin/regen-retros-data.ts` ci-dessus sont
+  périmés : à réécrire au grooming sur le reliquat réel.
+- **Priorité** P2 confirmée : la donnée tourne déjà, il reste le contrat et la page.

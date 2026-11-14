@@ -226,6 +226,15 @@ entre deux fiches qui s'attendent.
   ajouter le réglage de l'étape et les liens entre skills. `regles[]` reste à trancher : lister les
   règles d'une étape demande de les vérifier contre le catalogue des règles, ce qu'aucun critère
   n'exige ici.
+- Trois champs de plus, attendus par la maquette relue le 2026-11-14 pour chaque étape, à côté de
+  `regles[]` : `momentEmis` (le moment du journal que l'étape émet, à vérifier contre
+  `moments.yml`), `gateId` (le jalon que l'étape pose ; aucun catalogue de jalons n'existe, l'id
+  reste libre) et `effetStatutFiche` (le statut de fiche que l'étape écrit, à vérifier contre les
+  statuts de `src/core/fiche-schema.ts`). Défaut : si la v1 du contrat dépasse le sprint, ces
+  champs partent dans une v2 ; le PO tranche la coupe. Même source : la page Process de la maquette
+  attend aussi `ezk-release` comme cinquième compétence (l'étape « Versionner ») et le niveau de
+  modèle de chaque agent comme donnée d'étape, à côté de `joueePar`. Aucun critère neuf ici : la
+  fiche reste au seuil de six critères.
 
 **Voisin à ne pas embarquer.** Le « dernier passage observé » d'une étape, c'est-à-dire ce qui s'est
 vraiment passé, demande des moments par étape dans le journal. C'est le point G4 de l'ADR-084, qui
@@ -244,4 +253,7 @@ revient au PO. Même famille que « poser une fiche sur une étape fine » : hor
   ligne est posée dans `PLAN.md` sur la branche de la fiche, à la demande de la session « Plan et
   milestones » : la ligne voyage avec la fiche, et une seule arrivée sur `main` suffit. Tant que
   cette arrivée n'a pas eu lieu, aucun sprint ne peut tirer la fiche.
+- 2026-11-14 — note ajoutée depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md) (écarts C1, E5
+  et E7, volet process) : trois champs attendus par la maquette posés dans « À trancher au build »,
+  sans critère neuf. La fiche reste prête et en tête du plan.
 - **Source** : maquette Mission control validée le 2026-11-08 (vue Process, bloc « Le schéma »).

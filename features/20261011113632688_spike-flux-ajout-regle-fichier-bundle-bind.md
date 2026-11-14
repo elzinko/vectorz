@@ -63,3 +63,29 @@ ezk law bind-global global  # la règle témoin est présente dès ce bind
 
 - Origine : rétro 2026-10-11, proposition P3. La règle qui a révélé le trou : `agent-ops/verify-access-before-asking` (câblée au bundle `base` après coup).
 - 2026-10-27 : raison blocked: passée à `oversized` ; contexte d'origine déplacé de la valeur : parké hors version par auto-groom le 2026-10-17
+
+## Note du 2026-11-14 — le cas du PO, et ce qui est déjà tenu
+
+Depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart I3.
+
+- **Second cas daté.** Le 12 novembre, en relisant la maquette de la page Loi, le PO redit le
+  symptôme : « comment cela se fait-il que les règles soient installées dans ENTRY.md, dans
+  `.vectorz/rules.yml` et dix via la DoD ? ce n'est pas un peu compliqué à gérer ? faut-il
+  centraliser et harmoniser ? ». Les quatre portes sont une décision mesurée
+  ([ADR-0056](../products/mega-city/docs/adr/0056-loi-du-socle-par-le-global.md),
+  [ADR-0087](../products/mega-city/docs/adr/0087-regles-lues-au-demarrage-du-skill.md)). Ce qui reste
+  compliqué, c'est le flux pour **ajouter** une règle à la méthode et savoir si elle est **active**.
+- **Périmètre resserré : le flux côté méthode seulement** (`rules/` → paquet → profil →
+  `bind-global`). Le flux côté projet est livré et documenté par ezk-retro :
+  [Une règle de rétro peut rester dans le projet où elle est née](done/20261101154419684_retro-cible-projet.md).
+- **Critère 3 déjà tenu en partie.** `ezk law show --json` publie aujourd'hui `portee: orpheline`
+  pour une règle qui n'est dans aucun paquet (19 règles sur ce poste le 14 novembre) et le compte
+  `comptes.orpheline`. Reste à décider si c'est une garde bloquante au `bind`. Au grooming, remplacer
+  le critère par « le bind refuse ou signale une règle orpheline ».
+- **Un seul point de lecture.** Le flux documenté renvoie à `law show` pour « quelle règle
+  s'applique ici » et à `ezk law status` pour « la loi est-elle à jour » :
+  [Un seul lecteur de la loi du projet](20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md) et
+  [`ezk law status` : le profil lié et la fraîcheur de la loi d'un projet](20261114131615164_ezk-law-status-profil-et-fraicheur.md).
+- **Produit et blocage.** La fiche porte `product: vectorz` ; le flux appartient à la méthode :
+  passer à `mega-city` au grooming. Priorité P2 inchangée. Le blocage `oversized` se lève par ce
+  resserrement, à confirmer au grooming.

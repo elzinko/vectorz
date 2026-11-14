@@ -40,6 +40,16 @@ est mince par construction :
 Donc `LiveRun.moments` et `LiveRun.tok` restent vides. Pour les remplir, il faut que le **journal les
 émette** d'abord.
 
+**Cas ajouté le 2026-11-14** ([carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart H2). La maquette de
+mission control attend, dans le fil d'un lancement, les **étapes du sprint** (scénarios, code, gate,
+revue) et **chaque appel d'agent** comme des moments, avec les jetons quand ils sont connus. Le
+journal ne les porte pas. Sur les 72 journaux du dépôt au 14 novembre : 172 jalons `gate.reached`,
+dont 71 `sprint-<slug>-checkpoint` et 48 `inter-sprint`, et aucun jalon d'étape ; 527 battements
+dont l'étape et l'agent ne sont qu'en texte libre (`heartbeat.note`). Le rapport de sprint le dit
+lui-même : `steps.ventilated: false`. Ces deux moments passent par la même décision G4 que les
+transitions de fiche. Une fiche de plus doublerait le panel : le cas vit ici. L'émission est côté
+mega-city, l'affichage côté cop1 : le dossier du panel nomme les deux produits.
+
 ## Proposition
 
 - **Décision de contrat, réservée au PO / au panel** (d'où `blocked: attend-panel`). Trancher **où**
@@ -59,6 +69,14 @@ Donc `LiveRun.moments` et `LiveRun.tok` restent vides. Pour les remplir, il faut
 - [ ] Un run réel affiche sur le board ses **transitions de fiche** (quelle fiche, de quel état à quel
       état) — tirées d'une source décidée au panel, jamais inventées.
 - [ ] Les **jetons** s'affichent quand une source fiable existe ; sinon, l'absence reste honnête.
+- [ ] Le dossier du panel G4 instruit **trois moments ensemble** : `fiche.transition`, `sprint.etape`
+      (numéro, titre, fiche, agent) et `agent.convoque` (agent, étape, jetons si connus), avec le même
+      canal pour les trois (ajouté le 2026-11-14).
+- [ ] Le vocabulaire des étapes émises est celui que déclare
+      [La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md), jamais
+      une liste recopiée dans cop1 (ajouté le 2026-11-14).
+- [ ] Tant que le panel n'a pas tranché, l'écran dit « étapes et agents : non tracés », sans pastille
+      vide ni zéro (ajouté le 2026-11-14).
 
 ## Comment vérifier
 
@@ -74,4 +92,8 @@ Donc `LiveRun.moments` et `LiveRun.tok` restent vides. Pour les remplir, il faut
   de la fiche adaptateur livrée (vue mince assumée).
 - **Dépend d'une décision de contrat** (les 3 pistes ci-dessus) — pas de construction en run autonome
   tant que le panel n'a pas tranché.
+- 2026-11-14 : cas « étapes du sprint et appel d'agent comme moments » ajouté depuis la carte des
+  écarts (écart H2) ; priorité P2 et blocage `panel` inchangés. En attendant le panel, l'écran peut
+  déjà montrer les jalons que la boucle émet (`inter-sprint`, `blocage`, `retro-iteration`) sans rien
+  inventer.
 - 2026-10-27 : raison blocked: passée à `panel` ; contexte d'origine déplacé de la valeur : ajoute des évènements/champs au contrat de supervisabilité gelé (ADR-084 G4), arbitrage PO + panel requis
