@@ -8,7 +8,7 @@ milestone:
 version:
 labels: [methode, backlog, versioning, milestone, sequencement]
 status: idea
-blocked: panel
+blocked: deferred
 pr:
 evidence: none # modèle/outillage de méthode, pas d'écran ; prouvé par tests du séquenceur
 created: 2026-10-16
@@ -134,3 +134,13 @@ Roadmap (PLAN.md) fondation → multisession → X → Y          ton choix, dan
   [lire `depends:` et désambiguïser « en cours »](done/20261016114857813_lire-depends-et-desambiguiser-en-cours.md).
   Ce qui reste est le basculement vers un graphe de milestones. L'ADR-0081 le diffère derrière quatre
   verrous ; seul un nouveau panel, tenu avec toi, peut le rouvrir.
+
+## Note du 2026-11-14 — requalifiée par le panel de la coupe
+
+Le panel adverse du 14 novembre ([capture](../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md))
+et l'[ADR-0088](../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md)
+tranchent le séquencement : l'ordre des objectifs se dérive de `PLAN.md` (première apparition d'une fiche de
+chaque milestone), le lancement se borne à des objectifs (`--milestones`), et la version devient une coupe.
+Cette part de la fiche est reprise par [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
+Ce qui reste ici, les dépendances inter-milestones, demeure différé derrière les quatre verrous de l'ADR-0081,
+par décision du PO : le drapeau passe de `panel` à `deferred`. Rien à construire tant qu'un verrou ne saute.

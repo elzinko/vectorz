@@ -8,7 +8,7 @@ milestone: board
 version:
 labels: [release, contrat]
 status: idea
-blocked: panel
+blocked:
 pr:
 evidence: none # un verbe de la méthode, aucun écran modifié
 created: 2026-11-14
@@ -157,3 +157,12 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
   La compétence doit dire le nouveau geste.
 - Risque : une fiche n'a pas de champ « date de livraison ». Le calcul « commit postérieur à la
   dernière étiquette » suppose un commit de livraison lisible par fiche. À établir au panel.
+
+## Journal
+
+- 2026-11-14 — créée depuis la carte des écarts (lot validé par le PO), `blocked: panel`.
+- 2026-11-14 (soir) — le panel adverse de la coupe a eu lieu ([capture](../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md)) :
+  blocage levé. L'[ADR-0088](../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md)
+  (proposé, ratification PO attendue) fixe ce que cette fiche construit : la borne de la coupe, le numéro proposé
+  sur le type des fiches, la séquence gate d'abord puis écriture puis tag, les deux refus, le retrait du gel et de
+  `close --tag`, `--seal-versions`, `ezk run versions`. À groomer avec ces amendements avant d'être prête.

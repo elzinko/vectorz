@@ -43,7 +43,7 @@ Six faits cadrent la décision (détail dans la fiche).
 Chaque évènement porte, dans son enveloppe, **`session_id`** (qui) et une **clé de chantier** (pour quel travail). Règles, **vérifiées contre le code** :
 
 - `run_id` reste **frappé par l'émetteur**, horodaté, **unique par session** (`generateRunId`, `runtime.ts:100-103`). Cela préserve le tri de `findOpenRun`, l'invariant « un seul run ouvert par journal » et l'interdit ADR-036 #4. **On n'agrège JAMAIS par `run_id`.**
-- La **clé de chantier** (« réalisation v0.17 ») voyage dans le **payload de `run.started`**. Elle est **construite depuis la `version` (+ `milestone`)** — pas un champ qu'un humain remplit sur une fiche.
+- La **clé de chantier** (« réalisation v0.17 ») voyage dans le **payload de `run.started`**. Elle est **construite depuis la `version` (+ `milestone`)** — pas un champ qu'un humain remplit sur une fiche. *Amendement du 2026-11-14 ([ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), proposé) :* la clé de chantier est l'**objectif** (`milestone`) ; la version est un attribut posé après la coupe ; un lancement multi-objectifs porte la clé du premier objectif et liste les autres.
 - Le board **regroupe par cette clé, qualifiée par la racine de projet**. La **clé de stockage reste `runDir`** : la conception anti-collision de `SupervisionService.ts:29-33` (« le runId n'est qu'un champ d'affichage, jamais une clé ») est **préservée intacte**. La clé de chantier est traitée en donnée semi-hostile (forme validée, scopée par racine).
 
 ### D3 — Comment une session reçoit sa clé de chantier (tranché, PO)

@@ -1,6 +1,8 @@
 # ADR 0070 — Le tirage reste dans la version en cours (garde-fou de séquence)
 
-**Statut :** Accepté (grooming, 2026-10-11)
+**Statut :** Accepté (grooming, 2026-10-11) — **amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (proposé) : le tirage
+lit l'ordre des objectifs dérivé de `PLAN.md`, borné par `--milestones` ; la borne par tag de version disparaît ;
+« un seul axe » tient toujours.
 **Date :** 2026-10-11
 **Deciders :** PO (Thomas, décision du 2026-10-10) ; conception tranchée par `ezk-architect` au grooming
 **Fiche :** [`20261010215345931`](../../../../features/done/20261010215345931_tirage-reste-dans-version-en-cours.md) (« Le tirage reste dans la version en cours »)
