@@ -73,7 +73,7 @@ describe('config show --json — le contrat', () => {
       file: '.vectorz/config.yml',
       github: { pr: true, ci: true, codexReview: true },
       integration: 'local-squash',
-      release: { gate: true },
+      release: { gate: true, tests: null },
       adverseReview: 'run',
       groomingTechniques: { mode: 'menu' },
       models: { roles: { 'ezk-dev': 'enorme' as never } },

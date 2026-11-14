@@ -24,8 +24,10 @@ export interface PassResult {
   readonly title: string;
   readonly command: string;
   readonly go: boolean;
-  /** Première ligne utile de la sortie (pour nommer ce qui a bloqué). */
+  /** Première ligne utile de la sortie (pour nommer ce qui a bloqué, ou le motif d'un saut). */
   readonly detail?: string;
+  /** Vrai quand la passe a été SAUTÉE (ni GO ni NO-GO) : elle n'a pas tourné, elle le dit, elle ne bloque pas. */
+  readonly skipped?: boolean;
 }
 
 /** Le verdict d'une release : GO seulement si toutes les passes sont GO. */
@@ -58,44 +60,90 @@ export const DEFAULT_PASSES: readonly ReleasePass[] = [
   },
 ];
 
+/** L'id et le titre de la passe « tests » du socle (sa commande vient du réglage `release.tests`). */
+export const TESTS_PASS_ID = 'tests';
+export const TESTS_PASS_TITLE = 'Tests du projet — la commande de tests déclarée passe au vert';
+
+/**
+ * La passe « tests » du socle, dérivée de `release.tests` :
+ * - une commande → une passe à jouer (GO si code 0, NO-GO sinon) ;
+ * - `null` (absente/vide) → `null` : le bord la rendra SAUTÉE (cf. `skippedTestsResult`).
+ */
+export function testsPass(testsCommand: string | null): ReleasePass | null {
+  if (testsCommand === null) return null;
+  return { id: TESTS_PASS_ID, title: TESTS_PASS_TITLE, command: testsCommand };
+}
+
+/** Le résultat SAUTÉ de la passe tests quand `release.tests` est absent : dit, jamais un GO muet. */
+export function skippedTestsResult(): PassResult {
+  return {
+    id: TESTS_PASS_ID,
+    title: TESTS_PASS_TITLE,
+    command: '',
+    go: true,
+    skipped: true,
+    detail: 'sautée : release.tests absent',
+  };
+}
+
 /** Substitue `{root}` et `{version}` dans une commande de passe. */
 export function substitute(command: string, vars: { root: string; version: string }): string {
   return command.replaceAll('{root}', vars.root).replaceAll('{version}', vars.version);
 }
 
-/** GO seulement si toutes les passes jouées sont GO. Zéro passe = rien ne bloque = GO. */
+/**
+ * GO sauf si une passe bloque. Trois états : GO et SKIP (sautée) ne bloquent pas ; seule une
+ * passe NO-GO non sautée fait basculer le verdict. Zéro passe = rien ne bloque = GO.
+ */
 export function aggregate(results: readonly PassResult[]): 'GO' | 'NO-GO' {
-  return results.every((r) => r.go) ? 'GO' : 'NO-GO';
+  return results.some((r) => !r.go && r.skipped !== true) ? 'NO-GO' : 'GO';
 }
 
-/** Le réglage `release.gate` d'un projet. Défaut : la gate est ACTIVE (comme GitHub, défaut sûr). */
+/** Le réglage `release` d'un projet : la gate (active par défaut) et la commande de tests. */
 export interface ReleaseConfig {
+  /** La gate est ACTIVE par défaut (comme GitHub, défaut sûr) ; `release.gate: off`/`false` la coupe. */
   readonly gate: boolean;
+  /** La commande de tests du projet (`release.tests`), ou `null` quand elle n'est pas déclarée. */
+  readonly tests: string | null;
 }
 
 /**
  * Résout le réglage `release` (sous-arbre déjà parsé de `.vectorz/config.yml`).
  * `release.gate: off`/`false` coupe la gate ; tout le reste (absent, true, forme inattendue)
  * la laisse ACTIVE — jamais de coupure silencieuse par une faute de frappe.
+ * `release.tests` donne la commande de tests : absente ou vide vaut « pas de commande » (la passe
+ * tests sera SAUTÉE) ; une valeur qui n'est pas une chaîne est REFUSÉE, en nommant la clé et la
+ * valeur — jamais un réglage ignoré en silence.
  */
 export function resolveRelease(release: unknown): ReleaseConfig {
+  let gate = true;
+  let tests: string | null = null;
   if (release && typeof release === 'object') {
-    const gate = (release as { gate?: unknown }).gate;
-    if (gate === false || gate === 'off') return { gate: false };
+    const r = release as { gate?: unknown; tests?: unknown };
+    if (r.gate === false || r.gate === 'off') gate = false;
+    if (r.tests !== undefined && r.tests !== null) {
+      if (typeof r.tests !== 'string') {
+        throw new Error(
+          `Réglage release.tests invalide : attendu une commande de tests (chaîne), reçu ${JSON.stringify(r.tests)}.`,
+        );
+      }
+      const trimmed = r.tests.trim();
+      if (trimmed !== '') tests = trimmed;
+    }
   }
-  return { gate: true };
+  return { gate, tests };
 }
 
 /** Rend le compte rendu de release : verdict d'abord (En clair), puis une ligne par passe. */
 export function renderReleaseReport(v: ReleaseVerdict): string {
-  const mark = (go: boolean): string => (go ? 'GO  ' : 'NO-GO');
+  const mark = (p: PassResult): string => (p.skipped ? 'SKIP ' : p.go ? 'GO   ' : 'NO-GO');
   const head = v.verdict === 'GO'
-    ? `En clair : ${v.version} est GO — toutes les passes sont vertes, le tag est autorisé.`
+    ? `En clair : ${v.version} est GO — toutes les passes sont vertes (une passe sautée est dite, pas comptée), le tag est autorisé.`
     : `En clair : ${v.version} est NO-GO — au moins une passe bloque, le tag est refusé tant que ce n'est pas traité.`;
   const lines = [head, '', `Release gate ${v.version} — verdict : ${v.verdict}`];
   for (const p of v.passes) {
-    lines.push(`  [${mark(p.go)}] ${p.id} — ${p.title}`);
-    if (!p.go && p.detail) lines.push(`           ↳ ${p.detail}`);
+    lines.push(`  [${mark(p)}] ${p.id} — ${p.title}`);
+    if (p.detail && (p.skipped || !p.go)) lines.push(`           ↳ ${p.detail}`);
   }
   return lines.join('\n');
 }

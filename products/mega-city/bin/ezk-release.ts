@@ -12,11 +12,15 @@
  */
 import { spawnSync } from 'node:child_process';
 import {
+  DEFAULT_PASSES,
   type PassResult,
+  type ReleaseConfig,
   type ReleaseVerdict,
   aggregate,
   renderReleaseReport,
+  skippedTestsResult,
   substitute,
+  testsPass,
 } from '../src/core/release-gate.js';
 import { loadReleasePasses, releaseConfig, writeReleaseVerdict } from '../src/loaders/release-passes.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
@@ -31,8 +35,17 @@ if (!version) {
   process.exit(2);
 }
 
+// Réglage release résolu une fois (gate + commande de tests). Un release.tests mal typé est REFUSÉ ici.
+let cfg: ReleaseConfig;
+try {
+  cfg = releaseConfig(root);
+} catch (err) {
+  console.error(`En clair : réglage release invalide — ${(err as Error).message}`);
+  process.exit(2);
+}
+
 // Gate désactivée par config : on se saute proprement (le projet ne tague pas de version).
-if (!releaseConfig(root).gate) {
+if (!cfg.gate) {
   console.log(`En clair : la gate de release est désactivée (release.gate: off) — ${version} passe sans contrôle.`);
   process.exit(0);
 }
@@ -55,6 +68,19 @@ const results: PassResult[] = passes.map((p) => {
   const { go, detail } = runPass(command);
   return { id: p.id, title: substitute(p.title, { root, version }), command, go, ...(detail ? { detail } : {}) };
 });
+
+// La passe « tests » rejoint le SOCLE (après dod-mecanique et chasse-aux-bugs). Un projet qui
+// remplace les passes par son propre fichier définit lui-même ses tests (hors périmètre ici).
+if (passes === DEFAULT_PASSES) {
+  const tp = testsPass(cfg.tests);
+  if (tp === null) {
+    results.push(skippedTestsResult());
+  } else {
+    const command = substitute(tp.command, { root, version });
+    const { go, detail } = runPass(command);
+    results.push({ id: tp.id, title: tp.title, command, go, ...(detail ? { detail } : {}) });
+  }
+}
 
 const head = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' });
 const verdict: ReleaseVerdict = {

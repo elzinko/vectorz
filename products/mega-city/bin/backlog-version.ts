@@ -327,7 +327,17 @@ function main(): void {
   // Gate de release (fiche 20260922175954296) : le tag est refusé si la passe qualité de la
   // version n'est pas GO — sauf soupape PO journalisée (--release-ok "<raison>"). Désactivée
   // par `release.gate: off`. Un verdict établi sur un autre commit que HEAD est périmé.
-  if (args.tag && releaseConfig(args.root).gate) {
+  // Un réglage `release` invalide (ex. `release.tests` mal typé) est refusé proprement, jamais planté.
+  let releaseGateActive = false;
+  if (args.tag) {
+    try {
+      releaseGateActive = releaseConfig(args.root).gate;
+    } catch (err) {
+      console.error(`✗ réglage release invalide — ${err instanceof Error ? err.message : String(err)}`);
+      process.exit(2);
+    }
+  }
+  if (releaseGateActive) {
     if (args.releaseOk) {
       say([`Soupape PO — gate de release outrepassée pour ${version} : ${args.releaseOk}`, '']);
     } else {

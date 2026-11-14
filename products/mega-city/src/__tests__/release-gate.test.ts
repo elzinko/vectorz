@@ -9,7 +9,9 @@ import {
   aggregate,
   renderReleaseReport,
   resolveRelease,
+  skippedTestsResult,
   substitute,
+  testsPass,
 } from '../core/release-gate.js';
 import {
   loadReleasePasses,
@@ -42,6 +44,59 @@ describe('release-gate — cœur pur', () => {
     expect(resolveRelease({ gate: 'off' }).gate).toBe(false);
   });
 
+  it('resolveRelease.tests : absent → null, chaîne → commande, vide → null', () => {
+    expect(resolveRelease(undefined).tests).toBeNull();
+    expect(resolveRelease({}).tests).toBeNull();
+    expect(resolveRelease({ tests: 'pnpm --dir products/mega-city gate' }).tests).toBe(
+      'pnpm --dir products/mega-city gate',
+    );
+    expect(resolveRelease({ tests: '   ' }).tests).toBeNull();
+    expect(resolveRelease({ tests: null }).tests).toBeNull();
+  });
+
+  it('resolveRelease.tests : une valeur non-chaîne est REFUSÉE, en nommant la clé et la valeur', () => {
+    expect(() => resolveRelease({ tests: 42 })).toThrow(/release\.tests/);
+    expect(() => resolveRelease({ tests: 42 })).toThrow(/42/);
+    expect(() => resolveRelease({ tests: true })).toThrow(/release\.tests/);
+    expect(() => resolveRelease({ tests: ['pnpm', 'test'] })).toThrow(/release\.tests/);
+  });
+
+  it('la passe tests : commande → passe à jouer ; absente → null (sera sautée)', () => {
+    expect(testsPass(null)).toBeNull();
+    expect(testsPass('pnpm test')).toEqual({ id: 'tests', title: expect.any(String), command: 'pnpm test' });
+  });
+
+  it('skippedTestsResult : sautée, ni GO muet ni NO-GO', () => {
+    const r = skippedTestsResult();
+    expect(r.id).toBe('tests');
+    expect(r.skipped).toBe(true);
+    expect(r.go).toBe(true);
+    expect(r.detail).toMatch(/release\.tests/);
+  });
+
+  it('agrégation à trois états : une passe sautée ne bloque pas, une NO-GO bloque', () => {
+    const go: PassResult = { id: 'a', title: 'A', command: 'x', go: true };
+    const skip: PassResult = skippedTestsResult();
+    const no: PassResult = { id: 'b', title: 'B', command: 'y', go: false };
+    expect(aggregate([go, skip])).toBe('GO'); // le skip ne bloque pas
+    expect(aggregate([skip])).toBe('GO');
+    expect(aggregate([go, skip, no])).toBe('NO-GO'); // un NO-GO bloque malgré le skip
+  });
+
+  it('le compte rendu dit « sautée » pour une passe skip, sans la compter NO-GO', () => {
+    const v: ReleaseVerdict = {
+      version: 'v0.24.0',
+      verdict: 'GO',
+      passes: [skippedTestsResult()],
+      at: '2026-11-15T00:00:00Z',
+    };
+    const out = renderReleaseReport(v);
+    expect(out).toContain('SKIP');
+    expect(out).toContain('tests');
+    expect(out).toContain('release.tests');
+    expect(out).not.toContain('NO-GO');
+  });
+
   it('le compte rendu NO-GO nomme la passe bloquante', () => {
     const v: ReleaseVerdict = {
       version: 'v0.11.0',
@@ -71,6 +126,13 @@ describe('release-gate — loader (I/O)', () => {
 
   it('sans fichier de passes → passes par défaut', () => {
     expect(loadReleasePasses(root).map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs']);
+  });
+
+  it('sans fichier de passes → l’OBJET DEFAULT_PASSES lui-même (le bin y branche la passe tests du socle)', () => {
+    // `bin/ezk-release.ts` n'ajoute la passe « tests » que quand `loadReleasePasses` a renvoyé le
+    // socle, détecté par `passes === DEFAULT_PASSES`. Si un jour ce loader rend une COPIE, la passe
+    // tests disparaîtrait en silence : ce test l'épingle pour que la régression soit visible.
+    expect(loadReleasePasses(root)).toBe(DEFAULT_PASSES);
   });
 
   it('avec .vectorz/release-passes.yml → passes déclarées (composable, +1 passe)', () => {
