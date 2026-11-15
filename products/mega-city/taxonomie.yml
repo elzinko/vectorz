@@ -81,17 +81,16 @@ commandes:
   run: methode
   journal: methode
   scout: methode
-  carto: methode
   evidence: methode
   adr: methode
   paths: methode
   now: methode
+  config: methode  # PO, 2026-11-15 : les réglages du projet, pas seulement GitHub
   process: methode
   # modules — hors méthode, activables, par famille
   pr: modules/github
   forge: modules/github
   ci: modules/github
-  config: modules/github
   sessions: modules/hote-llm
   supervision: modules/observabilite
   design: modules/techno
@@ -102,6 +101,7 @@ commandes:
   recipes: librairie
   views: librairie
   docs: librairie
+  carto: librairie  # PO, 2026-11-15 : outil de fond (carnet de tests)
   board maps: librairie  # dérogation : les documents de la méthode elle-même (sa carte)
 
 # Bandes INTERNES à l'étage méthode (ADR-0020, amendée par ADR-0039 : l'ex-bande

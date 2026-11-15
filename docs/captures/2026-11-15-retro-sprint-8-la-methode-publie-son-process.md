@@ -14,7 +14,9 @@ actions:
   - proposition: "Le rangement des 28 domaines de commandes dans taxonomie.yml (39 en méthode, 15 en modules, 20 en librairie, plus process) est un premier jet éditorial, fait au build d'ezk help --json : le PO le valide ou le corrige, puisque l'Annuaire de mission control l'affichera tel quel."
     kind: action
     by: [produit]
-    status: ⏳
+    status: ✅
+    decision: "Retenue avec deux déplacements (PO, 15 novembre) : config passe en méthode, carto passe en librairie ; le reste tel quel."
+    date: 2026-11-15
   - proposition: "Factoriser le câblage des trois routes de lecture par projet du daemon cop1 (/api/law, /api/recipes, /api/process) : le gestionnaire est recopié trois fois, et la quatrième route viendra avec le graphe ou le glossaire."
     kind: feature
     by: [dev, architecture]
