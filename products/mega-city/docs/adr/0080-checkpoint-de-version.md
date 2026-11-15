@@ -2,7 +2,7 @@
 
 - Statut : **proposé** — panel adverse du 2026-10-16 (architecte, dev implémenteur, scrum-juge) : **GO
   unanime avec amendements** ; modèle tranché par le PO, arbitrages ratifiés le 2026-10-16.
-- **Amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (proposé, panel adverse du 14 novembre) : la gate d'entrée devient
+- **Amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (accepté le 15 novembre, après le panel adverse du 14) : la gate d'entrée devient
   le verdict « lançable » d'un objectif ; la gate de sortie devient la coupe, hors lancement ; le report-hors disparaît.
 - Date : 2026-10-16
 - Déciders : PO (Thomas) + panel adverse
@@ -88,7 +88,7 @@ de sa version, réversible).
   taguée-puis-dé-taguée ?
 - **But de version (release goal).** Une version porte-t-elle un objectif explicite ? Le modèle n'a ni
   Product Goal ni Sprint Goal réels. Décision **produit**, séparée du mécanisme, différée.
-  *Fermé le 2026-11-14 (panel de la coupe, [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), sous réserve du oui du PO) :* **pas de but de
+  *Fermé le 2026-11-14 (panel de la coupe, [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), oui du PO le 15 novembre) :* **pas de but de
   version**. La version est une photo posée après test : elle a un nom posé à la coupe et des notes, pas de but.
   L'intention vit sur l'objectif (champ `but`) et sur le sprint (« But du sprint », ADR-0054 § Nommage).
 

@@ -1,8 +1,8 @@
 # 0088 — Deux plans : la milestone est l'unité du lancement, la version est une coupe posée après test
 
-- Statut : **proposé** (2026-11-14) — panel adverse du 14 novembre (trois lentilles, deux juges) : **amender
-  puis ratifier**. Les amendements du panel sont intégrés ci-dessous. **Ratification du PO attendue** sur
-  quatre oui, posés le 14 novembre au soir (section « Ce qui attend le PO »).
+- Statut : **accepté** (2026-11-15) — panel adverse du 14 novembre (trois lentilles, deux juges) : amender puis
+  ratifier ; amendements du panel intégrés ; **ratifié par le PO le 15 novembre** (quatre oui, section « Ce que le PO
+  a tranché »).
 - Date : 2026-11-14
 - Déciders : PO (Thomas), après panel adverse ; capture :
   [Panel adverse — la coupe](../../../../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md).
@@ -48,7 +48,7 @@ lancement remplit des wagons. Il ne fait jamais partir un train.
 ### 1. Le périmètre d'un lancement est un ensemble d'objectifs
 
 - `ezk-product-build run --milestones <a,b|all>`. Sans drapeau : la première milestone non livrée du plan ;
-  le lancement s'arrête à sa fin et **nomme la suivante sans la prendre** (sous réserve du oui n° 4).
+  le lancement s'arrête à sa fin et **nomme la suivante sans la prendre**.
   `--milestones a,b` ou `all` enchaîne, avec un bilan à chaque frontière d'objectif.
 - L'**ordre des objectifs** se dérive de `PLAN.md` : la première apparition d'une fiche de chaque
   milestone (`parsePlanOrder`). La liste codée `MILESTONE_ORDER` est retirée. Une milestone sans fiche
@@ -109,7 +109,7 @@ Une seule ligne se construit sur `main` à la fois ; la suivante se groome. `ver
 numéro inférieur ou égal au dernier tag strict atteignable ; (b) un numéro de patch quand la fenêtre
 contient une fiche hors `type: bug`. Dans les deux cas il nomme les deux sorties : couper une mineure, ou
 ouvrir `maint/vX.Y` depuis le tag `vX.Y.0` et y reporter les correctifs par leurs sha. La branche de
-maintenance reste une décision du PO, le jour venu (sous réserve du oui n° 3). Le déclencheur « un critère
+maintenance reste une décision du PO, le jour venu. Le déclencheur « un critère
 d'acceptation contredit un comportement livré » du dossier est retiré : il n'est pas vérifiable.
 
 ### 6. `park` garde l'objectif
@@ -122,8 +122,6 @@ des 84 parkées : 19 origines évidentes (un label égal à un nom d'objectif) �
 inconnue », curation du PO. Sur 84, 72 n'avaient aucun objectif avant le park.
 
 ### 7. Les objets d'identité : un fichier par objectif, un par version
-
-Sous réserve du oui n° 2.
 
 - `features/milestones/<slug>.md` : front-matter `milestone` (la valeur exacte du champ des fiches), `nom`,
   `but` facultatif, `created`. Ni ordre, ni état, ni prévision. Créé par `ezk backlog milestone add <slug>
@@ -184,16 +182,16 @@ une release GitHub relève de la fiche
 - (−) La règle `changelog` du catalogue est à retirer en rétro, sous contrôle du PO ; les notes de version la
   remplacent.
 
-## Ce qui attend le PO
+## Ce que le PO a tranché
 
 | | Question (un oui ou un non) | Réponse |
 |---|---|---|
-| 1 | « But du sprint » comme mot d'écran du Sprint Goal ; pas de « but de version » | ⏳ |
-| 2 | Objectifs et versions = fichiers d'identité sans état ; ADR-0083 §3 amendé | ⏳ |
-| 3 | Correctif pendant un objectif partiel → mineure ; patch refusé, deux sorties nommées | ⏳ |
-| 4 | Sans `--milestones`, une milestone puis arrêt qui nomme la suivante | ⏳ |
+| 1 | « But du sprint » comme mot d'écran du Sprint Goal ; pas de « but de version » | ✅ oui, 2026-11-15 |
+| 2 | Objectifs et versions = fichiers d'identité sans état ; ADR-0083 §3 amendé | ✅ oui, 2026-11-15 |
+| 3 | Correctif pendant un objectif partiel → mineure ; patch refusé, deux sorties nommées | ✅ oui, 2026-11-15 |
+| 4 | Sans `--milestones`, une milestone puis arrêt qui nomme la suivante | ✅ oui, 2026-11-15 |
 
-Quatre oui : statut **accepté**. Un non : la décision concernée se réécrit, l'ADR reste proposé.
+Quatre oui le 15 novembre (réponse du PO dans sa session) : statut **accepté**.
 
 ## Options écartées
 

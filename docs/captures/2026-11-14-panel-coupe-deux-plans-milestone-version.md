@@ -113,10 +113,10 @@ d'un lancement multi-objectifs, le texte du Product Goal (décision PO à part, 
 
 | | Décision | Date |
 |---|---|---|
-| 1 | But du sprint = Sprint Goal ; pas de but de version | ⏳ |
-| 2 | Objectifs et versions = fichiers d'identité sans état ; ADR-0083 §3 amendé | ⏳ |
-| 3 | Correctif pendant un objectif partiel → mineure ; patch refusé, deux sorties nommées | ⏳ |
-| 4 | Sans `--milestones`, une milestone puis arrêt qui nomme la suivante | ⏳ |
+| 1 | But du sprint = Sprint Goal ; pas de but de version | ✅ oui — 2026-11-15 |
+| 2 | Objectifs et versions = fichiers d'identité sans état ; ADR-0083 §3 amendé | ✅ oui — 2026-11-15 |
+| 3 | Correctif pendant un objectif partiel → mineure ; patch refusé, deux sorties nommées | ✅ oui — 2026-11-15 |
+| 4 | Sans `--milestones`, une milestone puis arrêt qui nomme la suivante | ✅ oui — 2026-11-15 |
 
 ## 7 · ADR-0088 : amender, puis ratifier
 
@@ -126,7 +126,7 @@ Le brouillon du dossier (annexe) reçoit ces amendements avant ratification :
    v0.22.0 ; 79 livrées (72 sans numéro, 4 en v0.23.0, 3 en v0.24.0 sans tag) ; 7 closes sans livraison ;
    84 parkées, 61 sans raison typée ; 8 fiches actives sans objectif.
 2. **Décision 1, le périmètre du run** : l'ordre des objectifs dérivé de `PLAN.md` ; `MILESTONE_ORDER`
-   retiré ; sans drapeau une milestone puis arrêt qui nomme la suivante (sous réserve du oui n° 4) ;
+   retiré ; sans drapeau une milestone puis arrêt qui nomme la suivante ;
    `--milestones a,b` ou `all` enchaîne avec bilan à chaque frontière ; le bug qui porte une milestone
    appartient à elle ; les fiches sans objectif hors bug sont écartées et listées.
 3. **Décision 2, la coupe** : la borne (question 1) ; la séquence : la gate joue **avant** toute écriture
@@ -140,13 +140,13 @@ Le brouillon du dossier (annexe) reçoit ces amendements avant ratification :
    une fiche ni sur un objet » reste ; aucun parseur ni section nouvelle tant qu'aucune coupe ne l'a réclamée.
 6. **Décisions 4 et 5** : supprimer « tu coupes un patch même pendant qu'une milestone est à moitié
    construite » ; écrire les deux refus mécaniques (question 5) et « une seule ligne se construit sur
-   `main`, la suivante se groome » (sous réserve du oui n° 3).
+   `main`, la suivante se groome ».
 7. **Décision 6, park** : la forme unique (question 7) et l'ordre code → contrat v2 → passe de tri.
-8. **Décision 7, nouvelle : les objets d'identité** (section 4, sous réserve du oui n° 2).
+8. **Décision 7, nouvelle : les objets d'identité** (section 4).
 9. **Décision 8, nouvelle : le gel retiré** (question 6).
 10. **Table « Ce que ça amende »** : ajouter ADR-079 D2 (clé de chantier = objectif) et ADR-0083 §3
     (objet d'identité) ; ADR-0076 « remplacé » ; ADR-086 touché seulement sur la table « à publier » ;
-    fermer le point « but de version » d'ADR-0080 par non (sous réserve du oui n° 1).
+    fermer le point « but de version » d'ADR-0080 par non.
 11. **Ce que la coupe garantit, dit au PO** : la gate socle ne joue aucun test aujourd'hui (fiche
     [La gate de release joue les tests du projet](../../features/done/20261114131613314_gate-de-release-joue-les-tests.md)) ;
     sur ce dépôt, 6 verdicts GO pour 22 tags : la première coupe sera la première gate vraiment jouée.
@@ -200,7 +200,7 @@ juges (rapport complet du panel : `tasks/w39yjzucj.output` de la session maquett
 ## 10 · Application
 
 - **ADR-0088** : écrit par la fiche [Trancher la coupe](../../features/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
-  avec les amendements de la section 7 ; statut « accepté » dès les quatre oui du PO, « proposé » avant.
+  avec les amendements de la section 7 ; accepté le 15 novembre sur les quatre oui du PO.
 - **Amendements** : ADR-0083 §2 et §3, ADR-0070, ADR-0080 (dont le point « but de version »), ADR-0076
   (remplacé), ADR-079 D2, ADR-086 (table « à publier »).
 - **Fiches débloquées ou requalifiées** : [version tag](../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)

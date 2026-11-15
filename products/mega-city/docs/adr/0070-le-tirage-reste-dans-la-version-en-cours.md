@@ -1,6 +1,6 @@
 # ADR 0070 — Le tirage reste dans la version en cours (garde-fou de séquence)
 
-**Statut :** Accepté (grooming, 2026-10-11) — **amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (proposé) : le tirage
+**Statut :** Accepté (grooming, 2026-10-11) — **amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (accepté le 15 novembre) : le tirage
 lit l'ordre des objectifs dérivé de `PLAN.md`, borné par `--milestones` ; la borne par tag de version disparaît ;
 « un seul axe » tient toujours.
 **Date :** 2026-10-11

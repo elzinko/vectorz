@@ -5,7 +5,7 @@
   [0070](0070-le-tirage-reste-dans-la-version-en-cours.md), [0080](0080-checkpoint-de-version.md),
   [0081](0081-sequencement-depends-signal-dag-differe.md). Doctrine anti-surproduction de l'ADR-0081
   honorée : on grave le noyau, pas le moteur différé.
-- **Amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (proposé, panel adverse du 14 novembre) : §2, le numéro se pose
+- **Amendé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (accepté le 15 novembre, après le panel adverse du 14) : §2, le numéro se pose
   à la coupe, après test, plus à la construction ; §3, un objectif et une version ont un fichier d'identité (nom en
   clair), jamais un état stocké.
 - Date : 2026-10-23
@@ -73,7 +73,7 @@ et le numéro s'écrit sur les fiches à ce moment-là. Le lancement construit d
 - **Aucun objet « milestone » persistant.** `milestone:` reste une **chaîne libre** sur la fiche
   (ADR-0069 : zéro objet de process persistant ; ADR-0080 : `milestone:` sert déjà aux fiches
   couplées). On ne la promeut pas en objet.
-  *Amendement du 2026-11-14 ([ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), décision 7, sous réserve du oui du PO) :* un objectif
+  *Amendement du 2026-11-14 ([ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), décision 7, oui du PO le 15 novembre) :* un objectif
   et une version reçoivent un **fichier d'identité** (`features/milestones/<slug>.md`,
   `features/versions/<v>.md`) qui porte leur nom en clair, jamais un état : l'état se calcule toujours
   (ADR-0069 intact). Le champ `milestone:` des fiches garde sa valeur ; il devient un lien vers cet objet,

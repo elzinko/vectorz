@@ -146,7 +146,7 @@ Cette section absorbe la fiche de nommage [20260903085150321](../../../../featur
 d'écran, fixés une fois :
 - **But du sprint** = le Sprint Goal du Scrum Guide : ce que `ezk-sprint start --objective` saisit. Le
   drapeau reste `--objective` (interne) ; l'écran dit « But du sprint ». Mot d'écran proposé le 12 novembre,
-  confirmation du PO demandée le 14 novembre.
+  confirmé par le PO le 15 novembre.
 - **Objectif** = la milestone, unité de préparation ([ADR-0083](0083-version-etiquette-milestone-unite-de-preparation.md)) ;
   décision PO du 11 novembre. Le champ des fiches reste `milestone:`. « Objectif » ne désigne donc jamais le
   but d'un sprint ni un gate.

@@ -163,6 +163,6 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
 - 2026-11-14 — créée depuis la carte des écarts (lot validé par le PO), `blocked: panel`.
 - 2026-11-14 (soir) — le panel adverse de la coupe a eu lieu ([capture](../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md)) :
   blocage levé. L'[ADR-0088](../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md)
-  (proposé, ratification PO attendue) fixe ce que cette fiche construit : la borne de la coupe, le numéro proposé
+  (accepté par le PO le 15 novembre) fixe ce que cette fiche construit : la borne de la coupe, le numéro proposé
   sur le type des fiches, la séquence gate d'abord puis écriture puis tag, les deux refus, le retrait du gel et de
   `close --tag`, `--seal-versions`, `ezk run versions`. À groomer avec ces amendements avant d'être prête.

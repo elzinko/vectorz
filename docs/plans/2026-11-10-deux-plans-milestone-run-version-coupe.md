@@ -297,6 +297,9 @@ Une milestone « La coupe », dans cet ordre :
 
 ## Annexe — brouillon de l'ADR-0088, à ratifier en panel
 
+> **Ratifié.** Le panel adverse du 14 novembre l'a amendé, le PO l'a accepté le 15 novembre : le texte en vigueur est
+> l'[ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md). Le brouillon ci-dessous reste comme trace.
+
 > Dossier méthode : il ira dans `products/mega-city/docs/adr/` (ADR-078, routage), créé par
 > `ezk adr new` après le panel. Le texte ci-dessous est la proposition à attaquer.
 

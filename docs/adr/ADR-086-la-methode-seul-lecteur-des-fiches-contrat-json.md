@@ -225,7 +225,7 @@ c'est ce que mission control lit.
 | Mot d'écran | Ce qu'il désigne | Où c'est tranché |
 |---|---|---|
 | sprint, lot, incrément, rétro, version | les mots du Scrum Guide, tels que la méthode les joue | ADR-0054 § Nommage |
-| but du sprint | le Sprint Goal ; ce que `ezk-sprint start --objective` saisit (drapeau interne) | ADR-0054 § Nommage, amendement du 2026-11-14 ; confirmation du PO demandée le 14 novembre |
+| but du sprint | le Sprint Goal ; ce que `ezk-sprint start --objective` saisit (drapeau interne) | ADR-0054 § Nommage, amendement du 2026-11-14 ; confirmé par le PO le 15 novembre |
 | objectif | la milestone, unité de préparation (champ `milestone:` des fiches) | ADR-0083 ; décision PO du 11 novembre |
 | jalon | le gate : un arrêt du lancement où la méthode pose une question | mot d'écran déjà en place (chronologie) |
 | session | une branche et son dossier de travail, au sens de Claude Code | ADR-0054 § Nommage, ADR-079 |
@@ -272,5 +272,4 @@ implémentation parallèle. Build :
 [Un seul lecteur de la loi du projet](../../features/20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md).
 
 La décision 2 (le nom en clair d'un objectif et d'une version vit dans le front-matter de l'objet lui-même,
-pas dans `PLAN.md`) est portée par l'[ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), la coupe, proposé le
-14 novembre après ce panel ; sa ratification par le PO est attendue.
+pas dans `PLAN.md`) est portée par l'[ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), la coupe, accepté par le PO le 15 novembre après ce panel.

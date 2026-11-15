@@ -1,6 +1,6 @@
 # ADR 0076 — Auto-tag et clôture de version en local, en opt-in explicite
 
-**Statut :** Accepté (grooming, 2026-10-14) — **remplacé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (proposé) : le
+**Statut :** Accepté (grooming, 2026-10-14) — **remplacé le 2026-11-14** par [ADR-0088](0088-deux-plans-milestone-unite-du-lancement-version-coupe.md) (accepté le 15 novembre) : le
 lancement ne tague jamais ; `--seal-versions` et `ezk run versions` sont retirés par la fiche « version tag ».
 **Date :** 2026-10-14
 **Deciders :** PO (Thomas, demande du 2026-10-11 : « tague et merge en local tout seul » pour un run multi-versions) ; conception tranchée au build autonome v0.15

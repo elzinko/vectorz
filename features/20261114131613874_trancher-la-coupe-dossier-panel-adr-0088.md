@@ -94,7 +94,7 @@ qui attend ce panel) ; la publication des [objectifs](20261114131612572_objectif
 - [x] Une capture sous `docs/captures/` répond aux sept questions : trois lentilles, un verdict par question,
       l'arbitrage du PO. Elle dit la forme retenue pour l'objet qui porte le nom d'un objectif et d'une
       version, et constate la cohérence avec les décisions 1 et 3.
-- [ ] ADR-0088 existe dans `products/mega-city/docs/adr/`, au prochain numéro libre, accepté ou rejeté. Il
+- [x] ADR-0088 existe dans `products/mega-city/docs/adr/`, au prochain numéro libre, accepté ou rejeté. Il
       tranche le contenu d'une version et le verbe de la coupe.
 - [x] ADR-0083, ADR-0070, ADR-0080, ADR-0076 et ADR-086 portent chacun une ligne d'amendement datée qui renvoie
       à ADR-0088.
@@ -172,3 +172,5 @@ Aucun test de code : la fiche ne touche que des documents et des fiches. Aucune 
   absent, puce d'amendement doublée) puis GO après correctifs. Cinq critères prouvés par le relecteur et cochés ;
   le sixième (ADR-0088 accepté ou rejeté) attend les quatre oui du PO : la fiche reste prête, reportée du sprint 7,
   à livrer dès la ratification (statut de l'ADR, puis `ship`).
+- 2026-11-15 — le PO répond oui aux quatre questions du panel (dans sa session) : ADR-0088 passe « accepté »,
+  les amendements et la capture le disent. Le dernier critère est à prouver par le relecteur, puis la fiche se livre.
