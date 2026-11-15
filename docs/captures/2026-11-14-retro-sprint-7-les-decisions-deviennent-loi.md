@@ -8,19 +8,27 @@ actions:
   - proposition: "Quand une story affirme un fait dont la preuve arrive par une autre story du même lot (ici : « vérifiées par le panel » alors que la capture du panel était dans la story voisine), le lot se construit dans l'ordre de la preuve : la story qui apporte la preuve passe d'abord, l'autre la cite. Au sprint 7, l'ordre inverse a coûté un NO-GO et un rebasage."
     kind: action
     by: [qualite, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : geste de l'orchestrateur, sans règle neuve ; dans un lot, la story qui apporte une preuve passe avant celle qui la cite."
+    date: 2026-11-15
   - proposition: "Un critère d'acceptation qui ne peut devenir vrai que par un acte du PO (ratifier un ADR, répondre oui) se nomme comme tel dans la fiche au grooming (« décision PO : … »), pour que la story puisse être livrée avec ce seul critère ouvert, reporté et visible, au lieu de bloquer le lot. Au sprint 7, « ADR-0088 accepté ou rejeté » a laissé la story de la coupe reportée alors que tout son travail est dans main."
     kind: action
     by: [produit, dev]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : au grooming, un critère qui ne dépend que d'un acte du PO se nomme « décision PO », pour livrer le reste sans attendre."
+    date: 2026-11-15
   - proposition: "Le relecteur adverse reçoit, avec le patch, l'état des faits hors dépôt que la story suppose (un panel joué, une décision relayée), daté et sourcé ; sinon il juge faux ce qui est vrai mais pas encore committé. Au sprint 7, le premier NO-GO venait de là."
     kind: action
     by: [qualite]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : le brief du relecteur adverse porte les faits hors dépôt que la story suppose, datés et sourcés."
+    date: 2026-11-15
   - proposition: "Le compte rendu de sprint perd les lettres accentuées dans son nom de fichier : « Les décisions deviennent loi » devient `les-d-cisions-deviennent-loi`. Le slugifier translittère (é → e) au lieu de remplacer la lettre par un tiret ; le jalon de supervision suit la même règle."
     kind: feature
     by: [dev]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : fiche 20261115180226950, P3 (le nom du compte rendu garde les lettres accentuées)."
+    date: 2026-11-15
 ---
 
 **En clair :** le sprint a gravé les décisions des 11, 12 et 14 novembre dans les documents de décision, joué
@@ -79,4 +87,4 @@ Aucune règle neuve proposée : pas de juge convoqué.
 
 ## 6 · Décisions
 
-Quatre propositions en ⏳ : le PO tranche. Rien n'est rangé sans son feu vert.
+Le PO a tranché le 15 novembre (« 1 à 6 oui, 7 plus tard ») : voir l'en-tête. Rien d'autre n'est rangé.

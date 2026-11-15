@@ -8,7 +8,9 @@ actions:
   - proposition: "Quand deux stories d'un même lot se construisent en parallèle, la seconde intégrée rejoue la gate complète après rebasage, avant son intégration, même si sa revue est déjà GO. Au sprint 8, ce rejeu a attrapé un conflit que ni les deux constructeurs ni les deux relecteurs ne pouvaient voir : la garde de complétude d'ezk help --json refusait la nouvelle commande process show, non rangée dans taxonomie.yml."
     kind: action
     by: [qualite, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : geste de l'orchestrateur ; la seconde story d'un lot construit en parallèle rejoue la gate complète après rebasage, avant son intégration."
+    date: 2026-11-15
   - proposition: "Le rangement des 28 domaines de commandes dans taxonomie.yml (39 en méthode, 15 en modules, 20 en librairie, plus process) est un premier jet éditorial, fait au build d'ezk help --json : le PO le valide ou le corrige, puisque l'Annuaire de mission control l'affichera tel quel."
     kind: action
     by: [produit]
@@ -16,11 +18,15 @@ actions:
   - proposition: "Factoriser le câblage des trois routes de lecture par projet du daemon cop1 (/api/law, /api/recipes, /api/process) : le gestionnaire est recopié trois fois, et la quatrième route viendra avec le graphe ou le glossaire."
     kind: feature
     by: [dev, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : fiche 20261115180227117, P2 (le serveur de mission control regroupe ses routes de lecture par projet)."
+    date: 2026-11-15
   - proposition: "Le slug du compte rendu de sprint perd toujours ses accents (« la-m-thode-publie… ») : deuxième occurrence après le sprint 7, la proposition de la rétro précédente reste à ranger en fiche."
     kind: action
     by: [dev]
-    status: ⏳
+    status: ✅
+    decision: "Retenue (PO, 15 novembre) : portée par la même fiche que la proposition 4 du sprint 7, 20261115180226950."
+    date: 2026-11-15
 ---
 
 **En clair :** le sprint a livré deux publications de la méthode pour mission control : l'annuaire
@@ -68,4 +74,4 @@ Aucune règle neuve proposée : pas de juge convoqué.
 
 ## 6 · Décisions
 
-Quatre propositions en ⏳ : le PO tranche. Rien n'est rangé sans son feu vert.
+Le PO a tranché le 15 novembre (« 1 à 6 oui, 7 plus tard ») : voir l'en-tête. Rien d'autre n'est rangé.
