@@ -68,7 +68,7 @@ Trois commandes et une règle, POC d'abord.
 2. **La règle de composition, écrite ici une fois.** Le fichier projet COMPLÈTE le socle. Un
    drapeau explicite en tête du fichier, `replace: true` (nom proposé), le remplace. La règle est testée et écrite
    dans `skills/ezk-release/SKILL.md`. Les fiches
-   [La gate de release joue les tests du projet](20261114131613314_gate-de-release-joue-les-tests.md)
+   [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)
    et [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md) s'y réfèrent
    sans la redire.
 3. **`ezk release passes add <id> --title "…" --command "…"`** écrit la passe dans
@@ -140,7 +140,7 @@ Aucune preuve d'écran : l'écran Configuration suit par le contrat `config-show
 - Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart E3 (page Configuration).
 - Dépendances, dans l'ordre :
-  [La gate de release joue les tests du projet](20261114131613314_gate-de-release-joue-les-tests.md)
+  [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)
   (la forme d'une passe du socle et l'état `skip`),
   [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md) (le type « revue
   par un agent »),

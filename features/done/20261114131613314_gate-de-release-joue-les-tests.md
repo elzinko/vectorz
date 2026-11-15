@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [release, contrat]
-status: idea
+status: shipped
 blocked:
-pr:
+pr: "local-squash 52dafa7f"
 evidence: none # une passe de gate, aucun écran modifié
 created: 2026-11-14
 ---
@@ -65,14 +65,14 @@ POC d'abord, dans le cœur pur, puis au bord.
    `.vectorz/release/<v>.json` porte ce troisième état. Un `skip` ne bloque pas le verdict global ;
    il n'est pas non plus un GO muet.
 4. **Sur vectorz.** La valeur candidate est `pnpm --dir products/mega-city gate`, la commande fixée
-   par [Une seule commande « gate » rejoue toute la validation locale](done/20261002230039555_commande-gate-unique.md).
+   par [Une seule commande « gate » rejoue toute la validation locale](20261002230039555_commande-gate-unique.md).
 
 Hors périmètre :
 
 - La règle « le fichier projet complète ou remplace le socle ». Elle s'écrit une seule fois, dans
-  [`ezk release passes list|add|remove`](20261114131616085_ezk-release-passes-list-add-remove.md).
+  [`ezk release passes list|add|remove`](../20261114131616085_ezk-release-passes-list-add-remove.md).
 - La publication de la commande de tests et des passes pour l'écran. Elle passe par
-  [Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md).
+  [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md).
 
 ## Critères d'acceptation
 
@@ -121,17 +121,17 @@ Aucune preuve d'écran : la fiche ne modifie aucun écran.
 
 ## Notes / décisions
 
-- Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : [la carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart E1 (page Configuration).
 - Fiches livrées dont le code bouge :
-  [Release gate — passe qualité avant versionnement](done/20260922175954296_release-gate-passe-qualite-versionnement.md)
+  [Release gate — passe qualité avant versionnement](20260922175954296_release-gate-passe-qualite-versionnement.md)
   (les passes du socle) et
-  [Revue design-system : un step composable](done/20261011153019643_revue-design-system-step-composable-release.md)
+  [Revue design-system : un step composable](20261011153019643_revue-design-system-step-composable-release.md)
   (le modèle du `skip`).
 - Dépendances : aucune fiche du lot. Voisines :
-  [Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
+  [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
   publie la commande de tests ;
-  [`ezk release passes`](20261114131616085_ezk-release-passes-list-add-remove.md) porte la règle
+  [`ezk release passes`](../20261114131616085_ezk-release-passes-list-add-remove.md) porte la règle
   de composition socle / projet.
 - Risque : la passe `tests` rejoue toute la validation locale ; sur vectorz, c'est long. Le coût est
   accepté : une version se coupe rarement.
@@ -139,5 +139,5 @@ Aucune preuve d'écran : la fiche ne modifie aucun écran.
   (`products/mega-city/src/core/release-gate.ts:22-29`) : l'état `skip` demande un champ de plus,
   dont la forme exacte se fixe au build. `backlog version close --tag` lit `passes[].go`
   (`products/mega-city/bin/backlog-version.ts:341`) ; il doit traiter `skip` comme non bloquant.
-  Si [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
+  Si [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
   remplace `close --tag`, le lecteur du verdict change de nom, pas de règle.

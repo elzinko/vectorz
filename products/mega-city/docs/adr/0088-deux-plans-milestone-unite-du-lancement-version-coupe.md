@@ -213,6 +213,6 @@ le tirage par objectif et le verbe de la coupe
 les objets d'identité et la publication
 ([les objectifs publiés](../../../../features/20261114131612572_objectifs-publies-comme-objets.md),
 [les versions publiées](../../../../features/20261114131612759_versions-publiees-comme-coupes.md)) ;
-la gate joue les tests ([fiche](../../../../features/20261114131613314_gate-de-release-joue-les-tests.md)) ;
+la gate joue les tests ([fiche](../../../../features/done/20261114131613314_gate-de-release-joue-les-tests.md)) ;
 mission control (page Versions, page Objectifs). Les notes de version rendues depuis l'objet version, et le
 Product Goal (« But du produit »), restent des décisions à part.

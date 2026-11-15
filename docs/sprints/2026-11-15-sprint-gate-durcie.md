@@ -12,7 +12,7 @@ non livrées.
 
 | Fiche | Story | Commit | État |
 |---|---|---|---|
-| [20261114131613314](../../features/20261114131613314_gate-de-release-joue-les-tests.md) | La gate de release joue les tests du projet | `52dafa7f` | **fait** (tous les critères) |
+| [20261114131613314](../../features/done/20261114131613314_gate-de-release-joue-les-tests.md) | La gate de release joue les tests du projet | `52dafa7f` | **fait** (tous les critères) |
 | [20261114131616085](../../features/20261114131616085_ezk-release-passes-list-add-remove.md) | Composer les passes de la gate et les lister | `89f7f9de` | **POC partiel** : compose + `passes list` faits ; `add`/`remove` et `--type` différés |
 
 Statut backlog : les deux fiches restent `idea` dans `features/`. Le passage en `shipped`

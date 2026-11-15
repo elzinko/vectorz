@@ -67,7 +67,7 @@ Une seule montée de version du contrat, et l'écran adapté dans le même lot.
 1. **`releaseGate` devient un objet** (noms proposés) : `{ active, passes: [{ id, title, source }], tests }`.
    `source` vaut `defaut` ou `projet`. `tests` est la commande de tests effective, `null` quand
    `release.tests` manque (voir
-   [La gate de release joue les tests du projet](20261114131613314_gate-de-release-joue-les-tests.md)).
+   [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)).
 2. **`niveaux[]` à côté de `agents[]`** (noms proposés). Une entrée par niveau :
    `{ id, libelle, model, effort, effortLibelle, source }` pour `high`, `middle`, `low`. Les libellés
    français sont écrits une fois, dans la méthode. `agents[].tier` reste tel quel ; l'écran joint les deux.
@@ -151,7 +151,7 @@ Aucune preuve d'écran : l'écran garde ses pages, il lit des champs de plus.
   [Config des modèles : le schéma à deux portées](done/20261013132218242_config-modeles-schema-et-resolveur-pur.md).
 - Règle d'architecture : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md),
   la méthode publie, mission control consomme.
-- Dépendance : [La gate de release joue les tests du projet](20261114131613314_gate-de-release-joue-les-tests.md),
+- Dépendance : [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md),
   pour publier une commande de tests non nulle.
 - Voisines : [`ezk release passes`](20261114131616085_ezk-release-passes-list-add-remove.md) règle
   les passes publiées ici ; [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md)

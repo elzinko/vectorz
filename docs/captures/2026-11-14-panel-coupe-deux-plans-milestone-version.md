@@ -148,7 +148,7 @@ Le brouillon du dossier (annexe) reçoit ces amendements avant ratification :
     (objet d'identité) ; ADR-0076 « remplacé » ; ADR-086 touché seulement sur la table « à publier » ;
     fermer le point « but de version » d'ADR-0080 par non (sous réserve du oui n° 1).
 11. **Ce que la coupe garantit, dit au PO** : la gate socle ne joue aucun test aujourd'hui (fiche
-    [La gate de release joue les tests du projet](../../features/20261114131613314_gate-de-release-joue-les-tests.md)) ;
+    [La gate de release joue les tests du projet](../../features/done/20261114131613314_gate-de-release-joue-les-tests.md)) ;
     sur ce dépôt, 6 verdicts GO pour 22 tags : la première coupe sera la première gate vraiment jouée.
 12. **La coupe se joue sur `main`** : `close --tag` tague HEAD quelle que soit la branche
     (`backlog-version.ts:312`) ; six dossiers de travail vivent en parallèle ; `version tag` refuse de
