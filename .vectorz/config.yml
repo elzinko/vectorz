@@ -2,3 +2,7 @@ github: false
 carto:
   trees:
     mission-control: .vectorz/carto/mission-control.yml
+release:
+  # Commande de tests jouée par la passe « tests » de `ezk release <v>`
+  # (sans cette clé, la passe est sautée).
+  tests: pnpm --dir products/mega-city gate
