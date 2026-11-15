@@ -125,15 +125,29 @@ le schéma statique, l'« après » la surface zoomée au même niveau.
   (`SPRINT_STEPS` dans `ProcessView.tsx`).
   **Cette fiche est désormais livrée sur `main`** :
   [La méthode émet ses étapes fines](done/20261110191135802_methode-emet-ses-etapes-fines.md)
-  (`20261110191135802`, `ready`, P1, `main` à `ca04d620`). La dépendance est **levée**. Elle
-  livre une commande neuve `ezk process show --json` (contrat `contracts/process-show/v1/`),
-  servie par le daemon sur `GET /api/process/<projet>`, et sa sortie couvre les trois niveaux.
-  Le lien croisé entre les deux fiches sera posé quand celle-ci atterrira sur `main`.
+  (`20261110191135802`, **livrée** le 15 nov. : `510276c0`). La dépendance est **levée**. Elle
+  livre la commande `ezk process show --json` (contrat `contracts/process-show/v1/`), servie par
+  le daemon sur `GET /api/process/<projet>`, et sa sortie couvre les trois niveaux. Le lien
+  retour, depuis la fiche « étapes fines » vers celle-ci, n'est pas encore posé.
 
-- **Forme d'entrée du niveau 3** (maquette relue le 11 nov.) : la méthode exposera
-  `ezk process show --json` de forme `skills[] { etapes[] { num, titre, enClair, joueePar,
-  agents[], commandes[], regles[] } }`. La projection pure du niveau 3 prend **cette** forme
-  en entrée.
+- **Forme d'entrée du niveau 3** — **contrat réel livré le 15 nov.** (`process-show/v1`, commit
+  `510276c0`). La projection pure prend **cette** forme en entrée :
+  `{ schema_version, skills[] { id, nom, enClair, etapes[] { id, num, titre, enClair, joueePar[],
+  agents[], commandes[], regles[], reglages[] { cle, valeur } } }, liens[] { de, vers, libelle } }`.
+  Quatre compétences publiées : `ezk-backlog` (4 étapes), `ezk-sprint` (8), `ezk-retro` (4),
+  `ezk-archive` (2).
+
+  **Écart avec la forme prévue le 11 nov.**, à prendre en compte au build :
+  1. `joueePar` est une **liste** de références (`humain`, `agent:<x>`, `<skill>[:<sous-commande>]`),
+     pas une chaîne. L'écran affiche donc un ou plusieurs acteurs par étape.
+  2. **Ajouts** : un `id` stable par étape (clé des nœuds), des `reglages[]` par étape (la config
+     qui la pilote), et des `liens[]` au niveau racine. Le niveau 1 lit ses arêtes là, au lieu de
+     les déduire.
+  3. `regles[]` est publié **vide** (défaut de la fiche « étapes fines ») : le niveau 3 affiche
+     « aucune règle publiée », pas une liste inventée.
+  4. **Absent du v1** : le niveau de modèle des agents, et les champs `momentEmis`, `gateId` et
+     `effetStatutFiche` (prévus pour un v2). Le niveau 3 ne les montre pas tant que le contrat ne
+     les publie pas.
 
 ## Avis architecte (2026-11-11)
 
