@@ -3,6 +3,7 @@
  * ezk — le point d'entrée unique de la méthode (fiche 20260903134906920, ADR-0046 option B).
  *
  *   ezk help [domaine|skill]                   les deux index : terminal et chat
+ *   ezk help --json                            l'annuaire en contrat versionné (contracts/help/v1)
  *   ezk [--root <dossier>] [--dry-run] <domaine> [<verbe>] [args…]
  *
  * `--root` vise le dépôt de la méthode ; pour une commande marquée `project` au manifeste (elle ne
@@ -81,6 +82,16 @@ function showHelp(manifest: Manifest, topic?: string): number {
   }
   warn(`ezk help : « ${topic} » n'est ni un domaine ni un skill. Essaie « ezk help ».`);
   return 2;
+}
+
+/**
+ * L'annuaire en JSON (contrat contracts/help/v1, fiche 20261114131613129), depuis le même manifeste
+ * que l'aide texte. Le catalogue n'est chargé qu'ici, à la demande : les autres commandes n'en paient pas le coût.
+ */
+async function showHelpJson(manifest: Manifest): Promise<number> {
+  const { helpJsonData } = await import('../src/io/help-json.js');
+  say(JSON.stringify(helpJsonData(manifest, MEGA_CITY, OWN_ROOT), null, 1));
+  return 0;
 }
 
 /** Le programme qui lance un script : bash pour .sh, sinon le tsx des dépendances de mega-city. */
@@ -197,7 +208,7 @@ async function main(argv: string[]): Promise<number> {
     ...(gitRoot ? { cwdRepo: { root: real(gitRoot), hasFeatures: existsSync(join(real(gitRoot), 'features')) } } : {}),
   });
 
-  if (resolution.kind === 'help') return showHelp(manifest, resolution.topic);
+  if (resolution.kind === 'help') return resolution.json ? showHelpJson(manifest) : showHelp(manifest, resolution.topic);
   if (resolution.kind === 'error') {
     warn(resolution.message);
     return resolution.exitCode;

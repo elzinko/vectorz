@@ -1,0 +1,74 @@
+{
+ "schema_version": 1,
+ "commandes": [
+  {
+   "domaine": "demo",
+   "verbe": "show",
+   "enClair": "Montre la démo du projet.",
+   "script": "bin/demo.ts show",
+   "racine": "fixed",
+   "projet": true,
+   "ecritLeProjet": false,
+   "deprecie": null,
+   "etage": "methode",
+   "famille": null
+  },
+  {
+   "domaine": "demo",
+   "verbe": "ship",
+   "enClair": "Livre une fiche du dépôt où tu es.",
+   "script": "bin/demo.ts ship",
+   "racine": "cwd",
+   "projet": true,
+   "ecritLeProjet": true,
+   "deprecie": null,
+   "etage": "librairie",
+   "famille": null
+  },
+  {
+   "domaine": "pr",
+   "verbe": null,
+   "enClair": "Ancien nom de « demo show ».",
+   "script": "bin/pr.ts",
+   "racine": "none",
+   "projet": false,
+   "ecritLeProjet": false,
+   "deprecie": "demo show",
+   "etage": "modules",
+   "famille": "github"
+  }
+ ],
+ "skills": [
+  {
+   "id": "s1",
+   "description": "Conduit un sprint.",
+   "sousCommandes": [
+    "help",
+    "start",
+    "close"
+   ],
+   "fichier": "products/mega-city/skills/s1/SKILL.md",
+   "etage": "methode",
+   "famille": null
+  },
+  {
+   "id": "s2",
+   "description": "Adresse les retours de revue.",
+   "sousCommandes": [],
+   "fichier": "products/mega-city/skills/s2/SKILL.md",
+   "etage": "modules",
+   "famille": "github"
+  }
+ ],
+ "agents": [
+  {
+   "id": "a1",
+   "description": "Développe en TDD.",
+   "fichier": "products/mega-city/agents/a1.md",
+   "etage": "methode",
+   "famille": null,
+   "modele": "sonnet",
+   "effort": "medium"
+  }
+ ]
+}

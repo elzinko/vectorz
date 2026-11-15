@@ -101,17 +101,17 @@ cop1 : il ne lit que ces contrats, jamais les fichiers (ADR-086).
 
 ## Critères d'acceptation
 
-- [ ] `ezk help --json` sort le contrat `contracts/help/v1/` : `schema_version`, un schéma et un
+- [x] `ezk help --json` sort le contrat `contracts/help/v1/` : `schema_version`, un schéma et un
   exemple générés, et la sortie réelle le respecte. `ezk help` texte est inchangé et lit la même source.
-- [ ] `commandes[]` porte les 74 entrées du manifeste avec domaine, verbe, enClair, script, racine,
+- [x] `commandes[]` porte les 74 entrées du manifeste avec domaine, verbe, enClair, script, racine,
   projet, ecritLeProjet, deprecie. Son compte égale celui des commandes de terminal de `ezk help` texte.
-- [ ] Chaque commande porte `etage` et, pour un module, `famille`, avec les valeurs de `taxonomie.yml`.
+- [x] Chaque commande porte `etage` et, pour un module, `famille`, avec les valeurs de `taxonomie.yml`.
   Une commande du manifeste absente de la taxonomie fait échouer la validation.
-- [ ] `skills[]` porte les 26 compétences (id, description, sousCommandes, fichier, etage, famille) et
+- [x] `skills[]` porte les 26 compétences (id, description, sousCommandes, fichier, etage, famille) et
   `agents[]` les 8 agents (id, description, fichier, etage, famille, modele, effort), avec les valeurs
   que la carte sert déjà.
-- [ ] Aucune relation (composes, roles, applies, competences) ne figure dans ce contrat.
-- [ ] Rien n'est codé en dur : une commande ajoutée au manifeste et rangée dans la taxonomie, ou une
+- [x] Aucune relation (composes, roles, applies, competences) ne figure dans ce contrat.
+- [x] Rien n'est codé en dur : une commande ajoutée au manifeste et rangée dans la taxonomie, ou une
   compétence ajoutée au dossier, apparaît dans la sortie sans toucher au code.
 
 ## Comment vérifier
@@ -146,6 +146,16 @@ pnpm --dir products/mega-city test -- src/__tests__/ezk-cli.test.ts src/__tests_
 - Décisions prises par la fiche, à confirmer par le PO : le nom `help` du contrat ; le rangement par
   domaine avec dérogation par commande ; modèle et effort lus dans le front-matter de l'agent ; le
   vocabulaire de `taxonomie.yml`, « hôte » restant une famille.
+- 2026-11-15 — défaut appliqué au build : le canal est `ezk help --json` et le contrat s'appelle
+  `help` (`contracts/help/v1/`), comme chaque contrat porte le nom de sa commande.
+- 2026-11-15 — défaut appliqué au build : les commandes sont rangées par domaine dans la section
+  `commandes` de `taxonomie.yml`, avec dérogation par commande (`<domaine> <verbe>`). Une seule
+  dérogation posée : `board maps` en librairie (les documents de la méthode elle-même). Le placement
+  des 28 domaines est un premier rangement éditorial ; seule la complétude est testée.
+- 2026-11-15 — défaut appliqué au build : modèle et effort viennent du front-matter de l'agent, lus
+  par le catalogue que la carte sert déjà.
+- 2026-11-15 — défaut appliqué au build : le vocabulaire publié est celui de `taxonomie.yml`
+  (methode, modules et leur famille, librairie) ; « hôte » reste la famille `hote-llm`.
 - Dépend de : aucune fiche du lot. Voisine du lot :
   [Le graphe de la méthode en un contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md)
   porte les relations ; cette fiche porte la carte d'identité. Jamais les deux.
@@ -166,3 +176,6 @@ pnpm --dir products/mega-city test -- src/__tests__/ezk-cli.test.ts src/__tests_
   (`ezk-manifest.yml` et `taxonomie.yml` dans le dépôt, aucune dépendance hors dépôt), six critères prouvables
   par commande, une seule surface. Passée « prête » sur tampon `ezk-pm` (mode auto) ; lot 2 du run avec
   « La méthode émet ses étapes fines » : la méthode publie son process et son annuaire.
+- 2026-11-15 — construite (sprint 8, lot 2) ; revue adverse `ezk-reviewer` GO, six critères prouvés par le relecteur, cases
+  reportées telles quelles. Suivi : la sortie fait 61,7 Ko (marge faible avant 64 Ko) ; le rangement des 28 domaines
+  dans `taxonomie.yml` est un premier jet éditorial, à valider par le PO.

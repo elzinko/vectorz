@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "commandes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "domaine": {
+            "type": "string"
+          },
+          "verbe": {
+            "description": "`null` : le domaine EST la commande.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enClair": {
+            "type": "string",
+            "description": "Le résumé d’une ligne que `ezk help` affiche."
+          },
+          "script": {
+            "type": "string",
+            "description": "Le script lancé et ses arguments fixes, depuis products/mega-city."
+          },
+          "racine": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "none",
+              "cwd"
+            ],
+            "description": "`fixed` : le dépôt de la méthode ; `none` : de partout ; `cwd` : le dépôt où l’on tape."
+          },
+          "projet": {
+            "type": "boolean",
+            "description": "La commande travaille sur un projet désigné (--root ou EZK_ROOT)."
+          },
+          "ecritLeProjet": {
+            "type": "boolean",
+            "description": "La commande écrit dans le projet désigné."
+          },
+          "deprecie": {
+            "description": "Le nouveau nom quand la commande est un ancien nom ; `null` sinon.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "etage": {
+            "type": "string",
+            "enum": [
+              "methode",
+              "modules",
+              "librairie"
+            ],
+            "description": "Le rang de la brique dans la méthode (taxonomie.yml, ADR-0039)."
+          },
+          "famille": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hote-llm",
+                  "github",
+                  "observabilite",
+                  "techno",
+                  "overlay"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Le sous-rang d’un module ; `null` hors de l’étage modules."
+          }
+        },
+        "required": [
+          "domaine",
+          "verbe",
+          "enClair",
+          "script",
+          "racine",
+          "projet",
+          "ecritLeProjet",
+          "deprecie",
+          "etage",
+          "famille"
+        ]
+      },
+      "description": "Une entrée par commande du manifeste, dans son ordre."
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sousCommandes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Les sous-commandes nommées par l’argument-hint du skill."
+          },
+          "fichier": {
+            "description": "Le SKILL.md, relatif à la racine du dépôt de la méthode.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "etage": {
+            "type": "string",
+            "enum": [
+              "methode",
+              "modules",
+              "librairie"
+            ],
+            "description": "Le rang de la brique dans la méthode (taxonomie.yml, ADR-0039)."
+          },
+          "famille": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hote-llm",
+                  "github",
+                  "observabilite",
+                  "techno",
+                  "overlay"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Le sous-rang d’un module ; `null` hors de l’étage modules."
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "sousCommandes",
+          "fichier",
+          "etage",
+          "famille"
+        ]
+      }
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "fichier": {
+            "description": "Le fichier de l’agent, relatif à la racine du dépôt de la méthode.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "etage": {
+            "type": "string",
+            "enum": [
+              "methode",
+              "modules",
+              "librairie"
+            ],
+            "description": "Le rang de la brique dans la méthode (taxonomie.yml, ADR-0039)."
+          },
+          "famille": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hote-llm",
+                  "github",
+                  "observabilite",
+                  "techno",
+                  "overlay"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Le sous-rang d’un module ; `null` hors de l’étage modules."
+          },
+          "modele": {
+            "type": "string",
+            "description": "Le modèle par défaut, lu dans le front-matter de l’agent."
+          },
+          "effort": {
+            "type": "string",
+            "description": "L’effort par défaut, lu dans le front-matter de l’agent."
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "fichier",
+          "etage",
+          "famille",
+          "modele",
+          "effort"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "commandes",
+    "skills",
+    "agents"
+  ]
+}

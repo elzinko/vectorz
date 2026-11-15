@@ -63,6 +63,46 @@ etages:
     skills: [ezk-ezk, ezk-chef]
     agents: [ezk-steward, ezk-chef]
 
+# Les COMMANDES DE TERMINAL (`ezk <domaine> <verbe>`, ezk-manifest.yml) — fiche 20261114131613129.
+# Une ligne par domaine ; une commande précise (« <domaine> <verbe> ») peut dévier de son domaine.
+# Valeur : methode | librairie | modules/<famille>, le vocabulaire des étages ci-dessus (« hôte »
+# reste la famille hote-llm, pas un étage). COMPLÉTUDE exigée, comme pour les skills : une commande
+# du manifeste sans étage, ou une clé qui n'est ni un domaine ni une commande du manifeste, fait
+# échouer `ezk help --json` et la gate. Premier rangement : build du 2026-11-15, à amender par le PO.
+commandes:
+  # méthode — le cœur Scrum : backlog, « prête », board, sprint, revue, rétro, version, run autonome
+  backlog: methode
+  board: methode
+  dor: methode
+  sprint: methode
+  review: methode
+  retro: methode
+  release: methode
+  run: methode
+  journal: methode
+  scout: methode
+  carto: methode
+  evidence: methode
+  adr: methode
+  paths: methode
+  now: methode
+  # modules — hors méthode, activables, par famille
+  pr: modules/github
+  forge: modules/github
+  ci: modules/github
+  config: modules/github
+  sessions: modules/hote-llm
+  supervision: modules/observabilite
+  design: modules/techno
+  # librairie — la fabrique de la méthode : loi, règles, graphe, recettes, vues, liens
+  law: librairie
+  rules: librairie
+  graph: librairie
+  recipes: librairie
+  views: librairie
+  docs: librairie
+  board maps: librairie  # dérogation : les documents de la méthode elle-même (sa carte)
+
 # Bandes INTERNES à l'étage méthode (ADR-0020, amendée par ADR-0039 : l'ex-bande
 # « Outillage » est promue famille de modules ; commits et archive quittent
 # l'étage méthode sur décision PO). L'ordre est l'ordre du flux.

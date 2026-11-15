@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "board:contract": "tsx bin/board-contract.ts",
     "law:contract": "tsx bin/law-contract.ts",
+    "help:contract": "tsx bin/help-contract.ts",
     "ezk": "tsx bin/ezk.ts",
     "lawgiver": "tsx bin/lawgiver.ts",
     "ezk:help": "tsx bin/ezk-help.ts",

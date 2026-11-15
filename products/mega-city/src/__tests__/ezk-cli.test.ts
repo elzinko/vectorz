@@ -145,6 +145,13 @@ describe('route', () => {
     expect(route(MANIFEST, ['-h'], inside)).toEqual({ kind: 'help' });
     expect(route(MANIFEST, ['help', 'law'], inside)).toEqual({ kind: 'help', topic: 'law' });
   });
+
+  it('« help --json » : --json est une option de help, pas un sujet (fiche 20261114131613129)', () => {
+    expect(route(MANIFEST, ['help', '--json'], inside)).toEqual({ kind: 'help', json: true });
+    const r = route(MANIFEST, ['help', 'law', '--json'], inside);
+    expect(r).toMatchObject({ kind: 'error', exitCode: 2 });
+    if (r.kind === 'error') expect(r.message).toMatch(/--json.*« law »/);
+  });
 });
 
 describe('route — la racine (ce qui empêche de modifier le mauvais dépôt)', () => {

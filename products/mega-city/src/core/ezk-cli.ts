@@ -88,7 +88,7 @@ export type Resolution =
       /** Le projet désigné (option ou variable), pour une commande `project` seulement. */
       projectRoot?: string;
     }
-  | { kind: 'help'; topic?: string }
+  | { kind: 'help'; topic?: string; json?: true }
   | { kind: 'error'; message: string; exitCode: 2 };
 
 export interface ChatCommand {
@@ -204,7 +204,8 @@ export function uncoveredScripts(manifest: Manifest, pnpmScripts: Record<string,
   return [...cited].filter((s) => !known.has(s) && !/^bin\/test-[\w.-]+\.sh$/.test(s)).sort();
 }
 
-function label(entry: ManifestEntry): string {
+/** Le nom d'une commande tel que l'utilisateur le tape après `ezk` : `<domaine> <verbe>`, ou le domaine seul. */
+export function commandLabel(entry: Pick<ManifestEntry, 'domain' | 'verb'>): string {
   return `${entry.domain}${entry.verb ? ` ${entry.verb}` : ''}`;
 }
 
@@ -238,7 +239,7 @@ function cwdProblem(name: string, env: RouterEnv): string | undefined {
 
 function rootProblem(entry: ManifestEntry, env: RouterEnv): string | undefined {
   if (entry.root === 'none') return undefined;
-  const name = `ezk ${label(entry)}`;
+  const name = `ezk ${commandLabel(entry)}`;
   if (entry.root === 'cwd') return cwdProblem(name, env);
   // Un projet est désigné et la commande sait le lire : c'est son script qui contrôle le dossier.
   if (designatedProject(entry, env) !== undefined) return undefined;
@@ -276,6 +277,17 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
   const [domain, ...tail] = args;
   if (domain === undefined) return { kind: 'help' };
   if (HELP_WORDS.has(domain)) {
+    // `--json` est une option de `help` (le contrat contracts/help/v1, fiche 20261114131613129) :
+    // il sort tout l'annuaire, donc il ne se combine pas avec un sujet.
+    if (domain === 'help' && tail.includes('--json')) {
+      const topic = tail.find((a) => a !== '--json');
+      if (topic === undefined) return { kind: 'help', json: true };
+      return {
+        kind: 'error',
+        exitCode: 2,
+        message: `ezk help --json sort tout l'annuaire : il ne prend pas de sujet (« ${topic} »). Essaie « ezk help ${topic} ».`,
+      };
+    }
     return domain === 'help' && tail[0] !== undefined ? { kind: 'help', topic: tail[0] } : { kind: 'help' };
   }
   const entries = manifest.commands.filter((e) => e.domain === domain);
@@ -303,7 +315,7 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
 
   const fixed = entryStep(entry);
   const notices = entry.deprecated
-    ? [`« ezk ${label(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
+    ? [`« ezk ${commandLabel(entry)} » est renommé « ezk ${entry.deprecated} » ; l'ancien nom marche encore le temps de la transition.`]
     : [];
   const projectRoot = designatedProject(entry, env);
   // Une commande qui écrit là où l'on tape la commande dit toujours où elle écrit.
@@ -381,9 +393,9 @@ function truncate(text: string, max: number): string {
 /** L'aide : « En clair » d'abord, puis les deux familles de commandes, une ligne par commande. */
 export function renderHelp(manifest: Manifest, chat: ChatCommand[]): string {
   const terminal = manifest.commands.filter((e) => !e.deprecated);
-  const width = Math.max(...terminal.map((e) => label(e).length), 0);
+  const width = Math.max(...terminal.map((e) => commandLabel(e).length), 0);
   const chatWidth = Math.max(...chat.map((c) => c.name.length + 1), 0);
-  const termLines = terminal.map((e) => `  ${label(e).padEnd(width)}  ${e.summary}`);
+  const termLines = terminal.map((e) => `  ${commandLabel(e).padEnd(width)}  ${e.summary}`);
   const chatLines = chat.map((c) => `  ${`/${c.name}`.padEnd(chatWidth)}  ${truncate(c.summary, 100)}`);
   return [
     "En clair. « ezk » est la commande de terminal de la méthode : un seul point d'entrée",
@@ -408,10 +420,10 @@ export function renderHelp(manifest: Manifest, chat: ChatCommand[]): string {
 export function renderDomainHelp(manifest: Manifest, domain: string): string | undefined {
   const entries = manifest.commands.filter((e) => e.domain === domain);
   if (entries.length === 0) return undefined;
-  const width = Math.max(...entries.map((e) => label(e).length));
+  const width = Math.max(...entries.map((e) => commandLabel(e).length));
   const lines = entries.map((e) => {
     const step = entryStep(e);
-    return `  ${label(e).padEnd(width)}  ${e.summary}\n  ${' '.repeat(width)}  lance : ${[step.script, ...step.args].join(' ')}`;
+    return `  ${commandLabel(e).padEnd(width)}  ${e.summary}\n  ${' '.repeat(width)}  lance : ${[step.script, ...step.args].join(' ')}`;
   });
   return `ezk ${domain}\n\n${lines.join('\n')}\n`;
 }

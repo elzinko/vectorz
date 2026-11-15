@@ -449,3 +449,5 @@ internal:
     reason: outil de maintenance du contrat « law show --json » (régénère ou vérifie contracts/law-show/) ; pas une commande de projet
   - script: bin/board-contract.ts
     reason: outil de maintenance du contrat « board show --json » (régénère ou vérifie contracts/board-show/) ; pas une commande de projet
+  - script: bin/help-contract.ts
+    reason: outil de maintenance du contrat « help --json » (régénère ou vérifie contracts/help/) ; pas une commande de projet
