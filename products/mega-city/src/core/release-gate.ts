@@ -55,8 +55,8 @@ export const DEFAULT_PASSES: readonly ReleasePass[] = [
   },
   {
     id: 'chasse-aux-bugs',
-    title: 'Chasse aux bugs adverse — verdict ezk-reviewer requis (fichier .vectorz/release/{version}.bughunt-go)',
-    command: 'test -f {root}/.vectorz/release/{version}.bughunt-go',
+    title: 'Chasse aux bugs adverse — verdict posé par `ezk release verdict chasse-aux-bugs <version> go|no-go "<motif>"`',
+    command: 'ezk --root {root} release verdict-check chasse-aux-bugs {version}',
   },
 ];
 
@@ -84,6 +84,44 @@ export function skippedTestsResult(): PassResult {
     skipped: true,
     detail: 'sautée : release.tests absent',
   };
+}
+
+/** Le verdict d'une passe à jugement (chasse aux bugs, design-system…), posé par `ezk release verdict`. */
+export interface PassVerdict {
+  readonly version: string;
+  readonly passe: string;
+  readonly verdict: 'GO' | 'NO-GO';
+  readonly motif: string;
+  readonly auteur?: string;
+  readonly at: string;
+  /** Le commit sur lequel le verdict a été posé, pour savoir s'il est périmé. */
+  readonly head?: string;
+}
+
+/**
+ * Décide GO/NO-GO d'une passe à verdict (chasse aux bugs…), péremption comprise :
+ * - aucun verdict → NO-GO, « à poser » ;
+ * - verdict posé sur un autre commit que HEAD → NO-GO « périmé », en nommant les deux commits ;
+ * - verdict NO-GO → NO-GO avec son motif ;
+ * - verdict GO sur HEAD → GO.
+ */
+export function decidePassVerdict(verdict: PassVerdict | undefined, head: string): { go: boolean; detail?: string } {
+  if (verdict === undefined) {
+    return {
+      go: false,
+      detail: 'aucun verdict posé — pose-le : ezk release verdict <passe> <version> go|no-go "<motif>"',
+    };
+  }
+  if (verdict.head !== undefined && head !== '' && verdict.head !== head) {
+    return {
+      go: false,
+      detail: `verdict périmé (posé sur ${verdict.head.slice(0, 9)}, HEAD ${head.slice(0, 9)}) — repose-le`,
+    };
+  }
+  if (verdict.verdict !== 'GO') {
+    return { go: false, detail: verdict.motif ? `NO-GO : ${verdict.motif}` : 'NO-GO (sans motif)' };
+  }
+  return { go: true };
 }
 
 /** Une passe EFFECTIVE, prête à lister ou à jouer : avec sa source et son drapeau « sautée ». */

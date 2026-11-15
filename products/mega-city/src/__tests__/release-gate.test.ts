@@ -5,8 +5,10 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   DEFAULT_PASSES,
   type PassResult,
+  type PassVerdict,
   type ReleaseVerdict,
   aggregate,
+  decidePassVerdict,
   effectivePasses,
   renderReleaseReport,
   resolveRelease,
@@ -16,9 +18,11 @@ import {
 } from '../core/release-gate.js';
 import {
   loadEffectivePasses,
+  readPassVerdict,
   readProjectPasses,
   readReleaseVerdict,
   releaseConfig,
+  writePassVerdict,
   writeReleaseVerdict,
 } from '../loaders/release-passes.js';
 
@@ -143,6 +147,33 @@ describe('release-gate — cœur pur', () => {
   it('les passes du socle sont dod-mecanique puis chasse-aux-bugs', () => {
     expect(DEFAULT_PASSES.map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs']);
   });
+
+  it('decidePassVerdict : aucun verdict → NO-GO, « à poser »', () => {
+    const d = decidePassVerdict(undefined, 'abc123');
+    expect(d.go).toBe(false);
+    expect(d.detail).toMatch(/aucun verdict/);
+  });
+
+  it('decidePassVerdict : GO posé sur HEAD → GO', () => {
+    const v: PassVerdict = { version: 'v0.24.0', passe: 'chasse-aux-bugs', verdict: 'GO', motif: 'ok', at: 'now', head: 'abc123' };
+    expect(decidePassVerdict(v, 'abc123').go).toBe(true);
+  });
+
+  it('decidePassVerdict : GO posé sur un AUTRE commit → NO-GO périmé, les deux commits nommés', () => {
+    const v: PassVerdict = { version: 'v0.24.0', passe: 'chasse-aux-bugs', verdict: 'GO', motif: 'ok', at: 'now', head: 'old11111' };
+    const d = decidePassVerdict(v, 'new22222');
+    expect(d.go).toBe(false);
+    expect(d.detail).toMatch(/périmé/);
+    expect(d.detail).toContain('old11111');
+    expect(d.detail).toContain('new22222');
+  });
+
+  it('decidePassVerdict : verdict NO-GO → NO-GO avec son motif', () => {
+    const v: PassVerdict = { version: 'v0.24.0', passe: 'chasse-aux-bugs', verdict: 'NO-GO', motif: 'régression login', at: 'now', head: 'abc123' };
+    const d = decidePassVerdict(v, 'abc123');
+    expect(d.go).toBe(false);
+    expect(d.detail).toContain('régression login');
+  });
 });
 
 describe('release-gate — loader (I/O)', () => {
@@ -236,5 +267,21 @@ describe('release-gate — loader (I/O)', () => {
     expect(existsSync(file)).toBe(true);
     expect(readReleaseVerdict(root, 'v0.11.0')).toEqual(v);
     expect(readReleaseVerdict(root, 'v0.12.0')).toBeUndefined();
+  });
+
+  it('verdict de passe : écriture puis relecture (round-trip)', () => {
+    const v: PassVerdict = {
+      version: 'v0.24.0',
+      passe: 'chasse-aux-bugs',
+      verdict: 'GO',
+      motif: 'parcours du lot rejoués, aucun bug bloquant',
+      auteur: 'Thomas',
+      at: '2026-11-15T00:00:00Z',
+      head: 'abc1234',
+    };
+    const file = writePassVerdict(root, v);
+    expect(existsSync(file)).toBe(true);
+    expect(readPassVerdict(root, 'v0.24.0', 'chasse-aux-bugs')).toEqual(v);
+    expect(readPassVerdict(root, 'v0.24.0', 'autre')).toBeUndefined();
   });
 });

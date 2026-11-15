@@ -47,8 +47,8 @@ passes:
     title: Definition of Done mécanique — la version est cohérente et complète
     command: ezk --root {root} backlog version check {version}
   - id: chasse-aux-bugs
-    title: Chasse aux bugs adverse — verdict ezk-reviewer requis
-    command: test -f {root}/.vectorz/release/{version}.bughunt-go
+    title: Chasse aux bugs adverse — verdict posé par ezk release verdict
+    command: ezk --root {root} release verdict-check chasse-aux-bugs {version}
   # Passe ajoutée sans toucher au skill (fiche sœur 20261011153019643) — une ligne de plus :
   # - id: design-system
   #   title: Revue design-system — l'UI livrée respecte le référentiel du projet
@@ -59,9 +59,10 @@ passes:
 
 1. **`dod-mecanique`** — la version est cohérente (`ezk backlog version check`). Déterministe.
 2. **`chasse-aux-bugs`** — un agent adverse (`ezk-reviewer` en mode adverse) rejoue les parcours
-   réels du lot au-delà des tests unitaires. Le skill ne juge pas lui-même : la passe exige un
-   **feu vert enregistré** par la revue, le fichier `.vectorz/release/<version>.bughunt-go`
-   (créé une fois la chasse aux bugs faite et GO). Tant qu'il manque, la passe est NO-GO.
+   réels du lot au-delà des tests unitaires. Le skill ne juge pas lui-même : la revue POSE un
+   **verdict** par commande — `ezk release verdict chasse-aux-bugs <version> go|no-go "<motif>"` —
+   avec son motif, son auteur et le commit. La passe le relit : GO seulement si le verdict est GO
+   et posé sur HEAD ; un verdict posé sur un autre commit est **périmé** (NO-GO) ; sans verdict, NO-GO.
 
 ## Composer les passes : le projet complète le socle (ou le remplace)
 

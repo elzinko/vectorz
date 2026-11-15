@@ -14,15 +14,23 @@ import { spawnSync } from 'node:child_process';
 import {
   type EffectivePass,
   type PassResult,
+  type PassVerdict,
   type ReleaseConfig,
   type ReleaseVerdict,
   aggregate,
+  decidePassVerdict,
   effectivePasses,
   renderReleaseReport,
   skippedTestsResult,
   substitute,
 } from '../src/core/release-gate.js';
-import { readProjectPasses, releaseConfig, writeReleaseVerdict } from '../src/loaders/release-passes.js';
+import {
+  readPassVerdict,
+  readProjectPasses,
+  releaseConfig,
+  writePassVerdict,
+  writeReleaseVerdict,
+} from '../src/loaders/release-passes.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 
 /** Résout les réglages release (gate + tests) proprement : un réglage invalide sort en code 2, jamais en crash. */
@@ -44,6 +52,19 @@ function effectivePassesOrExit(root: string, testsCommand: string | null): reado
     console.error(`En clair : passes de release invalides — ${err instanceof Error ? err.message : String(err)}`);
     process.exit(2);
   }
+}
+
+/** Le commit HEAD du projet, ou '' s'il est indéterminé (pas de dépôt, etc.). */
+function headOf(root: string): string {
+  const r = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' });
+  return r.status === 0 ? r.stdout.trim() : '';
+}
+
+/** Le nom d'auteur git du projet, ou `undefined` s'il n'est pas lisible. */
+function gitUserName(root: string): string | undefined {
+  const r = spawnSync('git', ['-C', root, 'config', 'user.name'], { encoding: 'utf8' });
+  const name = r.status === 0 ? r.stdout.trim() : '';
+  return name === '' ? undefined : name;
 }
 
 const base = process.env.INIT_CWD ?? process.cwd();
@@ -74,6 +95,57 @@ if (target.rest[0] === 'passes') {
   }
   console.error('usage : ezk release passes list   (add|remove à venir — fiche 20261114131616085)');
   process.exit(2);
+}
+
+// Sous-commande « verdict » : poser le verdict d'une passe à jugement (chasse aux bugs…).
+if (target.rest[0] === 'verdict') {
+  const passe = target.rest[1];
+  const ver = target.rest[2];
+  const decision = target.rest[3];
+  const motif = target.rest.slice(4).join(' ').trim();
+  if (!passe || !ver || (decision !== 'go' && decision !== 'no-go')) {
+    console.error('usage : ezk release verdict <passe> <version> go|no-go "<motif>"');
+    process.exit(2);
+  }
+  if (motif === '') {
+    console.error('✗ verdict refusé : un motif est requis — ezk release verdict <passe> <version> go|no-go "<motif>"');
+    process.exit(2);
+  }
+  // La passe doit exister dans les passes effectives du projet.
+  const entries = effectivePassesOrExit(root, releaseConfigOrExit(root).tests);
+  if (!entries.some((e) => e.id === passe)) {
+    console.error(
+      `✗ verdict refusé : la passe « ${passe} » n'est pas une passe effective de ce projet (voir : ezk release passes list).`,
+    );
+    process.exit(1);
+  }
+  const auteur = gitUserName(root);
+  const head = headOf(root);
+  const verdict: PassVerdict = {
+    version: ver,
+    passe,
+    verdict: decision === 'go' ? 'GO' : 'NO-GO',
+    motif,
+    at: new Date().toISOString(),
+    ...(auteur !== undefined ? { auteur } : {}),
+    ...(head !== '' ? { head } : {}),
+  };
+  const file = writePassVerdict(root, verdict);
+  console.log(`Verdict ${verdict.verdict} posé pour « ${passe} » (${ver}) : ${file}`);
+  process.exit(0);
+}
+
+// Sous-commande interne « verdict-check » : la passe du socle lit son verdict et décide (péremption comprise).
+if (target.rest[0] === 'verdict-check') {
+  const passe = target.rest[1];
+  const ver = target.rest[2];
+  if (!passe || !ver) {
+    console.error('usage : ezk release verdict-check <passe> <version>');
+    process.exit(2);
+  }
+  const decided = decidePassVerdict(readPassVerdict(root, ver, passe), headOf(root));
+  if (decided.detail) console.log(decided.detail);
+  process.exit(decided.go ? 0 : 1);
 }
 
 const version = target.rest.find((a) => !a.startsWith('-'));

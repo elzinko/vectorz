@@ -13,6 +13,7 @@ import { parse as parseYaml } from 'yaml';
 import { type DesignSystemConfig, type DesignSystemVerdict, resolveDesignSystem } from '../core/design-system-review.js';
 import {
   type EffectivePass,
+  type PassVerdict,
   type ReleaseConfig,
   type ReleasePass,
   type ReleaseVerdict,
@@ -104,6 +105,30 @@ export function readReleaseVerdict(projectRoot: string, version: string): Releas
     return JSON.parse(readFileSync(file, 'utf8')) as ReleaseVerdict;
   } catch (cause) {
     throw new Error(`Verdict de release illisible : ${file}`, { cause });
+  }
+}
+
+/** Chemin du verdict d'une passe à jugement d'une version (`.vectorz/release/<v>.<passe>.json`). */
+export function passVerdictPath(projectRoot: string, version: string, passe: string): string {
+  return join(releaseDir(projectRoot), `${version}.${passe}.json`);
+}
+
+/** Écrit le verdict d'une passe (crée le dossier au besoin). */
+export function writePassVerdict(projectRoot: string, verdict: PassVerdict): string {
+  const file = passVerdictPath(projectRoot, verdict.version, verdict.passe);
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, `${JSON.stringify(verdict, null, 2)}\n`, 'utf8');
+  return file;
+}
+
+/** Lit le verdict d'une passe, ou `undefined` s'il n'a jamais été posé. */
+export function readPassVerdict(projectRoot: string, version: string, passe: string): PassVerdict | undefined {
+  const file = passVerdictPath(projectRoot, version, passe);
+  if (!existsSync(file)) return undefined;
+  try {
+    return JSON.parse(readFileSync(file, 'utf8')) as PassVerdict;
+  } catch (cause) {
+    throw new Error(`Verdict de passe illisible : ${file}`, { cause });
   }
 }
 
