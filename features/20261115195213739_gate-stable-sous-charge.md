@@ -16,44 +16,53 @@ created: 2026-11-15
 
 # 20261115195213739 — La gate reste verte quand la machine est chargée
 
-**En clair.** La gate de la méthode échoue parfois alors que le code est bon. Quand la machine est
-chargée, quelques tests lents dépassent le délai de 5 secondes et tombent. Une gate rouge à tort
-fait perdre du temps et pousse à ne plus la croire.
+**En clair.** La gate de la méthode échouait parfois alors que le code était bon. Quand la machine est
+chargée, quelques tests lents dépassaient le délai de 5 secondes et tombaient. Le délai par défaut
+passe à 30 secondes : un test lent mais sain passe, un vrai blocage échoue toujours.
 
 **Si tu arrives frais.** La gate est la validation locale complète de la méthode : `pnpm gate`
 depuis `products/mega-city`. Elle enchaîne le contrôle des types, les tests et les tests de scripts.
+vitest est l'outil qui lance les tests.
 
 ## Contexte / Problème
 
 Symptôme vu le 2026-11-15, en rejouant la gate sur main pendant que d'autres sessions tournaient.
 
-Les tests qui dépassent le délai touchent la supervision, les captures et les règles de projet. Par
+Les tests qui dépassaient le délai touchent la supervision, les captures et les règles de projet. Par
 exemple : `capture-apply.test.ts`, `project-rules.test.ts`, `project-rules-io.test.ts`.
 
-Le contournement actuel est manuel : `pnpm exec vitest run --testTimeout=60000`. La note de
-passation du 15 nov. le recommande. Personne ne le fait par défaut.
+Le contournement était manuel : `pnpm exec vitest run --testTimeout=60000`. Personne ne le faisait par
+défaut.
 
 ## Proposition
 
-1. Mesurer d'abord : lister les tests qui dépassent 2 secondes sur une machine au repos.
-2. Pour chacun, choisir : l'accélérer, l'isoler dans une passe à part, ou lui donner un délai propre.
-3. Ne pas monter le délai global : il cacherait un vrai blocage.
+Décision du PO, le 2026-11-15 : monter le délai par défaut, plutôt que traiter chaque test.
+
+1. Le délai par défaut de vitest passe de 5 à 30 secondes, dans les deux configs :
+   - `products/mega-city/vitest.config.ts`, pour la méthode ;
+   - `vitest.config.ts` à la racine, pour cop1 et `tools/`.
+2. 30 secondes plutôt que 60 : la marge reste six fois le délai d'origine, et un test bloqué ne fait
+   pas attendre une minute.
+
+Écarté pour l'instant : accélérer ou isoler les tests lents un par un. On y revient si la gate
+redevient lente.
 
 ## Critères d'acceptation
 
-- [ ] La gate passe 3 fois de suite pendant qu'une autre suite de tests tourne en parallèle.
-- [ ] Chaque test au délai élargi le dit dans son fichier, avec la raison.
-- [ ] Le délai global de vitest reste à sa valeur par défaut.
+- [ ] Les deux configs de vitest fixent `testTimeout` à 30 secondes, avec la raison en commentaire.
+- [ ] `pnpm gate` passe sur main avec ce réglage.
+
+**Mesure de suivi** — sur les 5 prochaines gates jouées sous charge, 0 échec dû au délai.
 
 ## Comment vérifier
 
 ```bash
-cd products/mega-city && pnpm exec vitest run --reporter=verbose 2>&1 | grep -E "[0-9]{4,}ms"
+grep -n testTimeout vitest.config.ts products/mega-city/vitest.config.ts
+cd products/mega-city && pnpm gate
 ```
-
-Puis rejouer `pnpm gate` pendant qu'une autre suite tourne.
 
 ## Notes / décisions
 
 - Source : note de passation de la session pilote du 2026-11-15.
 - Priorité P2 donnée par le PO le 2026-11-15.
+- Délai global plutôt que test par test : décision du PO du 2026-11-15.
