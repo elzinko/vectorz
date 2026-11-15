@@ -87,7 +87,7 @@ POC d'abord : un fichier déplacé, une commande, un contrat.
   [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
   et le lot Annuaire ; les amendements d'ADR et le renommage « Le run » → « Le sprint » (fiche des
   amendements) ; `ezk help --json`
-  ([`ezk help --json` publie les commandes](20261114131613129_ezk-help-json-commandes-etage-famille.md)).
+  ([`ezk help --json` publie les commandes](done/20261114131613129_ezk-help-json-commandes-etage-famille.md)).
 
 ## Critères d'acceptation
 

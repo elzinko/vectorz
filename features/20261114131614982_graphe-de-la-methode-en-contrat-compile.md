@@ -154,7 +154,7 @@ pnpm --dir products/mega-city test -- src/__tests__/graph.test.ts src/__tests__/
   [Déployer vraiment les règles chez les agents](done/20260903134909124_loi-non-compilee-chez-l-agent.md) (`law-debt.yml`) ;
   [Mission control montre la loi](done/20260826222044335_carte-la-loi-graphe-visuel.md) (règles sans effet, déjà affichées).
 - Voisines : [La méthode s'évalue elle-même](20260821163346503_methode-auto-evaluation-validite.md) (parkée, une note globale) ;
-  [`ezk help --json`](20261114131613129_ezk-help-json-commandes-etage-famille.md) porte la carte d'identité, ce contrat les relations.
+  [`ezk help --json`](done/20261114131613129_ezk-help-json-commandes-etage-famille.md) porte la carte d'identité, ce contrat les relations.
 - Risques : un troisième canal du même graphe si la source unique n'est pas tenue ; le bloc Santé reste réservé au mainteneur
   de la méthode, jamais sur la page Loi d'un projet ; `law-show` change ici et dans
   [`ezk law show` sert chaque objet de la loi](20261114131615350_ezk-law-show-regle-paquet-profil.md) : deux ajouts au même schéma, regénérés dans l'ordre d'arrivée, sans montée de version.

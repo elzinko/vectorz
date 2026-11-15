@@ -76,7 +76,7 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
   Chronologie, Process, Loi, Recettes, Cartes, Configuration. Le groupe « Méthode » disparaît.
 - « Annuaire de la méthode » est présente mais grisée tant que la page n'existe pas. Son « i » nomme
   ce que la méthode doit publier d'abord :
-  [`ezk help --json`](20261114131613129_ezk-help-json-commandes-etage-famille.md) et
+  [`ezk help --json`](done/20261114131613129_ezk-help-json-commandes-etage-famille.md) et
   [le graphe en contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
 - Pas d'entrée « Objectifs » grisée : Pilotage montre déjà les objectifs, les milestones (`PilotageView.tsx:73`).
   Le lot Objectifs ([Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md))

@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, carte]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (26041db2)"
 evidence: none # une commande publiée, aucun écran modifié
 created: 2026-11-14
 ---
@@ -71,7 +71,7 @@ cop1 : il ne lit que ces contrats, jamais les fichiers (ADR-086).
   (`bin/ezk.ts:67-83`). `ezk help` texte reste inchangé et lit la même source.
 - Un contrat `contracts/help/v1/` : schéma et exemple générés, un test de conformité sur la sortie
   réelle. Patron : `bin/law-contract.ts` et la recette
-  [Publier les données d'un outil par un contrat JSON versionné](../recipes/publier-un-contrat-json-versionne.md).
+  [Publier les données d'un outil par un contrat JSON versionné](../../recipes/publier-un-contrat-json-versionne.md).
   Nom : `help`, comme chaque contrat porte le nom de sa commande (`board-show`, `recipes`). Le panel
   laissait ouvert le canal de la carte d'identité : `help --json`, `objets[]` de `law show`, ou un
   `ezk catalogue show --json` ; la fiche tranche `help --json`, le PO confirme.
@@ -86,7 +86,7 @@ cop1 : il ne lit que ces contrats, jamais les fichiers (ADR-086).
   `ROLE_TIER` de `src/core/model-config.ts:35-51` : publier l'un, c'est publier l'autre.
 - Les relations (composes, roles, applies, competences) ne sont pas dans ce contrat. Elles vivent dans
   le contrat du graphe, fiche
-  [Le graphe de la méthode en un contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
+  [Le graphe de la méthode en un contrat compilé](../20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
   Sinon la même arête sort deux fois.
 - Étage des commandes : `taxonomie.yml` gagne une section `commandes`, rangée par domaine. Une ligne
   par domaine ; une commande peut dévier de son domaine. `validateTaxonomie` exige la complétude : une
@@ -95,9 +95,9 @@ cop1 : il ne lit que ces contrats, jamais les fichiers (ADR-086).
   maquette renonce à « hôte » comme étage : « hôte » reste la famille `hote-llm`. Le PO confirme, ou
   amende le fichier et l'ADR-0039.
 - Hors périmètre : le texte de `ezk help` ; un framework de commandes publié, fiche
-  [CLI `ezk` complet et publié](20260903134908019_cli-ezk-complet-publie.md) (parkée) ; les écrans de
+  [CLI `ezk` complet et publié](../20260903134908019_cli-ezk-complet-publie.md) (parkée) ; les écrans de
   mission control, fiche
-  [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
+  [Mission control range son menu par portée](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
 
 ## Critères d'acceptation
 
@@ -140,9 +140,9 @@ pnpm --dir products/mega-city test -- src/__tests__/ezk-cli.test.ts src/__tests_
 
 ## Notes / décisions
 
-- Origine : la [carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : la [carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écarts C4 et C5 ; le panel du 11 novembre, § 4 « L'Annuaire » et § 6 « Ce que la méthode doit publier »
-  ([capture](../docs/captures/2026-11-11-panel-loi-projet-annuaire-maquette.md), pas encore suivie par git).
+  ([capture](../../docs/captures/2026-11-11-panel-loi-projet-annuaire-maquette.md), pas encore suivie par git).
 - Décisions prises par la fiche, à confirmer par le PO : le nom `help` du contrat ; le rangement par
   domaine avec dérogation par commande ; modèle et effort lus dans le front-matter de l'agent ; le
   vocabulaire de `taxonomie.yml`, « hôte » restant une famille.
@@ -157,14 +157,14 @@ pnpm --dir products/mega-city test -- src/__tests__/ezk-cli.test.ts src/__tests_
 - 2026-11-15 — défaut appliqué au build : le vocabulaire publié est celui de `taxonomie.yml`
   (methode, modules et leur famille, librairie) ; « hôte » reste la famille `hote-llm`.
 - Dépend de : aucune fiche du lot. Voisine du lot :
-  [Le graphe de la méthode en un contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md)
+  [Le graphe de la méthode en un contrat compilé](../20261114131614982_graphe-de-la-methode-en-contrat-compile.md)
   porte les relations ; cette fiche porte la carte d'identité. Jamais les deux.
-- Déjà livré, en partie : [/ezk-help, index généré](done/20260816131704335_ezk-help-index-commandes-genere.md) (#151, le texte des compétences) ;
-  [Une seule commande `ezk`](done/20260903134906920_cli-ezk-point-d-entree-unique.md) (#281, le manifeste et l'aide texte) ;
-  [Mission control montre les cartes de la méthode](done/20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) (la carte d'identité, servie sans contrat) ;
-  [Refonte trois étages, le reliquat](done/20260824061247344_refonte-trois-etages-reliquat.md) (superseded ; la taxonomie des compétences et des agents, pas celle des commandes).
-- Voisines non couvrantes : [CLI `ezk` complet et publié](20260903134908019_cli-ezk-complet-publie.md) (parkée, autre intention) ;
-  [Brainstorm : la CLI de la méthode est-elle un DSL cohérent](20261010153046143_brainstorm-dsl-cli-methode.md) (parkée, attend un panel sur la surface des commandes).
+- Déjà livré, en partie : [/ezk-help, index généré](20260816131704335_ezk-help-index-commandes-genere.md) (#151, le texte des compétences) ;
+  [Une seule commande `ezk`](20260903134906920_cli-ezk-point-d-entree-unique.md) (#281, le manifeste et l'aide texte) ;
+  [Mission control montre les cartes de la méthode](20261102123552184_mission-control-montre-les-cartes-de-la-methode.md) (la carte d'identité, servie sans contrat) ;
+  [Refonte trois étages, le reliquat](20260824061247344_refonte-trois-etages-reliquat.md) (superseded ; la taxonomie des compétences et des agents, pas celle des commandes).
+- Voisines non couvrantes : [CLI `ezk` complet et publié](../20260903134908019_cli-ezk-complet-publie.md) (parkée, autre intention) ;
+  [Brainstorm : la CLI de la méthode est-elle un DSL cohérent](../20261010153046143_brainstorm-dsl-cli-methode.md) (parkée, attend un panel sur la surface des commandes).
 - Risques : une troisième lecture des `SKILL.md` (déjà `bin/ezk-help.ts` et `src/loaders/catalog.ts`) ;
   la carte et `help --json` qui divergent si la source n'est pas le même catalogue compilé ; un
   amendement de l'ADR-0039 si le PO veut « hôte » comme étage.
