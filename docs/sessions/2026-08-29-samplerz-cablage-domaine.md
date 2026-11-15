@@ -42,5 +42,5 @@ Périmètre: brancher le domaine prod/staging/dev de samplerz   Statut: terminé
 - Fausse route évitée : pas de branche Git `staging`/`dev` — un seul `main`, les
   environnements sont des alias Vercel posés par la CI (voir
   `recipes/brancher-domaine-vercel.md`, « Le piège à NE PAS refaire »).
-- Origine de la fiche [`20260829123707100`](../../features/20260829123707100_labo-de-cuisine-journal-difficultes.md)
+- Origine de la fiche [`20260829123707100`](../../features/done/20260829123707100_labo-de-cuisine-journal-difficultes.md)
   (« labo de cuisine ») : cette session en est la galère fondatrice.

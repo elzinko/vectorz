@@ -175,9 +175,10 @@ Preuve avant / après : sans objet, aucun écran ne change (`evidence: none`).
 
 **Fiches liées.**
 
-- **Elle débloque** la fiche « Schéma Process zoomable » (`20261110185357446`, produit cop1). Cette
-  fiche vit encore sur la branche `claude/process-schema-semantic-zoom-a83062`, pas sur `main` : le
-  lien sera posé à la fusion. Les deux vont de pair : celle-ci donne les données, l'autre l'écran.
+- **Elle débloque** la fiche
+  [Schéma Process zoomable](../20261110185357446_schema-process-zoomable-semantic-zoom.md)
+  (`20261110185357446`, produit cop1), arrivée sur `main` le 15 nov. Les deux vont de pair :
+  celle-ci donne les données, l'autre l'écran.
 - **Elle prend la suite** de
   [La vue Process montre le workflow en schéma](20261104090517801_process-montre-le-workflow-en-schema.md),
   livrée. Sa note de clôture nommait le trou : les étapes du sprint y sont « un libellé fixe de la
