@@ -86,6 +86,52 @@ export function skippedTestsResult(): PassResult {
   };
 }
 
+/** Une passe EFFECTIVE, prête à lister ou à jouer : avec sa source et son drapeau « sautée ». */
+export interface EffectivePass {
+  readonly id: string;
+  readonly title: string;
+  /** Commande shell ; `''` quand la passe est sautée (tests sans `release.tests`). */
+  readonly command: string;
+  /** D'où vient la passe : socle de la méthode (`defaut`) ou fichier projet (`projet`). */
+  readonly source: 'defaut' | 'projet';
+  /** `false` = SAUTÉE : elle ne se joue pas et ne bloque pas (aujourd'hui, la seule est `tests`). */
+  readonly run: boolean;
+}
+
+/**
+ * La liste ORDONNÉE des passes effectives d'un projet, pour `ezk release` comme pour
+ * `ezk release passes list` (même ordre, même source — un seul calcul, pas deux).
+ *
+ * Par défaut le projet COMPLÈTE le socle : d'abord `dod-mecanique`, `chasse-aux-bugs`, la passe
+ * `tests` (jouée si `release.tests`, sinon SAUTÉE), puis les passes du projet. Avec `replace`, le
+ * projet REMPLACE le socle : ses passes seules. En mode « complète », un id de passe projet qui
+ * réutilise un id du socle est REFUSÉ (jamais deux passes homonymes).
+ */
+export function effectivePasses(
+  project: readonly ReleasePass[],
+  replace: boolean,
+  testsCommand: string | null,
+): readonly EffectivePass[] {
+  const out: EffectivePass[] = [];
+  if (!replace) {
+    const socleIds = new Set<string>([...DEFAULT_PASSES.map((p) => p.id), TESTS_PASS_ID]);
+    const clash = project.find((p) => socleIds.has(p.id));
+    if (clash !== undefined) {
+      throw new Error(
+        `Passe projet « ${clash.id} » : cet id est déjà celui d'une passe du socle. Choisis un autre id, ou pose « replace: true » pour remplacer le socle.`,
+      );
+    }
+    for (const p of DEFAULT_PASSES) out.push({ id: p.id, title: p.title, command: p.command, source: 'defaut', run: true });
+    out.push(
+      testsCommand === null
+        ? { id: TESTS_PASS_ID, title: TESTS_PASS_TITLE, command: '', source: 'defaut', run: false }
+        : { id: TESTS_PASS_ID, title: TESTS_PASS_TITLE, command: testsCommand, source: 'defaut', run: true },
+    );
+  }
+  for (const p of project) out.push({ id: p.id, title: p.title, command: p.command, source: 'projet', run: true });
+  return out;
+}
+
 /** Substitue `{root}` et `{version}` dans une commande de passe. */
 export function substitute(command: string, vars: { root: string; version: string }): string {
   return command.replaceAll('{root}', vars.root).replaceAll('{version}', vars.version);

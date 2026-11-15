@@ -11,7 +11,14 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { type DesignSystemConfig, type DesignSystemVerdict, resolveDesignSystem } from '../core/design-system-review.js';
-import { DEFAULT_PASSES, type ReleaseConfig, type ReleasePass, type ReleaseVerdict, resolveRelease } from '../core/release-gate.js';
+import {
+  type EffectivePass,
+  type ReleaseConfig,
+  type ReleasePass,
+  type ReleaseVerdict,
+  effectivePasses,
+  resolveRelease,
+} from '../core/release-gate.js';
 import { PROJECT_CONFIG_DIR } from './project-config.js';
 import { loadProjectConfig } from './project-config.js';
 
@@ -29,11 +36,12 @@ export function releaseConfig(projectRoot: string): ReleaseConfig {
 }
 
 /**
- * Les passes déclarées du projet, ou les passes par défaut du socle si aucun fichier.
- * Valide la forme de chaque passe : un fichier présent mais mal formé est une ERREUR
- * (on ne retombe pas en silence sur le défaut — la faute serait invisible).
+ * Les passes DÉCLARÉES du projet et le drapeau `replace`, ou une liste vide sans fichier.
+ * Le fichier accepte une liste de passes (`passes:` ou un tableau racine) et, en tête, `replace: true`
+ * pour REMPLACER le socle au lieu de le COMPLÉTER. YAML malformé ou passe mal formée → ERREUR claire
+ * (jamais de repli silencieux — la faute serait invisible).
  */
-export function loadReleasePasses(projectRoot: string): readonly ReleasePass[] {
+export function readProjectPasses(projectRoot: string): { passes: readonly ReleasePass[]; replace: boolean } {
   for (const name of PASSES_NAMES) {
     const file = join(projectRoot, PROJECT_CONFIG_DIR, name);
     if (!existsSync(file)) continue;
@@ -43,19 +51,36 @@ export function loadReleasePasses(projectRoot: string): readonly ReleasePass[] {
     } catch (cause) {
       throw new Error(`Passes de release illisibles (YAML malformé) : ${file}`, { cause });
     }
-    const list = (parsed as { passes?: unknown } | undefined)?.passes ?? parsed;
+    const asObj = (parsed ?? {}) as { passes?: unknown; replace?: unknown };
+    const list = Array.isArray(parsed) ? parsed : asObj.passes;
     if (!Array.isArray(list)) {
       throw new Error(`Passes de release invalides (attendu une liste 'passes:') : ${file}`);
     }
-    return list.map((raw, i) => {
+    if (asObj.replace !== undefined && typeof asObj.replace !== 'boolean') {
+      throw new Error(
+        `Réglage « replace » invalide dans ${file} : attendu un booléen true/false, reçu ${JSON.stringify(asObj.replace)}.`,
+      );
+    }
+    const passes = list.map((raw, i) => {
       const p = raw as Record<string, unknown>;
       if (typeof p.id !== 'string' || typeof p.title !== 'string' || typeof p.command !== 'string') {
         throw new Error(`Passe de release #${i + 1} invalide (id/title/command requis) : ${file}`);
       }
       return { id: p.id, title: p.title, command: p.command };
     });
+    return { passes, replace: asObj.replace === true };
   }
-  return DEFAULT_PASSES;
+  return { passes: [], replace: false };
+}
+
+/**
+ * Les passes EFFECTIVES d'un projet, composées (socle complété ou remplacé) et ordonnées, chacune
+ * avec sa source et son drapeau « sautée ». La passe `tests` du socle est jouée si `release.tests`
+ * est déclaré, sinon sautée. C'est la vue que `ezk release` joue et que `passes list` affiche.
+ */
+export function loadEffectivePasses(projectRoot: string): readonly EffectivePass[] {
+  const { passes, replace } = readProjectPasses(projectRoot);
+  return effectivePasses(passes, replace, releaseConfig(projectRoot).tests);
 }
 
 /** Chemin du verdict d'une version. */

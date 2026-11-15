@@ -63,6 +63,19 @@ passes:
    **feu vert enregistré** par la revue, le fichier `.vectorz/release/<version>.bughunt-go`
    (créé une fois la chasse aux bugs faite et GO). Tant qu'il manque, la passe est NO-GO.
 
+## Composer les passes : le projet complète le socle (ou le remplace)
+
+Un projet déclare ses passes dans `.vectorz/release-passes.yml`. Par défaut, elles **complètent** le
+socle : `ezk release` joue d'abord `dod-mecanique`, `chasse-aux-bugs`, la passe `tests`, puis les
+passes du projet. Pour **remplacer** le socle plutôt que le compléter, le fichier pose `replace: true`
+en tête. En mode « complète », un id de passe projet qui réutilise un id du socle est **refusé**
+(jamais deux passes homonymes).
+
+`ezk release passes list` affiche les passes effectives dans l'ordre joué, chacune avec sa **source**
+(`socle` ou `projet`). La passe `tests` vient du réglage `release.tests` ; sans la clé, elle est
+**sautée** (dite, jamais un GO muet). Le réglage par commande (`passes add|remove`) arrive dans une
+story suivante (fiche `20261114131616085`).
+
 ## La passe design-system (opt-in, fiche 20261011153019643)
 
 Une passe prête à déclarer, pour verrouiller que l'**UI livrée respecte le référentiel de design**

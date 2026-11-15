@@ -10,7 +10,7 @@ import {
 } from '../core/design-system-review.js';
 import {
   designSystemConfig,
-  loadReleasePasses,
+  loadEffectivePasses,
   readDesignSystemVerdict,
   writeDesignSystemVerdict,
 } from '../loaders/release-passes.js';
@@ -114,6 +114,7 @@ describe('loader design-system — config + verdict + composition', () => {
     writeFileSync(
       join(cfgDir, 'release-passes.yml'),
       [
+        'replace: true', // ce projet REMPLACE le socle par ses deux passes
         'passes:',
         '  - id: dod-mecanique',
         '    title: DoD mécanique',
@@ -124,7 +125,7 @@ describe('loader design-system — config + verdict + composition', () => {
         '',
       ].join('\n'),
     );
-    const passes = loadReleasePasses(dir);
+    const passes = loadEffectivePasses(dir);
     const ds = passes.find((p) => p.id === 'design-system');
     expect(ds).toBeDefined();
     expect(ds?.command).toBe('ezk --root {root} design check {version}');

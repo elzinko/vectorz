@@ -12,22 +12,70 @@
  */
 import { spawnSync } from 'node:child_process';
 import {
-  DEFAULT_PASSES,
+  type EffectivePass,
   type PassResult,
   type ReleaseConfig,
   type ReleaseVerdict,
   aggregate,
+  effectivePasses,
   renderReleaseReport,
   skippedTestsResult,
   substitute,
-  testsPass,
 } from '../src/core/release-gate.js';
-import { loadReleasePasses, releaseConfig, writeReleaseVerdict } from '../src/loaders/release-passes.js';
+import { readProjectPasses, releaseConfig, writeReleaseVerdict } from '../src/loaders/release-passes.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
+
+/** Résout les réglages release (gate + tests) proprement : un réglage invalide sort en code 2, jamais en crash. */
+function releaseConfigOrExit(root: string): ReleaseConfig {
+  try {
+    return releaseConfig(root);
+  } catch (err) {
+    console.error(`En clair : réglage release invalide — ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(2);
+  }
+}
+
+/** Les passes effectives (socle composé/remplacé + tests) proprement : un fichier de passes invalide sort en code 2. */
+function effectivePassesOrExit(root: string, testsCommand: string | null): readonly EffectivePass[] {
+  try {
+    const { passes, replace } = readProjectPasses(root);
+    return effectivePasses(passes, replace, testsCommand);
+  } catch (err) {
+    console.error(`En clair : passes de release invalides — ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(2);
+  }
+}
 
 const base = process.env.INIT_CWD ?? process.cwd();
 const target = projectRootOrExit(base);
 const root = target.root;
+
+// Sous-commande « passes » : voir les contrôles de la gate. `list` les affiche avec leur source ;
+// `add`/`remove` (réglage par commande) arrivent dans une story suivante (fiche 20261114131616085).
+if (target.rest[0] === 'passes') {
+  const sub = target.rest[1];
+  if (sub === 'list') {
+    const entries = effectivePassesOrExit(root, releaseConfigOrExit(root).tests);
+    console.log(`Passes de la gate de release — ${entries.length} contrôle(s), dans l'ordre où elles sont jouées :`);
+    for (const e of entries) {
+      const src = e.source === 'defaut' ? 'socle ' : 'projet';
+      const note = e.run ? '' : '  (sautée : release.tests absent)';
+      console.log(`  [${src}] ${e.id} — ${e.title}${note}`);
+    }
+    process.exit(0);
+  }
+  if (sub === 'add' || sub === 'remove') {
+    console.error(
+      `ezk release passes ${sub} : pas encore disponible. Édite .vectorz/release-passes.yml à la main — une liste ` +
+        '`passes:` de { id, title, command }, avec `replace: true` en tête pour remplacer le socle au lieu de le compléter. ' +
+        'Le réglage par commande arrive dans une story suivante (fiche 20261114131616085).',
+    );
+    process.exit(2);
+  }
+  console.error('usage : ezk release passes list   (add|remove à venir — fiche 20261114131616085)');
+  process.exit(2);
+}
+
 const version = target.rest.find((a) => !a.startsWith('-'));
 
 if (!version) {
@@ -35,14 +83,8 @@ if (!version) {
   process.exit(2);
 }
 
-// Réglage release résolu une fois (gate + commande de tests). Un release.tests mal typé est REFUSÉ ici.
-let cfg: ReleaseConfig;
-try {
-  cfg = releaseConfig(root);
-} catch (err) {
-  console.error(`En clair : réglage release invalide — ${(err as Error).message}`);
-  process.exit(2);
-}
+// Réglage release résolu une fois (gate + commande de tests). Un release.tests mal typé sort en code 2.
+const cfg = releaseConfigOrExit(root);
 
 // Gate désactivée par config : on se saute proprement (le projet ne tague pas de version).
 if (!cfg.gate) {
@@ -62,25 +104,15 @@ function runPass(command: string): { go: boolean; detail?: string } {
   return { go, detail: out[0] ?? `code ${res.status ?? '?'}` };
 }
 
-const passes = loadReleasePasses(root);
-const results: PassResult[] = passes.map((p) => {
-  const command = substitute(p.command, { root, version });
+// Les passes effectives, dans l'ordre : socle (dod, chasse, tests) complété ou remplacé par le projet.
+// Une passe sautée (run:false, aujourd'hui la seule est tests sans release.tests) devient un résultat
+// SAUTÉ ; les autres se jouent.
+const results: PassResult[] = effectivePassesOrExit(root, cfg.tests).map((e) => {
+  if (!e.run) return skippedTestsResult();
+  const command = substitute(e.command, { root, version });
   const { go, detail } = runPass(command);
-  return { id: p.id, title: substitute(p.title, { root, version }), command, go, ...(detail ? { detail } : {}) };
+  return { id: e.id, title: substitute(e.title, { root, version }), command, go, ...(detail ? { detail } : {}) };
 });
-
-// La passe « tests » rejoint le SOCLE (après dod-mecanique et chasse-aux-bugs). Un projet qui
-// remplace les passes par son propre fichier définit lui-même ses tests (hors périmètre ici).
-if (passes === DEFAULT_PASSES) {
-  const tp = testsPass(cfg.tests);
-  if (tp === null) {
-    results.push(skippedTestsResult());
-  } else {
-    const command = substitute(tp.command, { root, version });
-    const { go, detail } = runPass(command);
-    results.push({ id: tp.id, title: tp.title, command, go, ...(detail ? { detail } : {}) });
-  }
-}
 
 const head = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' });
 const verdict: ReleaseVerdict = {

@@ -7,6 +7,7 @@ import {
   type PassResult,
   type ReleaseVerdict,
   aggregate,
+  effectivePasses,
   renderReleaseReport,
   resolveRelease,
   skippedTestsResult,
@@ -14,7 +15,8 @@ import {
   testsPass,
 } from '../core/release-gate.js';
 import {
-  loadReleasePasses,
+  loadEffectivePasses,
+  readProjectPasses,
   readReleaseVerdict,
   releaseConfig,
   writeReleaseVerdict,
@@ -97,6 +99,34 @@ describe('release-gate — cœur pur', () => {
     expect(out).not.toContain('NO-GO');
   });
 
+  it('effectivePasses : complète par défaut (socle + tests + projet), avec les sources', () => {
+    const project = [{ id: 'deps', title: 'Deps', command: 'x' }];
+    const eff = effectivePasses(project, false, null);
+    expect(eff.map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs', 'tests', 'deps']);
+    expect(eff.map((p) => p.source)).toEqual(['defaut', 'defaut', 'defaut', 'projet']);
+    expect(eff.find((p) => p.id === 'tests')?.run).toBe(false); // tests sans commande → sautée
+  });
+
+  it('effectivePasses : release.tests présent → la passe tests se joue avec la commande', () => {
+    const eff = effectivePasses([], false, 'pnpm test');
+    const tests = eff.find((p) => p.id === 'tests');
+    expect(tests?.run).toBe(true);
+    expect(tests?.command).toBe('pnpm test');
+  });
+
+  it('effectivePasses : replace → le projet seul, sans socle ni tests', () => {
+    const eff = effectivePasses([{ id: 'a', title: 'A', command: 'x' }], true, 'pnpm test');
+    expect(eff.map((p) => p.id)).toEqual(['a']);
+    expect(eff[0]?.source).toBe('projet');
+  });
+
+  it('effectivePasses : un id projet qui écrase le socle est REFUSÉ (hors replace)', () => {
+    expect(() => effectivePasses([{ id: 'dod-mecanique', title: 'X', command: 'x' }], false, null)).toThrow(
+      /dod-mecanique/,
+    );
+    expect(() => effectivePasses([{ id: 'tests', title: 'X', command: 'x' }], false, null)).toThrow(/replace/);
+  });
+
   it('le compte rendu NO-GO nomme la passe bloquante', () => {
     const v: ReleaseVerdict = {
       version: 'v0.11.0',
@@ -124,33 +154,67 @@ describe('release-gate — loader (I/O)', () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  it('sans fichier de passes → passes par défaut', () => {
-    expect(loadReleasePasses(root).map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs']);
+  it('sans fichier de passes → le socle effectif : dod, chasse, tests (sautée), source defaut', () => {
+    const eff = loadEffectivePasses(root);
+    expect(eff.map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs', 'tests']);
+    expect(eff.every((p) => p.source === 'defaut')).toBe(true);
+    expect(eff.find((p) => p.id === 'tests')?.run).toBe(false); // pas de release.tests ici
   });
 
-  it('sans fichier de passes → l’OBJET DEFAULT_PASSES lui-même (le bin y branche la passe tests du socle)', () => {
-    // `bin/ezk-release.ts` n'ajoute la passe « tests » que quand `loadReleasePasses` a renvoyé le
-    // socle, détecté par `passes === DEFAULT_PASSES`. Si un jour ce loader rend une COPIE, la passe
-    // tests disparaîtrait en silence : ce test l'épingle pour que la régression soit visible.
-    expect(loadReleasePasses(root)).toBe(DEFAULT_PASSES);
-  });
-
-  it('avec .vectorz/release-passes.yml → passes déclarées (composable, +1 passe)', () => {
+  it('readProjectPasses : lit les passes du projet et le drapeau replace', () => {
+    expect(readProjectPasses(root)).toEqual({ passes: [], replace: false });
     mkdirSync(join(root, '.vectorz'), { recursive: true });
     writeFileSync(
       join(root, '.vectorz', 'release-passes.yml'),
-      'passes:\n' +
+      'replace: true\npasses:\n  - id: a\n    title: A\n    command: x\n',
+      'utf8',
+    );
+    const r = readProjectPasses(root);
+    expect(r.replace).toBe(true);
+    expect(r.passes.map((p) => p.id)).toEqual(['a']);
+  });
+
+  it('release-passes.yml sans replace → le projet COMPLÈTE le socle', () => {
+    mkdirSync(join(root, '.vectorz'), { recursive: true });
+    writeFileSync(
+      join(root, '.vectorz', 'release-passes.yml'),
+      'passes:\n  - id: deps-sante\n    title: Santé des dépendances\n    command: "true"\n',
+      'utf8',
+    );
+    const eff = loadEffectivePasses(root);
+    expect(eff.map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs', 'tests', 'deps-sante']);
+    expect(eff.find((p) => p.id === 'deps-sante')?.source).toBe('projet');
+  });
+
+  it('release-passes.yml avec replace: true → le projet REMPLACE le socle', () => {
+    mkdirSync(join(root, '.vectorz'), { recursive: true });
+    writeFileSync(
+      join(root, '.vectorz', 'release-passes.yml'),
+      'replace: true\n' +
+        'passes:\n' +
         '  - id: dod-mecanique\n    title: DoD\n    command: "true"\n' +
         '  - id: design-system\n    title: Revue design-system\n    command: "true"\n',
       'utf8',
     );
-    expect(loadReleasePasses(root).map((p) => p.id)).toEqual(['dod-mecanique', 'design-system']);
+    const eff = loadEffectivePasses(root);
+    expect(eff.map((p) => p.id)).toEqual(['dod-mecanique', 'design-system']); // ni chasse, ni tests
+    expect(eff.every((p) => p.source === 'projet')).toBe(true);
   });
 
   it('fichier de passes malformé → erreur claire (jamais de repli silencieux)', () => {
     mkdirSync(join(root, '.vectorz'), { recursive: true });
     writeFileSync(join(root, '.vectorz', 'release-passes.yml'), 'passes:\n  - id: x\n', 'utf8');
-    expect(() => loadReleasePasses(root)).toThrow(/invalide/);
+    expect(() => readProjectPasses(root)).toThrow(/invalide/);
+  });
+
+  it('un drapeau replace non-booléen est REFUSÉ (jamais ignoré en silence)', () => {
+    mkdirSync(join(root, '.vectorz'), { recursive: true });
+    writeFileSync(
+      join(root, '.vectorz', 'release-passes.yml'),
+      'replace: "yes"\npasses:\n  - id: a\n    title: A\n    command: x\n',
+      'utf8',
+    );
+    expect(() => readProjectPasses(root)).toThrow(/replace/);
   });
 
   it('release.gate: off coupe la gate ; absent la laisse active', () => {
