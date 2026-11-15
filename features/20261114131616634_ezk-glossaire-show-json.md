@@ -152,7 +152,7 @@ pnpm --dir products/mega-city test -- src/__tests__/glossaire-contract.test.ts  
   retiré « Moniteur », « cockpit », « dashboard ») ;
   [Aligner le vocabulaire des commandes sur Scrum](done/20260903085150321_nommage-commandes-scrum-safe.md),
   absorbée par la section Nommage de [l'ADR-0054](../products/mega-city/docs/adr/0054-cloture-sprint-vs-archive-session.md) ;
-  [La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md), qui publiera les noms de `method/`.
+  [La méthode émet ses étapes fines](done/20261110191135802_methode-emet-ses-etapes-fines.md), qui publiera les noms de `method/`.
 - À trancher au grooming : les noms des clés du contrat (`termes`, `terme`, `en_clair`, `ou_il_joue`,
   `verdict`, `scrum`) et la forme du fichier (YAML ou Markdown).
 - Risques : deux glossaires qui divergent si le pointeur est oublié ou si une fiche recopie une

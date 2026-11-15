@@ -83,7 +83,7 @@ Une seule montée de version du contrat, et l'écran adapté dans le même lot.
    `writeGithubConfig`. La page Plugin en a besoin ; il ne mérite pas une fiche à part.
 
 Hors périmètre : une étape « Versionner » et le niveau par agent dans le process publié. Le canal est
-`ezk process show --json`, porté par [La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md),
+`ezk process show --json`, porté par [La méthode émet ses étapes fines](done/20261110191135802_methode-emet-ses-etapes-fines.md),
 qui note déjà `ezk-release` comme cinquième compétence attendue (ses lignes 235-236). Pas de
 nouvelle fiche : on l'enrichit quand elle se construit.
 

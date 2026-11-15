@@ -46,7 +46,7 @@ Ce que les documents et le code disent aujourd'hui, vérifié le 14 novembre :
 - La méthode appelle encore le sprint « Le run » à deux endroits : `products/mega-city/method/ceremonies.yml:69`
   (`nom: Le run (« sprint » maison)`) et `products/mega-city/src/core/cycle.ts:72` (`t: 'Le run'`). Le premier
   est lu par les chargeurs de la méthode et sera publié par la future `ezk process show --json`
-  ([La méthode émet ses étapes fines](../20261110191135802_methode-emet-ses-etapes-fines.md), prête). Le second
+  ([La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md), prête). Le second
   alimente les vues régénérées (`src/io/derived-views.ts:72`, `ezk views regen`) ; un fixture le recopie
   (`src/__tests__/map-provenance.test.ts:68`).
 - Côté loi (écart I3). ADR-0064 écrit `hooks: []` (ligne 32) et « les hooks sont hors du law-only » (ligne 101) ;

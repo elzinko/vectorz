@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [fabrique, theme:mission-control]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (510276c0)"
 evidence: none # aucun écran modifié : une déclaration, une commande, un contrat, une route
 created: 2026-11-10
 ---
@@ -26,7 +26,7 @@ Une *étape fine* est un pas à l'intérieur d'un skill : pour le sprint, « sc�
 « gate ». *Mission control* est l'écran web de pilotage, dans le produit cop1. Il ne lit jamais les
 fichiers de la méthode : il recopie ce que la méthode publie par une commande `ezk … --json`, servie
 par un *daemon* (le serveur local de cop1). C'est la règle de
-l'[ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+l'[ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
 
 ## Contexte / Problème
 
@@ -132,7 +132,7 @@ sprint) :
 - **L'écran.** Afficher ces étapes, et retirer la constante `SPRINT_STEPS` de la page, revient à la
   fiche « Schéma Process zoomable ». Ici, aucune vue ne change.
 - **Reconfigurer les étapes.** Activer, couper ou réordonner une étape reste dans
-  [Rendre les étapes d'un skill configurables](20260830110131228_schema-etapes-skill-configurables.md).
+  [Rendre les étapes d'un skill configurables](../20260830110131228_schema-etapes-skill-configurables.md).
   Ici on montre un réglage, on ne le change pas.
 - **Poser une fiche sur une étape fine.** Dire « cette fiche est à l'étape gate » demande que le run
   publie son étape courante. Aucune source ne le fait aujourd'hui. C'est une fiche à part.
@@ -179,11 +179,11 @@ Preuve avant / après : sans objet, aucun écran ne change (`evidence: none`).
   fiche vit encore sur la branche `claude/process-schema-semantic-zoom-a83062`, pas sur `main` : le
   lien sera posé à la fusion. Les deux vont de pair : celle-ci donne les données, l'autre l'écran.
 - **Elle prend la suite** de
-  [La vue Process montre le workflow en schéma](done/20261104090517801_process-montre-le-workflow-en-schema.md),
+  [La vue Process montre le workflow en schéma](20261104090517801_process-montre-le-workflow-en-schema.md),
   livrée. Sa note de clôture nommait le trou : les étapes du sprint y sont « un libellé fixe de la
   page ».
 - **Elle est la première marche** de
-  [Rendre les étapes d'un skill configurables](20260830110131228_schema-etapes-skill-configurables.md),
+  [Rendre les étapes d'un skill configurables](../20260830110131228_schema-etapes-skill-configurables.md),
   sans son mécanisme. Cette fiche-là demande un panel `ezk-architect` + `ezk-pm` avant tout build.
   Ici le panel n'est pas rejoué : la maquette du 2026-11-08 a déjà tranché « déclaration, pas
   extraction » et nommé la commande. L'étape Archi du sprint confirme les choix de structure.
@@ -281,7 +281,7 @@ rien d'autre.
   ligne est posée dans `PLAN.md` sur la branche de la fiche, à la demande de la session « Plan et
   milestones » : la ligne voyage avec la fiche, et une seule arrivée sur `main` suffit. Tant que
   cette arrivée n'a pas eu lieu, aucun sprint ne peut tirer la fiche.
-- 2026-11-14 — note ajoutée depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md) (écarts C1, E5
+- 2026-11-14 — note ajoutée depuis la [carte des écarts maquette ↔ code ↔ backlog](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md) (écarts C1, E5
   et E7, volet process) : trois champs attendus par la maquette posés dans « À trancher au build »,
   sans critère neuf. La fiche reste prête et en tête du plan.
 - **Source** : maquette Mission control validée le 2026-11-08 (vue Process, bloc « Le schéma »).

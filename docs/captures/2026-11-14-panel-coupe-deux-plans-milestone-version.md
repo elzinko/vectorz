@@ -171,7 +171,7 @@ Le brouillon du dossier (annexe) reçoit ces amendements avant ratification :
   sous le modèle, le premier vaut « toutes les actives » et le second n'existe plus ; les deux champs
   perdent leur sens, cop1 suit dans le saut v2.
 - `method/ceremonies.yml` n'a aucun élément pour la coupe : sans un élément « Versionner » déclaré, la
-  coupe n'apparaît pas sur la page Process (fiche [La méthode émet ses étapes fines](../../features/20261110191135802_methode-emet-ses-etapes-fines.md),
+  coupe n'apparaît pas sur la page Process (fiche [La méthode émet ses étapes fines](../../features/done/20261110191135802_methode-emet-ses-etapes-fines.md),
   cinquième compétence).
 - Les trois lentilles se sont contredites sur des comptes simples (fiches actives sans milestone : 9, 5, 5 ;
   réel 8) : un panel qui recompte à la main viole ADR-0001 ; les commandes sont dans la section 9.

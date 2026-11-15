@@ -73,7 +73,7 @@ mega-city, l'affichage côté cop1 : le dossier du panel nomme les deux produits
       (numéro, titre, fiche, agent) et `agent.convoque` (agent, étape, jetons si connus), avec le même
       canal pour les trois (ajouté le 2026-11-14).
 - [ ] Le vocabulaire des étapes émises est celui que déclare
-      [La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md), jamais
+      [La méthode émet ses étapes fines](done/20261110191135802_methode-emet-ses-etapes-fines.md), jamais
       une liste recopiée dans cop1 (ajouté le 2026-11-14).
 - [ ] Tant que le panel n'a pas tranché, l'écran dit « étapes et agents : non tracés », sans pastille
       vide ni zéro (ajouté le 2026-11-14).

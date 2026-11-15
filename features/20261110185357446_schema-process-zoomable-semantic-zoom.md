@@ -124,7 +124,7 @@ le schéma statique, l'« après » la surface zoomée au même niveau.
   méthode ne publiait pas les étapes des skills ; elles étaient **en dur dans le web**
   (`SPRINT_STEPS` dans `ProcessView.tsx`).
   **Cette fiche est désormais livrée sur `main`** :
-  [La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md)
+  [La méthode émet ses étapes fines](done/20261110191135802_methode-emet-ses-etapes-fines.md)
   (`20261110191135802`, `ready`, P1, `main` à `ca04d620`). La dépendance est **levée**. Elle
   livre une commande neuve `ezk process show --json` (contrat `contracts/process-show/v1/`),
   servie par le daemon sur `GET /api/process/<projet>`, et sa sortie couvre les trois niveaux.
