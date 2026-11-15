@@ -74,8 +74,16 @@ en tête. En mode « complète », un id de passe projet qui réutilise un id du
 
 `ezk release passes list` affiche les passes effectives dans l'ordre joué, chacune avec sa **source**
 (`socle` ou `projet`). La passe `tests` vient du réglage `release.tests` ; sans la clé, elle est
-**sautée** (dite, jamais un GO muet). Le réglage par commande (`passes add|remove`) arrive dans une
-story suivante (fiche `20261114131616085`).
+**sautée** (dite, jamais un GO muet).
+
+Trois commandes règlent les passes sans éditer le YAML à la main :
+
+- `ezk release passes add <id> --title "<titre>" --command "<cmd>"` ajoute une passe projet (un id
+  déjà pris, du socle ou du projet, est refusé avant écriture) ; `--type agent <nom>` crée à la place
+  une passe qui lit le **verdict** d'un agent (`ezk release verdict <id> <version> go|no-go "<motif>"`) ;
+  `--type rules <paquet>` attend son lecteur de loi (fiche `20261114131615350`) et est refusé pour l'instant.
+- `ezk release passes remove <id>` retire une passe projet ; une passe du **socle** ne se retire pas
+  une à une — on pose `replace: true` pour déclarer ses propres passes.
 
 ## La passe design-system (opt-in, fiche 20261011153019643)
 

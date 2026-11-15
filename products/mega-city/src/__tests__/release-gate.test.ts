@@ -17,11 +17,13 @@ import {
   testsPass,
 } from '../core/release-gate.js';
 import {
+  addProjectPass,
   loadEffectivePasses,
   readPassVerdict,
   readProjectPasses,
   readReleaseVerdict,
   releaseConfig,
+  removeProjectPass,
   writePassVerdict,
   writeReleaseVerdict,
 } from '../loaders/release-passes.js';
@@ -246,6 +248,28 @@ describe('release-gate — loader (I/O)', () => {
       'utf8',
     );
     expect(() => readProjectPasses(root)).toThrow(/replace/);
+  });
+
+  it('addProjectPass : écrit une passe projet relue par readProjectPasses', () => {
+    const file = addProjectPass(root, { id: 'deps-sante', title: 'Santé des dépendances', command: 'pnpm audit' });
+    expect(existsSync(file)).toBe(true);
+    const { passes, replace } = readProjectPasses(root);
+    expect(replace).toBe(false);
+    expect(passes).toEqual([{ id: 'deps-sante', title: 'Santé des dépendances', command: 'pnpm audit' }]);
+  });
+
+  it('addProjectPass : une 2e passe s’ajoute sans écraser la 1re', () => {
+    addProjectPass(root, { id: 'a', title: 'A', command: 'x' });
+    addProjectPass(root, { id: 'b', title: 'B', command: 'y' });
+    expect(readProjectPasses(root).passes.map((p) => p.id)).toEqual(['a', 'b']);
+  });
+
+  it('removeProjectPass : retire une passe projet, laisse les autres ; false si absente', () => {
+    addProjectPass(root, { id: 'a', title: 'A', command: 'x' });
+    addProjectPass(root, { id: 'b', title: 'B', command: 'y' });
+    expect(removeProjectPass(root, 'a')).toBe(true);
+    expect(readProjectPasses(root).passes.map((p) => p.id)).toEqual(['b']);
+    expect(removeProjectPass(root, 'absente')).toBe(false);
   });
 
   it('release.gate: off coupe la gate ; absent la laisse active', () => {

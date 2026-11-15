@@ -12,11 +12,13 @@
  */
 import { spawnSync } from 'node:child_process';
 import {
+  DEFAULT_PASSES,
   type EffectivePass,
   type PassResult,
   type PassVerdict,
   type ReleaseConfig,
   type ReleaseVerdict,
+  TESTS_PASS_ID,
   aggregate,
   decidePassVerdict,
   effectivePasses,
@@ -25,9 +27,11 @@ import {
   substitute,
 } from '../src/core/release-gate.js';
 import {
+  addProjectPass,
   readPassVerdict,
   readProjectPasses,
   releaseConfig,
+  removeProjectPass,
   writePassVerdict,
   writeReleaseVerdict,
 } from '../src/loaders/release-passes.js';
@@ -85,15 +89,82 @@ if (target.rest[0] === 'passes') {
     }
     process.exit(0);
   }
-  if (sub === 'add' || sub === 'remove') {
-    console.error(
-      `ezk release passes ${sub} : pas encore disponible. Édite .vectorz/release-passes.yml à la main — une liste ` +
-        '`passes:` de { id, title, command }, avec `replace: true` en tête pour remplacer le socle au lieu de le compléter. ' +
-        'Le réglage par commande arrive dans une story suivante (fiche 20261114131616085).',
-    );
-    process.exit(2);
+  if (sub === 'add') {
+    const id = target.rest[2];
+    if (!id || id.startsWith('--')) {
+      console.error('usage : ezk release passes add <id> --title "<titre>" (--command "<cmd>" | --type agent <nom>)');
+      process.exit(2);
+    }
+    // Options : --title, --command, --type agent|rules <valeur>.
+    const opts: Record<string, string> = {};
+    const flags = target.rest.slice(3);
+    for (let i = 0; i < flags.length; i += 1) {
+      const a = flags[i];
+      if (a === '--type') {
+        opts.type = flags[i + 1] ?? '';
+        i += 1;
+        if (opts.type === 'agent' || opts.type === 'rules') {
+          opts.typeValue = flags[i + 1] ?? '';
+          i += 1;
+        }
+      } else if (a !== undefined && a.startsWith('--')) {
+        opts[a.slice(2)] = flags[i + 1] ?? '';
+        i += 1;
+      }
+    }
+    if (!opts.title) {
+      console.error('✗ passe refusée : --title "<titre>" est requis.');
+      process.exit(2);
+    }
+    let command: string;
+    if (opts.type === 'rules') {
+      console.error(
+        '✗ passe refusée : le type « rules » (vérifier un paquet de règles) attend son lecteur de loi — fiche 20261114131615350, pas encore livrée.',
+      );
+      process.exit(1);
+    } else if (opts.type === 'agent') {
+      // Revue par un agent : la passe lit le verdict posé par `ezk release verdict <id> <version>`.
+      command = `ezk --root {root} release verdict-check ${id} {version}`;
+    } else {
+      if (!opts.command) {
+        console.error('✗ passe refusée : --command "<cmd>" est requis (ou --type agent <nom>).');
+        process.exit(2);
+      }
+      command = opts.command;
+    }
+    // Un id déjà pris, du socle ou du projet, est refusé AVANT écriture.
+    const socleIds = new Set<string>([...DEFAULT_PASSES.map((p) => p.id), TESTS_PASS_ID]);
+    const projetIds = new Set(readProjectPasses(root).passes.map((p) => p.id));
+    if (socleIds.has(id) || projetIds.has(id)) {
+      console.error(`✗ passe refusée : l'id « ${id} » est déjà pris (socle ou projet). Choisis un autre id.`);
+      process.exit(1);
+    }
+    const title = opts.type === 'agent' && opts.typeValue ? `${opts.title} (revue par ${opts.typeValue})` : opts.title;
+    const file = addProjectPass(root, { id, title, command });
+    console.log(`Passe « ${id} » ajoutée au projet : ${file}`);
+    process.exit(0);
   }
-  console.error('usage : ezk release passes list   (add|remove à venir — fiche 20261114131616085)');
+  if (sub === 'remove') {
+    const id = target.rest[2];
+    if (!id || id.startsWith('--')) {
+      console.error('usage : ezk release passes remove <id>');
+      process.exit(2);
+    }
+    const socleIds = new Set<string>([...DEFAULT_PASSES.map((p) => p.id), TESTS_PASS_ID]);
+    if (socleIds.has(id)) {
+      console.error(
+        `✗ « ${id} » est une passe du socle : elle ne se retire pas une à une. Pour la remplacer, pose « replace: true » en tête de .vectorz/release-passes.yml et déclare tes propres passes.`,
+      );
+      process.exit(1);
+    }
+    if (!removeProjectPass(root, id)) {
+      console.error(`✗ passe projet « ${id} » introuvable dans .vectorz/release-passes.yml.`);
+      process.exit(1);
+    }
+    console.log(`Passe « ${id} » retirée du projet.`);
+    process.exit(0);
+  }
+  console.error('usage : ezk release passes list | add <id> … | remove <id>');
   process.exit(2);
 }
 

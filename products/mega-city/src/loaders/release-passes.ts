@@ -9,7 +9,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { parse as parseYaml } from 'yaml';
+import { Document, isMap, isSeq, parse as parseYaml, parseDocument } from 'yaml';
 import { type DesignSystemConfig, type DesignSystemVerdict, resolveDesignSystem } from '../core/design-system-review.js';
 import {
   type EffectivePass,
@@ -82,6 +82,57 @@ export function readProjectPasses(projectRoot: string): { passes: readonly Relea
 export function loadEffectivePasses(projectRoot: string): readonly EffectivePass[] {
   const { passes, replace } = readProjectPasses(projectRoot);
   return effectivePasses(passes, replace, releaseConfig(projectRoot).tests);
+}
+
+/** Le fichier de passes projet : le `.yml`/`.yaml` existant, ou le défaut `.vectorz/release-passes.yml`. */
+function projectPassesFilePath(projectRoot: string): string {
+  for (const name of PASSES_NAMES) {
+    const f = join(projectRoot, PROJECT_CONFIG_DIR, name);
+    if (existsSync(f)) return f;
+  }
+  return join(projectRoot, PROJECT_CONFIG_DIR, PASSES_NAMES[0]);
+}
+
+/**
+ * Ajoute une passe projet dans `.vectorz/release-passes.yml` (le crée au besoin), sans détruire les
+ * voisins ni les commentaires (édition de document `yaml`). Accepte un fichier en liste nue ou en
+ * `{ passes: [...] }` ; sans fichier, en crée un sur la forme `{ passes: [...] }`.
+ */
+export function addProjectPass(projectRoot: string, pass: ReleasePass): string {
+  const file = projectPassesFilePath(projectRoot);
+  const entry = { id: pass.id, title: pass.title, command: pass.command };
+  let doc: Document;
+  if (existsSync(file)) {
+    doc = parseDocument(readFileSync(file, 'utf8'));
+    if (doc.errors.length > 0) throw new Error(`Passes de release illisibles (YAML malformé) : ${file}`);
+    if (isSeq(doc.contents)) {
+      doc.contents.add(entry);
+    } else {
+      const passes = doc.get('passes');
+      if (isSeq(passes)) passes.add(entry);
+      else doc.set('passes', [entry]);
+    }
+  } else {
+    doc = new Document({ passes: [entry] });
+  }
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, doc.toString(), 'utf8');
+  return file;
+}
+
+/** Retire une passe projet par id ; renvoie `true` si une passe a été retirée. */
+export function removeProjectPass(projectRoot: string, id: string): boolean {
+  const file = projectPassesFilePath(projectRoot);
+  if (!existsSync(file)) return false;
+  const doc = parseDocument(readFileSync(file, 'utf8'));
+  if (doc.errors.length > 0) throw new Error(`Passes de release illisibles (YAML malformé) : ${file}`);
+  const seq = isSeq(doc.contents) ? doc.contents : doc.get('passes');
+  if (!isSeq(seq)) return false;
+  const idx = seq.items.findIndex((it) => isMap(it) && it.get('id') === id);
+  if (idx < 0) return false;
+  seq.delete(idx);
+  writeFileSync(file, doc.toString(), 'utf8');
+  return true;
 }
 
 /** Chemin du verdict d'une version. */
