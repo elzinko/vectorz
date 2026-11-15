@@ -128,7 +128,7 @@ le schéma statique, l'« après » la surface zoomée au même niveau.
   (`20261110191135802`, **livrée** le 15 nov. : `510276c0`). La dépendance est **levée**. Elle
   livre la commande `ezk process show --json` (contrat `contracts/process-show/v1/`), servie par
   le daemon sur `GET /api/process/<projet>`, et sa sortie couvre les trois niveaux. Le lien
-  retour, depuis la fiche « étapes fines » vers celle-ci, n'est pas encore posé.
+  retour, depuis la fiche « étapes fines » vers celle-ci, est posé depuis le 15 nov.
 
 - **Forme d'entrée du niveau 3** — **contrat réel livré le 15 nov.** (`process-show/v1`, commit
   `510276c0`). La projection pure prend **cette** forme en entrée :

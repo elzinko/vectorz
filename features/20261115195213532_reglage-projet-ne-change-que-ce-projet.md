@@ -3,7 +3,7 @@
 id: "20261115195213532"
 title: Régler un projet ne change que ce projet, et le réglage est enregistré
 type: bug
-priority: P3
+priority: P2
 product: cop1
 milestone:
 version:
@@ -96,7 +96,7 @@ git -C <projet-A> diff .vectorz/config.yml
 
 - Source : session du 2026-11-04, `docs/sessions/2026-11-04-run-autonome-sprints-7-26.md`, ligne 33.
 - Recadrée le 2026-11-15 par un brainstorm, sur la remarque du PO : chaque projet a sa config.
-- Priorité P3 donnée par le PO le 2026-11-15. À revoir : l'absence d'enregistrement pèse plus que
-  la confusion d'icône.
+- Priorité P3 donnée par le PO le 2026-11-15, puis montée en P2 le même jour : l'absence
+  d'enregistrement pèse plus que la confusion d'icône (le PO a laissé le choix entre P3 et P2).
 - Découpe possible au grooming : séparer les entrées (petit), puis la commande d'écriture (plus gros).
 - Décisions liées : ADR-074 (deux étages de config), ADR-086 (mission control lit, la méthode écrit).
