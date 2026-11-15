@@ -277,7 +277,7 @@ d'être écrites en ADR. Les fiches les portent comme décisions du PO à confir
 | 18 | [`ezk law show` sert chaque objet de la loi : règle, paquet, profil](../../features/20261114131615350_ezk-law-show-regle-paquet-profil.md) | P2 | mega-city | D2 |
 | 19 | [Un seul lecteur de la loi du projet : `law show` lit aussi le contrat, `rules show` en devient une vue](../../features/20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md) | P2 | mega-city | D3 |
 | 20 | [Le verdict de revue adverse par fiche, structuré et publié](../../features/20261114131615719_verdict-de-revue-adverse-structure-et-publie.md) | P2 | mega-city | D4 |
-| 21 | [`ezk release verdict` : un verdict de passe posé par une commande, avec motif, auteur et commit](../../features/20261114131615903_ezk-release-verdict-par-commande.md) | P2 | mega-city | E2 |
+| 21 | [`ezk release verdict` : un verdict de passe posé par une commande, avec motif, auteur et commit](../../features/done/20261114131615903_ezk-release-verdict-par-commande.md) | P2 | mega-city | E2 |
 | 22 | [`ezk release passes list|add|remove` : les contrôles de la gate se règlent par commande](../../features/20261114131616085_ezk-release-passes-list-add-remove.md) | P2 | mega-city | E3 |
 | 23 | [`ezk recipes show <id> --json` publie le corps d'une recette](../../features/20261114131616266_ezk-recipes-show-json-corps-de-recette.md) | P2 | mega-city | G1 |
 | 24 | [Mission control montre une recette : corps, sections, et où elle est implémentée](../../features/20261114131616451_mission-control-montre-une-recette.md) | P2 | cop1 | G1, G2 |

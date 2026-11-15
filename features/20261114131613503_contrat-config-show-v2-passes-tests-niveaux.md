@@ -154,7 +154,7 @@ Aucune preuve d'écran : l'écran garde ses pages, il lit des champs de plus.
 - Dépendance : [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md),
   pour publier une commande de tests non nulle.
 - Voisines : [`ezk release passes`](20261114131616085_ezk-release-passes-list-add-remove.md) règle
-  les passes publiées ici ; [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md)
+  les passes publiées ici ; [`ezk release verdict`](done/20261114131615903_ezk-release-verdict-par-commande.md)
   pose les verdicts que l'écran montrera ensuite.
 - Risque : la v2 casse un cop1 non mis à jour. Le lot livre les deux côtés ensemble ; le traducteur
   dit « schema_version inconnu » plutôt que d'afficher du faux.

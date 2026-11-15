@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [release]
-status: idea
+status: shipped
 blocked:
-pr:
+pr: "local-squash 3c57c185"
 evidence: none # une commande de la méthode, aucun écran
 created: 2026-11-14
 ---
@@ -76,9 +76,9 @@ Un verbe générique, pas un verbe par passe.
    ligne de détail de la passe (`release-gate.ts:96-99`).
 
 Hors périmètre : l'ajout ou le retrait d'une passe, porté par
-[`ezk release passes list|add|remove`](20261114131616085_ezk-release-passes-list-add-remove.md),
+[`ezk release passes list|add|remove`](../20261114131616085_ezk-release-passes-list-add-remove.md),
 qui réutilise ce verbe pour son type « revue par un agent ». L'affichage à l'écran, qui passe par
-[Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md).
+[Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md).
 
 ## Critères d'acceptation
 
@@ -128,23 +128,23 @@ Aucune preuve d'écran : la fiche ajoute une commande, pas un écran.
 
 ## Notes / décisions
 
-- Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : [la carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart E2 (page Configuration). La carte proposait un verbe `bughunt` ; la lecture du code a
   élargi au verbe générique `verdict`, parce que la passe design-system a le même manque et une
   forme de verdict déjà posée.
 - Fiches livrées dont le code bouge :
-  [Release gate — passe qualité avant versionnement](done/20260922175954296_release-gate-passe-qualite-versionnement.md)
+  [Release gate — passe qualité avant versionnement](20260922175954296_release-gate-passe-qualite-versionnement.md)
   (la passe `chasse-aux-bugs`),
-  [Revue design-system : un step composable](done/20261011153019643_revue-design-system-step-composable-release.md)
+  [Revue design-system : un step composable](20261011153019643_revue-design-system-step-composable-release.md)
   (la forme du verdict).
-- Précédent : [Le pouce de revue par une commande ezk](done/20261102123552181_pouce-de-revue-par-une-commande-ezk.md).
+- Précédent : [Le pouce de revue par une commande ezk](20261102123552181_pouce-de-revue-par-une-commande-ezk.md).
   Seules les commandes `ezk` écrivent dans un projet
-  ([ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)).
+  ([ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)).
 - La chasse aux bugs elle-même reste celle de la compétence `ezk-release` : un agent adverse rejoue les
   parcours du lot. Cette fiche enregistre son verdict ; elle ne le fabrique pas.
 - Dépendances : aucune fiche du lot. Voisines :
-  [`ezk release passes`](20261114131616085_ezk-release-passes-list-add-remove.md) (type « revue par
-  un agent ») et [Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
+  [`ezk release passes`](../20261114131616085_ezk-release-passes-list-add-remove.md) (type « revue par
+  un agent ») et [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
   (affichage).
 - Le champ `auteur` est une proposition : la carte le nomme dans le titre de la fiche, l'écart E2 ne
   fixe pas sa source. `git config user.name` est la plus simple ; le build peut en retenir une autre.

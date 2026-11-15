@@ -69,7 +69,7 @@ Trois commandes et une règle, POC d'abord.
    drapeau explicite en tête du fichier, `replace: true` (nom proposé), le remplace. La règle est testée et écrite
    dans `skills/ezk-release/SKILL.md`. Les fiches
    [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)
-   et [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md) s'y réfèrent
+   et [`ezk release verdict`](done/20261114131615903_ezk-release-verdict-par-commande.md) s'y réfèrent
    sans la redire.
 3. **`ezk release passes add <id> --title "…" --command "…"`** écrit la passe dans
    `.vectorz/release-passes.yml` par une édition de document YAML, sans détruire les clés voisines
@@ -142,7 +142,7 @@ Aucune preuve d'écran : l'écran Configuration suit par le contrat `config-show
 - Dépendances, dans l'ordre :
   [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)
   (la forme d'une passe du socle et l'état `skip`),
-  [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md) (le type « revue
+  [`ezk release verdict`](done/20261114131615903_ezk-release-verdict-par-commande.md) (le type « revue
   par un agent »),
   [Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
   (la publication). Le type « paquet de règles » attend
