@@ -70,7 +70,7 @@ POC d'abord, dans le cœur pur, puis au bord.
 Hors périmètre :
 
 - La règle « le fichier projet complète ou remplace le socle ». Elle s'écrit une seule fois, dans
-  [`ezk release passes list|add|remove`](../20261114131616085_ezk-release-passes-list-add-remove.md).
+  [`ezk release passes list|add|remove`](20261114131616085_ezk-release-passes-list-add-remove.md).
 - La publication de la commande de tests et des passes pour l'écran. Elle passe par
   [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md).
 
@@ -131,7 +131,7 @@ Aucune preuve d'écran : la fiche ne modifie aucun écran.
 - Dépendances : aucune fiche du lot. Voisines :
   [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
   publie la commande de tests ;
-  [`ezk release passes`](../20261114131616085_ezk-release-passes-list-add-remove.md) porte la règle
+  [`ezk release passes`](20261114131616085_ezk-release-passes-list-add-remove.md) porte la règle
   de composition socle / projet.
 - Risque : la passe `tests` rejoue toute la validation locale ; sur vectorz, c'est long. Le coût est
   accepté : une version se coupe rarement.

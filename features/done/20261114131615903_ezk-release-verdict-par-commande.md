@@ -76,7 +76,7 @@ Un verbe générique, pas un verbe par passe.
    ligne de détail de la passe (`release-gate.ts:96-99`).
 
 Hors périmètre : l'ajout ou le retrait d'une passe, porté par
-[`ezk release passes list|add|remove`](../20261114131616085_ezk-release-passes-list-add-remove.md),
+[`ezk release passes list|add|remove`](20261114131616085_ezk-release-passes-list-add-remove.md),
 qui réutilise ce verbe pour son type « revue par un agent ». L'affichage à l'écran, qui passe par
 [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md).
 
@@ -143,7 +143,7 @@ Aucune preuve d'écran : la fiche ajoute une commande, pas un écran.
 - La chasse aux bugs elle-même reste celle de la compétence `ezk-release` : un agent adverse rejoue les
   parcours du lot. Cette fiche enregistre son verdict ; elle ne le fabrique pas.
 - Dépendances : aucune fiche du lot. Voisines :
-  [`ezk release passes`](../20261114131616085_ezk-release-passes-list-add-remove.md) (type « revue par
+  [`ezk release passes`](20261114131616085_ezk-release-passes-list-add-remove.md) (type « revue par
   un agent ») et [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
   (affichage).
 - Le champ `auteur` est une proposition : la carte le nomme dans le titre de la fiche, l'écart E2 ne

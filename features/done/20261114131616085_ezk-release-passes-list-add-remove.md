@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [release, contrat]
-status: idea
+status: shipped
 blocked:
-pr:
+pr: "local-squash 7f62ec4a"
 evidence: none # des commandes de la méthode ; l'écran Configuration suit via la fiche 8
 created: 2026-11-14
 ---
@@ -53,7 +53,7 @@ Ce que le code fait aujourd'hui.
   (`products/mega-city/src/loaders/project-config.ts:184-203`).
 - Le type « paquet de règles » a déjà son objet : la DoD est une liste de règles,
   `products/mega-city/bundles/dod.yml`, livrée par
-  [DoD et DoR — des listes de règles](done/20261008154804532_dod-dor-contrat-partage.md).
+  [DoD et DoR — des listes de règles](20261008154804532_dod-dor-contrat-partage.md).
   `ezk law show skill:<id>` sert les règles d'une compétence (`ezk-manifest.yml:55-59`), pas celles
   d'un paquet.
 
@@ -63,13 +63,13 @@ Trois commandes et une règle, POC d'abord.
 
 1. **`ezk release passes list`** affiche les passes effectives, chacune avec sa source : `defaut`
    ou `projet`. Même mot que le contrat publié par
-   [Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md) ;
+   [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md) ;
    le JSON passe par ce contrat, pas par un second canal.
 2. **La règle de composition, écrite ici une fois.** Le fichier projet COMPLÈTE le socle. Un
    drapeau explicite en tête du fichier, `replace: true` (nom proposé), le remplace. La règle est testée et écrite
    dans `skills/ezk-release/SKILL.md`. Les fiches
-   [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)
-   et [`ezk release verdict`](done/20261114131615903_ezk-release-verdict-par-commande.md) s'y réfèrent
+   [La gate de release joue les tests du projet](20261114131613314_gate-de-release-joue-les-tests.md)
+   et [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md) s'y réfèrent
    sans la redire.
 3. **`ezk release passes add <id> --title "…" --command "…"`** écrit la passe dans
    `.vectorz/release-passes.yml` par une édition de document YAML, sans détruire les clés voisines
@@ -79,7 +79,7 @@ Trois commandes et une règle, POC d'abord.
 4. **Les types.** `--type agent <nom>` crée une passe dont la commande lit le verdict posé par
    `ezk release verdict <id> <v>` ; `<nom>` est l'agent attendu, écrit dans le titre.
    `--type rules <paquet>` crée une passe qui vérifie un paquet de règles par `ezk law show` ; ce
-   type attend [`ezk law show` sert chaque objet de la loi](20261114131615350_ezk-law-show-regle-paquet-profil.md)
+   type attend [`ezk law show` sert chaque objet de la loi](../20261114131615350_ezk-law-show-regle-paquet-profil.md)
    et reste différé tant que cette fiche n'est pas livrée. La commande le dit quand on le demande.
 5. **`ezk release <v>` joue la passe ajoutée** sans autre geste : le loader compose socle et projet
    selon la règle.
@@ -137,22 +137,22 @@ Aucune preuve d'écran : l'écran Configuration suit par le contrat `config-show
 
 ## Notes / décisions
 
-- Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : [la carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart E3 (page Configuration).
 - Dépendances, dans l'ordre :
-  [La gate de release joue les tests du projet](done/20261114131613314_gate-de-release-joue-les-tests.md)
+  [La gate de release joue les tests du projet](20261114131613314_gate-de-release-joue-les-tests.md)
   (la forme d'une passe du socle et l'état `skip`),
-  [`ezk release verdict`](done/20261114131615903_ezk-release-verdict-par-commande.md) (le type « revue
+  [`ezk release verdict`](20261114131615903_ezk-release-verdict-par-commande.md) (le type « revue
   par un agent »),
-  [Contrat `config-show` v2](20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
+  [Contrat `config-show` v2](../20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
   (la publication). Le type « paquet de règles » attend
-  [`ezk law show` sert chaque objet de la loi](20261114131615350_ezk-law-show-regle-paquet-profil.md).
+  [`ezk law show` sert chaque objet de la loi](../20261114131615350_ezk-law-show-regle-paquet-profil.md).
 - Fiches livrées dont le code bouge :
-  [Release gate — passe qualité avant versionnement](done/20260922175954296_release-gate-passe-qualite-versionnement.md)
+  [Release gate — passe qualité avant versionnement](20260922175954296_release-gate-passe-qualite-versionnement.md)
   (le loader et sa règle « remplace ») et
-  [Revue design-system : un step composable](done/20261011153019643_revue-design-system-step-composable-release.md) (la passe prête à ajouter).
+  [Revue design-system : un step composable](20261011153019643_revue-design-system-step-composable-release.md) (la passe prête à ajouter).
 - Cas d'usage réel d'une passe à ajouter :
-  [Santé des dépendances](20260816194833618_deps-sante-audit-local-par-profil.md), parkée.
+  [Santé des dépendances](../20260816194833618_deps-sante-audit-local-par-profil.md), parkée.
 - Décision à prendre au build : `replace: true` change le sens d'un fichier `release-passes.yml`
   existant. Aucun projet connu n'en a ; si un projet en avait un, ses passes s'ajouteraient
   désormais au socle au lieu de le remplacer. La compétence le dit.
