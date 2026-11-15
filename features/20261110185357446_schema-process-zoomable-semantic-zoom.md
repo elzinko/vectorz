@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-10
@@ -87,7 +87,8 @@ fines, styles des nœuds) ensuite.
 - [ ] La **projection par niveau** est une fonction pure, testée en **Vitest sur un
       contrat réel** (`ezk process show --json`, contrat `process-show/v1`).
 - [ ] Aucune étape du workflow n'est **codée en dur** dans le web : toutes viennent du
-      contrat (plus de constante `SPRINT_STEPS`).
+      contrat **du projet affiché**, lu sur `GET /api/process/<projet>` (plus de constante
+      `SPRINT_STEPS`). Changer de projet recharge son process.
 - [ ] La `carte-interactive.html` existante est **inchangée**.
 
 ## Comment vérifier
