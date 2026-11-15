@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "enClair": {
+            "type": "string"
+          },
+          "etapes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "L’identifiant de l’étape, unique dans son skill."
+                },
+                "num": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Le rang de l’étape dans son skill, à partir de 1."
+                },
+                "titre": {
+                  "type": "string"
+                },
+                "enClair": {
+                  "type": "string",
+                  "description": "Ce que fait l’étape, en une phrase simple."
+                },
+                "joueePar": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Qui la réalise, vérifié contre le catalogue : `humain`, `agent:<id>`, `<skill>` ou `<skill>:<sous-commande>`."
+                },
+                "agents": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Les agents parmi `joueePar`, par leur id."
+                },
+                "commandes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Les skills parmi `joueePar`, écrits comme on les lance (`/ezk-backlog groom`)."
+                },
+                "regles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Les règles de l’étape. Toujours vide en v1 : aucune règle n’est encore rattachée à une étape."
+                },
+                "reglages": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cle": {
+                        "type": "string"
+                      },
+                      "valeur": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cle",
+                      "valeur"
+                    ]
+                  },
+                  "description": "Les réglages du projet qui gouvernent l’étape : la clé de `ezk config show` et sa valeur pour le projet lu."
+                }
+              },
+              "required": [
+                "id",
+                "num",
+                "titre",
+                "enClair",
+                "joueePar",
+                "agents",
+                "commandes",
+                "regles",
+                "reglages"
+              ]
+            },
+            "description": "Les étapes du skill, dans l’ordre."
+          }
+        },
+        "required": [
+          "id",
+          "nom",
+          "enClair",
+          "etapes"
+        ]
+      },
+      "description": "Les skills de la méthode, dans l’ordre où un travail les traverse."
+    },
+    "liens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "de": {
+            "type": "string"
+          },
+          "vers": {
+            "type": "string"
+          },
+          "libelle": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "de",
+          "vers",
+          "libelle"
+        ]
+      },
+      "description": "Les liens entre skills : ce qui passe de l’un à l’autre."
+    }
+  },
+  "required": [
+    "schema_version",
+    "skills",
+    "liens"
+  ]
+}

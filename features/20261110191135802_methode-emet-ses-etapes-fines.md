@@ -109,21 +109,21 @@ sprint) :
 
 ## Critères d'acceptation
 
-- [ ] **Déclarées.** Un fichier de la méthode déclare, pour `ezk-backlog`, `ezk-sprint`, `ezk-retro`
+- [x] **Déclarées.** Un fichier de la méthode déclare, pour `ezk-backlog`, `ezk-sprint`, `ezk-retro`
       et `ezk-archive`, leurs étapes dans l'ordre et les liens entre skills, dont la boucle
       rétro → backlog. `ezk process show` les affiche en clair.
-- [ ] **Vérifiées.** Une étape qui cite un skill, une sous-commande ou un agent inexistant fait
+- [x] **Vérifiées.** Une étape qui cite un skill, une sous-commande ou un agent inexistant fait
       échouer la validation. Un test le prouve, et `pnpm gate` rougit.
-- [ ] **Ancrées.** Chaque étape déclarée se retrouve dans le texte de son skill. Renommer ou retirer
+- [x] **Ancrées.** Chaque étape déclarée se retrouve dans le texte de son skill. Renommer ou retirer
       l'étape dans le skill sans toucher la déclaration fait échouer la gate. Un test le prouve.
-- [ ] **Publiées.** `ezk process show --json`, avec ou sans `--root <projet>`, sort un format
+- [x] **Publiées.** `ezk process show --json`, avec ou sans `--root <projet>`, sort un format
       versionné. Son schéma et son exemple sont générés dans `contracts/process-show/v1/`. Un test
       échoue si la sortie réelle ne respecte plus le schéma. Ajouter une étape au fichier la fait
       apparaître dans la sortie, sans toucher au code.
-- [ ] **Réglages.** Une étape gouvernée par un réglage porte sa clé et sa valeur pour le projet lu
+- [x] **Réglages.** Une étape gouvernée par un réglage porte sa clé et sa valeur pour le projet lu
       (exemple : revue adverse, `review.adverse`, `run`). Une clé que `ezk config show` ne connaît
       pas fait échouer la validation.
-- [ ] **Servies.** Le daemon de cop1 répond sur `GET /api/process/<projet>` avec cette sortie. Un
+- [x] **Servies.** Le daemon de cop1 répond sur `GET /api/process/<projet>` avec cette sortie. Un
       projet inconnu est refusé, comme sur `/api/maps` et `/api/recipes`. Un test du serveur HTTP le
       prouve.
 
@@ -150,14 +150,15 @@ pnpm --dir products/mega-city gate
 
 # 2. La méthode publie ses étapes pour ce projet : en clair, puis en JSON.
 ezk process show
-ezk process show --json | jq '.skills[] | {skill: .id, etapes: [.etapes[].nom]}'
+ezk process show --json | jq '.skills[] | {skill: .id, etapes: [.etapes[].titre]}'
 
 # 3. Le garde-fou mord. Dans le fichier de déclaration, remplace « agent:ezk-qa » par
 #    « agent:fantome », relance la gate, constate le rouge, puis annule la modification.
 pnpm --dir products/mega-city gate
 
-# 4. Le daemon sert la même sortie et refuse un projet inconnu.
-pnpm --dir products/cop1/packages/app exec vitest run src/features/daemon
+# 4. Le daemon sert la même sortie et refuse un projet inconnu. Depuis la racine : la config
+#    vitest de cop1 vit à la racine du dépôt, lancée depuis le paquet elle ne trouve aucun test.
+pnpm exec vitest run products/cop1/packages/app/src/features/daemon products/cop1/packages/app/src/features/board
 ```
 
 Preuve avant / après : sans objet, aucun écran ne change (`evidence: none`).
@@ -240,6 +241,33 @@ entre deux fiches qui s'attendent.
 vraiment passé, demande des moments par étape dans le journal. C'est le point G4 de l'ADR-084, qui
 revient au PO. Même famille que « poser une fiche sur une étape fine » : hors de cette fiche.
 
+**Défauts appliqués au build (2026-11-15).** Aucun arbitrage neuf : les défauts écrits plus haut,
+rien d'autre.
+
+- 2026-11-15 — défaut appliqué au build : le sprint déclare les 8 étapes de la maquette (cadrage,
+  archi, scénarios, code, gate, E2E, revue adverse, intégration). L'intake, le report des cases, la
+  PR et le checkpoint du skill ne sont pas déclarés. Les ajouter = quelques lignes de
+  `method/etapes.yml`, sans code.
+- 2026-11-15 — défaut appliqué au build : quatre skills (`ezk-backlog`, `ezk-sprint`, `ezk-retro`,
+  `ezk-archive`). `ezk-release` (« Versionner ») et `ezk-product-build` restent hors périmètre.
+- 2026-11-15 — défaut appliqué au build : la forme vise la maquette, `skills[]{etapes[]{num, titre,
+  enClair, joueePar, agents[], commandes[], regles[]}}`. Ajouts : un `id` par étape, `reglages[]`
+  (`{cle, valeur}`) et `liens[]` (`{de, vers, libelle}`). `joueePar` est la liste des références
+  vérifiées ; `agents[]` et `commandes[]` en sont tirés, sans seconde déclaration.
+- 2026-11-15 — défaut appliqué au build : `regles[]` est publié **vide**. Rattacher des règles à une
+  étape demande de les vérifier contre le catalogue des règles, ce qu'aucun critère n'exige.
+- 2026-11-15 — défaut appliqué au build : `momentEmis`, `gateId`, `effetStatutFiche` et le niveau de
+  modèle des agents ne sont pas construits. Ils partent en v2 du contrat ; le PO tranche la coupe.
+- 2026-11-15 — défaut appliqué au build : l'ancrage est un champ `ancre`, un passage du `SKILL.md`
+  recopié mot pour mot (ex. « 3. **BDD** »). Le renommer dans le skill fait échouer la validation.
+- 2026-11-15 — défaut appliqué au build : les réglages citables sont les six lignes de
+  `ezk config show` (`github.pr`, `github.ci`, `github.codex-review`, `integration`,
+  `review.adverse`, `grooming.techniques`). La valeur vient de la même résolution que
+  `ezk config show --json`.
+- 2026-11-15 — défaut appliqué au build : la route du daemon recopie le gestionnaire de
+  `/api/recipes` (patron exact demandé). Les trois lectures par projet (loi, recettes, étapes)
+  portent désormais le même bloc ; un helper commun est une piste de refactor, hors de cette fiche.
+
 **Journal.**
 
 - 2026-11-10 — créée, P2, sans milestone.
@@ -257,3 +285,6 @@ revient au PO. Même famille que « poser une fiche sur une étape fine » : hor
   et E7, volet process) : trois champs attendus par la maquette posés dans « À trancher au build »,
   sans critère neuf. La fiche reste prête et en tête du plan.
 - **Source** : maquette Mission control validée le 2026-11-08 (vue Process, bloc « Le schéma »).
+- 2026-11-15 — construite (sprint 8, lot 2) ; revue adverse `ezk-reviewer` GO, six critères prouvés, cases reportées telles
+  quelles. Après rebasage sur `ezk help --json`, la gate a exigé de ranger le domaine `process` dans `taxonomie.yml`
+  (une ligne, gate verte). Suivis non bloquants : triple bloc de route daemon à factoriser ; ancre recopiée mot pour mot.

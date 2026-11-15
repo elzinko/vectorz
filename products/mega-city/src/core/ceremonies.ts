@@ -44,8 +44,11 @@ export function subCommandsOf(argumentHint: string | undefined): string[] {
   return parts.length >= 2 && parts.every((x) => /^[a-z?][\w?-]*$/i.test(x)) ? parts : [];
 }
 
-function assertRef(catalog: Catalog, elementId: string, ref: string): void {
-  const where = `ceremonies.yml → « ${elementId} » → implemente_par « ${ref} »`;
+/**
+ * Vérifie UNE référence de la grammaire contre le catalogue ; `where` situe l'erreur (fichier,
+ * élément, référence). Partagée par les cérémonies et les étapes fines (`process-show.ts`).
+ */
+export function assertRef(catalog: Catalog, where: string, ref: string): void {
   if (ref === 'humain') return; // l'opérateur PO — pas (encore) un objet du modèle
   if (ref.startsWith('agent:')) {
     const id = ref.slice('agent:'.length);
@@ -100,7 +103,7 @@ export function validateMethod(catalog: Catalog, doc: MethodDoc): MethodDoc {
     if (refs.length === 0 && (raw.etat === 'fidele' || raw.etat === 'adapte')) {
       throw new Error(`ceremonies.yml → « ${id} » : état « ${raw.etat} » sans implémenteur`);
     }
-    for (const ref of refs) assertRef(catalog, id, ref);
+    for (const ref of refs) assertRef(catalog, `ceremonies.yml → « ${id} » → implemente_par « ${ref} »`, ref);
     return {
       id,
       type: raw.type,

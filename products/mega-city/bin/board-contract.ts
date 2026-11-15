@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * board-contract — régénère ou vérifie les schémas et les exemples des contrats JSON de la méthode :
- * `ezk board show --json` et `ezk backlog show --json` (ADR-086 ; liste dans `src/io/contract-files.ts`).
+ * `ezk board show --json`, `ezk backlog show --json`, `ezk process show --json`… (ADR-086 ; liste dans `src/io/contract-files.ts`).
  *
  *   pnpm --dir products/mega-city board:contract           # vérifie : code 1 si un fichier n'est plus à jour
  *   pnpm --dir products/mega-city board:contract --write   # régénère tous les fichiers

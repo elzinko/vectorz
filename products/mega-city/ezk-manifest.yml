@@ -86,6 +86,13 @@ commands:
     summary: Pose chaque fiche sur son étape, avec sa branche, sa PR, sa session (--json, --root).
     project: true
 
+  # --- process : les étapes fines de chaque skill (fiche 20261110191135802) ---
+  - domain: process
+    verb: show
+    run: bin/process-show.ts
+    summary: Les étapes de chaque skill, qui les joue, et leurs réglages (--json, --root <projet>).
+    project: true
+
   # --- backlog : les fiches ---
   - domain: backlog
     verb: check

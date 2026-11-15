@@ -55,7 +55,7 @@ describe('ezk-manifest.yml', () => {
     expect(maps?.root).toBe('none');
   });
 
-  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744, 20261002155911257, 20261003200945204 et 20261003105820077)', () => {
+  it('les commandes qui travaillent sur un projet désigné sont exactement celles-ci (fiches 20260826173221323, 20260910152227744, 20261002155911257, 20261003200945204, 20261003105820077 et 20261110191135802)', () => {
     const labels = manifest.commands
       .filter((e) => e.project)
       .map((e) => `${e.domain}${e.verb ? ` ${e.verb}` : ''}`)
@@ -91,6 +91,7 @@ describe('ezk-manifest.yml', () => {
       'now',
       'paths',
       'pr emit-local',
+      'process show',
       'recipes',
       'release',
       'retro captures',

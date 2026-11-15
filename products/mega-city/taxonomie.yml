@@ -86,6 +86,7 @@ commandes:
   adr: methode
   paths: methode
   now: methode
+  process: methode
   # modules — hors méthode, activables, par famille
   pr: modules/github
   forge: modules/github

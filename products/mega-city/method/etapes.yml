@@ -1,0 +1,152 @@
+# Les ÉTAPES FINES de chaque skill — le plan de rue de chaque quartier (fiche 20261110191135802).
+#
+# `ceremonies.yml` répond à « le Scrum Guide est-il couvert ? ». Ce fichier répond à « quels sont
+# les pas de chaque skill ? ». `ezk process show --json` le publie (contrat
+# contracts/process-show/v1/) ; le daemon de cop1 le sert à mission control.
+#
+# GARDE-FOU : ce fichier ne peut pas devenir une deuxième vérité qui dérive. Le compilateur
+# (`validateEtapes`, src/core/process-show.ts) le refuse — `ezk process show` échoue, la gate
+# rougit — dans trois cas :
+#   - joue_par : une référence hors catalogue. Même grammaire que `ceremonies.yml` :
+#       ezk-backlog          → le skill entier (doit exister)
+#       ezk-backlog:groom    → une sous-commande (doit figurer dans l'argument-hint du skill)
+#       agent:ezk-pm         → un agent (doit exister)
+#       humain               → l'opérateur PO
+#   - ancre : un passage du SKILL.md du skill, recopié MOT POUR MOT. Renommer ou retirer l'étape
+#     dans le skill sans toucher ce fichier la fait disparaître : la validation échoue.
+#   - reglages : une clé que `ezk config show` n'affiche pas. La valeur sort pour le projet lu.
+#
+# Ajouter une étape ici la fait apparaître dans la sortie, sans toucher au code. Régénère ensuite
+# l'exemple du contrat : pnpm --dir products/mega-city board:contract --write
+#
+# Les skills sont dans l'ordre où un travail les traverse ; les étapes, dans l'ordre du skill.
+# Le sprint suit les 8 étapes de la maquette validée le 2026-11-08 (défaut de la fiche) : le skill
+# en déroule davantage (intake, cases, PR, checkpoint), qui n'ont pas de boîte à l'écran.
+
+skills:
+  - id: ezk-backlog
+    nom: Le backlog
+    en_clair: Les idées deviennent des fiches prêtes, puis un lot à construire.
+    etapes:
+      - id: capturer
+        titre: Capturer
+        en_clair: Une idée ou un bug devient une fiche, sans doublon.
+        joue_par: [ezk-backlog:add]
+        ancre: "### `add <description>`"
+      - id: groomer
+        titre: Groomer
+        en_clair: La fiche mûrit vers la Definition of Ready, technique par technique.
+        joue_par: [ezk-backlog:groom]
+        ancre: "### `groom <id>`"
+        reglages: [grooming.techniques]
+      - id: prete
+        titre: Prête
+        en_clair: La porte de la Definition of Ready vérifie la fiche, le PO la déclare tirable.
+        joue_par: [ezk-backlog:ready, humain]
+        ancre: "### `ready <id>` — le gate DoR"
+      - id: tirer-un-lot
+        titre: Tirer un lot
+        en_clair: Les prochaines fiches tirables forment le lot du sprint.
+        joue_par: [ezk-backlog:next]
+        ancre: "### `next --lot N`"
+
+  - id: ezk-sprint
+    nom: Le sprint
+    en_clair: Chaque story du lot est construite, validée, relue, puis intégrée.
+    etapes:
+      - id: cadrage
+        titre: Cadrage
+        en_clair: Le périmètre minimal qui prouve la valeur.
+        joue_par: [ezk-sprint]
+        ancre: "1. **Cadrage POC**"
+      - id: archi
+        titre: Archi
+        en_clair: Une décision de conception, et son ADR, quand la story le justifie.
+        joue_par: [agent:ezk-architect]
+        ancre: "2. **Archi (si justifié)**"
+      - id: scenarios
+        titre: Scénarios
+        en_clair: Les scénarios d'acceptation, la Definition of Done exécutable.
+        joue_par: [agent:ezk-qa]
+        ancre: "3. **BDD**"
+      - id: code
+        titre: Code
+        en_clair: Le cœur de la story, test d'abord.
+        joue_par: [agent:ezk-dev]
+        ancre: "4. **TDD POC**"
+      - id: gate
+        titre: Gate
+        en_clair: Toute la validation locale du projet ; rien ne part sans elle.
+        joue_par: [ezk-sprint, ezk-ci]
+        ancre: "5. **Gate locale (pipeline)**"
+      - id: e2e
+        titre: E2E
+        en_clair: Les parcours critiques validés sur l'app qui tourne, dès qu'il y a une interface.
+        joue_par: [agent:ezk-qa]
+        ancre: "6. **Validation E2E**"
+      - id: revue-adverse
+        titre: Revue adverse
+        en_clair: Un relecteur cherche à casser la story et prouve chaque critère.
+        joue_par: [agent:ezk-reviewer]
+        ancre: "7. **Revue**"
+        reglages: [review.adverse]
+      - id: integration
+        titre: Intégration
+        en_clair: Après accord du PO, la story arrive sur main selon la config du projet.
+        joue_par: [ezk-sprint, humain]
+        ancre: "10. **Intégration — `ezk forge integrate`**"
+        reglages: [github.pr, integration]
+
+  - id: ezk-retro
+    nom: La rétro
+    en_clair: L'équipe transforme une friction vécue en proposition mesurable.
+    etapes:
+      - id: cadrer
+        titre: Cadrer
+        en_clair: Le périmètre et les symptômes observés.
+        joue_par: [ezk-retro:run]
+        ancre: "### 1. Cadrer & rassembler les signaux"
+      - id: round-robin
+        titre: Round-robin
+        en_clair: Chaque agent propose à travers sa lentille, en deux tours.
+        joue_par: [agent:ezk-architect, agent:ezk-qa, agent:ezk-dev, agent:ezk-pm]
+        ancre: "### 2. Cérémonie en round-robin (2 tours)"
+      - id: juge
+        titre: Juge
+        en_clair: Le juge de cohérence cherche doublons et contradictions avec les règles.
+        joue_par: [agent:ezk-steward]
+        ancre: "### 4. Juge de cohérence"
+      - id: rangement-po
+        titre: Rangement PO
+        en_clair: Le PO tranche ; les propositions retenues vont au backlog ou aux règles.
+        joue_par: [humain, ezk-backlog:add]
+        ancre: "### 5. Rangement sous contrôle PO"
+
+  - id: ezk-archive
+    nom: L'archive
+    en_clair: La session se clôt sans rien perdre.
+    etapes:
+      - id: portier
+        titre: Portier
+        en_clair: Un script dit si la session est propre, sans rien écrire.
+        joue_par: [ezk-archive:check]
+        ancre: "### 2. Interroge le portier"
+      - id: cloture
+        titre: Clôture
+        en_clair: Les corrections sûres s'appliquent et la note de reprise s'écrit.
+        joue_par: [ezk-archive:run, agent:ezk-archive]
+        ancre: "#### `VERDICT: CLEAN` → tu traites la clôture toi-même"
+
+liens:
+  - de: ezk-backlog
+    vers: ezk-sprint
+    libelle: Le lot de fiches prêtes part en sprint.
+  - de: ezk-sprint
+    vers: ezk-retro
+    libelle: Les frictions du sprint nourrissent la rétro.
+  - de: ezk-retro
+    vers: ezk-backlog
+    libelle: Les propositions retenues par le PO deviennent des fiches.
+  - de: ezk-sprint
+    vers: ezk-archive
+    libelle: La session se clôt après le sprint.

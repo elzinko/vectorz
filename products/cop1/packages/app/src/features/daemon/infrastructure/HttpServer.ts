@@ -64,7 +64,8 @@ export interface MapsHandler {
 
 /**
  * Une lecture par projet, servie depuis la mémoire du daemon (jamais d'attente) : la loi (fiche
- * 20260826222044335) et les recettes (fiche 20261104090518109) passent par elle.
+ * 20260826222044335), les recettes (fiche 20261104090518109) et les étapes fines (fiche
+ * 20261110191135802) passent par elle.
  */
 export interface ProjectReadHandler {
   read(projet: string): { status: number; body: unknown };
@@ -94,6 +95,7 @@ export class HttpServer {
   private mapsHandler: MapsHandler | null = null;
   private lawHandler: LawHandler | null = null;
   private recipesHandler: ProjectReadHandler | null = null;
+  private processShowHandler: ProjectReadHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -159,6 +161,11 @@ export class HttpServer {
   /** fiche 20261104090518109 — GET /api/recipes/<projet>. */
   setRecipesHandler(handler: ProjectReadHandler): void {
     this.recipesHandler = handler;
+  }
+
+  /** fiche 20261110191135802 — GET /api/process/<projet> : les étapes fines de chaque skill. */
+  setProcessShowHandler(handler: ProjectReadHandler): void {
+    this.processShowHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -310,6 +317,18 @@ export class HttpServer {
     // fiche 20261104090518109 — les recettes d'un projet, servies depuis la mémoire du daemon
     if (req.method === 'GET' && req.url?.startsWith('/api/recipes/')) {
       this.handleProjectRead('/api/recipes/', 'recipes_unavailable', this.recipesHandler, req.url, res);
+      return;
+    }
+
+    // fiche 20261110191135802 — les étapes fines de chaque skill, servies depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/process/')) {
+      this.handleProjectRead(
+        '/api/process/',
+        'process_unavailable',
+        this.processShowHandler,
+        req.url,
+        res,
+      );
       return;
     }
 

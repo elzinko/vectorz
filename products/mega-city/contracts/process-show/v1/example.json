@@ -1,0 +1,358 @@
+{
+ "schema_version": 1,
+ "skills": [
+  {
+   "id": "ezk-backlog",
+   "nom": "Le backlog",
+   "enClair": "Les idées deviennent des fiches prêtes, puis un lot à construire.",
+   "etapes": [
+    {
+     "id": "capturer",
+     "num": 1,
+     "titre": "Capturer",
+     "enClair": "Une idée ou un bug devient une fiche, sans doublon.",
+     "joueePar": [
+      "ezk-backlog:add"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-backlog add"
+     ],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "groomer",
+     "num": 2,
+     "titre": "Groomer",
+     "enClair": "La fiche mûrit vers la Definition of Ready, technique par technique.",
+     "joueePar": [
+      "ezk-backlog:groom"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-backlog groom"
+     ],
+     "regles": [],
+     "reglages": [
+      {
+       "cle": "grooming.techniques",
+       "valeur": "menu"
+      }
+     ]
+    },
+    {
+     "id": "prete",
+     "num": 3,
+     "titre": "Prête",
+     "enClair": "La porte de la Definition of Ready vérifie la fiche, le PO la déclare tirable.",
+     "joueePar": [
+      "ezk-backlog:ready",
+      "humain"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-backlog ready"
+     ],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "tirer-un-lot",
+     "num": 4,
+     "titre": "Tirer un lot",
+     "enClair": "Les prochaines fiches tirables forment le lot du sprint.",
+     "joueePar": [
+      "ezk-backlog:next"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-backlog next"
+     ],
+     "regles": [],
+     "reglages": []
+    }
+   ]
+  },
+  {
+   "id": "ezk-sprint",
+   "nom": "Le sprint",
+   "enClair": "Chaque story du lot est construite, validée, relue, puis intégrée.",
+   "etapes": [
+    {
+     "id": "cadrage",
+     "num": 1,
+     "titre": "Cadrage",
+     "enClair": "Le périmètre minimal qui prouve la valeur.",
+     "joueePar": [
+      "ezk-sprint"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-sprint"
+     ],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "archi",
+     "num": 2,
+     "titre": "Archi",
+     "enClair": "Une décision de conception, et son ADR, quand la story le justifie.",
+     "joueePar": [
+      "agent:ezk-architect"
+     ],
+     "agents": [
+      "ezk-architect"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "scenarios",
+     "num": 3,
+     "titre": "Scénarios",
+     "enClair": "Les scénarios d'acceptation, la Definition of Done exécutable.",
+     "joueePar": [
+      "agent:ezk-qa"
+     ],
+     "agents": [
+      "ezk-qa"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "code",
+     "num": 4,
+     "titre": "Code",
+     "enClair": "Le cœur de la story, test d'abord.",
+     "joueePar": [
+      "agent:ezk-dev"
+     ],
+     "agents": [
+      "ezk-dev"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "gate",
+     "num": 5,
+     "titre": "Gate",
+     "enClair": "Toute la validation locale du projet ; rien ne part sans elle.",
+     "joueePar": [
+      "ezk-sprint",
+      "ezk-ci"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-sprint",
+      "/ezk-ci"
+     ],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "e2e",
+     "num": 6,
+     "titre": "E2E",
+     "enClair": "Les parcours critiques validés sur l'app qui tourne, dès qu'il y a une interface.",
+     "joueePar": [
+      "agent:ezk-qa"
+     ],
+     "agents": [
+      "ezk-qa"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "revue-adverse",
+     "num": 7,
+     "titre": "Revue adverse",
+     "enClair": "Un relecteur cherche à casser la story et prouve chaque critère.",
+     "joueePar": [
+      "agent:ezk-reviewer"
+     ],
+     "agents": [
+      "ezk-reviewer"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": [
+      {
+       "cle": "review.adverse",
+       "valeur": "run"
+      }
+     ]
+    },
+    {
+     "id": "integration",
+     "num": 8,
+     "titre": "Intégration",
+     "enClair": "Après accord du PO, la story arrive sur main selon la config du projet.",
+     "joueePar": [
+      "ezk-sprint",
+      "humain"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-sprint"
+     ],
+     "regles": [],
+     "reglages": [
+      {
+       "cle": "github.pr",
+       "valeur": "on"
+      },
+      {
+       "cle": "integration",
+       "valeur": "push-ff"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ezk-retro",
+   "nom": "La rétro",
+   "enClair": "L'équipe transforme une friction vécue en proposition mesurable.",
+   "etapes": [
+    {
+     "id": "cadrer",
+     "num": 1,
+     "titre": "Cadrer",
+     "enClair": "Le périmètre et les symptômes observés.",
+     "joueePar": [
+      "ezk-retro:run"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-retro run"
+     ],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "round-robin",
+     "num": 2,
+     "titre": "Round-robin",
+     "enClair": "Chaque agent propose à travers sa lentille, en deux tours.",
+     "joueePar": [
+      "agent:ezk-architect",
+      "agent:ezk-qa",
+      "agent:ezk-dev",
+      "agent:ezk-pm"
+     ],
+     "agents": [
+      "ezk-architect",
+      "ezk-qa",
+      "ezk-dev",
+      "ezk-pm"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "juge",
+     "num": 3,
+     "titre": "Juge",
+     "enClair": "Le juge de cohérence cherche doublons et contradictions avec les règles.",
+     "joueePar": [
+      "agent:ezk-steward"
+     ],
+     "agents": [
+      "ezk-steward"
+     ],
+     "commandes": [],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "rangement-po",
+     "num": 4,
+     "titre": "Rangement PO",
+     "enClair": "Le PO tranche ; les propositions retenues vont au backlog ou aux règles.",
+     "joueePar": [
+      "humain",
+      "ezk-backlog:add"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-backlog add"
+     ],
+     "regles": [],
+     "reglages": []
+    }
+   ]
+  },
+  {
+   "id": "ezk-archive",
+   "nom": "L'archive",
+   "enClair": "La session se clôt sans rien perdre.",
+   "etapes": [
+    {
+     "id": "portier",
+     "num": 1,
+     "titre": "Portier",
+     "enClair": "Un script dit si la session est propre, sans rien écrire.",
+     "joueePar": [
+      "ezk-archive:check"
+     ],
+     "agents": [],
+     "commandes": [
+      "/ezk-archive check"
+     ],
+     "regles": [],
+     "reglages": []
+    },
+    {
+     "id": "cloture",
+     "num": 2,
+     "titre": "Clôture",
+     "enClair": "Les corrections sûres s'appliquent et la note de reprise s'écrit.",
+     "joueePar": [
+      "ezk-archive:run",
+      "agent:ezk-archive"
+     ],
+     "agents": [
+      "ezk-archive"
+     ],
+     "commandes": [
+      "/ezk-archive run"
+     ],
+     "regles": [],
+     "reglages": []
+    }
+   ]
+  }
+ ],
+ "liens": [
+  {
+   "de": "ezk-backlog",
+   "vers": "ezk-sprint",
+   "libelle": "Le lot de fiches prêtes part en sprint."
+  },
+  {
+   "de": "ezk-sprint",
+   "vers": "ezk-retro",
+   "libelle": "Les frictions du sprint nourrissent la rétro."
+  },
+  {
+   "de": "ezk-retro",
+   "vers": "ezk-backlog",
+   "libelle": "Les propositions retenues par le PO deviennent des fiches."
+  },
+  {
+   "de": "ezk-sprint",
+   "vers": "ezk-archive",
+   "libelle": "La session se clôt après le sprint."
+  }
+ ]
+}
