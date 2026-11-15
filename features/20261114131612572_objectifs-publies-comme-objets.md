@@ -80,7 +80,7 @@ Un ajout de champs, sans changement de sens. Les contrats `board-show` et `backl
    un fichier d'ordonnancement orienté LLM, pas la source des noms.
    Aujourd'hui une milestone n'est pas un fichier : l'ADR-0083 (décision 3) dit « aucun objet
    milestone persistant ». La forme de cet objet est tranchée par le panel de
-   [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
+   [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
    Une forme possible, à titre d'exemple : un petit fichier markdown par objectif, avec un
    front-matter `milestone:` et `nom:`, dans un dossier dédié de `features/`.
 4. Ordre de construction. Les points 1 et 2 ne dépendent d'aucune décision : ils partent d'abord,
@@ -145,7 +145,7 @@ pnpm --dir products/mega-city test -- \
 - Décision du PO du 14 novembre (n° 2) : le nom en clair d'un objectif vit dans le front-matter de
   l'objet lui-même ; pas de `milestones.yml` ; `PLAN.md` n'est pas la source des noms. À confirmer
   par le panel adverse avant d'être écrite en ADR : elle touche la décision 3 de l'ADR-0083.
-- Dépend de [Trancher la coupe : committer le dossier du 10 novembre, panel adverse, ADR-0088](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
+- Dépend de [Trancher la coupe : committer le dossier du 10 novembre, panel adverse, ADR-0088](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
   pour la forme de l'objet. Les champs calculés (points 1 et 2) n'en dépendent pas.
 - Fiche sœur, à faire après celle-ci :
   [« parked » n'est plus un pseudo-objectif](20261114131614612_parked-n-est-plus-un-pseudo-objectif.md).

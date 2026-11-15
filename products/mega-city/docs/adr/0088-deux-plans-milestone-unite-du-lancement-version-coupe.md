@@ -15,7 +15,7 @@
   publier »). **Remplace** [0076](0076-auto-tag-close-local-opt-in.md). Ne rouvre ni
   [0081](0081-sequencement-depends-signal-dag-differe.md) (graphe différé, quatre verrous) ni
   [0069](0069-etape-process-calculee-par-jointure.md) (zéro état stocké).
-- Fiche : [Trancher la coupe](../../../../features/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
+- Fiche : [Trancher la coupe](../../../../features/done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
 
 ## En clair
 

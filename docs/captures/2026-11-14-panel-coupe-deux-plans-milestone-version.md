@@ -16,7 +16,7 @@ questions reviennent à toi, un oui ou un non chacune ; le reste est décision d
 
 ## 1 · La demande
 
-La fiche [Trancher la coupe](../../features/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
+La fiche [Trancher la coupe](../../features/done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
 (carte des écarts du 14 novembre, écart I4) demande un panel adverse sur les sept questions du dossier,
 la forme de l'objet nommé (décision 2 du PO du 14 novembre, qui heurte « aucun objet milestone persistant »
 du dossier), et la cohérence avec les décisions 1 (numéro de sprint continu) et 3 (graphe compilé = contrat).
@@ -199,7 +199,7 @@ juges (rapport complet du panel : `tasks/w39yjzucj.output` de la session maquett
 
 ## 10 · Application
 
-- **ADR-0088** : écrit par la fiche [Trancher la coupe](../../features/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
+- **ADR-0088** : écrit par la fiche [Trancher la coupe](../../features/done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md)
   avec les amendements de la section 7 ; accepté le 15 novembre sur les quatre oui du PO.
 - **Amendements** : ADR-0083 §2 et §3, ADR-0070, ADR-0080 (dont le point « but de version »), ADR-0076
   (remplacé), ADR-079 D2, ADR-086 (table « à publier »).

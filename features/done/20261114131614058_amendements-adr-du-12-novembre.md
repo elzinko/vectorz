@@ -97,7 +97,7 @@ Des gestes de texte, bon marché, plus deux renommages. Les amendements d'abord,
    - Décision 5, prise par le PO (hors panel) : `ezk rules show` est gardé comme vue documentée et mince de `law show` :
      un seul moteur, `rules show` = `law show` filtré ; pas de retrait, pas d'implémentation parallèle ; ADR-0062
      (ligne 88) et la rétro s'en servent. Build : [Un seul lecteur de la loi du projet](../20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md).
-   - Décision 2 (nom d'un objectif et d'une version) : portée par [Trancher la coupe](../20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
+   - Décision 2 (nom d'un objectif et d'une version) : portée par [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
 
 Hors périmètre : le glossaire publié ([`ezk glossaire show --json`](../20261114131616634_ezk-glossaire-show-json.md)) ;
 les renommages d'écran (« Runs de cadrage », slug du sprint lu comme « objectif »), portés par
@@ -146,7 +146,7 @@ ezk --root "$R" docs check-links
 ## Notes / décisions
 
 - Origine : la [carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
-  écarts I1 et I3 ; première de l'ordre d'attaque, avec [Trancher la coupe](../20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
+  écarts I1 et I3 ; première de l'ordre d'attaque, avec [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
 - Décisions du PO du 14 novembre : 1 et 3 portées ici comme matière d'ADR à confirmer par le panel, 5 comme prise ;
   2 renvoyée à « Trancher la coupe » ; A8 (pas de numéro court stocké) notée dans
   [Mission control range son menu par portée](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).

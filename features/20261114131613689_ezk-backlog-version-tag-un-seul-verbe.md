@@ -76,7 +76,7 @@ Un seul verbe, POC d'abord, qui compose ce qui existe.
    le panel le confirme.
 
 Hors périmètre : le dossier lui-même, son panel et l'ADR-0088, portés par
-[Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Le tirage par
+[Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Le tirage par
 objectif, porté par [Séquencer par milestone](20261016081021364_sequencer-par-milestone-dependances.md).
 
 ## Critères d'acceptation
@@ -135,12 +135,12 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
   écart E4 (pages Version, Versions).
 - **Blocage `panel`.** Le dossier du 10 novembre n'a pas eu son panel adverse. Le modèle de version
   (contenu d'une coupe, sort des verbes existants) doit être tranché avant le build :
-  [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). La fiche
+  [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). La fiche
   reste P1 parce que la page Versions repose sur ce verbe.
 - Décision du PO du 14 novembre (à confirmer par le panel adverse avant d'être écrite en ADR) : le
   nom en clair d'une version vit dans le front-matter de la version elle-même, pas dans `PLAN.md`.
   Elle est portée par [Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md)
-  et [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Ce verbe
+  et [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Ce verbe
   pose le numéro, pas le nom.
 - Fiches livrées dont le code bouge ou disparaît :
   [Découper le backlog en versions](done/20260824204751403_preparation-lots-versions-coherence.md)

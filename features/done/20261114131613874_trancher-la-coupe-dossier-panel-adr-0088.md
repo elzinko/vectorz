@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [adr, release]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (78ff1f33)"
 evidence: none # décisions et documents, aucun écran
 created: 2026-11-14
 ---
@@ -31,7 +31,7 @@ contient. Les autres termes sont au glossaire, en bas.
 Ce que l'écran attend. La maquette du 12 novembre ne garde qu'un bouton « Versionner » sur la page Version ;
 ses contrôles se lisent dans Configuration › Process › Livrer une version. La page Versions attend une carte
 « Prochaine coupe » : livrées depuis la dernière étiquette, numéro proposé, dernier verdict de la gate. C'est
-la fiche voisine [Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md).
+la fiche voisine [Les versions publiées comme coupes](../20261114131612759_versions-publiees-comme-coupes.md).
 
 Ce qui existe aujourd'hui, vérifié le 14 novembre :
 
@@ -41,8 +41,8 @@ Ce qui existe aujourd'hui, vérifié le 14 novembre :
   14 novembre au soir (`60e7f327`, lien recalé par `2a90f349`) : 345 lignes, sept questions au panel, sept
   fiches candidates, un brouillon d'ADR-0088, la table des ADR qu'il amende.
 - Le seul panel « versions » est celui du 16 octobre
-  ([capture](../docs/captures/2026-10-16-panel-sequencement-version-milestone.md), gravé dans
-  [ADR-0081](../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md)) : il a différé
+  ([capture](../../docs/captures/2026-10-16-panel-sequencement-version-milestone.md), gravé dans
+  [ADR-0081](../../products/mega-city/docs/adr/0081-sequencement-depends-signal-dag-differe.md)) : il a différé
   le graphe de dépendances, il n'a pas parlé de la coupe.
 - `ezk backlog version` connaît `list`, `check`, `ready`, `close`, `freeze`, `unfreeze`, `diff`
   (`products/mega-city/bin/backlog-version.ts:45`), pas `tag`. L'étiquette se pose par `close <v> --tag`
@@ -59,8 +59,8 @@ Ce qui existe aujourd'hui, vérifié le 14 novembre :
   (`products/mega-city/contracts/board-show/v1/schema.json:96-112`).
 
 Ce qui manque : la décision. Deux fiches l'attendent :
-[Séquencer par milestone + dépendances inter-milestones](20261016081021364_sequencer-par-milestone-dependances.md),
-`blocked: panel` depuis le 16 octobre, et [Recopier sur GitHub ce que la méthode écrit en local](0171-adapter-github-issues-push-only.md),
+[Séquencer par milestone + dépendances inter-milestones](../20261016081021364_sequencer-par-milestone-dependances.md),
+`blocked: panel` depuis le 16 octobre, et [Recopier sur GitHub ce que la méthode écrit en local](../0171-adapter-github-issues-push-only.md),
 parkée, qui fait proposer la release GitHub par `version close X` (lignes 81 et 119).
 
 ## Proposition
@@ -73,7 +73,7 @@ Quatre gestes, dans l'ordre ; le premier est fait. Cette fiche écrit des docume
    patch ou mineure ; l'axe de tirage ; deux lignes sur un seul `main` ; le gel `freeze/` ; le tas parké.
    Trois lentilles, un verdict par question, l'arbitrage du PO, dans une capture sous `docs/captures/`.
    Le panel vérifie aussi la forme de l'objet qui porte un nom (décision 2, en Notes) et la cohérence avec
-   les décisions 1 et 3 portées par [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md).
+   les décisions 1 et 3 portées par [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md).
 3. **Ratifier ou rejeter ADR-0088** par `ezk adr new <slug> --scope methode`, qui pose le squelette au prochain
    numéro libre dans `products/mega-city/docs/adr/`. L'ADR tranche ce qu'une version contient (la coupe depuis
    la dernière étiquette), le verbe (`ezk backlog version tag <v>`, proposé par le dossier), le sort de
@@ -83,10 +83,10 @@ Quatre gestes, dans l'ordre ; le premier est fait. Cette fiche écrit des docume
    à ADR-0088 et dit ce qui change. La table « Ce que ça amende » du dossier donne le contenu ; elle dit
    ADR-0076 « remplacé » et ne touche d'ADR-086 que la table « à publier » (ses §2-3 relèvent de la fiche voisine).
 
-Hors périmètre : le code de la coupe ([`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
-qui attend ce panel) ; la publication des [objectifs](20261114131612572_objectifs-publies-comme-objets.md) et des
-[versions](20261114131612759_versions-publiees-comme-coupes.md) ; la fin du pseudo-objectif
-[« parked »](20261114131614612_parked-n-est-plus-un-pseudo-objectif.md) ; les notes de version elles-mêmes
+Hors périmètre : le code de la coupe ([`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
+qui attend ce panel) ; la publication des [objectifs](../20261114131612572_objectifs-publies-comme-objets.md) et des
+[versions](../20261114131612759_versions-publiees-comme-coupes.md) ; la fin du pseudo-objectif
+[« parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md) ; les notes de version elles-mêmes
 (fiche à créer après l'ADR). Pas de `milestones.yml` : la décision 2 l'écarte.
 
 ## Critères d'acceptation
@@ -102,7 +102,7 @@ qui attend ce panel) ; la publication des [objectifs](20261114131612572_objectif
       par la fiche « version tag » dès que le verbe existe (règle `clean-code/no-dead-code`), ou gardés avec
       une raison écrite.
 - [x] L'ADR dit le sort des notes de version et de la règle `documentation-guidelines/changelog` : notes
-      générées depuis la coupe (fiche à créer, liée à la release GitHub de [Recopier sur GitHub](0171-adapter-github-issues-push-only.md)),
+      générées depuis la coupe (fiche à créer, liée à la release GitHub de [Recopier sur GitHub](../0171-adapter-github-issues-push-only.md)),
       ou règle retirée, ou amendée puis rangée dans un bundle.
 - [x] Les fiches qui attendaient ce panel sont requalifiées : « Séquencer par milestone » sort de
       `blocked: panel` (prête, superseded ou absorbée) et « version tag » perd son blocage.
@@ -134,8 +134,8 @@ Aucun test de code : la fiche ne touche que des documents et des fiches. Aucune 
 
 ## Notes / décisions
 
-- Origine : la [carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart I4.
-  Première fiche de l'ordre d'attaque, avec [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md).
+- Origine : la [carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart I4.
+  Première fiche de l'ordre d'attaque, avec [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md).
 - **Décision du PO du 14 novembre (décision 2), à confirmer par ce panel.** Le nom en clair d'un objectif et
   d'une version vit dans le front-matter de l'objet lui-même (la milestone, la version), pas dans `PLAN.md`.
   `PLAN.md` reste un fichier d'ordonnancement orienté LLM, pas la source des noms. Pas de `milestones.yml`.
@@ -147,12 +147,12 @@ Aucun test de code : la fiche ne touche que des documents et des fiches. Aucune 
   les quatre décisions réservées à l'humain, dont la coupe ; la gate de release comme précondition du tag ;
   un seul flux de code ; et « aucun objet milestone persistant » (ADR-0069). Ce dernier point heurte la
   décision 2 : le panel doit y revenir, c'est le point de tension de la fiche.
-- Dépendances : aucune fiche du lot. Dépendent de celle-ci : [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
-  (`blocked: panel`), [les objectifs publiés](20261114131612572_objectifs-publies-comme-objets.md),
-  [les versions publiées](20261114131612759_versions-publiees-comme-coupes.md) et
-  [la fin du pseudo-objectif « parked »](20261114131614612_parked-n-est-plus-un-pseudo-objectif.md).
-- Voisine : [« À trancher »](done/20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md), dont le cœur passe
-  dans [la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ; le dossier y prévoit un type « couper ».
+- Dépendances : aucune fiche du lot. Dépendent de celle-ci : [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
+  (`blocked: panel`), [les objectifs publiés](../20261114131612572_objectifs-publies-comme-objets.md),
+  [les versions publiées](../20261114131612759_versions-publiees-comme-coupes.md) et
+  [la fin du pseudo-objectif « parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md).
+- Voisine : [« À trancher »](20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md), dont le cœur passe
+  dans [la cloche](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ; le dossier y prévoit un type « couper ».
 - Risques : les chiffres de l'En clair sont ceux du dossier, au 10 novembre, non recalculés ici.
 
 ## Journal

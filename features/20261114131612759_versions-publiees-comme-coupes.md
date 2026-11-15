@@ -48,7 +48,7 @@ Ce que le code publie aujourd'hui :
 - Les fiches livrées sans version sont comptées en interne (`history`), ni publiées ni listées : 233
   sur 379 livrées le 14 novembre (`ezk backlog show --json`). La carte des écarts compte 85 livrées
   depuis `v0.22.0` ; le « 76 sans numéro » vient du dossier du 10 novembre, repris par
-  [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Comptes git, non rejoués ici.
+  [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Comptes git, non rejoués ici.
   `products/mega-city/src/backlog/versions.ts:209-218`
 - `ezk release <vX.Y>` écrit son verdict (`GO` ou `NO-GO`, passes, date, commit) sous
   `.vectorz/release/<version>.json` ; `board show` ne le lit pas.
@@ -80,7 +80,7 @@ Ce que le code publie aujourd'hui :
 
 **Volet b — après le panel.** `nom`, `numeroPropose` et la règle de la coupe (quoi, qui, quand)
 dépendent du panel de
-[Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
+[Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
 
 - Décision du PO du 14 novembre : le nom en clair d'une version vit dans le front-matter de l'objet
   version lui-même, pas dans `PLAN.md` ; pas de `milestones.yml`. La forme de l'objet est tranchée
@@ -144,7 +144,7 @@ pnpm --dir products/mega-city test -- \
 - Décision du PO du 14 novembre (n° 2) : le nom en clair d'une version vit dans le front-matter de
   l'objet version ; pas de `milestones.yml` ; `PLAN.md` n'est pas la source des noms. À confirmer par
   le panel adverse avant d'être écrite en ADR ; le panel de la coupe en vérifie la forme.
-- Dépend de [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et de
+- Dépend de [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et de
   [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md). Le dossier
   du 10 novembre n'est pas committé (autre worktree). Le volet a n'attend ni l'un ni l'autre.
 - Trois corrections de la contestation du 14 novembre. `ezk backlog version tag --dry-run` n'existe
