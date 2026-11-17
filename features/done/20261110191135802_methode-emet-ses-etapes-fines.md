@@ -176,7 +176,7 @@ Preuve avant / après : sans objet, aucun écran ne change (`evidence: none`).
 **Fiches liées.**
 
 - **Elle débloque** la fiche
-  [Schéma Process zoomable](../20261110185357446_schema-process-zoomable-semantic-zoom.md)
+  [Schéma Process zoomable](20261110185357446_schema-process-zoomable-semantic-zoom.md)
   (`20261110185357446`, produit cop1), arrivée sur `main` le 15 nov. Les deux vont de pair :
   celle-ci donne les données, l'autre l'écran.
 - **Elle prend la suite** de

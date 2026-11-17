@@ -7,8 +7,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (7c0f350f)"
 evidence: before-after
 created: 2026-11-10
 ---
@@ -107,9 +107,9 @@ pnpm --dir packages/web dev
 
 | Vue | Avant (main) | Après (branche) |
 |---|---|---|
-| Process, vue d'ensemble | ![avant](../docs/pr-evidence/20261110185357446/process-before.png) | ![après](../docs/pr-evidence/20261110185357446/process-after.png) |
-| Zoom : étapes de chaque skill | — | ![étapes](../docs/pr-evidence/20261110185357446/zoom-etapes-after.png) |
-| Double-clic sur « Gate » : détail | — | ![détail](../docs/pr-evidence/20261110185357446/zoom-detail-after.png) |
+| Process, vue d'ensemble | ![avant](../../docs/pr-evidence/20261110185357446/process-before.png) | ![après](../../docs/pr-evidence/20261110185357446/process-after.png) |
+| Zoom : étapes de chaque skill | — | ![étapes](../../docs/pr-evidence/20261110185357446/zoom-etapes-after.png) |
+| Double-clic sur « Gate » : détail | — | ![détail](../../docs/pr-evidence/20261110185357446/zoom-detail-after.png) |
 
 Preuve en PR (règle `development/pr-before-after-media`) : **captures avant / après aux
 trois niveaux** — vue d'ensemble, étapes de skill, détail d'une étape —, l'« avant » étant
@@ -129,13 +129,13 @@ le schéma statique, l'« après » la surface zoomée au même niveau.
 **Dépendances.**
 
 - **La vue Process statique** qu'elle remplace :
-  [La vue Process montre le workflow en schéma](done/20261104090517801_process-montre-le-workflow-en-schema.md)
+  [La vue Process montre le workflow en schéma](20261104090517801_process-montre-le-workflow-en-schema.md)
   — **shippée** (cop1, milestone `board`). C'est l'« avant » des captures.
 - **« La méthode émet ses étapes fines »** — la couche de données des **trois** niveaux. La
   méthode ne publiait pas les étapes des skills ; elles étaient **en dur dans le web**
   (`SPRINT_STEPS` dans `ProcessView.tsx`).
   **Cette fiche est désormais livrée sur `main`** :
-  [La méthode émet ses étapes fines](done/20261110191135802_methode-emet-ses-etapes-fines.md)
+  [La méthode émet ses étapes fines](20261110191135802_methode-emet-ses-etapes-fines.md)
   (`20261110191135802`, **livrée** le 15 nov. : `510276c0`). La dépendance est **levée**. Elle
   livre la commande `ezk process show --json` (contrat `contracts/process-show/v1/`), servie par
   le daemon sur `GET /api/process/<projet>`, et sa sortie couvre les trois niveaux. Le lien
