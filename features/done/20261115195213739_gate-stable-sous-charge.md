@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [gate, tests]
-status: idea
-pr:
+status: shipped
+pr: "local (1f1456d7)"
 evidence: none # pas d'écran : outillage de tests
 created: 2026-11-15
 ---
