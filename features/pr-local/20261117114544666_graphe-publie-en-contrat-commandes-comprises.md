@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md](../20261117114544666_graphe-publie-en-contrat-commandes-comprises.md)
+> 🗎 Rendu de la fiche [features/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md](../done/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md)
 
 # 20261117114544666 — La méthode publie son graphe en contrat, commandes comprises
 

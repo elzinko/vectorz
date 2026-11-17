@@ -104,7 +104,7 @@ exemple. Mission control, l'écran de cop1, ne lit que ces contrats (ADR-086).
 - [ ] `law show --json` publie la dette de la loi (`uncited`, date de mesure) ; le schéma et l'exemple
   de `law-show` la décrivent, `schema_version` inchangé.
 
-*Trois critères (le contrat, les commandes comme briques, le lien compétence → commande) sont passés le 2026-11-17 dans la fiche [La méthode publie son graphe en contrat, commandes comprises](20261117114544666_graphe-publie-en-contrat-commandes-comprises.md).*
+*Trois critères (le contrat, les commandes comme briques, le lien compétence → commande) sont passés le 2026-11-17 dans la fiche [La méthode publie son graphe en contrat, commandes comprises](done/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md).*
 
 ## Comment vérifier
 

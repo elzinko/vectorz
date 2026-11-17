@@ -8,8 +8,8 @@ product: mega-city
 milestone: board
 version:
 labels: [carte, contrat, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (8d615de3)"
 evidence: none # pas d'écran : une sortie JSON
 created: 2026-11-17
 ---
@@ -40,7 +40,7 @@ Trois manques empêchent un écran de s'y fier :
    commandes servent chaque outil (`tool.commands`, ADR-0058).
 
 C'est la première tranche de la fiche
-[Le graphe de la méthode en un contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
+[Le graphe de la méthode en un contrat compilé](../20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
 
 ## Proposition
 
@@ -88,4 +88,4 @@ Reste ouvert, non bloquant : un triple-backtick sur une seule ligne compterait c
 - Découpée le 2026-11-17 de la fiche du graphe compilé, par délégation du PO absent (run autonome
   jusqu'à 17 h 31). Restent dans la fiche d'origine : les recettes, le bloc santé, la dette de la loi et
   l'alignement de la page Cartes.
-- Débloque la fiche [La carte de la méthode, zoomable](20261117114544792_carte-de-la-methode-zoomable.md).
+- Débloque la fiche [La carte de la méthode, zoomable](../20261117114544792_carte-de-la-methode-zoomable.md).

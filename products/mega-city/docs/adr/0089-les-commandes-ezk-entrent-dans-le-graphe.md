@@ -3,7 +3,7 @@
 **Statut :** Accepté
 **Date :** 2026-11-17
 **Deciders :** PO, par délégation pour le run autonome du 2026-11-17
-**Fiche :** [`20261117114544666`](../../../../features/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md)
+**Fiche :** [`20261117114544666`](../../../../features/done/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md)
 **Amende :** [ADR-0040](0040-modele-fichiers-ezk-compile-schema-valide.md) D1 — les verbes passent à six, les sortes à sept.
 **S'appuie sur :** [ADR-0058](0058-les-outils-entrent-dans-le-graphe.md) — même méthode : on calcule, on ne saisit rien.
 
