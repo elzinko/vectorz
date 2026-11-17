@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, methode]
-status: ready
-pr:
+status: shipped
+pr: "local (e7b2a5ee)"
 evidence: none # texte de skill et test, aucun écran
 created: 2026-11-17
 ---
