@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117145515980_daemon-accepte-un-graphe-sans-sortes-recentes.md](../20261117145515980_daemon-accepte-un-graphe-sans-sortes-recentes.md)
+> 🗎 Rendu de la fiche [features/20261117145515980_daemon-accepte-un-graphe-sans-sortes-recentes.md](../done/20261117145515980_daemon-accepte-un-graphe-sans-sortes-recentes.md)
 
 # 20261117145515980 — Le daemon accepte un graphe qui n'a pas encore les sortes récentes
 

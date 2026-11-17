@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [carte, contrat]
-status: ready
-pr:
+status: shipped
+pr: "local (ca19fb36)"
 evidence: none # pas de changement visible avec une méthode à jour
 created: 2026-11-17
 ---
@@ -50,5 +50,5 @@ pnpm exec vitest run products/cop1/packages/app/src/features/board/ezkGraphSourc
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Toute sorte connue absente vaut 0 ; c'est sans risque, car la carte recompte ses familles depuis `nodes`.
 
 
-- Origine : [rétro du sprint 6 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-6-recettes-dans-le-graphe.md),
+- Origine : [rétro du sprint 6 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-6-recettes-dans-le-graphe.md),
   proposition 1, retenue par délégation du PO absent.
