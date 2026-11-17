@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, methode]
-status: ready
-pr:
+status: shipped
+pr: "local (29617482)"
 evidence: none # typographie d'un skill et son test, aucun écran
 created: 2026-11-17
 ---
@@ -27,7 +27,7 @@ dans le skill. Il compare le texte exact, apostrophes comprises.
 ## Contexte / Problème
 
 Réserve P3 de la revue adverse de la fiche
-[Le skill ezk-sprint met la fiche et sa livraison sur main aux bons moments](done/20261117155420514_sprint-fiche-et-livraison-sur-main.md).
+[Le skill ezk-sprint met la fiche et sa livraison sur main aux bons moments](20261117155420514_sprint-fiche-et-livraison-sur-main.md).
 
 ## Proposition
 
