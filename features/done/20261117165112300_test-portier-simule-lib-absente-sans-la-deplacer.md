@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [tests, portier]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (87950d8e)"
 evidence: none # un script de test, aucun écran modifié
 created: 2026-11-17
 ---
@@ -45,5 +45,5 @@ pnpm --dir products/mega-city test:scripts & pnpm --dir products/mega-city test:
 
 - Livrée le 2026-11-17, écrite par l'orchestrateur. Critères prouvés par ezk-reviewer (GO) : le cas S6 pointe `EZK_SPRINT_SAFETY_LIB` vers un chemin absent et vérifie que la vraie lib n'a pas bougé ; plus aucun test ne déplace `lib-worktree-safety.sh` (ezk-archive la copie, sans la déplacer).
 
-- Origine : [rétro légère du sprint 5 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-5-corrections-des-retros.md), proposition P1, et la note de rétro du même jour.
+- Origine : [rétro légère du sprint 5 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-5-corrections-des-retros.md), proposition P1, et la note de rétro du même jour.
 - Priorité P1 tranchée par ezk-pm le 17 novembre, par délégation du PO : le défaut fait passer une gate au rouge sans raison.

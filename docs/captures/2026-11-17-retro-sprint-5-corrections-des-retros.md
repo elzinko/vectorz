@@ -64,7 +64,7 @@ Sans objet : aucune règle neuve n'est proposée.
 
 ## 6 · Rangement
 
-- [Le test du portier simule une bibliothèque absente sans déplacer le vrai fichier](../../features/20261117165112300_test-portier-simule-lib-absente-sans-la-deplacer.md) — P1.
+- [Le test du portier simule une bibliothèque absente sans déplacer le vrai fichier](../../features/done/20261117165112300_test-portier-simule-lib-absente-sans-la-deplacer.md) — P1.
 - [`ezk-backlog add` et `ready` refusent d'écrire une fiche que `backlog check` juge non conforme](../../features/20261117165112301_add-et-ready-refusent-une-fiche-non-conforme.md) — P2.
 
 ## 7 · Ce qui reste au PO
