@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [forge, integration]
-status: ready
-pr:
+status: shipped
+pr: "local (6aba4519)"
 evidence: none # pas d'écran : outillage d'intégration
 created: 2026-11-17
 ---
@@ -54,5 +54,5 @@ cd products/mega-city && pnpm exec vitest run -t "forge integrate"
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés, dont un rejeu du script sur entrées hostiles. Le geste vit dans `ship-merge.sh --local` ; `EZK_INTEGRATE_NO_INSTALL=1` le coupe. Portée : le squash local seulement ; push-ff et --remote n'installent rien (fiche à part si besoin). Latent, non bloquant : un `git diff` en échec déclencherait l'installation au lieu d'être signalé.
 
 
-- Origine : [rétro du sprint 2 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
+- Origine : [rétro du sprint 2 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
   proposition 2, retenue par délégation du PO absent.

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117122122418_integration-locale-reinstalle-les-dependances.md](../20261117122122418_integration-locale-reinstalle-les-dependances.md)
+> 🗎 Rendu de la fiche [features/20261117122122418_integration-locale-reinstalle-les-dependances.md](../done/20261117122122418_integration-locale-reinstalle-les-dependances.md)
 
 # 20261117122122418 — L'intégration locale réinstalle les dépendances quand le lockfile change
 
