@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, carte]
-status: ready
-pr:
+status: shipped
+pr: "local (7b162612)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -63,14 +63,14 @@ cd products/cop1/packages/web && pnpm exec tsc --noEmit && pnpm exec vitest run
 
 | Vue | Avant (main) | Après (branche) |
 |---|---|---|
-| Clic sur ezk-reviewer | ![avant](../docs/pr-evidence/20261117122122557/selection-before.png) | ![après](../docs/pr-evidence/20261117122122557/selection-after.png) |
-| La même sélection, vue de loin | — | ![de loin](../docs/pr-evidence/20261117122122557/selection-de-loin-after.png) |
+| Clic sur ezk-reviewer | ![avant](../../docs/pr-evidence/20261117122122557/selection-before.png) | ![après](../../docs/pr-evidence/20261117122122557/selection-after.png) |
+| La même sélection, vue de loin | — | ![de loin](../../docs/pr-evidence/20261117122122557/selection-de-loin-after.png) |
 
 ## Notes / décisions
 
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 4 critères prouvés. Vérifié dans le navigateur sur le daemon réel : clic sur `ezk-reviewer` → panneau « applique · 1, compose · 1, ← compose · 4, ← convoque · 1, ← est-vérifié-par · 18 » ; vue de loin : Outils et Commandes estompés, les autres familles disent leurs voisins. Reste ouvert, non bloquant : pas de test composant du rendu du niveau 1 (la projection est testée).
 
 
-- Origine : [rétro du sprint 2 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
+- Origine : [rétro du sprint 2 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
   proposition 3, retenue par délégation du PO absent. Suite directe de la demande du PO : voir ce qui
   est intriqué dans la méthode.

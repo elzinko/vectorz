@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117122122557_carte-methode-selection-visible-de-loin.md](../20261117122122557_carte-methode-selection-visible-de-loin.md)
+> 🗎 Rendu de la fiche [features/20261117122122557_carte-methode-selection-visible-de-loin.md](../done/20261117122122557_carte-methode-selection-visible-de-loin.md)
 
 # 20261117122122557 — La carte de la méthode montre la sélection de loin, avec des liens lisibles
 
