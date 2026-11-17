@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [sprint]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un nom de fichier, aucun écran

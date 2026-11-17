@@ -8,7 +8,7 @@ product: cop1
 milestone:
 version:
 labels: [mission-control]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-17
