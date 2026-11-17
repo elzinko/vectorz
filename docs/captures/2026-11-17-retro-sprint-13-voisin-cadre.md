@@ -8,7 +8,9 @@ actions:
   - proposition: "Le geste de la rétro 11 a tenu une troisième fois : fiche sur main d'abord, branche de story coupée depuis main, livraison avant clôture. Trois cas sur trois. Proposer au PO de l'écrire dans le skill ezk-sprint, à l'étape de préparation d'une story."
     kind: action
     by: [dev, architecture]
-    status: ⏳
+    status: ✅
+    decision: "Retenue par délégation du PO, qui avait demandé de répondre aux questions de la méthode : écrite dans le skill ezk-sprint au sprint 14 (fiche 20261117155420514)."
+    date: 2026-11-17
   - proposition: "Un espion sur la fonction de cadrage de React Flow rend la caméra testable dans jsdom. Le sprint 12 avait conclu que c'était impossible et s'était reposé sur la seule capture d'écran. Constat : un test qui observe la demande vaut mieux que l'absence de test."
     kind: action
     by: [qualite]
@@ -51,5 +53,5 @@ Aucune note du carnet ne porte sur ce sprint.
 
 ## 6 · Ce qui reste au PO
 
-- P1 : écrire dans le skill ezk-sprint le geste « fiche sur main, branche depuis main, livraison avant
-  clôture » ? Trois cas le confirment aujourd'hui.
+Rien de neuf. P1 a été tranchée par délégation et faite au sprint 14 : le skill ezk-sprint écrit
+maintenant le geste. Le PO peut la défaire, comme toute décision prise à sa place.

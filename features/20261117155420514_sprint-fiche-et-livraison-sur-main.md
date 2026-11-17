@@ -40,10 +40,10 @@ Deux phrases dans le skill ezk-sprint :
 
 ## Critères d'acceptation
 
-- [ ] L'étape 0 du skill dit qu'une fiche créée pendant la session va dans `main` avant de couper la
+- [x] L'étape 0 du skill dit qu'une fiche créée pendant la session va dans `main` avant de couper la
       branche de story.
-- [ ] L'étape 10 du skill dit qu'en mode local le commit de livraison va dans `main` avant `close`.
-- [ ] Un test lit les deux phrases dans le skill.
+- [x] L'étape 10 du skill dit qu'en mode local le commit de livraison va dans `main` avant `close`.
+- [x] Un test lit les deux phrases dans le skill.
 
 ## Comment vérifier
 
@@ -55,3 +55,7 @@ cd products/mega-city && pnpm exec vitest run src/__tests__/ezk-sprint-fiche-sur
 
 - Créée et tirée au sprint 14 du 17 novembre. Décision par délégation du PO absent, qui avait demandé
   de répondre aux questions de la méthode. Trois cas le même jour, voir les rétros des sprints 11 à 13.
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés. Sa première réserve
+P3 est corrigée : le test lit toute l'étape 0, jusqu'à l'étape 1. La seconde reste ouverte : le test
+fige l'apostrophe courbe de la phrase.
