@@ -142,6 +142,11 @@ pnpm --dir products/mega-city test:scripts     # test-sprint-lifecycle.sh : star
 
 ## Notes / décisions
 
+**Cas du 2026-11-17 (rétro du sprint 3).** Trois sprints dans la même journée, et leurs comptes rendus
+s'intitulent « sprint 1 », « sprint 1 » puis « sprint 2 » : le numéro suit le journal de la branche où le
+sprint s'ouvre, et la première ouverture a eu lieu sur une branche de story. Un numéro continu, publié par
+la méthode, éviterait la confusion à la rétro.
+
 - Origine : la [carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écarts A1 et H1, fusionnés : même en-tête de compte rendu, même `close`, même source pour
   `board show`.
