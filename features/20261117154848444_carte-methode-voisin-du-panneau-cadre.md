@@ -37,14 +37,14 @@ cadre la carte dessus. Un clic sur la carte elle-même ne cadre toujours rien.
 
 ## Critères d'acceptation
 
-- [ ] Un clic sur un voisin du panneau le choisit, et la carte vient sur lui.
-- [ ] Le panneau n'a plus qu'un seul chemin pour choisir une brique : la recherche et les voisins
+- [x] Un clic sur un voisin du panneau le choisit, et la carte vient sur lui.
+- [x] Le panneau n'a plus qu'un seul chemin pour choisir une brique : la recherche et les voisins
       appellent la même fonction.
 
 ## Comment vérifier
 
 ```bash
-cd products/cop1/packages/web && pnpm exec vitest run src/board/GraphMap.test.tsx
+cd products/cop1/packages/web && pnpm exec vitest run src/board/GraphMap.focus.test.tsx src/board/GraphMap.test.tsx
 ```
 
 Dans mission control : choisir `ezk-sprint`, puis cliquer `ezk-backlog` dans le panneau. La carte vient
@@ -53,3 +53,16 @@ sur `ezk-backlog`.
 ## Notes / décisions
 
 - Créée et tirée au sprint 13 du 17 novembre, par délégation du PO absent.
+
+**Avant / après** (règle `development/pr-before-after-media`), captures du 2026-11-17 sur les vraies données de vectorz :
+
+| Avant le clic : `ezk-sprint` choisi, `ezk-backlog` dans le panneau | Après le clic sur `ezk-backlog` : la carte vient sur lui |
+|---|---|
+| ![avant](../docs/pr-evidence/20261117154848444/voisin-before.jpg) | ![après](../docs/pr-evidence/20261117154848444/voisin-after.jpg) |
+
+Avant ce changement, le clic choisissait `ezk-backlog` sans bouger la carte. Le test
+`GraphMap.focus.test.tsx` l'a montré rouge avant le correctif : aucun cadrage demandé.
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés par
+`GraphMap.focus.test.tsx`. Sa réserve P3 est corrigée : la commande de « Comment vérifier » lance
+maintenant ce fichier.

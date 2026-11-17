@@ -219,13 +219,15 @@ function BrickSearchField({ contract, onChoose }: { contract: GraphCheck; onChoo
   );
 }
 
-/** Le panneau à côté de la carte : les voisins de la brique choisie, cliquables pour la déplacer. */
+/**
+ * Le panneau à côté de la carte : les voisins de la brique choisie, cliquables pour la déplacer. La
+ * recherche et les voisins choisissent par le même chemin, qui cadre la carte (fiche 20261117154848444).
+ */
 function NeighborPanel({
   contract,
   selection,
-  setSelection,
   onChoose,
-}: { contract: GraphCheck; onChoose: (id: string) => void } & Selection): JSX.Element {
+}: { contract: GraphCheck; selection: string | undefined; onChoose: (id: string) => void }): JSX.Element {
   const groups = useMemo(() => selectionNeighbors(contract, selection), [contract, selection]);
   const name = selection === undefined ? undefined : contract.nodes.find((n) => `${n.kind}:${n.id}` === selection)?.id;
   return (
@@ -246,7 +248,7 @@ function NeighborPanel({
               <ul>
                 {g.neighbors.map((n) => (
                   <li key={n.id}>
-                    <button type="button" className={`gm-voisin gm-fam-${n.kind}`} title={FAMILY_LABELS[n.kind]} onClick={() => setSelection(n.id)}>
+                    <button type="button" className={`gm-voisin gm-fam-${n.kind}`} title={FAMILY_LABELS[n.kind]} onClick={() => onChoose(n.id)}>
                       {n.nom}
                     </button>
                   </li>
@@ -276,7 +278,7 @@ export function GraphMap({
   const [selection, setSelection] = useState<string | undefined>(initialSelection);
   const [focus, setFocus] = useState<Focus | undefined>();
   const clearFocus = useCallback(() => setFocus(undefined), []);
-  const chooseFromSearch = useCallback((id: string) => {
+  const choose = useCallback((id: string) => {
     setSelection(id);
     setFocus({ id });
   }, []);
@@ -301,7 +303,7 @@ export function GraphMap({
               />
             </ReactFlowProvider>
           </div>
-          <NeighborPanel contract={state.contract} selection={selection} setSelection={setSelection} onChoose={chooseFromSearch} />
+          <NeighborPanel contract={state.contract} selection={selection} onChoose={choose} />
         </div>
       ) : (
         <div className="row">
