@@ -96,13 +96,13 @@ exemple. Mission control, l'écran de cop1, ne lit que ces contrats (ADR-086).
 
 - [ ] Le payload de la carte servi par `ezk board maps --file methode-mega-city …` porte ce même bloc,
   à l'octet près : plus aucune adjacence recalculée à côté.
-- [ ] Les 16 recettes sont des nœuds `recipe`, leurs `composes:` des arêtes compose ; une recette que
-  rien ne cite figure dans `orphans`.
 - [ ] Le bloc `sante` nomme `skillsSansRoles[]`, `agentsJamaisConvoques[]`, `liensAbsents[]`,
   `recettesHorsGraphe[]` et renvoie aux comptes de `law show` pour les règles sans effet. À la première
   exécution : 23 compétences sans rôles, ezk-chef et ezk-archive jamais convoqués, 0 lien absent, 69 règles sans effet.
 - [ ] `law show --json` publie la dette de la loi (`uncited`, date de mesure) ; le schéma et l'exemple
   de `law-show` la décrivent, `schema_version` inchangé.
+
+*Le critère des recettes est passé le 2026-11-17 dans la fiche [Les recettes entrent dans le graphe de la méthode et sur sa carte](20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md).*
 
 *Trois critères (le contrat, les commandes comme briques, le lien compétence → commande) sont passés le 2026-11-17 dans la fiche [La méthode publie son graphe en contrat, commandes comprises](done/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md).*
 
