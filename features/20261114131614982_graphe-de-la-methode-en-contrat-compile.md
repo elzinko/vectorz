@@ -94,14 +94,8 @@ exemple. Mission control, l'écran de cop1, ne lit que ces contrats (ADR-086).
 
 ## Critères d'acceptation
 
-- [ ] `ezk graph check --json` sort le contrat `contracts/graph-check/v1/` : `schema_version`, `nodes[]`
-  (kind, id, fichier, etage, famille), `edges[]` (from, fromKind, link, verb, to, toKind), `broken`,
-  `orphans`, `pathRefs`, `provenance`. Schéma et exemple sont générés ; la sortie réelle les respecte.
 - [ ] Le payload de la carte servi par `ezk board maps --file methode-mega-city …` porte ce même bloc,
   à l'octet près : plus aucune adjacence recalculée à côté.
-- [ ] Les sortes `command` et `recipe` et le verbe `lance` sont dans le vocabulaire fermé, écrits dans un
-  ADR court ou un amendement, figés par `graph-vocabulary`. Les 74 commandes sont des nœuds reliés à leur script par `lance`.
-- [ ] Une arête compétence → commande existe quand la doc d'une compétence cite `ezk <domaine> <verbe>` ; une compétence jouet le prouve.
 - [ ] Les 16 recettes sont des nœuds `recipe`, leurs `composes:` des arêtes compose ; une recette que
   rien ne cite figure dans `orphans`.
 - [ ] Le bloc `sante` nomme `skillsSansRoles[]`, `agentsJamaisConvoques[]`, `liensAbsents[]`,
@@ -109,6 +103,8 @@ exemple. Mission control, l'écran de cop1, ne lit que ces contrats (ADR-086).
   exécution : 23 compétences sans rôles, ezk-chef et ezk-archive jamais convoqués, 0 lien absent, 69 règles sans effet.
 - [ ] `law show --json` publie la dette de la loi (`uncited`, date de mesure) ; le schéma et l'exemple
   de `law-show` la décrivent, `schema_version` inchangé.
+
+*Trois critères (le contrat, les commandes comme briques, le lien compétence → commande) sont passés le 2026-11-17 dans la fiche [La méthode publie son graphe en contrat, commandes comprises](20261117114544666_graphe-publie-en-contrat-commandes-comprises.md).*
 
 ## Comment vérifier
 
