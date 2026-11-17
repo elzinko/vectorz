@@ -150,7 +150,7 @@ pnpm --dir products/mega-city test -- \
 - Trois corrections de la contestation du 14 novembre. `ezk backlog version tag --dry-run` n'existe
   pas : les verbes sont `list`, `check`, `ready`, `close`, `freeze`, `unfreeze`, `diff`
   (`backlog-version.ts:45`). muti a des lots pleins et aucun sprint. Committer le dossier est un geste.
-- Fiche sœur : [Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md)
+- Fiche sœur : [Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md)
   porte la même décision sur le nom, côté objectif.
 - Risques : « depuis la dernière étiquette » se calcule par git (fiches ajoutées à `done/` après le
   commit étiqueté), un déplacement tardif de fiche fausse le compte ; `numeroPropose` reste `null`

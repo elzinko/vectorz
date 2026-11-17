@@ -209,7 +209,7 @@ Les fiches de build, dans l'ordre : `park` garde l'objectif
 le tirage par objectif et le verbe de la coupe
 ([`ezk backlog version tag <v>`](../../../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)) ;
 les objets d'identité et la publication
-([les objectifs publiés](../../../../features/20261114131612572_objectifs-publies-comme-objets.md),
+([les objectifs publiés](../../../../features/done/20261114131612572_objectifs-publies-comme-objets.md),
 [les versions publiées](../../../../features/20261114131612759_versions-publiees-comme-coupes.md)) ;
 la gate joue les tests ([fiche](../../../../features/done/20261114131613314_gate-de-release-joue-les-tests.md)) ;
 mission control (page Versions, page Objectifs). Les notes de version rendues depuis l'objet version, et le

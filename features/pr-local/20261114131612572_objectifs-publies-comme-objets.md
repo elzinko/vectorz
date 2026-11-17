@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261114131612572_objectifs-publies-comme-objets.md](../20261114131612572_objectifs-publies-comme-objets.md)
+> 🗎 Rendu de la fiche [features/20261114131612572_objectifs-publies-comme-objets.md](../done/20261114131612572_objectifs-publies-comme-objets.md)
 
 # 20261114131612572 — Les objectifs publiés comme objets, avec nom, fiches livrées et versions
 

@@ -206,7 +206,7 @@ juges (rapport complet du panel : `tasks/w39yjzucj.output` de la session maquett
 - **Fiches débloquées ou requalifiées** : [version tag](../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
   perd `blocked: panel` ; [Séquencer par milestone + dépendances inter-milestones](../../features/20261016081021364_sequencer-par-milestone-dependances.md)
   est requalifiée (la coupe et l'ordre dérivé du plan en reprennent le cœur, le graphe reste différé) ;
-  [les objectifs publiés](../../features/20261114131612572_objectifs-publies-comme-objets.md),
+  [les objectifs publiés](../../features/done/20261114131612572_objectifs-publies-comme-objets.md),
   [les versions publiées](../../features/20261114131612759_versions-publiees-comme-coupes.md) et
   [la fin du pseudo-objectif « parked »](../../features/20261114131614612_parked-n-est-plus-un-pseudo-objectif.md)
   prennent la forme de la section 4.

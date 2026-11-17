@@ -76,7 +76,7 @@ Hors périmètre : la passe de tri des 84 fiches déjà parkées. Elles n'ont pa
 objectif se retrouve par leurs `labels:` (`PLAN.md:123-124`). C'est un geste de curation du PO, aidé
 par cette fiche, pas remplacé par elle. Hors périmètre aussi : le nom en clair et les fiches livrées
 d'un objectif, portés par
-[Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md).
+[Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md).
 
 Voisines livrées :
 
@@ -135,7 +135,7 @@ Pas de preuve d'écran : aucun écran ne change (`evidence: none`).
 - Origine : [la carte des écarts maquette ↔ code ↔ backlog du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart A6, volet « changement de sens ». Séparé de la fiche additive pour ne pas mêler ajout et
   changement.
-- Dépend de [Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md).
+- Dépend de [Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md).
   Les deux fiches touchent `milestones[]` ; celle-ci passe après, pour que la version 2 du contrat
   porte un seul changement de sens.
 - Décision attendue du PO : la forme du drapeau de parkage (`parked_from` à côté de

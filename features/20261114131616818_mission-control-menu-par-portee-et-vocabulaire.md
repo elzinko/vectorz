@@ -79,7 +79,7 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
   [`ezk help --json`](done/20261114131613129_ezk-help-json-commandes-etage-famille.md) et
   [le graphe en contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
 - Pas d'entrée « Objectifs » grisée : Pilotage montre déjà les objectifs, les milestones (`PilotageView.tsx:73`).
-  Le lot Objectifs ([Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md))
+  Le lot Objectifs ([Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md))
   tranche si Pilotage devient Objectifs, ou si une page s'ajoute.
 - Libellés : « Lancements de cadrage récents » et « Lancements de développement » dans
   ActivityTable ; « But du sprint » à la place du nom de branche dans OverviewView, sous réserve de

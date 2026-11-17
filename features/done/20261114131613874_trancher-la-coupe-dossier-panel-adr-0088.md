@@ -84,7 +84,7 @@ Quatre gestes, dans l'ordre ; le premier est fait. Cette fiche écrit des docume
    ADR-0076 « remplacé » et ne touche d'ADR-086 que la table « à publier » (ses §2-3 relèvent de la fiche voisine).
 
 Hors périmètre : le code de la coupe ([`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
-qui attend ce panel) ; la publication des [objectifs](../20261114131612572_objectifs-publies-comme-objets.md) et des
+qui attend ce panel) ; la publication des [objectifs](20261114131612572_objectifs-publies-comme-objets.md) et des
 [versions](../20261114131612759_versions-publiees-comme-coupes.md) ; la fin du pseudo-objectif
 [« parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md) ; les notes de version elles-mêmes
 (fiche à créer après l'ADR). Pas de `milestones.yml` : la décision 2 l'écarte.
@@ -148,7 +148,7 @@ Aucun test de code : la fiche ne touche que des documents et des fiches. Aucune 
   un seul flux de code ; et « aucun objet milestone persistant » (ADR-0069). Ce dernier point heurte la
   décision 2 : le panel doit y revenir, c'est le point de tension de la fiche.
 - Dépendances : aucune fiche du lot. Dépendent de celle-ci : [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
-  (`blocked: panel`), [les objectifs publiés](../20261114131612572_objectifs-publies-comme-objets.md),
+  (`blocked: panel`), [les objectifs publiés](20261114131612572_objectifs-publies-comme-objets.md),
   [les versions publiées](../20261114131612759_versions-publiees-comme-coupes.md) et
   [la fin du pseudo-objectif « parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md).
 - Voisine : [« À trancher »](20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md), dont le cœur passe
