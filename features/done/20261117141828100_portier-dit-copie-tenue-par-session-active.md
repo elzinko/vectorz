@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, portier, sessions-paralleles]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (062937f2)"
 evidence: none # un script de contrôle, aucun écran modifié
 created: 2026-11-17
 ---
@@ -55,6 +55,6 @@ pnpm --dir products/mega-city test:scripts   # le cas « copie tenue par une ses
 
 - Livrée le 2026-11-17. Revue ezk-reviewer : NO-GO d'abord (la promotion `session-active` écrasait les copies sûres, le dossier principal serait passé en alerte à presque chaque sprint), puis GO après correctif. Critères prouvés : copie à risque + session fraîche → `raison=session-active`, copie sûre + session → reste ignorée ; même calcul qu'`ezk sessions state` (`ezk-sessions active`) ; le gabarit de choix dit « se coordonner, ne pas rejoindre ». Best-effort hors monorepo : sans `tsx`, le portier garde ses raisons d'avant.
 
-- Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P1.
+- Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P1.
 - Priorité P1 tranchée par ezk-pm le 17 novembre, par délégation du PO.
 - Mesure (retirabilité) : 0 fiche intégrée deux fois sur les 5 prochains runs parallèles.

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117141828100_portier-dit-copie-tenue-par-session-active.md](../20261117141828100_portier-dit-copie-tenue-par-session-active.md)
+> 🗎 Rendu de la fiche [features/20261117141828100_portier-dit-copie-tenue-par-session-active.md](../done/20261117141828100_portier-dit-copie-tenue-par-session-active.md)
 
 # 20261117141828100 — Le portier d'ezk-sprint dit quand une copie voisine est tenue par une session active
 

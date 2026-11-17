@@ -78,7 +78,7 @@ Les notes du carnet ne portent pas sur ces sprints : elles attendent une rétro 
 
 - [`ezk pr emit-local` garde chaque `--validation`, au lieu de la dernière](../../features/done/20261117155515200_pr-emit-local-garde-chaque-validation.md) — P1.
 - [Finir la coupe de version : parkées et différées par objectif, avertissements depends:, une seule borne](../../features/20261117155515201_finir-la-coupe-adr-0088-parkees-depends.md) — P2.
-- [Le portier d'ezk-sprint dit quand une copie voisine est tenue par une session active](../../features/20261117141828100_portier-dit-copie-tenue-par-session-active.md) — reste P1, en tête.
+- [Le portier d'ezk-sprint dit quand une copie voisine est tenue par une session active](../../features/done/20261117141828100_portier-dit-copie-tenue-par-session-active.md) — reste P1, en tête.
 
 ## 7 · Ce qui reste au PO
 
