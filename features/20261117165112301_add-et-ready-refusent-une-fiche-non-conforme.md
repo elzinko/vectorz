@@ -29,6 +29,15 @@ ADR-0040). Le test `src/backlog/__tests__/fiche-corpus.test.ts` de la gate, lui,
 `ezk-backlog add`, `groom` et `ready` valident la fiche qu'ils écrivent avec le validateur de `backlog check`,
 et refusent d'écrire sur une anomalie, en la nommant.
 
+Où brancher (groom du 17 novembre, 17 h 22) :
+
+1. **`ready`** passe déjà par `ezk dor check <id>` (`skills/ezk-backlog/SKILL.md`, § gate de « prête »).
+   On fait appeler `validateFicheFrontMatter` (`products/mega-city/src/backlog/fiche-validator.ts:41`)
+   à `dor check` : il sort en 1 sur une anomalie, en citant le champ. Un seul point de contrôle, déjà sur
+   le chemin.
+2. **`add`** écrit la fiche puis lance le même contrôle sur ce seul fichier ; sur une anomalie, il le dit
+   et ne committe pas.
+
 ## Critères d'acceptation
 
 - [ ] `ready` sur une fiche au front-matter non conforme refuse, nomme le champ fautif, et n'écrit rien.
@@ -41,6 +50,9 @@ pnpm --dir products/mega-city test -- src/backlog
 ```
 
 ## Notes / décisions
+
+- 2026-11-17, 17 h 22 — second cas le même jour : une fiche committée sur `main` avec `type: fix`
+  (`features/20261117161542365_carte-methode-recherche-se-vide-au-clic-carte.md`). Le symptôme revient.
 
 - Origine : [rétro légère du sprint 5 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-5-corrections-des-retros.md), proposition P2.
 - Priorité P2 tranchée par ezk-pm le 17 novembre, par délégation du PO : plus intrusif, à livrer après le correctif du test du portier.
