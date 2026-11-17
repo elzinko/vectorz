@@ -161,4 +161,6 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
 
 | Modalité | Statut |
 |---|---|
+| Gate mega-city | ✅ 2511 tests + 49 suites |
+| Revue ezk-reviewer | ✅ GO 6/6 prouvés sur copie jetable |
 | Before / after (UI) | N.A. — un verbe de la méthode sans écran modifié |

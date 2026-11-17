@@ -60,4 +60,6 @@ pnpm --dir products/mega-city gate
 
 | Modalité | Statut |
 |---|---|
+| Gate mega-city | ✅ 2497 tests + 49 suites |
+| Revue ezk-reviewer | ✅ GO 2/2 prouvés |
 | Before / after (UI) | N.A. — verbes retirés sans écran modifié |

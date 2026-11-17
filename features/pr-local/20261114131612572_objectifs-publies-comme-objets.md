@@ -152,4 +152,7 @@ pnpm --dir products/mega-city test -- \
 
 | Modalité | Statut |
 |---|---|
+| Gate mega-city | ✅ 2417 tests + 48 suites |
+| cop1 packages | ✅ 770 tests |
+| Revue ezk-reviewer | ✅ GO 5/5 prouvés |
 | Before / after (UI) | N.A. — contrat JSON seul sans écran modifié |
