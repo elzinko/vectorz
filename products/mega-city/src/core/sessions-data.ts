@@ -183,3 +183,8 @@ export function buildSessionsData(input: CollectedInputs): SessionsData {
 
   return { rows };
 }
+
+/** Les chemins des copies tenues par une session active : la source du « session-active » du portier d'ezk-sprint. */
+export function activeWorktreePaths(data: SessionsData): string[] {
+  return data.rows.filter((row) => row.sessionActivity === 'active').map((row) => row.path);
+}

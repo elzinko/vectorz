@@ -24,6 +24,7 @@ Règle : [`human-facing-lisibility`](../../../rules/documentation-guidelines/hum
 | Choix | Quand | Action |
 |---|---|---|
 | **Rejoindre** | Le sprint signalé est le tien ou tu veux le reprendre | Basculer sur le worktree/branche/fiche indiquée ; ne pas tirer une nouvelle fiche |
+| **Se coordonner** | Une ligne P2 porte `raison=session-active` : une autre session vivante tient cette copie | Contacter cette session (ou attendre sa clôture) ; **ne pas rejoindre** ni rejouer sa gate : elle l'intègre déjà |
 | **Interrompre journalisé** | L'autre session est abandonnée ou tu assumes l'override | `/ezk-archive run` sur l'autre session, ou note PO dans handoff/`SPRINT.md` ; puis relancer `/ezk-sprint check` |
 
 **Contexte lu (best-effort) :**

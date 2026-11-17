@@ -90,6 +90,18 @@ SAFETY_LIB="$(cd "$(dirname "$0")/../../ezk-archive/scripts" 2>/dev/null && pwd)
 SAFETY_OK=0
 if [[ -r "$SAFETY_LIB" ]]; then . "$SAFETY_LIB" && SAFETY_OK=1; fi
 
+# Copies tenues par une session active : le MÊME calcul que `ezk sessions state` (sessions-data.ts), lu via
+# `ezk-sessions active` (un chemin par ligne). Best-effort : hors monorepo (pas de tsx) la liste reste vide,
+# le portier garde ses raisons d'avant. Fiche 20261117141828100.
+ACTIVE_PATHS=""
+MEGA_CITY="$(cd "$(dirname "$0")/../../.." 2>/dev/null && pwd)"
+if (( ${#SIBLINGS[@]} > 0 )) && [[ -x "$MEGA_CITY/node_modules/.bin/tsx" ]]; then
+  ACTIVE_PATHS="$("$MEGA_CITY/node_modules/.bin/tsx" "$MEGA_CITY/bin/ezk-sessions.ts" active 2>/dev/null || true)"
+fi
+is_session_active() { # $1 = chemin d'une copie voisine
+  [[ -n "$ACTIVE_PATHS" ]] && printf '%s\n' "$ACTIVE_PATHS" | grep -qxF -- "$1"
+}
+
 if (( ${#SIBLINGS[@]} > 0 )); then
   if (( SAFETY_OK )); then
     # Base de preuve : main/master, sinon la branche par défaut (origin/HEAD), sinon celle du principal.
@@ -110,6 +122,10 @@ if (( ${#SIBLINGS[@]} > 0 )); then
         principal|reserve|fusionnee)
           ignored=$((ignored + 1)); P2_FACTS+=("[P2] ignoré ${path} branch=${br} raison=${reason}") ;;
         *)
+          # Une copie à risque tenue par une session vivante : se coordonner, pas rejoindre. Une copie
+          # sûre (principal, réserve, fusionnée) reste ignorée, même avec une session : on ne la
+          # rejoint jamais (fiche 20261117141828100).
+          is_session_active "$path" && reason="session-active"
           flagged=$((flagged + 1)); P2="ALERT"; P2_FACTS+=("[P2] ALERT ${path} branch=${br} raison=${reason}") ;;
       esac
     done

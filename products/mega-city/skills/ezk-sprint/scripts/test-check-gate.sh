@@ -122,6 +122,24 @@ ok "branche non fusionnée signalée (unmerged)" "echo \"\$OUT5\" | grep -q 'ALE
 ok "détachée réelle signalée (detached-real)"  "echo \"\$OUT5\" | grep -q 'ALERT .*w-detreal .*raison=detached-real'"
 ok "les propres restent ignorées"          "echo \"\$OUT5\" | grep -q 'signalées=3 ignorées=4'"
 
+echo "S5b — une copie à risque tenue par une session active porte raison=session-active ; une copie sûre reste ignorée (fiche 20261117141828100)"
+# « Active » = le .jsonl de session le plus récent de la copie date de moins de 30 min (même calcul que
+# `ezk sessions state`). On le simule sans vraie session : un HOME jetable avec un .jsonl frais sous
+# ~/.claude/projects/<chemin du worktree, « / » et « . » remplacés par « - »>.
+FAKE_HOME="$TMP/home"
+slug="$(cd "$TMP/w-unmerged" && pwd -P | sed 's#[/.]#-#g')"
+mkdir -p "$FAKE_HOME/.claude/projects/$slug" && : > "$FAKE_HOME/.claude/projects/$slug/session.jsonl"
+OUT5b="$(cd "$TMP/w-runner" && HOME="$FAKE_HOME" bash "$CHECK" --gate)"
+ok "copie unmerged + session fraîche → raison=session-active" "echo \"\$OUT5b\" | grep -q 'ALERT .*w-unmerged .*raison=session-active'"
+ok "la copie sans session garde sa raison (dirty)"            "echo \"\$OUT5b\" | grep -q 'ALERT .*w-dirty .*raison=dirty'"
+main_slug="$(cd "$TMP/repo2" && pwd -P | sed 's#[/.]#-#g')"
+mkdir -p "$FAKE_HOME/.claude/projects/$main_slug" && : > "$FAKE_HOME/.claude/projects/$main_slug/session.jsonl"
+OUT5p="$(cd "$TMP/w-runner" && HOME="$FAKE_HOME" bash "$CHECK" --gate)"
+ok "principal + session fraîche → reste ignoré (raison=principal)" "echo \"\$OUT5p\" | grep -q 'ignoré .*repo2 branch=main raison=principal'"
+touch -t 202001010000 "$FAKE_HOME/.claude/projects/$slug/session.jsonl"
+OUT5c="$(cd "$TMP/w-runner" && HOME="$FAKE_HOME" bash "$CHECK" --gate)"
+ok "session dormante (vieux .jsonl) → raison d'origine"       "echo \"\$OUT5c\" | grep -q 'ALERT .*w-unmerged .*raison=unmerged'"
+
 echo "S6 — lib absente : repli sur le comptage (toute copie voisine alerte), best-effort sans erreur"
 LIB="$(cd "$(dirname "$CHECK")/../../ezk-archive/scripts" && pwd)/lib-worktree-safety.sh"
 LIB_BAK="$LIB.bak"; mv "$LIB" "$LIB_BAK"      # le trap EXIT la restaure quoi qu'il arrive

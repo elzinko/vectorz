@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  activeWorktreePaths,
   buildSessionsData,
   deriveSessionSlug,
   type CollectedInputs,
@@ -269,5 +270,22 @@ describe('buildSessionsData â€” collisions (intersection de fichiers non commitÃ
       }),
     );
     expect(data.rows[0].collisionsWith.length).toBeGreaterThan(0);
+  });
+});
+
+describe('activeWorktreePaths (fiche 20261117141828100)', () => {
+  it("ne garde que les copies tenues par une session active, dans l'ordre", () => {
+    const now = 1_000_000_000_000;
+    const data = buildSessionsData(
+      input({
+        worktrees: [
+          { path: '/wt/vive', branch: 'feat/1-a' },
+          { path: '/wt/dormante', branch: 'feat/2-b' },
+          { path: '/wt/sans-session', branch: 'feat/3-c' },
+        ],
+        lastSessionMtimeByPath: { '/wt/vive': now - 60_000, '/wt/dormante': now - 3 * 3_600_000 },
+      }),
+    );
+    expect(activeWorktreePaths(data)).toEqual(['/wt/vive']);
   });
 });

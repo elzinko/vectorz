@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [sprint, portier, sessions-paralleles]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un script de contrôle, aucun écran modifié
@@ -40,9 +40,10 @@ active porte `raison=session-active`, quelle que soit son autre raison. Le gabar
 
 ## Critères d'acceptation
 
-- [ ] Une copie voisine tenue par une session active porte `raison=session-active` sur sa ligne P2.
-- [ ] Le calcul « session active » vient du même code qu'`ezk sessions state`, sans second calcul.
-- [ ] Le gabarit de choix d'ezk-sprint dit, pour `session-active`, de se coordonner au lieu de rejoindre.
+- [x] Une copie voisine à risque (signalée) tenue par une session active porte `raison=session-active` sur sa
+      ligne P2 ; une copie sûre (principal, réserve, fusionnée) reste ignorée, même avec une session.
+- [x] Le calcul « session active » vient du même code qu'`ezk sessions state`, sans second calcul.
+- [x] Le gabarit de choix d'ezk-sprint dit, pour `session-active`, de se coordonner au lieu de rejoindre.
 
 ## Comment vérifier
 
@@ -51,6 +52,8 @@ pnpm --dir products/mega-city test:scripts   # le cas « copie tenue par une ses
 ```
 
 ## Notes / décisions
+
+- Livrée le 2026-11-17. Revue ezk-reviewer : NO-GO d'abord (la promotion `session-active` écrasait les copies sûres, le dossier principal serait passé en alerte à presque chaque sprint), puis GO après correctif. Critères prouvés : copie à risque + session fraîche → `raison=session-active`, copie sûre + session → reste ignorée ; même calcul qu'`ezk sessions state` (`ezk-sessions active`) ; le gabarit de choix dit « se coordonner, ne pas rejoindre ». Best-effort hors monorepo : sans `tsx`, le portier garde ses raisons d'avant.
 
 - Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P1.
 - Priorité P1 tranchée par ezk-pm le 17 novembre, par délégation du PO.

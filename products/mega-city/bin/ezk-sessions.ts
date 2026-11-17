@@ -12,7 +12,7 @@
  */
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { buildSessionsData } from '../src/core/sessions-data.js';
+import { activeWorktreePaths, buildSessionsData } from '../src/core/sessions-data.js';
 import { renderSessionsHtml } from '../src/core/sessions-html.js';
 import { collect } from '../src/io/sessions-collect.js';
 
@@ -112,8 +112,13 @@ function main(): void {
     runMapServer();
     return;
   }
+  if (cmd === 'active') {
+    // Sortie machine lue par le portier d'ezk-sprint : un chemin par ligne, même calcul que `state`.
+    for (const path of activeWorktreePaths(buildSessionsData(collect()))) console.log(path);
+    return;
+  }
   if (cmd !== 'state') {
-    console.error('Usage : ezk-sessions state|map');
+    console.error('Usage : ezk-sessions state|map|active');
     process.exit(1);
   }
   const data = buildSessionsData(collect());
