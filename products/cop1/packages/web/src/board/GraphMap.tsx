@@ -171,9 +171,20 @@ function NeighborPanel({ contract, selection, setSelection }: { contract: GraphC
   );
 }
 
-/** `initialLevel` ne sert qu'aux tests : jsdom ne mesure aucun zoom, la carte réelle part du niveau 1. */
-export function GraphMap({ project, initialLevel = 1 }: { project: BoardProject; initialLevel?: GraphLevel }): JSX.Element {
-  const [selection, setSelection] = useState<string | undefined>(undefined);
+/**
+ * `initialLevel` et `initialSelection` ne servent qu'aux tests : jsdom ne mesure aucun zoom ni clic de
+ * carte ; la carte réelle part du niveau 1, sans brique choisie.
+ */
+export function GraphMap({
+  project,
+  initialLevel = 1,
+  initialSelection,
+}: {
+  project: BoardProject;
+  initialLevel?: GraphLevel;
+  initialSelection?: string;
+}): JSX.Element {
+  const [selection, setSelection] = useState<string | undefined>(initialSelection);
   const state = useDaemonContract<GraphCheck>(project.name, GRAPH_READING);
   return (
     <section className="card gm" aria-label="Carte de la méthode">

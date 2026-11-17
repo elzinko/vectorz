@@ -76,6 +76,25 @@ describe('GraphMap', () => {
   });
 });
 
+describe('GraphMap — vue d’ensemble avec une brique choisie (niveau 1)', () => {
+  const family = (label: string): HTMLElement =>
+    screen.getByText(label, { selector: '.gm-famille-nom' }).closest('.gm-famille') as HTMLElement;
+
+  it('nomme la brique choisie, compte les voisins par famille, estompe les familles sans voisin', async () => {
+    serve({ state: 'ok', graph: example });
+    render(<GraphMap project={project} initialLevel={1} initialSelection="skill:ezk-sprint" />);
+    await screen.findByText('Compétences', { selector: '.gm-famille-nom' });
+    expect(within(family('Compétences')).getByText('brique choisie : ezk-sprint')).toBeTruthy();
+    expect(family('Règles').className).not.toContain('gm-dim');
+    const voisins = (label: string): string[] =>
+      [...family(label).querySelectorAll('.gm-famille-voisins')].map((v) => (v.textContent ?? '').replace(/\s+/g, ' ').trim());
+    expect(voisins('Règles')).toEqual(['1 voisin · applique']);
+    expect(voisins('Commandes')).toEqual(['1 voisin · utilise']);
+    expect(family('Agents').className).toContain('gm-dim');
+    expect(family('Recettes').className).toContain('gm-dim');
+  });
+});
+
 describe('GraphMap — sélection d’une brique (niveau 2)', () => {
   const brick = (name: string): HTMLElement => screen.getByText(name, { selector: '.gm-brique-nom' }).closest('.gm-brique') as HTMLElement;
 

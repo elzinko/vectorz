@@ -36,8 +36,8 @@ brique choisie.
 
 ## Critères d'acceptation
 
-- [ ] Au niveau 1, avec une brique choisie, le rendu montre « brique choisie : <nom> » dans sa famille.
-- [ ] Au même niveau, une famille avec des voisins affiche leur nombre, et une famille sans voisin porte
+- [x] Au niveau 1, avec une brique choisie, le rendu montre « brique choisie : <nom> » dans sa famille.
+- [x] Au même niveau, une famille avec des voisins affiche leur nombre, et une famille sans voisin porte
       la classe d'estompage.
 
 ## Comment vérifier
@@ -47,5 +47,8 @@ cd products/cop1/packages/web && pnpm exec vitest run src/board/GraphMap.test.ts
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés ; le test vérifie le texte exact « 1 voisin · applique », nombre compris. `initialSelection` n'a aucun effet en production : le seul appelant ne le passe pas.
+
 
 - Tirée au sprint 10 du 17 novembre, par délégation du PO absent.
