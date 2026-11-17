@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [ezk-sprint, agents]
-status: ready
-pr:
+status: shipped
+pr: "local (1813d1de)"
 evidence: none # pas d'écran : texte d'un skill
 created: 2026-11-17
 ---
@@ -64,6 +64,6 @@ cd products/mega-city && pnpm exec vitest run src/__tests__ -t "ezk-sprint"
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés ; commandes de rapatriement vérifiées. Le geste a déjà servi aux sprints 2 et 3 du jour.
 
 
-- Origine : [rétro du sprint 1 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-1-voir-le-process-de-chaque-projet.md),
+- Origine : [rétro du sprint 1 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-1-voir-le-process-de-chaque-projet.md),
   proposition 2, retenue par délégation du PO absent.
 - Priorité P3 posée par délégation, montée en P2 à la rétro du sprint 2 (second cas, base périmée) ; le PO peut la revoir.

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117114426425_sprint-rapatrie-le-travail-du-dev-isole.md](../20261117114426425_sprint-rapatrie-le-travail-du-dev-isole.md)
+> 🗎 Rendu de la fiche [features/20261117114426425_sprint-rapatrie-le-travail-du-dev-isole.md](../done/20261117114426425_sprint-rapatrie-le-travail-du-dev-isole.md)
 
 # 20261117114426425 — ezk-sprint prévoit le développeur isolé et rapatrie son travail par patch
 
