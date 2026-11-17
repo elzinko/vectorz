@@ -309,6 +309,17 @@
               "version": {
                 "type": "string"
               },
+              "nom": {
+                "type": "string",
+                "description": "Nom en clair, lu dans la déclaration `features/versions/<vX.Y.Z>.md` (ADR-0088 §7) ; '' sans déclaration. Jamais lu dans PLAN.md."
+              },
+              "milestones": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Objectifs distincts et non vides des fiches du lot (livrées et à faire), triés."
+              },
               "etat": {
                 "type": "string",
                 "enum": [
@@ -329,6 +340,13 @@
               },
               "etiquette": {
                 "description": "Étiquette git de release (`v1.2.0`), null si la version n’est pas sortie.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dateEtiquette": {
+                "description": "Date ISO 8601 de l’étiquette de release (`git for-each-ref`), null sans étiquette.",
                 "type": [
                   "string",
                   "null"
@@ -379,9 +397,12 @@
             },
             "required": [
               "version",
+              "nom",
+              "milestones",
               "etat",
               "cycleDeVie",
               "etiquette",
+              "dateEtiquette",
               "etiquetteGel",
               "livrees",
               "aFaire",
@@ -418,13 +439,191 @@
             ]
           },
           "description": "Fiches dont la version est mal écrite : dans aucun lot, jamais ignorées."
+        },
+        "prochaineCoupe": {
+          "type": "object",
+          "properties": {
+            "derniereEtiquette": {
+              "description": "La plus haute étiquette `vX.Y.Z` ; null sans étiquette (non publié, jamais une valeur inventée).",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "livrees": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "titre": {
+                    "type": "string"
+                  },
+                  "objectif": {
+                    "type": "string",
+                    "description": "'' sans objectif."
+                  }
+                },
+                "required": [
+                  "id",
+                  "titre",
+                  "objectif"
+                ]
+              },
+              "description": "Fiches ajoutées à `features/done/` depuis la dernière étiquette, triées par id ; [] sans étiquette."
+            },
+            "nombre": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Le nombre de ces fiches ; null sans étiquette (non publié, jamais 0)."
+            },
+            "gate": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    },
+                    "verdict": {
+                      "type": "string",
+                      "enum": [
+                        "GO",
+                        "NO-GO"
+                      ]
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "Quand le verdict a été établi (ISO 8601)."
+                    },
+                    "passes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "go": {
+                            "type": "boolean"
+                          },
+                          "sautee": {
+                            "type": "boolean",
+                            "description": "La passe n’a pas tourné : ni GO ni NO-GO."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "go",
+                          "sautee"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "verdict",
+                    "date",
+                    "passes"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Le dernier verdict écrit par `ezk release` (`.vectorz/release/<version>.json`) ; null si aucun."
+            },
+            "carnet": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "app": {
+                      "type": "string"
+                    },
+                    "tested": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "jamais": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "valide": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "echec": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "expire": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "app",
+                    "tested",
+                    "total",
+                    "jamais",
+                    "valide",
+                    "echec",
+                    "expire"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Les comptes de `ezk carto status --json` ; null sans carnet déclaré (une seule app)."
+            },
+            "numeroPropose": {
+              "type": "null",
+              "description": "Le numéro proposé pour la coupe : null tant que la règle n’est pas tranchée."
+            }
+          },
+          "required": [
+            "derniereEtiquette",
+            "livrees",
+            "nombre",
+            "gate",
+            "carnet",
+            "numeroPropose"
+          ],
+          "description": "Ce qui attend la prochaine coupe : tout ce qui a été livré depuis la dernière étiquette (fiche 20261114131612759)."
         }
       },
       "required": [
         "courante",
         "ecartees",
         "lots",
-        "illisibles"
+        "illisibles",
+        "prochaineCoupe"
       ]
     },
     "verdicts": {

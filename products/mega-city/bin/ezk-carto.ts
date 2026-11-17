@@ -21,7 +21,6 @@ import {
   type CartoEntry,
   VERDICTS,
   type Verdict,
-  computeStatus,
   isTodo,
   renderStatus,
   restrictToZone,
@@ -29,10 +28,10 @@ import {
 import {
   CartoError,
   appendEntry,
-  commitsSinceIn,
+  cartoNow,
   gitTopLevel,
   loadTree,
-  readEntries,
+  statusOfLoaded,
   storeDir,
   storeProof,
   testedSha,
@@ -86,14 +85,7 @@ function status(args: readonly string[]): number {
     const known = loaded.tree.nodes.map((n) => n.id);
     throw new CartoError(`branche inconnue « ${zone} » dans ${loaded.file} (connus : ${known.join(', ')})`);
   }
-  const { entries } = readEntries(storeDir(root, loaded.app));
-  const now = process.env.EZK_CARTO_NOW ? new Date(process.env.EZK_CARTO_NOW) : new Date();
-  if (Number.isNaN(now.getTime())) throw new CartoError(`EZK_CARTO_NOW : date ISO illisible « ${process.env.EZK_CARTO_NOW} »`);
-  const full = computeStatus(loaded.tree, entries, {
-    now,
-    validityDays: loaded.validityDays,
-    commitsSince: commitsSinceIn(root),
-  });
+  const full = statusOfLoaded(root, loaded, cartoNow());
   const computed = zone === undefined ? full : restrictToZone(full, zone);
   const todo = flags.has('todo');
   if (flags.has('json')) {

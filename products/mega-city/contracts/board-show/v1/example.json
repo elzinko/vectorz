@@ -163,9 +163,14 @@
   "lots": [
    {
     "version": "v1.0.0",
+    "nom": "Le socle",
+    "milestones": [
+     "board"
+    ],
     "etat": "en-cours",
     "cycleDeVie": "brouillon",
     "etiquette": null,
+    "dateEtiquette": null,
     "etiquetteGel": null,
     "livrees": [
      "20990101000000006"
@@ -185,9 +190,12 @@
    },
    {
     "version": "v2.0.0",
+    "nom": "",
+    "milestones": [],
     "etat": "en-cours",
     "cycleDeVie": "figee",
     "etiquette": null,
+    "dateEtiquette": null,
     "etiquetteGel": "freeze/v2.0.0",
     "livrees": [],
     "aFaire": [
@@ -205,7 +213,50 @@
     "version": "V1.1",
     "file": "features/20990101000000005_version-mal-ecrite.md"
    }
-  ]
+  ],
+  "prochaineCoupe": {
+   "derniereEtiquette": "v0.9.0",
+   "livrees": [
+    {
+     "id": "20990101000000004",
+     "titre": "Remplacée",
+     "objectif": ""
+    },
+    {
+     "id": "20990101000000006",
+     "titre": "Livrée",
+     "objectif": "board"
+    }
+   ],
+   "nombre": 2,
+   "gate": {
+    "version": "v0.9.0",
+    "verdict": "NO-GO",
+    "date": "2026-11-16T10:00:00.000Z",
+    "passes": [
+     {
+      "id": "dod-mecanique",
+      "title": "DoD mécanique",
+      "go": true,
+      "sautee": false
+     },
+     {
+      "id": "chasse-aux-bugs",
+      "title": "Chasse aux bugs",
+      "go": false,
+      "sautee": false
+     },
+     {
+      "id": "tests",
+      "title": "Tests du projet",
+      "go": true,
+      "sautee": true
+     }
+    ]
+   },
+   "carnet": null,
+   "numeroPropose": null
+  }
  },
  "verdicts": {
   "20990101000000002": {

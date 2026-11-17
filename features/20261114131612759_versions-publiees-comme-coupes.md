@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un contrat publié, aucun écran modifié
@@ -100,18 +100,18 @@ propose un numéro par fiche, pas la coupe.
 
 ## Critères d'acceptation
 
-- [ ] Chaque entrée de `versions.lots[]` porte `nom`, `milestones[]` et `dateEtiquette` ;
+- [x] Chaque entrée de `versions.lots[]` porte `nom`, `milestones[]` et `dateEtiquette` ;
       `dateEtiquette` vaut `null` sur un lot sans étiquette.
-- [ ] `versions.prochaineCoupe` liste les fiches livrées depuis la dernière étiquette (id, titre,
+- [x] `versions.prochaineCoupe` liste les fiches livrées depuis la dernière étiquette (id, titre,
       objectif), leur nombre et la dernière étiquette. Sur le dépôt du 14 novembre, le nombre vaut
       celui des fiches ajoutées à `features/done/` depuis `v0.22.0`.
-- [ ] `prochaineCoupe.gate` reprend le dernier verdict de `ezk release` (verdict, date, passes) ou
+- [x] `prochaineCoupe.gate` reprend le dernier verdict de `ezk release` (verdict, date, passes) ou
       vaut `null` ; `prochaineCoupe.carnet` reprend les comptes de `ezk carto status --json` ou `null`.
-- [ ] `board show` n'écrit aucun fichier. Le calcul « livré depuis la dernière étiquette » vit à un
+- [x] `board show` n'écrit aucun fichier. Le calcul « livré depuis la dernière étiquette » vit à un
       seul endroit de la méthode ; le verbe de coupe lié plus haut le réutilisera, sans second calcul.
-- [ ] Sur un projet sans étiquette ni `docs/sprints/` (cas muti), les champs valent `null` ou `[]`,
+- [x] Sur un projet sans étiquette ni `docs/sprints/` (cas muti), les champs valent `null` ou `[]`,
       et le contrat le dit « non publié », jamais 0.
-- [ ] Le contrat `board-show` reste en `schema_version: 1` ; schéma et exemple régénérés décrivent les nouveaux champs.
+- [x] Le contrat `board-show` reste en `schema_version: 1` ; schéma et exemple régénérés décrivent les nouveaux champs.
 
 ## Comment vérifier
 
@@ -138,6 +138,8 @@ pnpm --dir products/mega-city test -- \
 - `contrat` — un JSON publié par `ezk … --json`, décrit par un schéma versionné dans la méthode.
 
 ## Notes / décisions
+
+- Volet a livré le 2026-11-17. Critères prouvés par ezk-reviewer (GO) : `lots[]` porte `nom`, `milestones[]`, `dateEtiquette` (v0.22.0 daté, v0.23/v0.24 `null`) ; `prochaineCoupe.nombre` = 98 = la commande git ; `gate` et `carnet` repris ou `null` ; `board show` n'écrit rien et le calcul vit dans `core/coupe.ts` ; projet sans étiquette → `null`/`[]` ; `schema_version` 1, exemple = sortie réelle. Choix gardés : `livrees` reprend tout ajout à `done/` (closes comprises), `nombre` vaut 0 avec une étiquette et rien depuis. Corrigé après revue : un verdict de release illisible est écarté au lieu de faire tomber le board. Volet b reste à faire.
 
 - Origine : [la carte des écarts maquette ↔ code ↔ backlog du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart A7.

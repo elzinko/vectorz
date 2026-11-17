@@ -166,6 +166,21 @@ interface FixtureFiche {
   crlf?: boolean;
 }
 
+/** La date du commit étiqueté `v0.9.0` : fixe, pour que l'exemple rangé ne bouge pas d'un jour à l'autre. */
+const FIXTURE_TAG_DATE = '2026-10-01T10:00:00+02:00';
+
+/** Le dernier verdict de `ezk release` de la fixture : un NO-GO, avec une passe sautée. */
+const FIXTURE_RELEASE_VERDICT = {
+  version: 'v0.9.0',
+  verdict: 'NO-GO',
+  passes: [
+    { id: 'dod-mecanique', title: 'DoD mécanique', command: 'true', go: true },
+    { id: 'chasse-aux-bugs', title: 'Chasse aux bugs', command: 'false', go: false, detail: 'aucun verdict posé' },
+    { id: 'tests', title: 'Tests du projet', command: '', go: true, skipped: true },
+  ],
+  at: '2026-11-16T10:00:00.000Z',
+};
+
 const FIXTURE_FICHES: readonly FixtureFiche[] = [
   { file: 'features/20990101000000001_en-cours.md', frontMatter: 'id: "20990101000000001"\ntitle: En cours\npriority: P1\nstatus: ready\nversion: v1.0.0' },
   { file: 'features/20990101000000002_deux-points.md', frontMatter: 'id: "20990101000000002"\ntitle: Tour Driver.js : tracking\npriority: P2\nstatus: idea\nversion: v2.0.0', body: DETAIL_BODY },
@@ -198,6 +213,9 @@ export function makeContractFixture(): string {
   // Ce que la méthode a mené (fiche 20261102104443762) : 2 comptes rendus, 1 rétro, et un intrus par dossier.
   // La déclaration d'un objectif (ADR-0088 §7) : son nom en clair. `parked` n'en a pas.
   write('features/milestones/board.md', '---\nmilestone: board\nnom: Le board dit vrai\ncreated: 2026-11-17\n---\n');
+  // La déclaration d'une version (ADR-0088 §7) et le dernier verdict de la gate (fiche 20261114131612759).
+  write('features/versions/v1.0.0.md', '---\nversion: v1.0.0\nnom: Le socle\n---\n');
+  write('.vectorz/release/v0.9.0.json', `${JSON.stringify(FIXTURE_RELEASE_VERDICT, null, 2)}\n`);
   // La fiche livrée 20990101000000006 est citée par les deux lots scellés : le plus récent fait foi.
   write(
     'docs/sprints/2026-10-30-sprint-premier.md',
@@ -242,6 +260,12 @@ export function makeContractFixture(): string {
     execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', ...args], { stdio: 'ignore' });
   };
   git('init', '-q', '-b', 'main');
+  // L'étiquette `v0.9.0` sur un premier commit daté : tout ce qui suit attend la prochaine coupe.
+  execFileSync('git', ['-C', root, '-c', 'user.email=f@x', '-c', 'user.name=fixture', 'commit', '-q', '--allow-empty', '-m', 'socle'], {
+    stdio: 'ignore',
+    env: { ...process.env, GIT_AUTHOR_DATE: FIXTURE_TAG_DATE, GIT_COMMITTER_DATE: FIXTURE_TAG_DATE },
+  });
+  git('tag', 'v0.9.0');
   git('add', '-A');
   git('commit', '-qm', 'fixture');
   git('tag', 'freeze/v2.0.0');

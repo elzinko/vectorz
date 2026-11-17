@@ -5,9 +5,10 @@
  * - Passes : `.vectorz/release-passes.yml` (liste `{ id, title, command }`). Absent → les
  *   `DEFAULT_PASSES` du cœur. YAML malformé → erreur claire (jamais de coupure silencieuse).
  * - Verdict : `.vectorz/release/<version>.json` — écrit par `ezk release`, lu par
- *   `backlog version close --tag` pour refuser le tag sur NO-GO (ou verdict absent).
+ *   `backlog version close --tag` pour refuser le tag sur NO-GO (ou verdict absent), et par
+ *   `board show` pour publier le dernier (fiche 20261114131612759).
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { Document, isMap, isSeq, parse as parseYaml, parseDocument } from 'yaml';
 import { type DesignSystemConfig, type DesignSystemVerdict, resolveDesignSystem } from '../core/design-system-review.js';
@@ -157,6 +158,38 @@ export function readReleaseVerdict(projectRoot: string, version: string): Releas
   } catch (cause) {
     throw new Error(`Verdict de release illisible : ${file}`, { cause });
   }
+}
+
+/** Le fichier d'un verdict de VERSION (`v0.11.0.json`) : ni un verdict de passe, ni le design-system. */
+const VERSION_VERDICT_FILE = /^(v\d+\.\d+\.\d+)\.json$/;
+
+/** La date d'un verdict en millisecondes ; un `at` absent ou illisible compte comme le plus ancien. */
+function verdictTime(verdict: ReleaseVerdict): number {
+  const time = Date.parse(verdict.at);
+  return Number.isNaN(time) ? Number.NEGATIVE_INFINITY : time;
+}
+
+/**
+ * Le verdict de version le plus récemment établi (champ `at`), ou `undefined` si aucun.
+ * Un fichier de verdict illisible est écarté : il ne peut pas être le dernier verdict établi, et un
+ * seul fichier à moitié écrit ne doit pas faire tomber le board qui lit ce verdict.
+ */
+export function latestReleaseVerdict(projectRoot: string): ReleaseVerdict | undefined {
+  const dir = releaseDir(projectRoot);
+  if (!existsSync(dir)) return undefined;
+  let latest: ReleaseVerdict | undefined;
+  for (const name of readdirSync(dir).sort()) {
+    const version = VERSION_VERDICT_FILE.exec(name)?.[1];
+    if (version === undefined) continue;
+    let verdict: ReleaseVerdict | undefined;
+    try {
+      verdict = readReleaseVerdict(projectRoot, version);
+    } catch {
+      continue;
+    }
+    if (verdict !== undefined && (latest === undefined || verdictTime(verdict) > verdictTime(latest))) latest = verdict;
+  }
+  return latest;
 }
 
 /** Chemin du verdict d'une passe à jugement d'une version (`.vectorz/release/<v>.<passe>.json`). */

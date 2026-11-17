@@ -25,7 +25,10 @@ import { versionScope } from '../backlog/version-scope.js';
 import type { Fiche } from '../loaders/fiches.js';
 import type { RunReport } from '../loaders/runs.js';
 import { buildAvancementData } from './avancement-data.js';
+import type { CartoStatus } from './carto.js';
+import { derniereEtiquette, livreesDepuis } from './coupe.js';
 import { isParked, TERMINAUX } from './fiche-schema.js';
+import type { ReleaseVerdict } from './release-gate.js';
 import type { SprintSummary } from './sprint-report-summary.js';
 import type { VerdictsData } from './verdicts.js';
 
@@ -86,9 +89,17 @@ const ComptesSchema = z
 
 const LotSchema = z.strictObject({
   version: z.string(),
+  nom: z
+    .string()
+    .describe("Nom en clair, lu dans la déclaration `features/versions/<vX.Y.Z>.md` (ADR-0088 §7) ; '' sans déclaration. Jamais lu dans PLAN.md."),
+  milestones: z.array(z.string()).describe('Objectifs distincts et non vides des fiches du lot (livrées et à faire), triés.'),
   etat: z.enum(['en-cours', 'a-clore', 'livree', 'rouverte', 'vide']),
   cycleDeVie: z.enum(['brouillon', 'figee', 'livree']),
   etiquette: z.string().nullable().describe('Étiquette git de release (`v1.2.0`), null si la version n’est pas sortie.'),
+  dateEtiquette: z
+    .string()
+    .nullable()
+    .describe('Date ISO 8601 de l’étiquette de release (`git for-each-ref`), null sans étiquette.'),
   etiquetteGel: z.string().nullable().describe('Étiquette de gel (`freeze/v1.2.0`), null sans gel.'),
   livrees: z.array(z.string()).describe('Ids des fiches livrées du lot.'),
   aFaire: z.array(z.string()).describe('Ids des fiches restant à livrer, hors parkées.'),
@@ -97,6 +108,50 @@ const LotSchema = z.strictObject({
   intrus: z.array(z.string()).describe('Fiches parkées qui portent pourtant cette version : hors lot.'),
 });
 
+const ProchaineCoupeSchema = z
+  .strictObject({
+    derniereEtiquette: z
+      .string()
+      .nullable()
+      .describe('La plus haute étiquette `vX.Y.Z` ; null sans étiquette (non publié, jamais une valeur inventée).'),
+    livrees: z
+      .array(z.strictObject({ id: z.string(), titre: z.string(), objectif: z.string().describe("'' sans objectif.") }))
+      .describe('Fiches ajoutées à `features/done/` depuis la dernière étiquette, triées par id ; [] sans étiquette.'),
+    nombre: count()
+      .nullable()
+      .describe('Le nombre de ces fiches ; null sans étiquette (non publié, jamais 0).'),
+    gate: z
+      .strictObject({
+        version: z.string(),
+        verdict: z.enum(['GO', 'NO-GO']),
+        date: z.string().describe('Quand le verdict a été établi (ISO 8601).'),
+        passes: z.array(
+          z.strictObject({
+            id: z.string(),
+            title: z.string(),
+            go: z.boolean(),
+            sautee: z.boolean().describe('La passe n’a pas tourné : ni GO ni NO-GO.'),
+          }),
+        ),
+      })
+      .nullable()
+      .describe('Le dernier verdict écrit par `ezk release` (`.vectorz/release/<version>.json`) ; null si aucun.'),
+    carnet: z
+      .strictObject({
+        app: z.string(),
+        tested: count(),
+        total: count(),
+        jamais: count(),
+        valide: count(),
+        echec: count(),
+        expire: count(),
+      })
+      .nullable()
+      .describe('Les comptes de `ezk carto status --json` ; null sans carnet déclaré (une seule app).'),
+    numeroPropose: z.null().describe('Le numéro proposé pour la coupe : null tant que la règle n’est pas tranchée.'),
+  })
+  .describe('Ce qui attend la prochaine coupe : tout ce qui a été livré depuis la dernière étiquette (fiche 20261114131612759).');
+
 const VersionsSchema = z.strictObject({
   courante: z.string().nullable().describe('La version en cours : le premier lot sans étiquette (ADR-0070).'),
   ecartees: z.array(z.string()).describe('Versions après la version en cours, écartées du tirage.'),
@@ -104,6 +159,7 @@ const VersionsSchema = z.strictObject({
   illisibles: z
     .array(z.strictObject({ id: z.string(), title: z.string(), version: z.string(), file: z.string() }))
     .describe('Fiches dont la version est mal écrite : dans aucun lot, jamais ignorées.'),
+  prochaineCoupe: ProchaineCoupeSchema,
 });
 
 const VerdictSchema = z.strictObject({ verdict: z.enum(['up', 'down']), date: z.string() });
@@ -183,9 +239,25 @@ export interface BoardContractInput {
   derniersSprints?: readonly SprintSummary[];
   /** Le nom en clair des objectifs déclarés, lus au bord (`loaders/milestones.ts`). */
   nomsMilestones?: ReadonlyMap<string, string>;
+  /** Le nom en clair des versions déclarées, lus au bord (`loaders/milestones.ts`). */
+  nomsVersions?: ReadonlyMap<string, string>;
+  /** La date ISO de chaque étiquette, lue au bord (`io/git-coupe.ts`). */
+  datesEtiquettes?: ReadonlyMap<string, string>;
+  /** Les faits de la prochaine coupe, lus au bord (`io/board-show.ts`). */
+  coupe?: {
+    /** Fichiers ajoutés à `features/done/` depuis la dernière étiquette (`io/git-coupe.ts`). */
+    ajoutees: readonly string[];
+    /** Le dernier verdict de `ezk release`, ou null. */
+    gate: ReleaseVerdict | null;
+    /** L'état du carnet de tests, ou null. */
+    carnet: CartoStatus | null;
+  };
 }
 
 const ids = (fs: readonly Fiche[]): string[] => fs.map((f) => f.id);
+
+/** Les objectifs distincts et non vides d'un ensemble de fiches, triés. */
+const objectifsOf = (fs: readonly Fiche[]): string[] => [...new Set(fs.map((f) => f.milestone).filter((m) => m !== ''))].sort();
 
 /**
  * La colonne d'une fiche. Chaque fiche tombe dans UNE colonne, dans cet ordre : close, livrée, en
@@ -208,6 +280,8 @@ function colonneOf(f: Fiche, inProgressIds: ReadonlySet<string>): Colonne {
 /** Compile le contrat. Tout est trié : la même entrée donne toujours la même sortie. */
 export function buildBoardContract(input: BoardContractInput): BoardContract {
   const { fiches, inProgressIds, tags, verdicts, historique, sessions, derniersSprints = [], nomsMilestones } = input;
+  const { nomsVersions = new Map<string, string>(), datesEtiquettes = new Map<string, string>() } = input;
+  const coupe = input.coupe ?? { ajoutees: [], gate: null, carnet: null };
   const board = buildAvancementData([...fiches], inProgressIds, nomsMilestones);
   const report = buildVersions(fiches, tags);
   const scope = versionScope(report);
@@ -239,9 +313,12 @@ export function buildBoardContract(input: BoardContractInput): BoardContract {
       ecartees: [...scope.deferred],
       lots: report.lots.map((lot) => ({
         version: lot.version,
+        nom: nomsVersions.get(lot.version) ?? '',
+        milestones: objectifsOf([...lot.shipped, ...lot.todo]),
         etat: lot.state,
         cycleDeVie: lifecycleOf(lot),
         etiquette: lot.releaseTag ?? null,
+        dateEtiquette: lot.releaseTag === undefined ? null : (datesEtiquettes.get(lot.releaseTag) ?? null),
         etiquetteGel: lot.freezeTag ?? null,
         livrees: ids(lot.shipped),
         aFaire: ids(lot.todo),
@@ -250,11 +327,39 @@ export function buildBoardContract(input: BoardContractInput): BoardContract {
         intrus: ids(lot.intruders),
       })),
       illisibles: report.malformed.map((f) => ({ id: f.id, title: f.title, version: f.version, file: f.file })),
+      prochaineCoupe: prochaineCoupeOf(fiches, tags, coupe),
     },
     verdicts: Object.fromEntries(Object.entries(verdicts.verdicts).sort(([a], [b]) => (a < b ? -1 : 1))),
     verdictsIllisibles: [...verdicts.illisibles].sort(),
     historique: { sprints: historique.sprints, retros: historique.retros },
     derniersSprints: derniersSprints.map((s) => ({ ...s, livrees: s.livrees.map((f) => ({ ...f })) })),
     sessions: sessions.map((s) => ({ date: s.date, title: s.title, file: s.file, fiches: s.fiches, prs: s.prs })),
+  };
+}
+
+/** La prochaine coupe. Sans étiquette, rien n'est publié : null ou [], jamais un faux zéro. */
+function prochaineCoupeOf(
+  fiches: readonly Fiche[],
+  tags: ReadonlySet<string>,
+  coupe: NonNullable<BoardContractInput['coupe']>,
+): BoardContract['versions']['prochaineCoupe'] {
+  const etiquette = derniereEtiquette(tags);
+  const livrees = etiquette === null ? [] : livreesDepuis(coupe.ajoutees, fiches);
+  const { gate, carnet } = coupe;
+  return {
+    derniereEtiquette: etiquette,
+    livrees,
+    nombre: etiquette === null ? null : livrees.length,
+    gate:
+      gate === null
+        ? null
+        : {
+            version: gate.version,
+            verdict: gate.verdict,
+            date: gate.at,
+            passes: gate.passes.map((p) => ({ id: p.id, title: p.title, go: p.go, sautee: p.skipped === true })),
+          },
+    carnet: carnet === null ? null : { app: carnet.app, ...carnet.counts },
+    numeroPropose: null,
   };
 }

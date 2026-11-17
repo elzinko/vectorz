@@ -21,9 +21,11 @@ import {
   loadEffectivePasses,
   readPassVerdict,
   readProjectPasses,
+  latestReleaseVerdict,
   readReleaseVerdict,
   releaseConfig,
   removeProjectPass,
+  verdictPath,
   writePassVerdict,
   writeReleaseVerdict,
 } from '../loaders/release-passes.js';
@@ -291,6 +293,25 @@ describe('release-gate — loader (I/O)', () => {
     expect(existsSync(file)).toBe(true);
     expect(readReleaseVerdict(root, 'v0.11.0')).toEqual(v);
     expect(readReleaseVerdict(root, 'v0.12.0')).toBeUndefined();
+  });
+
+  it('dernier verdict : le plus récent des verdicts de version, ni les passes ni le design-system ; aucun → undefined', () => {
+    expect(latestReleaseVerdict(root)).toBeUndefined();
+    const ancien: ReleaseVerdict = { version: 'v0.12.0', verdict: 'GO', passes: [], at: '2026-10-20T00:00:00Z' };
+    const recent: ReleaseVerdict = { version: 'v0.11.0', verdict: 'NO-GO', passes: [], at: '2026-10-21T00:00:00Z' };
+    writeReleaseVerdict(root, ancien);
+    writeReleaseVerdict(root, recent);
+    writePassVerdict(root, { version: 'v0.13.0', passe: 'chasse-aux-bugs', verdict: 'GO', motif: 'ok', auteur: 't', at: '2026-10-22T00:00:00Z' });
+    expect(latestReleaseVerdict(root)).toEqual(recent);
+  });
+
+  it('dernier verdict : un fichier illisible est écarté sans planter, un `at` illisible ne masque pas un verdict daté', () => {
+    const sansDate = { version: 'v0.10.0', verdict: 'GO', passes: [], at: 'pas une date' } as ReleaseVerdict;
+    const date: ReleaseVerdict = { version: 'v0.9.0', verdict: 'NO-GO', passes: [], at: '2026-10-21T00:00:00Z' };
+    writeReleaseVerdict(root, sansDate);
+    writeReleaseVerdict(root, date);
+    writeFileSync(verdictPath(root, 'v0.8.0'), '{ à moitié écrit', 'utf8');
+    expect(latestReleaseVerdict(root)).toEqual(date);
   });
 
   it('verdict de passe : écriture puis relecture (round-trip)', () => {

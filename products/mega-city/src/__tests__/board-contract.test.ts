@@ -137,6 +137,97 @@ describe('board show --json — les objectifs publiés comme objets', () => {
   });
 });
 
+// fiche 20261114131612759, volet a — les versions publiées comme coupes, et la prochaine coupe.
+describe('board show --json — les versions publiées comme coupes', () => {
+  it('chaque lot porte son nom déclaré, ses objectifs et la date de son étiquette (null sans étiquette)', () => {
+    expect(lot('v1.0.0')).toMatchObject({ nom: 'Le socle', milestones: ['board'], dateEtiquette: null });
+    expect(lot('v2.0.0')).toMatchObject({ nom: '', milestones: [], dateEtiquette: null });
+  });
+
+  it('la prochaine coupe : la dernière étiquette, les fiches rangées dans done/ depuis, et leur nombre', () => {
+    expect(data.versions.prochaineCoupe).toMatchObject({
+      derniereEtiquette: 'v0.9.0',
+      livrees: [
+        { id: '20990101000000004', titre: 'Remplacée', objectif: '' },
+        { id: '20990101000000006', titre: 'Livrée', objectif: 'board' },
+      ],
+      nombre: 2,
+      numeroPropose: null,
+    });
+  });
+
+  it('la prochaine coupe reprend le dernier verdict de la gate ; sans carnet déclaré, carnet vaut null', () => {
+    expect(data.versions.prochaineCoupe.gate).toEqual({
+      version: 'v0.9.0',
+      verdict: 'NO-GO',
+      date: '2026-11-16T10:00:00.000Z',
+      passes: [
+        { id: 'dod-mecanique', title: 'DoD mécanique', go: true, sautee: false },
+        { id: 'chasse-aux-bugs', title: 'Chasse aux bugs', go: false, sautee: false },
+        { id: 'tests', title: 'Tests du projet', go: true, sautee: true },
+      ],
+    });
+    expect(data.versions.prochaineCoupe.carnet).toBeNull();
+  });
+
+  it('cœur pur : une étiquette de release donne sa date ; le carnet publie ses comptes', () => {
+    const livree = { ...loadFiches(fixture).find((f) => f.id === '20990101000000006')!, version: 'v0.9.0' };
+    const out = buildBoardContract({
+      fiches: [livree],
+      inProgressIds: new Set(),
+      tags: new Set(['v0.9.0']),
+      datesEtiquettes: new Map([['v0.9.0', '2026-10-01T10:00:00+02:00']]),
+      verdicts: { verdicts: {}, illisibles: [] },
+      historique: { sprints: 0, retros: 0 },
+      sessions: [],
+      coupe: {
+        ajoutees: [],
+        gate: null,
+        carnet: {
+          schema_version: 1,
+          app: 'mission-control',
+          validity_days: 30,
+          scope: 'exploration',
+          counts: { tested: 3, total: 5, jamais: 2, valide: 2, echec: 1, expire: 0 },
+          ignored_entries: 0,
+          checks: [],
+        },
+      },
+    });
+    expect(out.versions.lots[0]).toMatchObject({ version: 'v0.9.0', etiquette: 'v0.9.0', dateEtiquette: '2026-10-01T10:00:00+02:00' });
+    expect(out.versions.prochaineCoupe).toMatchObject({ derniereEtiquette: 'v0.9.0', livrees: [], nombre: 0, gate: null });
+    expect(out.versions.prochaineCoupe.carnet).toEqual({
+      app: 'mission-control',
+      tested: 3,
+      total: 5,
+      jamais: 2,
+      valide: 2,
+      echec: 1,
+      expire: 0,
+    });
+  });
+
+  it('un projet sans étiquette ni compte rendu (cas muti) : null ou [], jamais 0, et board show n’écrit rien', () => {
+    const root = mkdtempSync(join(tmpdir(), 'board-sans-etiquette-'));
+    try {
+      mkdirSync(join(root, 'features', 'done'), { recursive: true });
+      spawnSync('git', ['init', '-q', '-b', 'main'], { cwd: root });
+      const avant = readdirSync(root, { recursive: true }).sort();
+      expect(boardShowData(root).versions.prochaineCoupe).toEqual({
+        derniereEtiquette: null,
+        livrees: [],
+        nombre: null,
+        gate: null,
+        carnet: null,
+        numeroPropose: null,
+      });
+      expect(readdirSync(root, { recursive: true }).sort()).toEqual(avant);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('board show --json — la règle des bloquées (cœur pur)', () => {
   const f = (over: Partial<Fiche>): Fiche =>
     ({ id: '', title: '', type: 'feature', priority: 'P2', status: 'idea', milestone: '', product: '', pr: '',
@@ -222,6 +313,18 @@ describe('board show --json — sur le vrai dépôt', () => {
     expect(real.comptes.closes).toBe(TERMINAUX.reduce((n, t) => n + (real.counts[t] ?? 0), 0));
     expect(real.comptes.pretes).toBeLessThanOrEqual(real.counts.ready ?? 0);
     expect(real.comptes.idees + real.comptes.parkees).toBeLessThanOrEqual(real.counts.idea ?? 0);
+  });
+
+  it('la prochaine coupe compte les fiches ajoutées à features/done/ depuis la dernière étiquette (commande git de la fiche)', () => {
+    const coupe = boardShowData(repoRoot).versions.prochaineCoupe;
+    expect(coupe.derniereEtiquette).not.toBeNull();
+    const out = spawnSync(
+      'git',
+      ['-C', repoRoot, 'log', '--no-renames', '--diff-filter=A', '--name-only', '--pretty=format:', `${coupe.derniereEtiquette}..HEAD`, '--', 'features/done'],
+      { encoding: 'utf8' },
+    ).stdout;
+    expect(coupe.nombre).toBe(out.split('\n').filter((l) => l.endsWith('.md')).length);
+    expect(coupe.livrees).toHaveLength(coupe.nombre ?? -1);
   });
 
   it('chaque livrée qui porte un objectif est publiée une fois, dans les livrées de son objectif', () => {

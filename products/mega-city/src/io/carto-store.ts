@@ -17,8 +17,10 @@ import { appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, stat
 import { extname, join, resolve } from 'node:path';
 import {
   type CartoEntry,
+  type CartoStatus,
   type CartoTree,
   SHA_PATTERN,
+  computeStatus,
   parseCartoTree,
   parseJournal,
   resolveCartoConfig,
@@ -134,4 +136,26 @@ export function commitsSinceIn(projectRoot: string): (sha: string) => number | n
 /** La racine git du dossier donné, ou le dossier lui-même hors dépôt. */
 export function gitTopLevel(dir: string): string {
   return git(dir, ['rev-parse', '--show-toplevel']) ?? dir;
+}
+
+/** « Maintenant » pour le carnet : `EZK_CARTO_NOW` (date ISO, tests seulement) ou l'horloge. */
+export function cartoNow(): Date {
+  const forced = process.env.EZK_CARTO_NOW;
+  if (!forced) return new Date();
+  const now = new Date(forced);
+  if (Number.isNaN(now.getTime())) throw new CartoError(`EZK_CARTO_NOW : date ISO illisible « ${forced} »`);
+  return now;
+}
+
+/**
+ * L'état du carnet d'un arbre chargé : lit son journal, puis calcule l'état de chaque contrôle.
+ * Le seul chemin de calcul : `ezk carto status` et `board show` (fiche 20261114131612759) y passent.
+ */
+export function statusOfLoaded(projectRoot: string, loaded: LoadedTree, now: Date): CartoStatus {
+  const { entries } = readEntries(storeDir(projectRoot, loaded.app));
+  return computeStatus(loaded.tree, entries, {
+    now,
+    validityDays: loaded.validityDays,
+    commitsSince: commitsSinceIn(projectRoot),
+  });
 }
