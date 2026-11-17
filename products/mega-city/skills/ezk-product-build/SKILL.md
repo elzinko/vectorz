@@ -43,7 +43,7 @@ l'équipe scrum. Tu **composes** trois compétences — tu n'en réécris aucune
 
 ## Usage (sous-commandes)
 
-`/ezk-product-build [sous-commande] [--mode manuel|auto] [--versions all|<liste>] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--stamp-ready] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
+`/ezk-product-build [sous-commande] [--mode manuel|auto] [--max-sprints N|--once] [--lot N] [--tokens lean|cap|full] [--stamp-ready] [--delivery per-feature|per-epic] [--retro end|every:N|off]`
 
 | Sous-commande | Effet |
 |---|---|
@@ -124,8 +124,9 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
      **Ne t'arrête jamais muet à la frontière** (ADR-0080) : lance `ezk backlog version close <v>` —
      s'il refuse, il liste chaque fiche non livrée avec sa **raison typée** et la **décision attendue**
      (reporter / parker / clôturer / construire). En `--mode manuel` → STOP, le PO tranche. En
-     `--mode auto` → `ezk-pm`, ou la pré-autorisation `--seal-versions`/`--versions` (v0.15). Le **tag
-     ne couvre que le livré** : une fiche bloquée **sort** de la version (report-hors, sinon `park`).
+     `--mode auto` → `ezk-pm`. Le run ne coupe jamais la version lui-même : la coupe est un geste du PO
+     (§ « Coupe d'une version »). Le **tag ne couvre que le livré** : une fiche bloquée **sort** de la
+     version (report-hors, sinon `park`).
    Le tri est **déterministe** : il lit le marqueur `blocked:` typé et la borne de version
    (ADR-0070), jamais un texte libre que seul un humain décoderait.
 2. **Décision « quoi »** :
@@ -342,48 +343,23 @@ délégable] et (b) *ça vaut le coup* [humain]. Défaut autonome = le PO a déj
 sélectionnant le lot ; la machine ne fait que (a), avec `ezk-pm` comme second regard. **La
 sélection du lot reste à l'humain — la machine ne décide jamais *quoi* construire.**
 
-## Boucle multi-versions — configurable (`--versions`)
+## Coupe d'une version — `ezk backlog version tag`
 
-Règle **combien de versions** le run enchaîne. **Sans `--versions`** : une **itération unique** — la
-version en cours, point (non-régression stricte, comportement d'avant). **Avec `--versions`** : la
-boucle enchaîne **plusieurs versions** du plan, chacune avec sa **frontière** = rétro (selon `--retro`)
-puis **clôture de version**. Adossé à la fiche 20261013131852375 (le **POC** de l'enchaînement).
+Le run **ne pose jamais l'étiquette de version**. La coupe est un geste du PO. Elle tient en trois
+commandes, dans cet ordre :
 
-- **`--versions all`** — toutes les versions **à faire** du plan, dans l'ordre (la version en cours,
-  puis les suivantes qui ont des fiches à livrer).
-- **`--versions <v1,v2,…>`** — une liste explicite ; les versions inconnues, déjà livrées ou sans
-  fiche à faire sont **signalées, jamais tues**.
+1. `ezk release <vX.Y.Z>` — la gate de release rend GO ou NO-GO.
+2. `ezk backlog version tag <vX.Y.Z> --dry-run` — à blanc : la coupe, le numéro proposé, rien d'écrit.
+   Il rend le code 1 s'il refuse, y compris quand il n'y a **rien à couper**.
+3. `ezk backlog version tag <vX.Y.Z>` — la coupe : écrit `version:` sur les fiches, committe et pose
+   l'étiquette **en local** (réversible : `git tag -d`).
 
-**La suite se lit par `ezk run versions [--versions all|<liste>]`** (déterministe, ordre du plan) : le
-pilote la déroule version par version. À **chaque frontière** :
+**Rien n'est poussé, jamais** : le `git push origin <étiquette>` reste au PO, en toutes lettres.
 
-1. la version courante est construite (la boucle de sprints habituelle, filtre d'éligibilité compris) ;
-2. **rétro** si due (`--retro`, ≥ 2 sprints dans la version) ;
-3. **clôture de version** — `ezk backlog version close <v>` (la gate de release joue). Le POC **ne tague
-   pas** tout seul : l'auto-tag est **opt-in** (fiche sœur `--seal-versions`, ci-dessous), et le
-   park-hors-version d'une fiche inconstruisable est une autre fiche sœur.
-
-Garde-fou ADR-0001 tenu : le skill **décide** quand passer à la version suivante ; `ezk backlog version`
+Le run **enchaîne une seule version à la fois** : la version en cours, jusqu'à la borne de version
+(ADR-0080). À la frontière, il **s'arrête** et annonce la coupe au PO. Il n'existe plus de boucle
+multi-versions ni d'auto-tag par le run : ils sont retirés (ADR-0088 §2.5). Garde-fou ADR-0001 : le skill **décide** de s'arrêter ; `ezk backlog version`
 **exécute** le git.
-
-## Scellage des versions — configurable (`--seal-versions`)
-
-Règle **si le run pose l'étiquette de version lui-même**. Poser le tag (`version close --tag`) est le
-**seul geste git réservé au PO** : ce drapeau le rend **délégable au run**, mais sous double condition.
-Adossé à [ADR-0076](../../docs/adr/0076-auto-tag-close-local-opt-in.md) (l'assouplissement et sa limite).
-**Défaut : absent** — le run clôt chaque version (`version close`) mais **ne tague pas**, le tag reste au PO.
-
-- **`--seal-versions local`** (opt-in) — à chaque frontière de version, en **flux local**
-  (`github: false`, rien n'est poussé), le run pose l'étiquette **lui-même**, en local et réversible
-  (`git tag -d` pour la retirer). La gate de release joue toujours : pas de tag tant que la passe
-  qualité n'est pas GO.
-- **Hors flux local** (GitHub actif) — le drapeau **ne mord pas** : le tag reste au PO. Jamais
-  d'auto-tag quand quelque chose serait poussé.
-- **Rien n'est poussé, jamais.** `--seal-versions local` crée une étiquette **locale** ; le
-  `git push origin <tag>` reste un geste du PO en toutes lettres.
-
-Le contrat du run (`ezk run context --seal-versions local`) **affiche** la politique de scellage en
-clair. Garde-fou ADR-0001 : le skill **décide** de passer `--tag` ; `ezk backlog version` **exécute** le git.
 
 ## Mode livraison — configurable (`--delivery`)
 

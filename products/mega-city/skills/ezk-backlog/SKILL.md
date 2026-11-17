@@ -119,7 +119,7 @@ du front-matter de cette skill).
 | `ship <id> [#PR]` | Passe la fiche `shipped` en **une transaction** (`ezk backlog ship`) : `status` + `pr`, `git mv` vers `done/`, liens recalés, `BACKLOG.md` régénéré, entrée de `PLAN.md` barrée. Refuse sans rien écrire si un contrôle est rouge (`PORTFOLIO.md`, board, pilotage et runs ne sont plus committés : rien à y régénérer) |
 | `regen` | Régénère `features/BACKLOG.md` depuis le front-matter des fiches. Les vues **non committées** (`PORTFOLIO.md`, données de la carte de la méthode) se construisent à part : `ezk views regen` (ADR-0055) ; mission control lit le reste par `ezk board show --json` |
 | `aggregate [options]` | Grand ménage à la demande : cluster le stock actif (regrouper/splitter/épics), **propose** un rapport numéroté — jamais d'auto-modification |
-| `version [list\|check\|close]` | Le niveau **version** : où en est chaque lot (champ `version:`), cohérence d'un lot, et clôture d'une version livrée (étiquette `vX.Y` **proposée**, jamais poussée) |
+| `version [list\|check\|close\|tag]` | Le niveau **version** : où en est chaque lot (champ `version:`), cohérence d'un lot, vérification qu'une version est complète (`close`), et la **coupe** (`tag` : étiquette locale, jamais poussée) |
 
 > **Help** : invoquée sans sous-commande (ou avec `help`/`?`), affiche d'abord ce tableau, puis,
 > si un backlog existe, son état trié par priorité. Sans sous-commande reconnue → traite la
@@ -540,8 +540,8 @@ pendant que la v0.7 n'était pas finie. C'est corrigé par un filtre posé **ava
 - **Soupape `--all-versions`** (bruyante) : `plan-head` / `plan-lot --all-versions` lève le périmètre
   et regarde au-delà, avec un avertissement. Décision à journaliser (fiche + scratch de sprint).
 - **Deux fins de scope, aucun saut muet** : version en cours avec seulement des idées/bloquées →
-  « groome la tête » ; version **tout livré mais pas étiquetée** → « pousse l'étiquette
-  (`ezk backlog version close <vX.Y.Z>`) » pour débloquer la suivante.
+  « groome la tête » ; version **tout livré mais pas étiquetée** → « coupe la version
+  (`ezk backlog version tag --dry-run`, puis `ezk backlog version tag`) » pour débloquer la suivante.
 
 Hors dépôt git ou sans étiquette : le calcul dégrade sans planter (la version la plus basse est « en
 cours »). Les étiquettes sont lues en **local** (git les partage entre worktrees).
@@ -735,7 +735,7 @@ d'une vue générée.
 `ship` **exécute** ce que `reconcile`/`review` ont **proposé** — jamais l'inverse (la
 détection ne bascule rien seule ; l'arbitrage reste au PO).
 
-### `version [list|check|close]` — le niveau version (fiche 20260824204751403)
+### `version [list|check|close|tag]` — le niveau version (fiche 20260824204751403)
 
 Le champ `version:` d'une fiche désigne son **lot de livraison** (`V0.3`). Cette sous-commande le
 rend actif : tout se **calcule** depuis le front-matter (aucun objet milestone, aucun fichier de plus),
@@ -744,7 +744,8 @@ par un script déterministe (ADR-0001), jamais recompté à la main. Format atte
 ```bash
 ezk --root "$(git rev-parse --show-toplevel)" backlog version                # list : une ligne par version
 ezk --root "$(git rev-parse --show-toplevel)" backlog version check [<X>] [--max <n>] [--no-plan]
-ezk --root "$(git rev-parse --show-toplevel)" backlog version close <X> [--tag]
+ezk --root "$(git rev-parse --show-toplevel)" backlog version close <X>
+ezk --root "$(git rev-parse --show-toplevel)" backlog version tag [<X>] [--dry-run] [--major] [--release-ok "<raison>"]
 ```
 
 - **`list`** (défaut) — par version : fiches, livrées, à faire, prêtes, bloquées, intrus, et l'**état** :
@@ -760,8 +761,14 @@ ezk --root "$(git rev-parse --show-toplevel)" backlog version close <X> [--tag]
   que `features/` porte des changements non commités. Sinon il déclare la version complète et
   **propose** `git tag -a vX.Y <HEAD>` puis `git push origin vX.Y`, **sans les exécuter**. L'étiquette
   vise `HEAD`, le commit dont les fiches ont été lues ; la proposition avertit si ce n'est pas la pointe
-  de `origin/main`. `--tag` crée l'étiquette **en local** seulement (réversible : `git tag -d`) ; le
-  `push` reste un geste du PO.
+  de `origin/main`. `close` n'écrit rien : il renvoie vers `version tag` pour la coupe.
+- **`tag [<X>]`** — la **coupe** : l'étiquette de version se pose sur ce qui a été livré depuis la
+  précédente. Sans numéro, il en propose un (patch si tout est correctif, mineure sinon, majeure sur
+  `--major`) ; `<X>` impose le numéro. `--dry-run` montre la coupe et le numéro **sans rien écrire** :
+  il rend le code 1 s'il refuse, y compris quand il n'y a **rien à couper**. Sans `--dry-run`, il
+  exige un verdict `ezk release` GO établi sur HEAD (soupape PO journalisée : `--release-ok "<raison>"`),
+  une branche principale propre, puis écrit `version:` sur les fiches, committe et pose l’étiquette **en local**
+  (réversible : `git tag -d`). Le `git push origin <étiquette>` reste un geste du PO.
 
 Restitution : « En clair » d'abord (où en est la version, ce qui bloque), puis le tableau ou les
 constats. Lance-le depuis un `main` à jour. `PLAN.md` n'est jamais modifié par cette sous-commande.

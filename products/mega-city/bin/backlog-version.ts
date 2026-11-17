@@ -4,12 +4,12 @@
  *
  *   pnpm --dir products/mega-city backlog:version [list]
  *   pnpm --dir products/mega-city backlog:version check [<X>] [--max <n>] [--no-plan]
- *   pnpm --dir products/mega-city backlog:version close <X> [--tag] [--max <n>] [--no-plan]
+ *   pnpm --dir products/mega-city backlog:version close <X> [--max <n>] [--no-plan]
  *   pnpm --dir products/mega-city backlog:version tag [<X>] [--dry-run] [--major] [--release-ok "<raison>"]
  *
  * Le cœur PUR (`src/backlog/versions.ts`) calcule tout depuis le champ `version:` des fiches, les
  * étiquettes git locales et `features/PLAN.md`. Ici : lecture disque et git, puis affichage.
- * LECTURE SEULE, sauf `close --tag` qui crée UNE étiquette git LOCALE (réversible : `git tag -d`).
+ * LECTURE SEULE, sauf `tag` (la coupe : étiquette git LOCALE, réversible par `git tag -d`) et `freeze` / `unfreeze`.
  * Rien n'est jamais poussé : le `git push` reste un geste du PO, proposé en toutes lettres.
  *
  * Codes de sortie : 0 fait · 1 refus ou erreur de lot (rien d'écrit) · 2 usage ou échec git.
@@ -39,11 +39,9 @@ import {
 } from '../src/backlog/versions-render.js';
 import { type LaunchVerdict, launch, seal } from '../src/backlog/version-checkpoint.js';
 import { versionScope } from '../src/backlog/version-scope.js';
-import { gateRefusal } from '../src/core/release-gate.js';
 import { localTags } from '../src/io/git-tags.js';
 import { tagVersion } from '../src/io/version-tag.js';
 import { loadFiches } from '../src/loaders/fiches.js';
-import { readReleaseVerdict, releaseConfig } from '../src/loaders/release-passes.js';
 
 const VERBS = ['list', 'check', 'ready', 'close', 'tag', 'freeze', 'unfreeze', 'diff'] as const;
 type Verb = (typeof VERBS)[number];
@@ -54,7 +52,7 @@ const NEEDS_VERSION: ReadonlySet<Verb> = new Set(['close', 'freeze', 'unfreeze',
 function usage(message?: string): never {
   if (message) console.error(`erreur: ${message}`);
   console.error(
-    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | ready [<X>] | close <X> [--tag] [--release-ok "<raison>"] | tag [<X>] [--dry-run] [--major] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
+    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | ready [<X>] | close <X> | tag [<X>] [--dry-run] [--major] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
   );
   process.exit(2);
 }
@@ -65,7 +63,6 @@ interface Args {
   root: string;
   max: number;
   usePlan: boolean;
-  tag: boolean;
   releaseOk: string | undefined;
   dryRun: boolean;
   major: boolean;
@@ -76,14 +73,12 @@ function parseArgs(argv: string[]): Args {
   let root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
   let max = LOT_MAX;
   let usePlan = true;
-  let tag = false;
   let releaseOk: string | undefined;
   let dryRun = false;
   let major = false;
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--no-plan') usePlan = false;
-    else if (arg === '--tag') tag = true;
     else if (arg === '--dry-run') dryRun = true;
     else if (arg === '--major') major = true;
     else if (arg === '--release-ok') releaseOk = argv[++i] ?? usage('--release-ok attend une raison (soupape PO journalisée)');
@@ -105,7 +100,8 @@ function parseArgs(argv: string[]): Args {
   if (NEEDS_VERSION.has(verb) && version === undefined) usage(`${verb} attend une version (exemple : ${verb} v0.3.0)`);
   if (verb === 'list' && version !== undefined) usage('list ne prend pas de version');
   if ((dryRun || major) && verb !== 'tag') usage('--dry-run et --major ne vont qu\'avec tag');
-  return { verb, version, root, max, usePlan, tag, releaseOk, dryRun, major };
+  if (releaseOk !== undefined && verb !== 'tag') usage('--release-ok ne va qu\'avec tag');
+  return { verb, version, root, max, usePlan, releaseOk, dryRun, major };
 }
 
 /** Sortie d'une commande git dans `root`, ou `undefined` si elle échoue (hors dépôt, référence inconnue). */
@@ -322,7 +318,7 @@ function main(): void {
     process.exit(1);
   }
 
-  // L'étiquette vise le commit dont les fiches ont été LUES : HEAD, jamais une autre référence (Codex #286).
+  // La proposition vise le commit dont les fiches ont été LUES : HEAD, jamais une autre référence (Codex #286).
   // Si `features/` porte des changements non commités, l'état validé n'est pas celui de HEAD : on refuse.
   const head = gitOut(args.root, ['rev-parse', 'HEAD']);
   if (head === undefined) {
@@ -339,49 +335,7 @@ function main(): void {
     ]);
     process.exit(1);
   }
-  // Gate de release (fiche 20260922175954296) : le tag est refusé si la passe qualité de la
-  // version n'est pas GO — sauf soupape PO journalisée (--release-ok "<raison>"). Désactivée
-  // par `release.gate: off`. Un verdict établi sur un autre commit que HEAD est périmé.
-  // Un réglage `release` invalide (ex. `release.tests` mal typé) est refusé proprement, jamais planté.
-  let releaseGateActive = false;
-  if (args.tag) {
-    try {
-      releaseGateActive = releaseConfig(args.root).gate;
-    } catch (err) {
-      console.error(`✗ réglage release invalide — ${err instanceof Error ? err.message : String(err)}`);
-      process.exit(2);
-    }
-  }
-  if (releaseGateActive) {
-    if (args.releaseOk) {
-      say([`Soupape PO — gate de release outrepassée pour ${version} : ${args.releaseOk}`, '']);
-    } else {
-      const reason = gateRefusal(readReleaseVerdict(args.root, version), head, version);
-      if (reason !== undefined) {
-        say(renderRefusal(version, [reason, 'soupape PO : close … --tag --release-ok "<raison>" (journalisée)']));
-        process.exit(1);
-      }
-    }
-  }
-  if (!args.tag) {
-    say(renderProposal(version, result.tag, head, gitOut(args.root, ['rev-parse', 'origin/main'])));
-    return;
-  }
-  try {
-    execFileSync('git', ['tag', '-a', result.tag, '-m', `Version ${version}`, head], {
-      cwd: args.root,
-      stdio: 'pipe',
-    });
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
-    console.error(`✗ étiquette non créée : ${reason}`);
-    process.exit(2);
-  }
-  say([
-    `En clair : ${version} est livrée. L'étiquette ${result.tag} est créée en local sur HEAD (${head.slice(0, 9)}).`,
-    `Pour la publier, lance toi-même : git push origin ${result.tag}`,
-    `Pour la retirer : git tag -d ${result.tag}`,
-  ]);
+  say(renderProposal(version, result.tag, head, gitOut(args.root, ['rev-parse', 'origin/main'])));
 }
 
 main();

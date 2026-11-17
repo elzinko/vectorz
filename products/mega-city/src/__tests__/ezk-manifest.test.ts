@@ -105,7 +105,6 @@ describe('ezk-manifest.yml', () => {
       'run context',
       'run eligibility',
       'run report',
-      'run versions',
       'scout extract',
     ]);
   });

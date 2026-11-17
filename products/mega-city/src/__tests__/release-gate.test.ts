@@ -151,6 +151,8 @@ describe('release-gate — cœur pur', () => {
 
   it('les passes du socle sont dod-mecanique puis chasse-aux-bugs', () => {
     expect(DEFAULT_PASSES.map((p) => p.id)).toEqual(['dod-mecanique', 'chasse-aux-bugs']);
+    // ADR-0088 §2.5 : la DoD mécanique rejoue la coupe à blanc ; code 1 (dont « rien à couper ») = NO-GO.
+    expect(DEFAULT_PASSES[0]?.command).toBe('ezk --root {root} backlog version tag {version} --dry-run');
   });
 
   it('decidePassVerdict : aucun verdict → NO-GO, « à poser »', () => {

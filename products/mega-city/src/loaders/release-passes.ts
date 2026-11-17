@@ -5,7 +5,7 @@
  * - Passes : `.vectorz/release-passes.yml` (liste `{ id, title, command }`). Absent → les
  *   `DEFAULT_PASSES` du cœur. YAML malformé → erreur claire (jamais de coupure silencieuse).
  * - Verdict : `.vectorz/release/<version>.json` — écrit par `ezk release`, lu par
- *   `backlog version close --tag` pour refuser le tag sur NO-GO (ou verdict absent), et par
+ *   `backlog version tag` pour refuser la coupe sur NO-GO (ou verdict absent), et par
  *   `board show` pour publier le dernier (fiche 20261114131612759).
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';

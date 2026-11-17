@@ -21,11 +21,10 @@ import {
 } from '../src/core/run-context.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { collectRunFacts } from '../src/io/run-facts.js';
-import { githubCapabilities } from '../src/loaders/project-config.js';
 
 function usage(): never {
   console.error(`usage: run:context [--mode auto|manuel] [--delivery per-feature|per-epic] [--tokens lean|cap|full]
-                   [--stamp-ready] [--seal-versions local] [--max-sprints N] [--fiche <id>] [--no-fetch] [--base <branche>]
+                   [--stamp-ready] [--max-sprints N] [--fiche <id>] [--no-fetch] [--base <branche>]
 
   défauts : --mode auto --delivery per-feature --tokens lean (ceux d'ezk-product-build)
   --no-fetch    ne rafraîchit pas origin (hors ligne) : la base est alors lue telle qu'elle est`);
@@ -68,7 +67,6 @@ function main(): void {
       if (Number.isNaN(n) || n < 1) usage();
       settings.maxSprints = n;
     } else if (a === '--fiche') settings.fiche = argv[++i];
-    else if (a === '--seal-versions') settings.sealVersions = oneOf<'local'>(argv[++i], ['local'], '--seal-versions');
     else if (a === '--no-fetch') fetch = false;
     else if (a === '--base') base = argv[++i];
     else {
@@ -76,11 +74,7 @@ function main(): void {
       usage();
     }
   }
-  const facts = {
-    ...collectRunFacts(root, { fetch, ...(base ? { base } : {}) }),
-    // Flux local = pas de PR (github.pr coupé) : condition de l'auto-tag (--seal-versions local).
-    githubLocalFlow: !githubCapabilities(root).pr,
-  };
+  const facts = collectRunFacts(root, { fetch, ...(base ? { base } : {}) });
   console.log(buildRunContext(settings, facts).lines.join('\n'));
 }
 

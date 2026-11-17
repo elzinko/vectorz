@@ -3,7 +3,7 @@ name: ezk-release
 description: >-
   Passe qualité d'une VERSION entière avant son tag — une gate composable (GO/NO-GO) qui
   enchaîne des passes bloquantes déclarées (DoD mécanique + chasse aux bugs adverse au départ,
-  revue design-system et autres en plus). Un NO-GO bloque `ezk backlog version close --tag`.
+  revue design-system et autres en plus). Un NO-GO bloque `ezk backlog version tag`.
   À jouer en FIN D'ITÉRATION (le lot de features d'une version), pas par feature. Désactivable
   par `.vectorz/config.yml → release.gate: off`.
 argument-hint: "<vX.Y.Z>"
@@ -20,7 +20,7 @@ argument-hint: "<vX.Y.Z>"
 Avant de taguer une version, on veut une **passe ultime** qui verrouille la qualité et **bloque
 le tag** tant que ce n'est pas GO. `ezk release <vX.Y.Z>` enchaîne des **passes bloquantes
 déclarées** (GO/NO-GO) ; le verdict global est GO seulement si **toutes** les passes sont GO.
-Un NO-GO **refuse** `ezk backlog version close --tag`. Capacité **méthode**, réutilisable par
+Un NO-GO **refuse** `ezk backlog version tag`. Capacité **méthode**, réutilisable par
 tous les projets, **désactivable** par config.
 
 ## Usage
@@ -30,9 +30,19 @@ ezk release <vX.Y.Z>        # joue les passes, écrit le verdict, exit 0 si GO /
 ```
 
 Le verdict est écrit sous `.vectorz/release/<version>.json` (transitoire, gitignoré). C'est lui
-que `ezk backlog version close <version> --tag` relit : il **refuse** le tag si le verdict est
+que `ezk backlog version tag` relit : il **refuse** la coupe si le verdict est
 absent, NO-GO, ou **périmé** (établi sur un autre commit que HEAD). Soupape PO **journalisée** :
-`ezk backlog version close <version> --tag --release-ok "<raison>"`.
+`ezk backlog version tag <version> --release-ok "<raison>"`.
+
+Le geste complet tient en trois commandes :
+
+```bash
+ezk release <vX.Y.Z>                          # la gate : GO ou NO-GO
+ezk backlog version tag <vX.Y.Z> --dry-run    # à blanc : voir la coupe et le numéro, rien n'est écrit
+ezk backlog version tag <vX.Y.Z>              # la coupe : étiquette locale, jamais poussée
+```
+
+Le `git push origin <étiquette>` reste au PO.
 
 ## Composable — les passes sont des DONNÉES
 
@@ -44,8 +54,8 @@ une réécriture.
 ```yaml
 passes:
   - id: dod-mecanique
-    title: Definition of Done mécanique — la version est cohérente et complète
-    command: ezk --root {root} backlog version check {version}
+    title: Definition of Done mécanique — la coupe de la version est possible (dry-run de `version tag`)
+    command: ezk --root {root} backlog version tag {version} --dry-run
   - id: chasse-aux-bugs
     title: Chasse aux bugs adverse — verdict posé par ezk release verdict
     command: ezk --root {root} release verdict-check chasse-aux-bugs {version}
@@ -57,7 +67,11 @@ passes:
 
 **Les deux passes du socle** (v0.11) :
 
-1. **`dod-mecanique`** — la version est cohérente (`ezk backlog version check`). Déterministe.
+1. **`dod-mecanique`** — la coupe est possible (`ezk backlog version tag <v> --dry-run`). Déterministe.
+   Le dry-run rend le code 1 quand il refuse : numéro qui ne dépasse pas la dernière étiquette,
+   patch qui couperait une fiche hors bug, ou **rien à couper** (aucune fiche livrée depuis la
+   dernière étiquette). Cette passe lit ces refus comme un **NO-GO** : une coupe vide n'a rien à
+   étiqueter, et la vraie coupe la refuserait aussi.
 2. **`chasse-aux-bugs`** — un agent adverse (`ezk-reviewer` en mode adverse) rejoue les parcours
    réels du lot au-delà des tests unitaires. Le skill ne juge pas lui-même : la revue POSE un
    **verdict** par commande — `ezk release verdict chasse-aux-bugs <version> go|no-go "<motif>"` —
@@ -108,13 +122,13 @@ l'**ajoute en donnée** quand le projet a un design-system (preuve de la composi
 ## Désactivation
 
 `.vectorz/config.yml → release.gate: off` (ou projet sans version taguée) → `ezk release` se
-**saute proprement** (GO, exit 0) et `version close --tag` ne consulte aucun verdict.
+**saute proprement** (GO, exit 0) et `version tag` ne consulte aucun verdict.
 
 ## Frontière — compose, ne réimplémente rien
 
-- La **DoD mécanique** réutilise `ezk backlog version check` (le cœur `versions.ts`).
+- La **DoD mécanique** réutilise `ezk backlog version tag --dry-run` (le cœur de coupe `coupe*.ts`).
 - La **chasse aux bugs** délègue à `ezk-reviewer` (modèle adverse) ; le skill ne refait pas la revue.
-- Le **blocage du tag** vit dans `ezk backlog version close --tag`, pas dupliqué ici.
+- Le **blocage du tag** vit dans `ezk backlog version tag`, pas dupliqué ici.
 
 ## Garde-fous
 

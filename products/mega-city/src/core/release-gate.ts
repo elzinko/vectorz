@@ -50,8 +50,9 @@ export interface ReleaseVerdict {
 export const DEFAULT_PASSES: readonly ReleasePass[] = [
   {
     id: 'dod-mecanique',
-    title: 'Definition of Done mécanique — la version est cohérente et complète',
-    command: 'ezk --root {root} backlog version check {version}',
+    title: 'Definition of Done mécanique — la coupe de la version est possible (dry-run de `version tag`)',
+    // Code 1 = NO-GO, y compris « rien à couper » : une coupe vide n'a rien à étiqueter, la vraie coupe la refuserait aussi.
+    command: 'ezk --root {root} backlog version tag {version} --dry-run',
   },
   {
     id: 'chasse-aux-bugs',
@@ -220,7 +221,7 @@ export function resolveRelease(release: unknown): ReleaseConfig {
 
 /**
  * Pourquoi la gate refuse l'étiquette `version` sur le commit `head`, ou `undefined` si elle l'autorise.
- * Un verdict établi sur un autre commit que HEAD est périmé. Partagé par `close --tag` et `version tag`.
+ * Un verdict établi sur un autre commit que HEAD est périmé. Utilisé par `version tag`.
  */
 export function gateRefusal(verdict: ReleaseVerdict | undefined, head: string, version: string): string | undefined {
   if (verdict === undefined) return `aucune gate de release jouée — lance d'abord : ezk release ${version}`;

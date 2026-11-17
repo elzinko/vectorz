@@ -154,6 +154,6 @@ export function renderProposal(
     `  git push origin ${tag}`,
     '',
     where,
-    `Pour créer l'étiquette en local, relance avec --tag. Réversible : git tag -d ${tag}. Jamais poussée.`,
+    `Pour la couper en local : backlog version tag ${version}. Réversible : git tag -d ${tag}. Jamais poussée.`,
   ];
 }

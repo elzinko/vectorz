@@ -1,8 +1,8 @@
 /**
  * `ezk-backlog version` de bout en bout (fiche 20260824204751403) : le VRAI bin, lancé sur un dépôt
  * git jetable. Ce que le cœur pur ne peut pas prouver : les codes de sortie, la lecture des fiches par
- * le loader, et surtout le contrat d'écriture — rien n'est écrit sans `--tag`, et `--tag` ne crée
- * qu'une étiquette LOCALE (aucune poussée, aucune fiche touchée).
+ * le loader, et surtout le contrat d'écriture — `close` n'écrit rien (il propose l'étiquette ; la coupe
+ * vit dans `version tag`, testé à part).
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { appendFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -57,9 +57,6 @@ beforeEach(() => {
     'features/20260101000000004_d.md',
     fm('20260101000000004', 'status: idea\nmilestone: parked\nversion: v0.4.0'),
   );
-  // Ces tests portent sur le VERSIONNEMENT, pas sur la gate de release (fiche 20260922175954296,
-  // testée à part dans release-gate.test.ts) : on la désactive pour que `close --tag` reste focalisé.
-  put('.vectorz/config.yml', 'release:\n  gate: off\n');
   git('add', '.');
   git('commit', '--quiet', '-m', 'chore: seed');
 });
@@ -102,37 +99,22 @@ describe('backlog:version — le bin', () => {
     expect(git('tag', '-l')).toBe('');
   });
 
-  it('close sur une version complète : PROPOSE l’étiquette semver (vX.Y.Z) et n’exécute rien', () => {
+  it('close sur une version complète : PROPOSE l’étiquette semver (vX.Y.Z), nomme `version tag` et n’exécute rien', () => {
     const r = run('close', 'v0.2.0');
     expect(r.code).toBe(0);
+    expect(r.out).toContain('backlog version tag v0.2.0');
     expect(r.out).toContain('git tag -a v0.2.0');
     expect(r.out).toContain('git push origin v0.2.0');
     expect(git('tag', '-l')).toBe('');
     expect(git('status', '--porcelain')).toBe('');
   });
 
-  it('close --tag : crée l’étiquette semver LOCALE, jamais de poussée, puis la version est « livrée »', () => {
-    const head = git('rev-parse', 'HEAD').trim();
-    const r = run('close', 'v0.2.0', '--tag');
-    expect(r.code).toBe(0);
-    expect(r.out).toContain('git push origin v0.2.0'); // proposé à l'humain, pas exécuté
-    expect(git('tag', '-l').trim()).toBe('v0.2.0');
-    expect(git('rev-list', '-n', '1', 'v0.2.0').trim()).toBe(head);
-    expect(git('status', '--porcelain')).toBe(''); // aucune fiche touchée
-    expect(run().out).toMatch(/v0\.2\.0\s+2\s+2\s+0\s+0\s+0\s+0\s+livrée \(v0\.2\.0\)/);
-    const again = run('close', 'v0.2.0'); // idempotent : on ne reclôt pas
-    expect(again.code).toBe(1);
-    expect(again.out).toContain('déjà livrée');
-  });
-
   it('close refuse (code 1) quand features/ porte des changements non commités : l’état validé n’est pas celui de HEAD', () => {
     appendFileSync(join(root, 'features/20260101000000003_c.md'), 'ajout non commité\n');
-    for (const args of [['close', 'v0.2.0'], ['close', 'v0.2.0', '--tag']]) {
-      const r = run(...args);
-      expect(r.code).toBe(1);
-      expect(r.out).toContain('non commités');
-      expect(git('tag', '-l')).toBe('');
-    }
+    const r = run('close', 'v0.2.0');
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('non commités');
+    expect(git('tag', '-l')).toBe('');
   });
 
   it('l’étiquette vise HEAD, le commit dont les fiches ont été lues — et la proposition avertit si origin/main est ailleurs', () => {
@@ -147,13 +129,13 @@ describe('backlog:version — le bin', () => {
     expect(proposal.code).toBe(0);
     expect(proposal.out).toContain(`git tag -a v0.2.0 -m "Version v0.2.0" ${head}`);
     expect(proposal.out).toContain("n'est pas la pointe de origin/main");
-
-    expect(run('close', 'v0.2.0', '--tag').code).toBe(0);
-    expect(git('rev-list', '-n', '1', 'v0.2.0').trim()).toBe(head); // jamais origin/main
+    expect(git('tag', '-l')).toBe(''); // la proposition n'écrit rien
   });
 
   it('refuse les usages invalides (code 2) sans rien faire', () => {
     expect(run('close').code).toBe(2); // close sans version
+    expect(run('close', 'v0.2.0', '--tag').code).toBe(2); // l'ancienne coupe par close n'existe plus
+    expect(run('close', 'v0.2.0', '--release-ok', 'x').code).toBe(2); // la soupape va avec `tag` seul
     expect(run('check', 'v0.3').code).toBe(2); // format
     expect(run('nimporte').code).toBe(2); // sous-commande inconnue
     expect(run('--max', '0').code).toBe(2);
@@ -192,53 +174,6 @@ describe('backlog:version close — surface la décision, fiche par fiche (sorti
     expect(r.out).toContain('Décision attendue');
     expect(r.out).toContain('design');
     expect(r.out).toContain('20260101000000008');
-  });
-});
-
-// Gate de release (fiche 20260922175954296) — ici la gate est ACTIVE (on efface le `off` du setup).
-describe('backlog:version close --tag — gate de release', () => {
-  beforeEach(() => {
-    put('.vectorz/config.yml', '\n'); // release absent → gate active (défaut sûr)
-  });
-
-  it('refuse le tag quand AUCUNE gate de release n’a été jouée', () => {
-    const r = run('close', 'v0.2.0', '--tag');
-    expect(r.code).toBe(1);
-    expect(r.out).toContain('aucune gate de release');
-    expect(git('tag', '-l')).toBe('');
-  });
-
-  it('refuse le tag sur verdict NO-GO, en nommant la passe bloquante', () => {
-    put(
-      '.vectorz/release/v0.2.0.json',
-      JSON.stringify({
-        version: 'v0.2.0',
-        verdict: 'NO-GO',
-        passes: [{ id: 'chasse-aux-bugs', title: 'x', command: 'y', go: false }],
-        at: '2026-01-01T00:00:00Z',
-      }),
-    );
-    const r = run('close', 'v0.2.0', '--tag');
-    expect(r.code).toBe(1);
-    expect(r.out).toContain('chasse-aux-bugs');
-    expect(git('tag', '-l')).toBe('');
-  });
-
-  it('autorise le tag sur verdict GO', () => {
-    put(
-      '.vectorz/release/v0.2.0.json',
-      JSON.stringify({ version: 'v0.2.0', verdict: 'GO', passes: [], at: '2026-01-01T00:00:00Z' }),
-    );
-    const r = run('close', 'v0.2.0', '--tag');
-    expect(r.code).toBe(0);
-    expect(git('tag', '-l').trim()).toBe('v0.2.0');
-  });
-
-  it('soupape PO journalisée : --release-ok passe outre, même sans verdict', () => {
-    const r = run('close', 'v0.2.0', '--tag', '--release-ok', 'hotfix urgent');
-    expect(r.code).toBe(0);
-    expect(r.out).toContain('Soupape PO');
-    expect(git('tag', '-l').trim()).toBe('v0.2.0');
   });
 });
 

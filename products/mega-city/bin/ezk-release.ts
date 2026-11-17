@@ -3,7 +3,7 @@
  * `ezk release <vX.Y>` — la passe qualité d'une VERSION entière avant son tag (fiche
  * 20260922175954296, ADR composable). Elle COMPOSE des passes bloquantes déclarées (GO/NO-GO) ;
  * elle ne réimplémente aucune logique de revue. Le verdict est écrit sous
- * `.vectorz/release/<version>.json` et lu par `backlog version close --tag`, qui refuse le tag
+ * `.vectorz/release/<version>.json` et lu par `backlog version tag`, qui refuse la coupe
  * sur NO-GO (sauf soupape PO journalisée).
  *
  * Désactivable : `.vectorz/config.yml → release.gate: off` → la gate se saute proprement (GO).
