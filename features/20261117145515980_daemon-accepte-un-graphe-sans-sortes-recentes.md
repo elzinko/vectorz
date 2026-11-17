@@ -8,7 +8,7 @@ product: cop1
 milestone: board
 version:
 labels: [carte, contrat]
-status: idea
+status: ready
 pr:
 evidence: none # pas de changement visible avec une méthode à jour
 created: 2026-11-17
