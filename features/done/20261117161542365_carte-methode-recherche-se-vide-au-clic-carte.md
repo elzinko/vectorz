@@ -2,7 +2,7 @@
 # id : horodatage AAAAMMDDHHMMSSmmm QUOTÉ (17 chiffres > MAX_SAFE_INTEGER) posé par `add` (scripts/mint-id.sh) — nom <id>_<slug>.md
 id: "20261117161542365"
 title: La recherche de la carte de la méthode se vide quand on choisit une brique sur la carte
-type: fix
+type: bug
 priority: P3
 product: cop1
 milestone: board

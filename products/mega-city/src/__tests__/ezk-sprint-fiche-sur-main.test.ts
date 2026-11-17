@@ -19,7 +19,11 @@ describe('ezk-sprint — la fiche et sa livraison passent dans main', () => {
   it('l’étape 0 met dans main une fiche créée pendant la session, avant de couper la branche', () => {
     expect(stepOne).toBeGreaterThan(stepZero);
     const where = lines.slice(stepZero, stepOne).join('\n');
-    expect(where).toContain('**Une fiche créée ou groomée pendant la session passe d’abord dans `main`**');
+    expect(where).toContain("**Une fiche créée ou groomée pendant la session passe d'abord dans `main`**");
+  });
+
+  it('le skill n’a pas d’apostrophe courbe dans ses phrases (fiche 20261117162025203)', () => {
+    expect(skill).not.toContain('\u2019');
   });
 
   it('l’étape 10 met dans main le commit de livraison avant `close`, en mode local', () => {

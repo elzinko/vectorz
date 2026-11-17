@@ -35,8 +35,8 @@ Remplacer l'apostrophe courbe par l'apostrophe droite, dans la phrase du skill e
 
 ## Critères d'acceptation
 
-- [ ] Le skill ezk-sprint ne contient plus d'apostrophe courbe.
-- [ ] Le test lit la phrase avec l'apostrophe droite, et il passe.
+- [x] Le skill ezk-sprint ne contient plus d'apostrophe courbe.
+- [x] Le test lit la phrase avec l'apostrophe droite, et il passe.
 
 ## Comment vérifier
 
@@ -48,3 +48,8 @@ cd products/mega-city && pnpm exec vitest run src/__tests__/ezk-sprint-fiche-sur
 ## Notes / décisions
 
 - Créée et tirée au sprint 16 du 17 novembre, par délégation du PO absent.
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Deux réserves P3
+restent ouvertes. La garde « pas d'apostrophe courbe » vise tout le fichier, comme le dit le critère 1.
+Les libellés du test gardent leurs apostrophes courbes. Le même lot corrige aussi `type: fix` en
+`type: bug` dans la fiche du sprint 15, signalé par la session parallèle : la valeur n'était pas admise.
