@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [carte, tests]
-status: ready
-pr:
+status: shipped
+pr: "local (971c44f6)"
 evidence: none # test seulement
 created: 2026-11-17
 ---
