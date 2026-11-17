@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, carte]
-status: ready
-pr:
+status: shipped
+pr: "local (d40c6dd4)"
 evidence: none # message d'erreur, rare
 created: 2026-11-17
 ---
@@ -51,5 +51,5 @@ cd products/cop1/packages/web && pnpm exec vitest run src/board/useDaemonContrac
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Corrigé après revue : un JSON valide mais vide (`null`) est traité de la même façon, avec son test.
 
 
-- Origine : revue du sprint 5 et [rétro du sprint 5 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-5-cartes-qui-chargent.md),
+- Origine : revue du sprint 5 et [rétro du sprint 5 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-5-cartes-qui-chargent.md),
   qui l'avait laissé en reste ouvert ; tirée au sprint 8 par délégation du PO absent.
