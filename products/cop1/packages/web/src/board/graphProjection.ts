@@ -118,6 +118,29 @@ export interface NeighborGroup {
 const nodeOf = (contract: GraphCheck, flowId: string) =>
   contract.nodes.find((n) => graphNodeId(n.kind, n.id) === flowId);
 
+/** Le zoom minimal du premier temps : assez près pour passer au niveau 2, hystérésis comprise. */
+export const FOCUS_MIN_ZOOM = GRAPH_ZOOM_THRESHOLDS[0] * 1.25;
+
+export interface FocusStep {
+  /** Le nœud de carte à cadrer. */
+  id: string;
+  /** Présent au premier temps : le zoom minimal qui fait apparaître les briques. */
+  minZoom?: number;
+  /** Vrai quand la brique elle-même est cadrée : il n'y a plus rien à faire. */
+  done: boolean;
+}
+
+/**
+ * Cadrer la brique choisie par la recherche (fiche 20261117154145517), en deux temps si besoin : brique
+ * dessinée → la brique ; vue de loin → sa famille, assez près pour dessiner les briques.
+ */
+export function focusStep(nodes: readonly { id: string; type?: string }[], brick: string): FocusStep | undefined {
+  if (nodes.some((n) => n.id === brick)) return { id: brick, done: true };
+  if (nodes.some((n) => n.type === 'brique')) return undefined;
+  const family = familyId(brick.slice(0, brick.indexOf(':')) as GraphKind);
+  return nodes.some((n) => n.id === family) ? { id: family, minZoom: FOCUS_MIN_ZOOM, done: false } : undefined;
+}
+
 /** Au plus tant de propositions dans le panneau ; au-delà, il dit « 8 sur N ». */
 export const SEARCH_LIMIT = 8;
 

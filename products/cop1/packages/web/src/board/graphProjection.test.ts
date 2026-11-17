@@ -5,7 +5,9 @@
 import { describe, expect, it } from 'vitest';
 import type { GraphCheck, GraphKind } from './graphCheck.js';
 import {
+  FOCUS_MIN_ZOOM,
   GRAPH_ZOOM_THRESHOLDS,
+  focusStep,
   graphLevelForZoom,
   graphNodeId,
   projectGraphToFlow,
@@ -373,5 +375,22 @@ describe('searchBricks — chercher une brique par son nom (fiche 20261117153250
   it('aucun résultat, ou une saisie vide : rien', () => {
     expect(searchBricks(contract, 'inconnu')).toEqual({ matches: [], total: 0 });
     expect(searchBricks(contract, '   ')).toEqual({ matches: [], total: 0 });
+  });
+});
+
+describe('focusStep — cadrer la brique choisie par la recherche (fiche 20261117154145517)', () => {
+  it('brique dessinée (niveau 2 ou 3) : on cadre la brique, et c’est fini', () => {
+    const { nodes } = projectGraphToFlow(contract, 2);
+    expect(focusStep(nodes, 'skill:ezk-sprint')).toEqual({ id: 'skill:ezk-sprint', done: true });
+  });
+
+  it('vue de loin : on cadre d’abord sa famille, assez près pour passer au niveau 2', () => {
+    const { nodes } = projectGraphToFlow(contract, 1);
+    expect(focusStep(nodes, 'skill:ezk-sprint')).toEqual({ id: 'famille:skill', minZoom: FOCUS_MIN_ZOOM, done: false });
+    expect(graphLevelForZoom(FOCUS_MIN_ZOOM, 1)).toBe(2);
+  });
+
+  it('brique inconnue : rien à cadrer', () => {
+    expect(focusStep(projectGraphToFlow(contract, 2).nodes, 'agent:fantome')).toBeUndefined();
   });
 });
