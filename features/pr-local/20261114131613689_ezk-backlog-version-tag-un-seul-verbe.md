@@ -60,7 +60,7 @@ Un seul verbe, POC d'abord, qui compose ce qui existe.
 
 Hors de cette fiche, découpée le 17 novembre : le retrait de `close --tag`, `--seal-versions`,
 `ezk run versions` et du gel, et le remplacement de la passe `dod-mecanique`, portés par la sœur
-[Retirer les anciens verbes de coupe](../20261117141828103_retirer-anciens-verbes-de-coupe.md).
+[Retirer les anciens verbes de coupe](../done/20261117141828103_retirer-anciens-verbes-de-coupe.md).
 
 Hors périmètre : le dossier lui-même, son panel et l'ADR-0088, portés par
 [Trancher la coupe](../done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Le tirage par
@@ -147,7 +147,7 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
 
 ## Journal
 
-- 2026-11-17 — groomée sur l'ADR-0088 §2, §5 et §7, puis découpée en deux par le run autonome (ezk-pm, par délégation du PO) : ce verbe ici, six critères ; le retrait des anciens verbes dans la sœur [Retirer les anciens verbes de coupe](../20261117141828103_retirer-anciens-verbes-de-coupe.md). Le calcul « livré depuis la dernière étiquette » existe depuis le 17 novembre (`src/core/coupe.ts`) : ce verbe le réutilise.
+- 2026-11-17 — groomée sur l'ADR-0088 §2, §5 et §7, puis découpée en deux par le run autonome (ezk-pm, par délégation du PO) : ce verbe ici, six critères ; le retrait des anciens verbes dans la sœur [Retirer les anciens verbes de coupe](../done/20261117141828103_retirer-anciens-verbes-de-coupe.md). Le calcul « livré depuis la dernière étiquette » existe depuis le 17 novembre (`src/core/coupe.ts`) : ce verbe le réutilise.
 
 - 2026-11-14 — créée depuis la carte des écarts (lot validé par le PO), `blocked: panel`.
 - 2026-11-14 (soir) — le panel adverse de la coupe a eu lieu ([capture](../../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md)) :

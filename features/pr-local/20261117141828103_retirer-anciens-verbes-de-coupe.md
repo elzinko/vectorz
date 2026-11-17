@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117141828103_retirer-anciens-verbes-de-coupe.md](../20261117141828103_retirer-anciens-verbes-de-coupe.md)
+> 🗎 Rendu de la fiche [features/20261117141828103_retirer-anciens-verbes-de-coupe.md](../done/20261117141828103_retirer-anciens-verbes-de-coupe.md)
 
 # 20261117141828103 — Retirer les anciens verbes de coupe : close --tag, --seal-versions et ezk run versions
 
