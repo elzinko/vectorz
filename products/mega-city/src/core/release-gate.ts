@@ -218,6 +218,21 @@ export function resolveRelease(release: unknown): ReleaseConfig {
   return { gate, tests };
 }
 
+/**
+ * Pourquoi la gate refuse l'étiquette `version` sur le commit `head`, ou `undefined` si elle l'autorise.
+ * Un verdict établi sur un autre commit que HEAD est périmé. Partagé par `close --tag` et `version tag`.
+ */
+export function gateRefusal(verdict: ReleaseVerdict | undefined, head: string, version: string): string | undefined {
+  if (verdict === undefined) return `aucune gate de release jouée — lance d'abord : ezk release ${version}`;
+  if (verdict.head && verdict.head !== head) {
+    return `gate de release périmée (jouée sur ${verdict.head.slice(0, 9)}, HEAD = ${head.slice(0, 9)}) — rejoue : ezk release ${version}`;
+  }
+  if (verdict.verdict !== 'GO') {
+    return `gate de release NO-GO (passes bloquantes : ${verdict.passes.filter((p) => !p.go).map((p) => p.id).join(', ') || '—'})`;
+  }
+  return undefined;
+}
+
 /** Rend le compte rendu de release : verdict d'abord (En clair), puis une ligne par passe. */
 export function renderReleaseReport(v: ReleaseVerdict): string {
   const mark = (p: PassResult): string => (p.skipped ? 'SKIP ' : p.go ? 'GO   ' : 'NO-GO');

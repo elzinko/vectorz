@@ -9,6 +9,7 @@ import {
   type ReleaseVerdict,
   aggregate,
   decidePassVerdict,
+  gateRefusal,
   effectivePasses,
   renderReleaseReport,
   resolveRelease,
@@ -328,5 +329,33 @@ describe('release-gate — loader (I/O)', () => {
     expect(existsSync(file)).toBe(true);
     expect(readPassVerdict(root, 'v0.24.0', 'chasse-aux-bugs')).toEqual(v);
     expect(readPassVerdict(root, 'v0.24.0', 'autre')).toBeUndefined();
+  });
+});
+
+describe('gateRefusal', () => {
+  const verdict = (extra: Partial<ReleaseVerdict>): ReleaseVerdict => ({
+    version: 'v0.24.0',
+    verdict: 'GO',
+    passes: [],
+    at: '2026-11-17T10:00:00Z',
+    head: 'abcdef012345',
+    ...extra,
+  });
+
+  it('ne refuse pas un GO établi sur HEAD', () => {
+    expect(gateRefusal(verdict({}), 'abcdef012345', 'v0.24.0')).toBeUndefined();
+  });
+
+  it('refuse sans verdict, en disant quoi lancer', () => {
+    expect(gateRefusal(undefined, 'abcdef012345', 'v0.24.0')).toContain('ezk release v0.24.0');
+  });
+
+  it('refuse un verdict périmé (autre commit)', () => {
+    expect(gateRefusal(verdict({}), '999999999999', 'v0.24.0')).toContain('périmée');
+  });
+
+  it('refuse un NO-GO en nommant les passes bloquantes', () => {
+    const nogo = verdict({ verdict: 'NO-GO', passes: [{ id: 'tests', title: 't', command: 'x', go: false }] });
+    expect(gateRefusal(nogo, 'abcdef012345', 'v0.24.0')).toContain('tests');
   });
 });

@@ -34,8 +34,11 @@ export function tagDates(root: string): Map<string, string> {
   return dates;
 }
 
-/** Les fichiers ajoutés à `features/done/` entre l'étiquette et HEAD, relatifs à la racine du projet. */
-export function addedSince(root: string, tag: string): string[] {
+/**
+ * Les fichiers ajoutés à `features/done/` entre l'étiquette et HEAD, relatifs à la racine du projet.
+ * Sans étiquette (`null`) : tout l'historique jusqu'à HEAD.
+ */
+export function addedSince(root: string, tag: string | null): string[] {
   const out = git(root, [
     'log',
     '--no-renames',
@@ -43,9 +46,30 @@ export function addedSince(root: string, tag: string): string[] {
     '--name-only',
     '--relative',
     '--pretty=format:',
-    `${tag}..HEAD`,
+    tag === null ? 'HEAD' : `${tag}..HEAD`,
     '--',
     DONE_DIR,
   ]);
   return (out ?? '').split('\n').filter((line) => line !== '');
+}
+
+/** Les étiquettes dont le commit est un ancêtre de HEAD : « atteignables » (ADR-0088 §2.1). */
+export function tagsAtteignables(root: string): Set<string> {
+  const out = git(root, ['tag', '--merged', 'HEAD']) ?? '';
+  return new Set(out.split('\n').filter((t) => t !== ''));
+}
+
+/**
+ * Pour chaque sha de livraison (`pr:`) : « dans » la fenêtre s'il est ancêtre de HEAD sans l'être de
+ * l'étiquette, « avant » s'il l'est de l'étiquette. Un sha inconnu ou hors de l'ascendance de HEAD
+ * n'apparaît pas : la fiche retombe sur son ajout à `features/done/`.
+ */
+export function fenetreDesSha(root: string, etiquette: string | null, shas: ReadonlyMap<string, string>): Map<string, 'dans' | 'avant'> {
+  const est = (sha: string, de: string): boolean => git(root, ['merge-base', '--is-ancestor', sha, de]) !== null;
+  const fenetre = new Map<string, 'dans' | 'avant'>();
+  for (const [id, sha] of shas) {
+    if (!est(sha, 'HEAD')) continue;
+    fenetre.set(id, etiquette !== null && est(sha, etiquette) ? 'avant' : 'dans');
+  }
+  return fenetre;
 }

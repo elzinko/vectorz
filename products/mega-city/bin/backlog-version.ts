@@ -5,6 +5,7 @@
  *   pnpm --dir products/mega-city backlog:version [list]
  *   pnpm --dir products/mega-city backlog:version check [<X>] [--max <n>] [--no-plan]
  *   pnpm --dir products/mega-city backlog:version close <X> [--tag] [--max <n>] [--no-plan]
+ *   pnpm --dir products/mega-city backlog:version tag [<X>] [--dry-run] [--major] [--release-ok "<raison>"]
  *
  * Le cœur PUR (`src/backlog/versions.ts`) calcule tout depuis le champ `version:` des fiches, les
  * étiquettes git locales et `features/PLAN.md`. Ici : lecture disque et git, puis affichage.
@@ -38,11 +39,13 @@ import {
 } from '../src/backlog/versions-render.js';
 import { type LaunchVerdict, launch, seal } from '../src/backlog/version-checkpoint.js';
 import { versionScope } from '../src/backlog/version-scope.js';
+import { gateRefusal } from '../src/core/release-gate.js';
 import { localTags } from '../src/io/git-tags.js';
+import { tagVersion } from '../src/io/version-tag.js';
 import { loadFiches } from '../src/loaders/fiches.js';
 import { readReleaseVerdict, releaseConfig } from '../src/loaders/release-passes.js';
 
-const VERBS = ['list', 'check', 'ready', 'close', 'freeze', 'unfreeze', 'diff'] as const;
+const VERBS = ['list', 'check', 'ready', 'close', 'tag', 'freeze', 'unfreeze', 'diff'] as const;
 type Verb = (typeof VERBS)[number];
 
 /** Les verbes qui exigent une version en argument. */
@@ -51,7 +54,7 @@ const NEEDS_VERSION: ReadonlySet<Verb> = new Set(['close', 'freeze', 'unfreeze',
 function usage(message?: string): never {
   if (message) console.error(`erreur: ${message}`);
   console.error(
-    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | ready [<X>] | close <X> [--tag] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
+    'usage : backlog:version [list] | check [<X>] [--max <n>] [--no-plan] | ready [<X>] | close <X> [--tag] [--release-ok "<raison>"] | tag [<X>] [--dry-run] [--major] [--release-ok "<raison>"] | freeze <X> | unfreeze <X> | diff <X>   (--root <dossier> pour un autre dépôt)',
   );
   process.exit(2);
 }
@@ -64,6 +67,8 @@ interface Args {
   usePlan: boolean;
   tag: boolean;
   releaseOk: string | undefined;
+  dryRun: boolean;
+  major: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -73,10 +78,14 @@ function parseArgs(argv: string[]): Args {
   let usePlan = true;
   let tag = false;
   let releaseOk: string | undefined;
+  let dryRun = false;
+  let major = false;
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--no-plan') usePlan = false;
     else if (arg === '--tag') tag = true;
+    else if (arg === '--dry-run') dryRun = true;
+    else if (arg === '--major') major = true;
     else if (arg === '--release-ok') releaseOk = argv[++i] ?? usage('--release-ok attend une raison (soupape PO journalisée)');
     else if (arg === '--root') root = resolve(argv[++i] ?? usage('--root attend un dossier'));
     else if (arg === '--max') {
@@ -95,7 +104,8 @@ function parseArgs(argv: string[]): Args {
   }
   if (NEEDS_VERSION.has(verb) && version === undefined) usage(`${verb} attend une version (exemple : ${verb} v0.3.0)`);
   if (verb === 'list' && version !== undefined) usage('list ne prend pas de version');
-  return { verb, version, root, max, usePlan, tag, releaseOk };
+  if ((dryRun || major) && verb !== 'tag') usage('--dry-run et --major ne vont qu\'avec tag');
+  return { verb, version, root, max, usePlan, tag, releaseOk, dryRun, major };
 }
 
 /** Sortie d'une commande git dans `root`, ou `undefined` si elle échoue (hors dépôt, référence inconnue). */
@@ -162,6 +172,11 @@ function renderLaunch(v: LaunchVerdict): string[] {
 
 function main(): void {
   const args = parseArgs(process.argv.slice(2).filter((a) => a !== '--'));
+  if (args.verb === 'tag') {
+    const result = tagVersion({ root: args.root, impose: args.version, major: args.major, dryRun: args.dryRun, releaseOk: args.releaseOk });
+    say(result.lines);
+    process.exit(result.code);
+  }
   const fiches = loadFiches(args.root);
   const tags = localTags(args.root);
   const planPath = join(args.root, 'features', 'PLAN.md');
@@ -341,15 +356,7 @@ function main(): void {
     if (args.releaseOk) {
       say([`Soupape PO — gate de release outrepassée pour ${version} : ${args.releaseOk}`, '']);
     } else {
-      const v = readReleaseVerdict(args.root, version);
-      const reason =
-        v === undefined
-          ? `aucune gate de release jouée — lance d'abord : ezk release ${version}`
-          : v.head && v.head !== head
-            ? `gate de release périmée (jouée sur ${v.head.slice(0, 9)}, HEAD = ${head.slice(0, 9)}) — rejoue : ezk release ${version}`
-            : v.verdict !== 'GO'
-              ? `gate de release NO-GO (passes bloquantes : ${v.passes.filter((p) => !p.go).map((p) => p.id).join(', ') || '—'})`
-              : undefined;
+      const reason = gateRefusal(readReleaseVerdict(args.root, version), head, version);
       if (reason !== undefined) {
         say(renderRefusal(version, [reason, 'soupape PO : close … --tag --release-ok "<raison>" (journalisée)']));
         process.exit(1);

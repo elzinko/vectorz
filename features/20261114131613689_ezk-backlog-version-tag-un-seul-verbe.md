@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [release, contrat]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un verbe de la méthode, aucun écran modifié
@@ -82,20 +82,20 @@ objectif, porté par [Séquencer par milestone](20261016081021364_sequencer-par-
 
 ## Critères d'acceptation
 
-- [ ] `ezk backlog version tag <v> --dry-run` liste les fiches livrées sans `version:` dont le
+- [x] `ezk backlog version tag <v> --dry-run` liste les fiches livrées sans `version:` dont le
       commit de livraison suit la dernière étiquette `v*`, groupées par objectif complet ou
       partiel, plus les correctifs, sans rien écrire.
-- [ ] Sans numéro imposé, la commande propose un numéro : patch si chaque fiche est `type: bug`,
+- [x] Sans numéro imposé, la commande propose un numéro : patch si chaque fiche est `type: bug`,
       mineure sinon, majeure sur `--major` seulement ; elle refuse un numéro inférieur ou égal au
       dernier tag strict, et un patch qui couperait une fiche hors `type: bug`.
-- [ ] La commande refuse si le verdict `ezk release <v>` n'est pas GO sur HEAD, et accepte
+- [x] La commande refuse si le verdict `ezk release <v>` n'est pas GO sur HEAD, et accepte
       `--release-ok "<raison>"`, journalisée dans la sortie.
-- [ ] Sur GO, la commande écrit `version: <v>` sur les fiches coupées et `features/versions/<v>.md`,
+- [x] Sur GO, la commande écrit `version: <v>` sur les fiches coupées et `features/versions/<v>.md`,
       committe, pose l'étiquette locale sur ce commit et régénère les vues ; sa sortie dit que le push
       reste au PO. Tout se vérifie sur des dépôts jetables : aucune vraie étiquette n'est posée sur vectorz.
-- [ ] Les livrées d'avant le champ `version:`, sans commit de livraison connu, restent dans
+- [x] Les livrées d'avant le champ `version:`, sans commit de livraison connu, restent dans
       l'historique et n'entrent dans aucune coupe.
-- [ ] Le cœur du calcul de coupe est couvert par des tests sans I/O ; `board show --json` l'appelle
+- [x] Le cœur du calcul de coupe est couvert par des tests sans I/O ; `board show --json` l'appelle
       sans le dupliquer.
 
 ## Comment vérifier
@@ -129,6 +129,8 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
 - `gate de release` — `ezk release <v>` : la passe qualité GO / NO-GO qui précède l'étiquette.
 
 ## Notes / décisions
+
+- Livrée le 2026-11-17. Critères prouvés par ezk-reviewer (GO) sur une copie jetable : dry-run sans écriture (95 fiches depuis v0.22.0) ; numéro proposé v0.23.0 et les deux refus ; gate avant toute écriture, `--release-ok` journalisé ; écriture de `version:`, du fichier de version, commit et étiquette locale ; livrées sans commit de livraison hors coupe ; cœur testé sans I/O, partagé avec `board show`. Choix gardés : une fiche déjà versionnée dans la fenêtre est réécrite avec avertissement (ADR-0088 §2.1, plus récent que le critère 1) ; `commit:` du fichier de version = le HEAD validé par la gate. Corrigé après revue : un numéro proposé déjà tagué hors de la ligne de HEAD est refusé avant toute écriture (P1), et le message de reprise distingue avant et après le commit. Reste ouvert, non bloquant : le compte « p parkées, d différées » par objectif et le rejeu des avertissements `depends:` au dry-run (ADR-0088 §2.2) ; `board show` lit toutes les étiquettes, le verbe seulement les atteignables.
 
 - Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart E4 (pages Version, Versions).

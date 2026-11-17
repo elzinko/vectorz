@@ -159,7 +159,7 @@ commands:
   - domain: backlog
     verb: version
     run: bin/backlog-version.ts --root {root}
-    summary: Dit où en est chaque version, contrôle un lot, clôt une version (--root <projet>).
+    summary: État des versions, contrôle d’un lot, « tag » coupe une version (--root <projet>).
     project: true
     writes: true
   - domain: backlog
