@@ -8,8 +8,8 @@ product: cop1
 milestone:
 version:
 labels: [mission-control]
-status: ready
-pr:
+status: superseded
+pr: "superseded — pas un bug de mission control : le navigateur intégré de l'app bloque le cadre, Chrome l'affiche"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -54,12 +54,12 @@ vertébrale + carte dynamique) » → cadre blanc après plusieurs secondes. Les
 - Le cadre blanc n'apparaît que dans le navigateur intégré à l'app Claude : la requête du cadre y est
   refusée côté client (`net::ERR_BLOCKED_BY_CLIENT`). Dans Chrome, la même page affiche la carte
   complète (« 438 liens · 0 cassé · 96 règles · 26 commandes · 115 outils »).
-- Captures : [navigateur intégré, cadre blanc](../docs/pr-evidence/20261117122122699/cartes-navigateur-integre.png) ·
-  [Chrome, carte affichée](../docs/pr-evidence/20261117122122699/cartes-chrome.png).
+- Captures : [navigateur intégré, cadre blanc](../../docs/pr-evidence/20261117122122699/cartes-navigateur-integre.png) ·
+  [Chrome, carte affichée](../../docs/pr-evidence/20261117122122699/cartes-chrome.png).
 - Clôture en `superseded` par délégation du PO absent : rien à corriger dans le code. Le choix de garder
   ou retirer ce document, maintenant que la Carte de la méthode existe, reste au PO.
 
 
-- Origine : [rétro du sprint 2 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
+- Origine : [rétro du sprint 2 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
   proposition 4, retenue par délégation du PO absent.
 - Le choix « réparer ou retirer » revient au PO.
