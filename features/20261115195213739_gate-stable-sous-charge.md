@@ -49,8 +49,8 @@ redevient lente.
 
 ## Critères d'acceptation
 
-- [ ] Les deux configs de vitest fixent `testTimeout` à 30 secondes, avec la raison en commentaire.
-- [ ] `pnpm gate` passe sur main avec ce réglage.
+- [x] Les deux configs de vitest fixent `testTimeout` à 30 secondes, avec la raison en commentaire. — prouvé : `grep -n testTimeout vitest.config.ts products/mega-city/vitest.config.ts` (1f1456d7)
+- [x] `pnpm gate` passe sur main avec ce réglage. — prouvé : 2403 tests + 48 suites verts le 2026-11-15 et le 2026-11-17
 
 **Mesure de suivi** — sur les 5 prochaines gates jouées sous charge, 0 échec dû au délai.
 
