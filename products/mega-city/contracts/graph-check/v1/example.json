@@ -25,6 +25,21 @@
    "kind": "command",
    "id": "ezk help",
    "fichier": "ezk-manifest.yml"
+  },
+  {
+   "kind": "recipe",
+   "id": "brancher-domaine",
+   "fichier": "recipes/brancher-domaine.md"
+  },
+  {
+   "kind": "recipe",
+   "id": "dns",
+   "fichier": "recipes/dns.md"
+  },
+  {
+   "kind": "recipe",
+   "id": "seule",
+   "fichier": "recipes/seule.md"
   }
  ],
  "nodeCount": {
@@ -34,9 +49,10 @@
   "bundle": 0,
   "profile": 0,
   "tool": 1,
-  "command": 2
+  "command": 2,
+  "recipe": 3
  },
- "edgeCount": 3,
+ "edgeCount": 5,
  "broken": [],
  "orphans": [
   {
@@ -46,6 +62,10 @@
   {
    "kind": "command",
    "id": "ezk help"
+  },
+  {
+   "kind": "recipe",
+   "id": "seule"
   }
  ],
  "edges": [
@@ -64,6 +84,22 @@
    "verb": "lance",
    "to": "bin/forge-integrate.ts",
    "toKind": "tool"
+  },
+  {
+   "from": "brancher-domaine",
+   "fromKind": "recipe",
+   "link": "recipe-composes",
+   "verb": "compose",
+   "to": "dns",
+   "toKind": "recipe"
+  },
+  {
+   "from": "brancher-domaine",
+   "fromKind": "recipe",
+   "link": "recipe-rule",
+   "verb": "compose",
+   "to": "clean-code/no-dead-code",
+   "toKind": "rule"
   },
   {
    "from": "ezk-sprint",

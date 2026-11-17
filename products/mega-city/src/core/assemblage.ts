@@ -45,6 +45,7 @@ export function buildAssemblage(graph: CompiledGraph, bind: AssemblageBind = {})
     profile: 0,
     tool: 0,
     command: 0,
+    recipe: 0,
   };
   for (const n of graph.nodes) nodes[n.kind] += 1;
 

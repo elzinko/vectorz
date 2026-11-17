@@ -16,7 +16,7 @@ const example = (): Record<string, unknown> => JSON.parse(readFileSync(EXAMPLE, 
 describe('translateGraphCheck', () => {
   it('lit l’exemple rangé du contrat : les briques, leurs liens et les comptes', () => {
     const graph = translateGraphCheck(example());
-    expect(graph.nodes).toHaveLength(5);
+    expect(graph.nodes).toHaveLength(8);
     expect(graph.nodes[3]).toEqual({ kind: 'command', id: 'ezk forge integrate', fichier: 'ezk-manifest.yml' });
     expect(graph.edges).toContainEqual({
       from: 'ezk-sprint',
@@ -26,8 +26,10 @@ describe('translateGraphCheck', () => {
       to: 'clean-code/no-dead-code',
       toKind: 'rule',
     });
+    expect(graph.nodes).toContainEqual({ kind: 'recipe', id: 'brancher-domaine', fichier: 'recipes/brancher-domaine.md' });
     expect(graph.nodeCount.command).toBe(2);
-    expect(graph.edgeCount).toBe(3);
+    expect(graph.nodeCount.recipe).toBe(3);
+    expect(graph.edgeCount).toBe(5);
   });
 
   it('refuse un schema_version inconnu, une sorte inconnue ou un lien mal formé', () => {

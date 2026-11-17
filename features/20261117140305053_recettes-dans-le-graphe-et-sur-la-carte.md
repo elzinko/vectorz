@@ -48,11 +48,11 @@ méthode, `src/core/recipe-contract.ts`).
 
 ## Critères d'acceptation
 
-- [ ] `ezk graph check --json` liste chaque recette de `recipes/` comme brique `recipe`, ses `composes:`
+- [x] `ezk graph check --json` liste chaque recette de `recipes/` comme brique `recipe`, ses `composes:`
       comme liens `compose`, et aucun lien cassé de plus.
-- [ ] Une recette sans aucun lien figure dans `orphans`, sans faire échouer la commande.
-- [ ] Le schéma, l'exemple du contrat et l'ADR des sortes décrivent la sorte `recipe`.
-- [ ] La carte de la méthode montre une famille « Recettes » avec son compte ; un clic sur une recette
+- [x] Une recette sans aucun lien figure dans `orphans`, sans faire échouer la commande.
+- [x] Le schéma, l'exemple du contrat et l'ADR des sortes décrivent la sorte `recipe`.
+- [x] La carte de la méthode montre une famille « Recettes » avec son compte ; un clic sur une recette
       allume ses voisins comme pour les autres briques.
 
 ## Comment vérifier
@@ -65,7 +65,17 @@ cd products/cop1/packages/web && pnpm exec vitest run
 
 - vue carte-methode : http://localhost:5281/ puis « Carte de la méthode »
 
+**Avant / après** (règle `development/pr-before-after-media`), captures du 2026-11-17 :
+
+| Vue | Avant (main) | Après (branche) |
+|---|---|---|
+| Carte de la méthode, vue d'ensemble | ![avant](../docs/pr-evidence/20261117140305053/carte-recettes-before.png) | ![après](../docs/pr-evidence/20261117140305053/carte-recettes-after.png) |
+| Clic sur la recette brancher-domaine-vercel | — | ![voisins](../docs/pr-evidence/20261117140305053/recette-voisins-after.png) |
+
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 4 critères prouvés sur la vraie sortie : 16 recettes, 7 liens recette → recette, 0 cassé, 9 recettes orphelines. Vu dans le navigateur : 8 familles, dont « Recettes · 16 » ; un clic sur `brancher-domaine-vercel` montre ce qu'elle compose et qui la compose. Restes ouverts, non bloquants : le daemon exige `nodeCount.recipe`, donc il refuserait le graphe d'une méthode plus ancienne (même motif que la sorte `command`) ; une recette dont le seul `composes:` est cassé n'est pas listée orpheline (elle l'est dans `broken`).
+
 
 - Créée le 2026-11-17 par délégation du PO absent, après la rétro du sprint 5 : découpée de la fiche du
   graphe compilé, dont elle reprend un critère.

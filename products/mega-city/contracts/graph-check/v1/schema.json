@@ -20,14 +20,15 @@
               "bundle",
               "profile",
               "tool",
-              "command"
+              "command",
+              "recipe"
             ]
           },
           "id": {
             "type": "string"
           },
           "fichier": {
-            "description": "Le fichier qui déclare la brique, relatif à `products/mega-city`. Absent si elle n’en a pas.",
+            "description": "Le fichier qui déclare la brique, relatif à `products/mega-city` (une recette : relatif à la racine du dépôt, `recipes/<nom>.md`). Absent si elle n’en a pas.",
             "type": "string"
           }
         },
@@ -75,6 +76,11 @@
           "type": "integer",
           "minimum": -9007199254740991,
           "maximum": 9007199254740991
+        },
+        "recipe": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
         }
       },
       "required": [
@@ -84,7 +90,8 @@
         "bundle",
         "profile",
         "tool",
-        "command"
+        "command",
+        "recipe"
       ]
     },
     "edgeCount": {
@@ -109,7 +116,8 @@
               "bundle",
               "profile",
               "tool",
-              "command"
+              "command",
+              "recipe"
             ]
           },
           "link": {
@@ -128,6 +136,8 @@
               "uses",
               "uses-command",
               "launches",
+              "recipe-composes",
+              "recipe-rule",
               "bundle-extends",
               "bundle-rule",
               "profile-extends",
@@ -162,7 +172,8 @@
               "bundle",
               "profile",
               "tool",
-              "command"
+              "command",
+              "recipe"
             ]
           }
         },
@@ -194,7 +205,8 @@
               "bundle",
               "profile",
               "tool",
-              "command"
+              "command",
+              "recipe"
             ]
           },
           "link": {
@@ -213,6 +225,8 @@
               "uses",
               "uses-command",
               "launches",
+              "recipe-composes",
+              "recipe-rule",
               "bundle-extends",
               "bundle-rule",
               "profile-extends",
@@ -247,7 +261,8 @@
               "bundle",
               "profile",
               "tool",
-              "command"
+              "command",
+              "recipe"
             ]
           }
         },
@@ -276,7 +291,8 @@
               "bundle",
               "profile",
               "tool",
-              "command"
+              "command",
+              "recipe"
             ]
           },
           "id": {
@@ -310,7 +326,8 @@
                       "bundle",
                       "profile",
                       "tool",
-                      "command"
+                      "command",
+                      "recipe"
                     ]
                   },
                   "id": {
@@ -334,7 +351,8 @@
                       "bundle",
                       "profile",
                       "tool",
-                      "command"
+                      "command",
+                      "recipe"
                     ]
                   },
                   "id": {
@@ -391,7 +409,8 @@
                       "bundle",
                       "profile",
                       "tool",
-                      "command"
+                      "command",
+                      "recipe"
                     ]
                   },
                   "id": {
@@ -415,7 +434,8 @@
                       "bundle",
                       "profile",
                       "tool",
-                      "command"
+                      "command",
+                      "recipe"
                     ]
                   },
                   "id": {

@@ -30,13 +30,14 @@ export const FAMILY_LABELS: Record<GraphKind, string> = {
   rule: 'Règles',
   tool: 'Outils',
   command: 'Commandes',
+  recipe: 'Recettes',
 };
 
 /** Les familles rangées en trois rangées : de ce qui compose (en haut) à ce qui s'exécute (en bas). */
 const FAMILY_ROWS: GraphKind[][] = [
   ['profile', 'bundle', 'skill', 'agent'],
   ['rule', 'tool'],
-  ['command'],
+  ['command', 'recipe'],
 ];
 
 /**

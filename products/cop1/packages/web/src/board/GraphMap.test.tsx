@@ -29,12 +29,12 @@ const serve = (body: unknown, status = 200) => {
 };
 
 describe('GraphMap', () => {
-  it('lit /api/graph/<projet> et montre les 7 familles avec leur compte', async () => {
+  it('lit /api/graph/<projet> et montre les 8 familles avec leur compte', async () => {
     const fetchMock = serve({ state: 'ok', graph: example });
     render(<GraphMap project={project} />);
     expect(await screen.findByText('Compétences')).toBeTruthy();
     expect(fetchMock).toHaveBeenCalledWith('/api/graph/vectorz');
-    for (const label of ['Profils', 'Paquets', 'Agents', 'Règles', 'Outils', 'Commandes'])
+    for (const label of ['Profils', 'Paquets', 'Agents', 'Règles', 'Outils', 'Commandes', 'Recettes'])
       expect(screen.getAllByText(label).length).toBeGreaterThan(0);
     expect(screen.getByRole('heading', { name: 'Carte de la méthode — vectorz' })).toBeTruthy();
   });

@@ -26,6 +26,7 @@ import type {
   Skill,
   SkillAsset,
 } from '../domain/model.js';
+import type { Recipe } from '../core/recipe-graph.js';
 import { MANIFEST_FILE, listToolFiles, loadCliCommands, loadTools } from './tools.js';
 
 export interface Catalog {
@@ -50,6 +51,11 @@ export interface Catalog {
    * Distinct de `commands` (les slash-commands de Claude Code). Absent quand la racine n'a pas de manifeste.
    */
   cliCommands?: Map<string, CliCommand>;
+  /**
+   * Les recettes de la méthode (`recipes/<nom>.md`, à la racine du dépôt) — fiche 20261117140305053, ADR-0090.
+   * Absent hors du graphe de la méthode : seul `graphCheckData` les charge (`loaders/recipes.ts`).
+   */
+  recipes?: Map<string, Recipe>;
 }
 
 const MARKDOWN = /\.md$/;

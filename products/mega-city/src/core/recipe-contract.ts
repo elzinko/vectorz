@@ -58,7 +58,7 @@ function fieldValue(data: Record<string, unknown>, key: string): string {
  */
 /** Les données du front-matter d'une recette. Bloc absent ou YAML mal formé → `{}` (jamais une
  * exception : le scan parcourt tous les dossiers d'un projet, un `RECIPE.md` cassé est courant). */
-function frontMatterData(recipeMdText: string): Record<string, unknown> {
+export function frontMatterData(recipeMdText: string): Record<string, unknown> {
   const block = frontMatterBlock(recipeMdText);
   if (block === null) return {};
   let parsed: unknown;

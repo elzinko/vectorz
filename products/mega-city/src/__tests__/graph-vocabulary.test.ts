@@ -2,7 +2,7 @@
  * graph-vocabulary — les cinq mots de lien (`composes` · `roles` · `competences` ·
  * `interactions` · `enforcements`) se lisent comme des verbes fermés (fiche 357,
  * ADR-0040 D1 : l'unification vit dans le compilateur, par ALIAS — aucun champ renommé).
- * Quatre verbes à l'origine ; l'ADR-0058 en ajoute un cinquième, `utilise` (skill → outil) ; l'ADR-0089 un sixième, `lance` (commande → outil).
+ * Quatre verbes à l'origine ; l'ADR-0058 en ajoute un cinquième, `utilise` (skill → outil) ; l'ADR-0089 un sixième, `lance` (commande → outil) ; l'ADR-0090 n'en ajoute aucun (recette → recette ou règle = `compose`).
  *
  * Ce fichier fige la décision : si quelqu'un ajoute un lien, change son verbe ou ouvre
  * un sixième verbe, un test rougit et force un choix conscient.
@@ -73,6 +73,8 @@ describe('vocabulaire de liens — jeu fermé de 6 verbes (ADR-0040 D1, amendé 
       'profile>bundle',
       'profile>profile',
       'profile>skill',
+      'recipe>recipe',
+      'recipe>rule',
       'skill>skill',
     ]);
     expect(couples('convoque')).toEqual(['rule>agent', 'skill>agent']);

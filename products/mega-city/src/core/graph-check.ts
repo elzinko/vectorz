@@ -56,7 +56,7 @@ export const GraphCheckSchema = z.strictObject({
           .string()
           .optional()
           .describe(
-            'Le fichier qui déclare la brique, relatif à `products/mega-city`. Absent si elle n’en a pas.',
+            'Le fichier qui déclare la brique, relatif à `products/mega-city` (une recette : relatif à la racine du dépôt, `recipes/<nom>.md`). Absent si elle n’en a pas.',
           ),
       }),
     )

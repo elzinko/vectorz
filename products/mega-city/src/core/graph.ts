@@ -21,10 +21,18 @@ import type { Catalog } from '../loaders/catalog.js';
 
 /**
  * Les types de nœud du graphe : les cinq catalogues, plus les OUTILS (scripts de `bin/` et des
- * `scripts/` des skills, ADR-0058) et les COMMANDES `ezk` du manifeste (ADR-0089). Un outil ou une
- * commande n'est pas un catalogue : il est CALCULÉ depuis les fichiers, jamais écrit à la main.
+ * `scripts/` des skills, ADR-0058) et les COMMANDES `ezk` du manifeste (ADR-0089), plus les RECETTES `recipes/*.md` (ADR-0090). Un outil, une
+ * commande ou une recette n'est pas un catalogue : il est CALCULÉ depuis les fichiers, jamais écrit à la main.
  */
-export type NodeKind = 'rule' | 'agent' | 'skill' | 'bundle' | 'profile' | 'tool' | 'command';
+export type NodeKind =
+  | 'rule'
+  | 'agent'
+  | 'skill'
+  | 'bundle'
+  | 'profile'
+  | 'tool'
+  | 'command'
+  | 'recipe';
 
 /** L'ordre d'énumération des nœuds — la source unique, partagée avec le graphe compilé. */
 export const NODE_KINDS: readonly NodeKind[] = [
@@ -35,6 +43,7 @@ export const NODE_KINDS: readonly NodeKind[] = [
   'profile',
   'tool',
   'command',
+  'recipe',
 ];
 
 /**
@@ -49,6 +58,7 @@ export const NODE_KINDS: readonly NodeKind[] = [
  *   uses       skill → outil   (ADR-0058 : « ce skill cite et lance cet outil », CALCULÉ depuis sa doc)
  *   uses-command skill → commande `ezk` (ADR-0089 : « ce skill cite cette commande en code »)
  *   launches   commande → outil (ADR-0089 : « cette commande exécute ce script », lue dans le manifeste)
+ *   recipe-composes recette → recette, recipe-rule recette → règle (ADR-0090 : le `composes:` d'une recette)
  *   les `*-…` = composition STRUCTURELLE des bundles/profiles (le keystone).
  */
 export type LinkType =
@@ -65,6 +75,8 @@ export type LinkType =
   | 'uses'
   | 'uses-command'
   | 'launches'
+  | 'recipe-composes'
+  | 'recipe-rule'
   | 'bundle-extends'
   | 'bundle-rule'
   | 'profile-extends'
@@ -141,6 +153,9 @@ export const EDGE_SOURCES: readonly EdgeSource[] = [
   { link: 'uses-command', fromKind: 'skill', toKind: 'command', verb: 'utilise' },
   // Une commande lance le script que le manifeste lui donne ; sans outil connu, aucune arête.
   { link: 'launches', fromKind: 'command', toKind: 'tool', verb: 'lance' },
+  // Le `composes:` d'une recette vise une recette ou une règle : deux liens, même verbe (ADR-0090).
+  { link: 'recipe-composes', fromKind: 'recipe', toKind: 'recipe', verb: 'compose' },
+  { link: 'recipe-rule', fromKind: 'recipe', toKind: 'rule', verb: 'compose' },
   { link: 'bundle-extends', fromKind: 'bundle', toKind: 'bundle', verb: 'compose' },
   { link: 'bundle-rule', fromKind: 'bundle', toKind: 'rule', verb: 'compose' },
   { link: 'profile-extends', fromKind: 'profile', toKind: 'profile', verb: 'compose' },
@@ -173,6 +188,8 @@ export function nodesOf(catalog: Catalog, kind: NodeKind): Map<string, { id: str
       return catalog.tools ?? new Map();
     case 'command':
       return catalog.cliCommands ?? new Map();
+    case 'recipe':
+      return catalog.recipes ?? new Map();
   }
 }
 
@@ -243,6 +260,21 @@ function targetsFor(catalog: Catalog, src: EdgeSource): { from: string; to: stri
       // Un script qui n'est pas un outil connu n'émet pas d'arête : jamais un lien cassé de plus.
       for (const c of catalog.cliCommands?.values() ?? [])
         if (catalog.tools?.has(c.script)) out.push({ from: c.id, to: c.script });
+      break;
+    case 'recipe-composes':
+      // Une cible qui n'est pas une règle reste une cible recette : cassée si elle n'existe nulle part.
+      for (const r of catalog.recipes?.values() ?? [])
+        push(
+          r.id,
+          r.composes.filter((id) => !catalog.rules.has(id) || catalog.recipes?.has(id)),
+        );
+      break;
+    case 'recipe-rule':
+      for (const r of catalog.recipes?.values() ?? [])
+        push(
+          r.id,
+          r.composes.filter((id) => catalog.rules.has(id) && !catalog.recipes?.has(id)),
+        );
       break;
     case 'bundle-extends':
       for (const b of catalog.bundles.values()) push(b.id, b.extends);
@@ -345,11 +377,14 @@ export function validateGraph(catalog: Catalog): GraphReport {
   const broken = edges.filter((e) => !nodesOf(catalog, e.toKind).has(e.to));
 
   const referenced = new Set(edges.map((e) => `${e.toKind} ${e.to}`));
+  const composing = new Set(edges.map((e) => `${e.fromKind} ${e.from}`));
   const orphans: Orphan[] = [];
   for (const kind of NODE_KINDS) {
     for (const id of [...nodesOf(catalog, kind).keys()].sort()) {
       if (referenced.has(`${kind} ${id}`)) continue;
       if (kind === 'tool' && !isUnjustifiedTool(catalog, id)) continue;
+      // Une recette est orpheline sans AUCUN lien : celle qui en compose d'autres est reliée (ADR-0090).
+      if (kind === 'recipe' && composing.has(`recipe ${id}`)) continue;
       orphans.push({ kind, id });
     }
   }

@@ -7,6 +7,7 @@
   --accent: #3a5bd9; --accent-soft: #e5ebfb;
   --go: #1f8a53; --go-soft: #dcf0e4; --warn: #9a6a12; --warn-soft: #f6ebd5; --crit: #c23b4b; --crit-soft: #f7dde1;
   --groom: #7a4fd0; --groom-soft: #ece3fb; --idea: #8b94a3; --idea-soft: #e9edf2;
+  --recipe: #0e7f8f; --recipe-soft: #d9eff2;
   --font-ui: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --font-data: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
   --r: 10px;
@@ -14,12 +15,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #11151c; --surface: #191f29; --surface-2: #212936; --line: #2d3644; --fg: #e6ebf2; --muted: #9aa6b6; --faint: #697385;
-    --accent: #7d97f0; --accent-soft: #23304d; --go: #4cc088; --go-soft: #16382a; --warn: #d8a24a; --warn-soft: #3a2f16; --crit: #e26d7a; --crit-soft: #3d1f24; --groom: #a98ae6; --groom-soft: #271d3d; --idea: #697385; --idea-soft: #222a36; color-scheme: dark;
+    --accent: #7d97f0; --accent-soft: #23304d; --go: #4cc088; --go-soft: #16382a; --warn: #d8a24a; --warn-soft: #3a2f16; --crit: #e26d7a; --crit-soft: #3d1f24; --groom: #a98ae6; --groom-soft: #271d3d; --idea: #697385; --idea-soft: #222a36; --recipe: #4fc3d4; --recipe-soft: #14343a; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #11151c; --surface: #191f29; --surface-2: #212936; --line: #2d3644; --fg: #e6ebf2; --muted: #9aa6b6; --faint: #697385;
-  --accent: #7d97f0; --accent-soft: #23304d; --go: #4cc088; --go-soft: #16382a; --warn: #d8a24a; --warn-soft: #3a2f16; --crit: #e26d7a; --crit-soft: #3d1f24; --groom: #a98ae6; --groom-soft: #271d3d; --idea: #697385; --idea-soft: #222a36; color-scheme: dark;
+  --accent: #7d97f0; --accent-soft: #23304d; --go: #4cc088; --go-soft: #16382a; --warn: #d8a24a; --warn-soft: #3a2f16; --crit: #e26d7a; --crit-soft: #3d1f24; --groom: #a98ae6; --groom-soft: #271d3d; --idea: #697385; --idea-soft: #222a36; --recipe: #4fc3d4; --recipe-soft: #14343a; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -460,6 +461,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .gm-fam-profile { --fam: var(--idea); --fam-soft: var(--idea-soft); }
 .gm-fam-tool { --fam: var(--faint); --fam-soft: var(--surface-2); }
 .gm-fam-command { --fam: var(--crit); --fam-soft: var(--crit-soft); }
+.gm-fam-recipe { --fam: var(--recipe); --fam-soft: var(--recipe-soft); }
 .gm-famille { width: 100%; height: 100%; padding: 16px 20px; border-radius: 18px; border: 3px solid var(--fam); background: var(--fam-soft); }
 .gm-famille-nom { font-size: 40px; font-weight: 600; line-height: 1.1; }
 .gm-famille-compte { font-size: 28px; font-family: var(--font-data); color: var(--muted); }

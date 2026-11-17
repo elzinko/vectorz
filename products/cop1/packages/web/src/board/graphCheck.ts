@@ -1,5 +1,5 @@
 /** Contrat `ezk graph check --json` (v1) : les briques de la méthode et leurs liens, tels que le daemon les relaie. */
-export type GraphKind = 'profile' | 'skill' | 'agent' | 'bundle' | 'rule' | 'tool' | 'command';
+export type GraphKind = 'profile' | 'skill' | 'agent' | 'bundle' | 'rule' | 'tool' | 'command' | 'recipe';
 
 export interface GraphNode {
   kind: GraphKind;

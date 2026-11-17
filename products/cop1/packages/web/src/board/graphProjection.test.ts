@@ -17,7 +17,7 @@ import { graphCheckExample } from './testing/graphCheckExample.js';
 const contract = graphCheckExample();
 const ids = (nodes: { id: string }[]): string[] => nodes.map((n) => n.id);
 
-describe('projectGraphToFlow — niveau 1 : les 7 familles et leurs liens comptés', () => {
+describe('projectGraphToFlow — niveau 1 : les 8 familles et leurs liens comptés', () => {
   const { nodes, edges } = projectGraphToFlow(contract, 1);
 
   it('une boîte par famille, même vide, avec son libellé français et son compte', () => {
@@ -29,11 +29,13 @@ describe('projectGraphToFlow — niveau 1 : les 7 familles et leurs liens compt�
       'famille:rule',
       'famille:tool',
       'famille:command',
+      'famille:recipe',
     ]);
     const byId = Object.fromEntries(nodes.map((n) => [n.id, n.data]));
     expect(byId['famille:skill']).toMatchObject({ label: 'Compétences', count: 1 });
     expect(byId['famille:agent']).toMatchObject({ label: 'Agents', count: 0 });
     expect(byId['famille:command']).toMatchObject({ label: 'Commandes', count: 2 });
+    expect(byId['famille:recipe']).toMatchObject({ label: 'Recettes', count: 3 });
   });
 
   it('une arête par (famille source, verbe, famille cible), libellée du verbe et de son compte', () => {
@@ -42,6 +44,7 @@ describe('projectGraphToFlow — niveau 1 : les 7 familles et leurs liens compt�
         ['famille:skill', 'famille:rule', 'applique · 1'],
         ['famille:command', 'famille:tool', 'lance · 1'],
         ['famille:skill', 'famille:command', 'utilise · 1'],
+        ['famille:recipe', 'famille:rule', 'compose · 1'],
       ].sort(),
     );
   });
@@ -69,6 +72,9 @@ describe('projectGraphToFlow — niveau 2 : chaque brique dans la boîte de sa f
       [
         'command:ezk forge integrate',
         'command:ezk help',
+        'recipe:brancher-domaine',
+        'recipe:dns',
+        'recipe:seule',
         'rule:clean-code/no-dead-code',
         'skill:ezk-sprint',
         'tool:bin/forge-integrate.ts',
@@ -166,8 +172,44 @@ describe('projectGraphToFlow — sélection : la brique, ses voisins directs, le
   });
 });
 
+describe('projectGraphToFlow — une recette : famille, voisins, sélection', () => {
+  const selected = graphNodeId('recipe', 'brancher-domaine');
+  const { nodes, edges } = projectGraphToFlow(contract, 2, selected);
+  const brick = (id: string) => nodes.find((n) => n.id === id)!;
+
+  it('une recette est une brique de la famille Recettes', () => {
+    expect(brick(selected).parentId).toBe('famille:recipe');
+  });
+
+  it('un clic sur une recette allume ses voisins (recette et règle composées) et estompe le reste', () => {
+    expect(brick(selected).data).toMatchObject({ highlight: 'self' });
+    expect(brick('recipe:dns').data).toMatchObject({ highlight: 'neighbor' });
+    expect(brick('rule:clean-code/no-dead-code').data).toMatchObject({ highlight: 'neighbor' });
+    expect(brick('recipe:seule').data).toMatchObject({ dim: true });
+    expect(edges.map((e) => [e.source, e.target]).sort()).toEqual(
+      [
+        [selected, 'recipe:dns'],
+        [selected, 'rule:clean-code/no-dead-code'],
+      ].sort(),
+    );
+  });
+
+  it('le panneau liste ses voisins sortants avec leur sorte', () => {
+    expect(selectionNeighbors(contract, selected)).toEqual([
+      {
+        sens: 'sortant',
+        verb: 'compose',
+        neighbors: [
+          { id: 'recipe:dns', nom: 'dns', kind: 'recipe' },
+          { id: 'rule:clean-code/no-dead-code', nom: 'clean-code/no-dead-code', kind: 'rule' },
+        ],
+      },
+    ]);
+  });
+});
+
 describe('seuils du niveau, à l’échelle du réel (337 briques)', () => {
-  const COUNTS: Record<GraphKind, number> = { rule: 96, agent: 8, skill: 26, bundle: 11, profile: 6, tool: 115, command: 75 };
+  const COUNTS: Record<GraphKind, number> = { rule: 96, agent: 8, skill: 26, bundle: 11, profile: 6, tool: 115, command: 75, recipe: 16 };
   const real: GraphCheck = {
     nodes: (Object.keys(COUNTS) as GraphKind[]).flatMap((kind) =>
       Array.from({ length: COUNTS[kind] }, (_, i) => ({ kind, id: `${kind}-${i}` })),
@@ -262,7 +304,7 @@ describe('projectGraphToFlow — niveau 2 : un libellé par verbe et par famille
       { from: 'a', fromKind: 'agent', link: 'x', verb: 'est-vérifié-par', to: 's2', toKind: 'skill' },
       { from: 's1', fromKind: 'skill', link: 'x', verb: 'compose', to: 'a', toKind: 'agent' },
     ],
-    nodeCount: { profile: 0, bundle: 0, skill: 2, agent: 1, rule: 3, tool: 0, command: 0 },
+    nodeCount: { profile: 0, bundle: 0, skill: 2, agent: 1, rule: 3, tool: 0, command: 0, recipe: 0 },
     edgeCount: 6,
   };
   const { edges } = projectGraphToFlow(hub, 2, 'agent:a');

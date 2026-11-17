@@ -58,7 +58,7 @@ function printReport(): void {
     console.log(`En clair : ⚠️ ${problems.join(' et ')}.`);
   }
   console.log(
-    `\nNœuds   : rules ${n.rule} · agents ${n.agent} · skills ${n.skill} · bundles ${n.bundle} · profiles ${n.profile} · outils ${n.tool} · commandes ${n.command}`,
+    `\nNœuds   : rules ${n.rule} · agents ${n.agent} · skills ${n.skill} · bundles ${n.bundle} · profiles ${n.profile} · outils ${n.tool} · commandes ${n.command} · recettes ${n.recipe}`,
   );
   console.log(`Liens   : ${edgeCount}`);
 

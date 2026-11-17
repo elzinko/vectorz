@@ -11,7 +11,7 @@ const SUPPORTED_SCHEMA_VERSION = 1;
 const COMMANDE = 'ezk graph check --json';
 const GRAPH_TTL_MS = 5 * 60_000;
 
-export const GRAPH_KINDS = ['profile', 'skill', 'agent', 'bundle', 'rule', 'tool', 'command'] as const;
+export const GRAPH_KINDS = ['profile', 'skill', 'agent', 'bundle', 'rule', 'tool', 'command', 'recipe'] as const;
 export type GraphKind = (typeof GRAPH_KINDS)[number];
 
 export interface GraphNodeView {
