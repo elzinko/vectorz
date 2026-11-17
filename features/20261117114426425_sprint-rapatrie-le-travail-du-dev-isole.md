@@ -46,9 +46,9 @@ et le rapatriement s'est fait par `git diff <ce commit>`.
 
 ## Critères d'acceptation
 
-- [ ] Le brief type d'ezk-dev ne demande plus d'écrire hors de son dossier isolé.
-- [ ] ezk-sprint décrit le rapatriement par patch en une étape, avec la commande.
-- [ ] Un test de contrat sur le texte du skill vérifie la présence de ces deux points.
+- [x] Le brief type d'ezk-dev ne demande plus d'écrire hors de son dossier isolé.
+- [x] ezk-sprint décrit le rapatriement par patch en une étape, avec la commande.
+- [x] Un test de contrat sur le texte du skill vérifie la présence de ces deux points.
 
 **Mesure de suivi** — sur les 3 prochaines délégations à ezk-dev, aucun aller-retour « je ne peux pas
 écrire dans ce dossier ».
@@ -60,6 +60,9 @@ cd products/mega-city && pnpm exec vitest run src/__tests__ -t "ezk-sprint"
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés ; commandes de rapatriement vérifiées. Le geste a déjà servi aux sprints 2 et 3 du jour.
+
 
 - Origine : [rétro du sprint 1 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-1-voir-le-process-de-chaque-projet.md),
   proposition 2, retenue par délégation du PO absent.

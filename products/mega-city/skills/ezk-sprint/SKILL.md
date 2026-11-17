@@ -265,7 +265,7 @@ Ordre strict. Délègue au sous-agent dédié. Saute une étape pour le trivial 
 1. **Cadrage POC** — périmètre minimal qui prouve la valeur.
 2. **Archi (si justifié)** — délègue à **`ezk-architect`** (clean arch / SOLID, ADR dans `docs/adr/`). Saute pour le trivial.
 3. **BDD** — délègue à **`ezk-qa`** : scénarios Gherkin = la Definition of Done exécutable.
-4. **TDD POC** — délègue à **`ezk-dev`** : red → green → refactor sur le cœur.
+4. **TDD POC** — délègue à **`ezk-dev`** : red → green → refactor sur le cœur. Il travaille souvent dans un dossier isolé : brief et rapatriement au § « Le développeur délégué travaille dans son dossier isolé ».
 5. **Gate locale (pipeline)** — rejoue **toute** la validation locale du **projet** : ses tests **puis** ses suites bash, arrêt au premier rouge, jamais une seule des deux à la main. Quand tu construis **la méthode elle-même** (vectorz), c'est la commande **unique** `pnpm gate` depuis `products/mega-city` (vitest + `test:scripts`, fiche 20261002230039555). Sur un **projet hôte**, c'est la gate du projet (sa commande de test). Puis le skill [`ezk-ci`](../ezk-ci/) (`act` + Docker). **Rien ne part en CI cloud sans cette gate verte.**
 6. **Validation E2E** — dès qu'il y a une UI, délègue à **`ezk-qa`** : il lance l'app et valide les parcours critiques via le **Playwright MCP** (preuve = screenshot). C'est la validation de PR la plus proche du réel.
 7. **Revue** — délègue à **`ezk-reviewer`** (`/code-review` + `/security-review` + `/simplify`). Verdict **GO/NO-GO** ; un NO-GO bloque la PR. Cette revue locale est le **plancher** ([ADR-0059](../../docs/adr/0059-revue-locale-plancher-codex-filet-pr-optionnelle-par-config.md)) : aucun merge sans son `GO`, avec ou sans Codex. Garde son verdict tel quel (un fichier) : il laisse une **trace**. La PR n'existe pas encore à cette étape, donc en `pr: on` tu le postes en commentaire de la PR dès son ouverture (étape 8, `gh pr review <N> --comment --body-file <verdict>`), **avant le merge** ; en `pr: off`, `ezk review emit`. Codex est un filet en plus, jamais une condition de merge. **Les critères d'acceptation, c'est `ezk-reviewer` qui les PROUVE, jamais le constructeur** (fiche 20261003075821760) : il rejoue « Comment vérifier » et juge chaque critère `prouvé — <preuve>` ou `non prouvé — <manque>`, une ligne par critère ; **aucun GO tant qu'un critère n'est pas prouvé**.
@@ -425,6 +425,32 @@ les états. Tant que le POC n'est pas validé, on ne dépense pas de tokens sur 
 | Voir l'app tourner | `/verify`, `/run` |
 
 Si un sous-agent n'est pas installé, porte la casquette toi-même, mais garde l'ordre et les gates.
+
+### Le développeur délégué travaille dans son dossier isolé (fiche 20261117114426425)
+
+**En clair.** Quand tu confies du code à `ezk-dev`, l'outil le place souvent dans son propre dossier de
+travail (`.claude/worktrees/agent-<id>`), parti d'une version de `main` qui peut dater de plusieurs
+jours. Il ne peut pas écrire dans ton dossier. Ne le lui demande pas : prévois-le dans le brief, puis
+rapatrie son travail par patch.
+
+**Dans le brief**, écris ces trois consignes, avec le commit exact de la story :
+
+1. « Avant tout, dans ton dossier : `git checkout --detach <sha>`, puis `pnpm install --frozen-lockfile`. »
+2. « Travaille uniquement dans ton dossier. Ne committe pas. »
+3. « Termine par la liste des fichiers créés ou modifiés. »
+
+**Au retour**, rapatrie sur la branche de la story, depuis ton dossier :
+
+```bash
+git -C <dossier-agent> add -A
+git -C <dossier-agent> diff --cached --binary <sha> > /tmp/<story>.patch
+git apply --check /tmp/<story>.patch && git apply /tmp/<story>.patch
+pnpm install --frozen-lockfile   # seulement si pnpm-lock.yaml a changé
+```
+
+Puis rejoue la gate dans ton dossier : celle du développeur a tourné ailleurs. Une fois le travail
+intégré, retire son dossier (`git worktree remove --force <dossier-agent>`, puis `git branch -D` de sa
+branche) : le portier le signale sinon au sprint suivant.
 
 ### Modèle des sous-agents (fiche 0181)
 
