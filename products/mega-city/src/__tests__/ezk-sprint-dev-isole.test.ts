@@ -31,6 +31,7 @@ describe('ezk-sprint — le développeur délégué isolé', () => {
   it('décrit le rapatriement par patch, en une étape avec ses commandes', () => {
     expect(section).toContain('diff --cached --binary <sha>');
     expect(section).toContain('git apply --check');
-    expect(section).toContain('git worktree remove --force');
+    expect(section).toContain('git worktree remove -f -f');
+    expect(section).toMatch(/verrouille/);
   });
 });

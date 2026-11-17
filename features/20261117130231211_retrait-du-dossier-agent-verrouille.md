@@ -38,8 +38,8 @@ rapatrié. Le test de contrat suit.
 
 ## Critères d'acceptation
 
-- [ ] La section du skill donne `git worktree remove -f -f` et dit pourquoi en une phrase.
-- [ ] Le test de contrat `ezk-sprint-dev-isole.test.ts` vérifie la double force.
+- [x] La section du skill donne `git worktree remove -f -f` et dit pourquoi en une phrase.
+- [x] Le test de contrat `ezk-sprint-dev-isole.test.ts` vérifie la double force.
 
 ## Comment vérifier
 
@@ -48,6 +48,9 @@ cd products/mega-city && pnpm exec vitest run src/__tests__/ezk-sprint-dev-isole
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Garde faible notée (P2) : le test cherche le mot « verrouille » sans le lier à la commande.
+
 
 - Origine : [rétro du sprint 3 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-3-carte-lisible-et-outillage.md),
   proposition 3, retenue par délégation du PO absent.

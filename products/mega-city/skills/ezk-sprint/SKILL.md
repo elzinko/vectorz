@@ -449,8 +449,9 @@ pnpm install --frozen-lockfile   # seulement si pnpm-lock.yaml a changé
 ```
 
 Puis rejoue la gate dans ton dossier : celle du développeur a tourné ailleurs. Une fois le travail
-intégré, retire son dossier (`git worktree remove --force <dossier-agent>`, puis `git branch -D` de sa
-branche) : le portier le signale sinon au sprint suivant.
+intégré, retire son dossier : `git worktree remove -f -f <dossier-agent>`, puis `git branch -D` de sa
+branche. La double force est nécessaire : la session elle-même verrouille ce dossier tant qu'elle tourne,
+et son contenu est déjà rapatrié. Sinon, le portier le signale au sprint suivant.
 
 ### Modèle des sous-agents (fiche 0181)
 
