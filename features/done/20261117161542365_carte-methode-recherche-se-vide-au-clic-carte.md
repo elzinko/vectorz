@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [carte, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (2820c310)"
 evidence: none # le champ se vide : prouvé par un test d'écran, aucune mise en page changée
 created: 2026-11-17
 ---
@@ -27,7 +27,7 @@ carte choisit aussi une brique.
 ## Contexte / Problème
 
 Réserve P3 de la revue adverse de la fiche
-[On cherche une brique par son nom sur la carte de la méthode](done/20261117153250174_carte-methode-chercher-une-brique.md).
+[On cherche une brique par son nom sur la carte de la méthode](20261117153250174_carte-methode-chercher-une-brique.md).
 
 ## Proposition
 
