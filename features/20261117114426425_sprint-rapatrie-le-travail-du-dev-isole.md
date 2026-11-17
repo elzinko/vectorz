@@ -8,7 +8,7 @@ product: mega-city
 milestone:
 version:
 labels: [ezk-sprint, agents]
-status: idea
+status: ready
 pr:
 evidence: none # pas d'écran : texte d'un skill
 created: 2026-11-17

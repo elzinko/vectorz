@@ -8,7 +8,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, carte]
-status: idea
+status: ready
 pr:
 evidence: before-after
 created: 2026-11-17
