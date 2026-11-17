@@ -54,6 +54,8 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd -P)"
 MC="$(cd "$HERE/../../.." && pwd)" # products/mega-city quand le script est lancé depuis le catalogue ou par un lien
 CHECK="$HERE/check.sh"
+# shellcheck source=slug.sh
+source "$HERE/slug.sh"
 # Le journal vit HORS du worktree, un fichier par BRANCHE, dans le dossier git commun (FILE, calculé
 # après `cd` plus bas). L'ancien lieu — la racine du worktree — ne sert plus qu'à reprendre un journal
 # resté là avant la bascule (fiche 20261004181110201).
@@ -430,9 +432,9 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
   # sinon `ship-merge --local` échoue (« main is already used by worktree »). En dépôt simple, c'est `root`.
   repo_main="$(cd "$(dirname "$(git rev-parse --git-common-dir 2>/dev/null)")" 2>/dev/null && pwd)" || repo_main="$root"
   [[ -n "$repo_main" ]] || repo_main="$root"
-  # slug sûr depuis l'objectif (accents retirés), repli n<N> : il entre dans un nom de fichier.
-  slug="$(printf '%s' "${obj:-sprint $n}" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//;s/-*$//' | cut -c1-48 | sed 's/-*$//')"
-  [[ -n "$slug" ]] || slug="n${n}"
+  # slug sûr depuis l'objectif (accents translittérés, fiche 20261115180226950), repli n<N> :
+  # il entre dans un nom de fichier.
+  slug="$(sprint_slug "$obj" "$n")"
   tmp="$(mktemp -d)"
   if ! "$tsx" "$MC/bin/sprint-report.ts" "$slug" --repo-root "$root" --project-root "$root" --sprint-md "$FILE" --allow-undated --out "$tmp" >/dev/null 2>&1; then
     echo "SPRINT-REPORT: non produit (sprint:report a échoué) — sprint scellé quand même" >&2

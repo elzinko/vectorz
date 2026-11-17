@@ -30,6 +30,7 @@ SUITES=(
   "bin/test-run-bounded.sh"                              # fiche 20261016203544694 — plafond de temps portable : `close` increvable en worktree
   "bin/test-retro-reports.sh"                            # fiche 20261008072306360 — retro:reports liste les comptes rendus depuis la dernière capture (ADR-0068)
   "skills/ezk-sprint/scripts/test-check-gate.sh"         # fiche 0090 — contrat du portier (= le dry-run de `start`, ADR-0054)
+  "skills/ezk-sprint/scripts/test-slug.sh"              # fiche 20261115180226950 — le nom du compte rendu garde les lettres accentuées
   "skills/ezk-sprint/scripts/test-sprint-lifecycle.sh"   # fiche 20260930123438875 — start/close, check ≡ start --dry-run, la session reste à ezk-archive
   "bin/test-regen-backlog.sh"                            # ezk-backlog — régénération de l'index
   "bin/test-backlog-no-conflict.sh"                      # fiche 20261002231845120 — BACKLOG.md sort de git (ADR-0075), zéro conflit

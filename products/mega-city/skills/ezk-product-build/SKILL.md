@@ -157,7 +157,7 @@ au poste. Détail : [ezk depuis un projet hôte](../../docs/ezk-depuis-un-projet
    **Dater le sprint (mode auto).** Comme tu tiens le checkpoint à la place d'`ezk-sprint`, c'est toi
    qui poses son point de passage, **avant `close`** : `gate_reached` avec
    `gate_id: "sprint-<slug>-checkpoint"`, puis `gate_resumed`. Le `<slug>` est celui que `close`
-   dérive de l'objectif du sprint (minuscules, tirets, 48 caractères au plus). Sans ce point, le compte
+   dérive de l'objectif du sprint (accents translittérés : « décisions » donne « decisions » ; minuscules, tirets, 48 caractères au plus ; `skills/ezk-sprint/scripts/slug.sh`). Sans ce point, le compte
    rendu du sprint n'est pas daté : il le dit, et durée, jetons et fiches livrées restent non mesurés.
    **Grain de livraison (`--delivery`, cf. § dédié)** : en `per-feature` (défaut) chaque PR du
    lot est livrée **au fil de l'eau**, avant `close` — son squash-merge suit son cours normal (statu quo

@@ -45,10 +45,10 @@ but du sprint.
 
 ## Critères d'acceptation
 
-- [ ] Un sprint dont le but est « Les décisions deviennent loi » produit `…-sprint-les-decisions-deviennent-loi.md`.
-- [ ] Un but sans accent donne exactement le même slug qu'avant (aucune régression).
-- [ ] Un but fait seulement de caractères non convertibles retombe sur `n<N>`, comme aujourd'hui.
-- [ ] La règle du slug du jalon, dans la compétence ezk-product-build, dit la translittération.
+- [x] Un sprint dont le but est « Les décisions deviennent loi » produit `…-sprint-les-decisions-deviennent-loi.md`.
+- [x] Un but sans accent donne exactement le même slug qu'avant (aucune régression).
+- [x] Un but fait seulement de caractères non convertibles retombe sur `n<N>`, comme aujourd'hui.
+- [x] La règle du slug du jalon, dans la compétence ezk-product-build, dit la translittération.
 
 ## Comment vérifier
 
@@ -60,6 +60,9 @@ pnpm --dir products/mega-city test:scripts
 Ajouter au banc du cycle de vie un sprint au but accentué et vérifier le nom du compte rendu écrit.
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 4 critères prouvés, rejeu indépendant compris (locale C, caractères non convertibles, mode copie du skill : `slug.sh` voyage avec `sprint.sh`). Corrigé après revue : sans perl, un WARN le dit au lieu de retomber en silence. Le nom du fichier et l'id du point de passage de supervision dérivent tous deux de `sprint_slug`.
+
 
 - Origine : rétros des sprints 7 et 8
   ([sprint 7](../docs/captures/2026-11-14-retro-sprint-7-les-decisions-deviennent-loi.md),
