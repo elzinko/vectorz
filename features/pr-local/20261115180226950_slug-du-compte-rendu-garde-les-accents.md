@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261115180226950_slug-du-compte-rendu-garde-les-accents.md](../20261115180226950_slug-du-compte-rendu-garde-les-accents.md)
+> 🗎 Rendu de la fiche [features/20261115180226950_slug-du-compte-rendu-garde-les-accents.md](../done/20261115180226950_slug-du-compte-rendu-garde-les-accents.md)
 
 # 20261115180226950 — Le nom du compte rendu de sprint garde les lettres accentuées
 

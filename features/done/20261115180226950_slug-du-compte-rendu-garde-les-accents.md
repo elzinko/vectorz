@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [sprint]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (47fddb99)"
 evidence: none # un nom de fichier, aucun écran
 created: 2026-11-15
 ---
@@ -65,8 +65,8 @@ Ajouter au banc du cycle de vie un sprint au but accentué et vérifier le nom d
 
 
 - Origine : rétros des sprints 7 et 8
-  ([sprint 7](../docs/captures/2026-11-14-retro-sprint-7-les-decisions-deviennent-loi.md),
-  [sprint 8](../docs/captures/2026-11-15-retro-sprint-8-la-methode-publie-son-process.md)), proposition
+  ([sprint 7](../../docs/captures/2026-11-14-retro-sprint-7-les-decisions-deviennent-loi.md),
+  [sprint 8](../../docs/captures/2026-11-15-retro-sprint-8-la-methode-publie-son-process.md)), proposition
   retenue par le PO le 15 novembre (« 1 à 6 oui »). Priorité P3 : un défaut d'affichage, sans perte.
 - Risque : `iconv` n'a pas le même comportement partout ; vérifier sur macOS (BSD) et Linux, ou faire la
   translittération en Node dans le script de compte rendu.
