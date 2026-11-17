@@ -88,4 +88,4 @@ Reste ouvert, non bloquant : un triple-backtick sur une seule ligne compterait c
 - Découpée le 2026-11-17 de la fiche du graphe compilé, par délégation du PO absent (run autonome
   jusqu'à 17 h 31). Restent dans la fiche d'origine : les recettes, le bloc santé, la dette de la loi et
   l'alignement de la page Cartes.
-- Débloque la fiche [La carte de la méthode, zoomable](../20261117114544792_carte-de-la-methode-zoomable.md).
+- Débloque la fiche [La carte de la méthode, zoomable](20261117114544792_carte-de-la-methode-zoomable.md).

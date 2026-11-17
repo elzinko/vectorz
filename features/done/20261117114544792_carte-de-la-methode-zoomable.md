@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, carte]
-status: ready
-pr:
+status: shipped
+pr: "local (de85f03a)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -40,7 +40,7 @@ Une nouvelle page **Carte de la méthode** dans le groupe Méthode de mission co
 la carte Process :
 
 1. **Données** : le contrat `graph-check/v1` (fiche
-   [La méthode publie son graphe en contrat](done/20261117114544666_graphe-publie-en-contrat-commandes-comprises.md)),
+   [La méthode publie son graphe en contrat](20261117114544666_graphe-publie-en-contrat-commandes-comprises.md)),
    servi par le daemon sur `GET /api/graph/<projet>`, sur le modèle de `/api/process/<projet>`.
 2. **Projection pure, sans React** : `projectGraphToFlow(contrat, niveau, sélection)` → nœuds et arêtes.
    - Niveau 1 : une boîte par famille, avec son compte ; une arête par paire de familles et par verbe,
@@ -77,9 +77,9 @@ pnpm cop1:dev   # puis « Carte de la méthode » dans le groupe Méthode
 
 | Vue | Avant (main) | Après (branche) |
 |---|---|---|
-| Groupe Méthode | ![avant](../docs/pr-evidence/20261117114544792/carte-methode-before.png) | ![après](../docs/pr-evidence/20261117114544792/carte-methode-after.png) |
-| Zoom : chaque brique dans sa famille | — | ![briques](../docs/pr-evidence/20261117114544792/zoom-briques-after.png) |
-| Clic sur ezk-reviewer : ses voisins | — | ![voisins](../docs/pr-evidence/20261117114544792/selection-voisins-after.png) |
+| Groupe Méthode | ![avant](../../docs/pr-evidence/20261117114544792/carte-methode-before.png) | ![après](../../docs/pr-evidence/20261117114544792/carte-methode-after.png) |
+| Zoom : chaque brique dans sa famille | — | ![briques](../../docs/pr-evidence/20261117114544792/zoom-briques-after.png) |
+| Clic sur ezk-reviewer : ses voisins | — | ![voisins](../../docs/pr-evidence/20261117114544792/selection-voisins-after.png) |
 
 L'« avant » montre la page Cartes : il n'y avait pas de carte de la méthode lisant les données, et
 l'ancienne carte interactive s'ouvrait vide.

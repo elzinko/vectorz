@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117114544792_carte-de-la-methode-zoomable.md](../20261117114544792_carte-de-la-methode-zoomable.md)
+> 🗎 Rendu de la fiche [features/20261117114544792_carte-de-la-methode-zoomable.md](../done/20261117114544792_carte-de-la-methode-zoomable.md)
 
 # 20261117114544792 — La carte de la méthode, zoomable
 
