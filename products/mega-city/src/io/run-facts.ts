@@ -22,6 +22,20 @@ function run(cmd: string, args: string[], cwd: string): string | null {
   }
 }
 
+/** Le dossier git commun d'un dossier (partagé par le dépôt et ses worktrees), ou `null` hors dépôt. */
+const commonDir = (cwd: string): string | null =>
+  run('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], cwd);
+
+/**
+ * Le dossier de la session s'il n'est pas dans le dépôt visé (ni le dépôt, ni un de ses worktrees),
+ * `undefined` sinon (fiche 20261117141828102). Un dossier hors de tout dépôt est rendu, comme un
+ * dossier d'un autre dépôt.
+ */
+export function sessionOutsideRepo(sessionDir: string, root: string): string | undefined {
+  const session = commonDir(sessionDir);
+  return session !== null && session === commonDir(root) ? undefined : sessionDir;
+}
+
 const count = (cwd: string, range: string): number => {
   const out = run('git', ['rev-list', '--count', range], cwd);
   const n = out === null ? Number.NaN : Number.parseInt(out, 10);

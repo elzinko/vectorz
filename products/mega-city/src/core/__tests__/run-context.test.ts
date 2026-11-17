@@ -163,3 +163,17 @@ describe('buildRunContext — le contrat ne parle plus de scellage de version', 
     expect(c.join('\n')).not.toMatch(/étiquette|--seal-versions/);
   });
 });
+
+describe('buildRunContext — le dossier de la session (fiche 20261117141828102)', () => {
+  it('avertit quand la session est hors du dépôt visé, sans rien bloquer', () => {
+    const out = text(settings(), facts({ sessionOutsideRepo: '/tmp/vide' }));
+    expect(out).toMatch(/Dossier +la session est hors du dépôt visé \(\/tmp\/vide\)/);
+    expect(out).toContain('déplace la session dans le dépôt avant de déléguer');
+    expect(out).toContain('pas un blocage');
+  });
+
+  it("n'ajoute aucune ligne quand la session est dans le dépôt ou un de ses worktrees", () => {
+    expect(text(settings(), facts())).toBe(text(settings(), facts({ sessionOutsideRepo: undefined })));
+    expect(text(settings(), facts())).not.toContain('Dossier');
+  });
+});

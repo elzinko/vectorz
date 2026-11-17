@@ -51,6 +51,12 @@ export interface RunFacts {
   /** HEAD est un ancêtre d'origin/main : un fast-forward strict est possible. */
   fastForwardable: boolean;
   worktree: { kind: 'primary' | 'secondary'; path: string; branch?: string | undefined };
+  /**
+   * Le dossier de la session quand il n'est pas dans le dépôt visé (ni le dépôt, ni un de ses
+   * worktrees), `undefined` sinon. Un agent isolé (ezk-dev) exige un dépôt git comme dossier de
+   * session : sans lui, il ne démarre pas (fiche 20261117141828102).
+   */
+  sessionOutsideRepo?: string | undefined;
 }
 
 export interface RunContext {
@@ -129,6 +135,11 @@ export function buildRunContext(settings: RunSettings, facts: RunFacts): RunCont
         : []),
       baseLine(facts),
       `  Worktree   ${wt.kind === 'secondary' ? 'secondaire' : 'principal'} · ${branch} · ${wt.path}`,
+      ...(facts.sessionOutsideRepo
+        ? [
+            `  Dossier    la session est hors du dépôt visé (${facts.sessionOutsideRepo}) : un agent isolé (ezk-dev) ne démarrera pas ; déplace la session dans le dépôt avant de déléguer (avertissement, pas un blocage)`,
+          ]
+        : []),
       write,
       '  Contrat',
       ...contractLines(settings),

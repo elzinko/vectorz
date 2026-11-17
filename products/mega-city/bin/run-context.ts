@@ -20,7 +20,7 @@ import {
   type TokenSetting,
 } from '../src/core/run-context.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
-import { collectRunFacts } from '../src/io/run-facts.js';
+import { collectRunFacts, sessionOutsideRepo } from '../src/io/run-facts.js';
 
 function usage(): never {
   console.error(`usage: run:context [--mode auto|manuel] [--delivery per-feature|per-epic] [--tokens lean|cap|full]
@@ -74,7 +74,10 @@ function main(): void {
       usage();
     }
   }
-  const facts = collectRunFacts(root, { fetch, ...(base ? { base } : {}) });
+  const facts = {
+    ...collectRunFacts(root, { fetch, ...(base ? { base } : {}) }),
+    sessionOutsideRepo: sessionOutsideRepo(fallbackCwd, root),
+  };
   console.log(buildRunContext(settings, facts).lines.join('\n'));
 }
 
