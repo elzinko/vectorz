@@ -60,20 +60,21 @@ Un seul verbe, POC d'abord, qui compose ce qui existe.
    objectif (complet ou partiel), plus les correctifs. Le calcul vit une fois, dans le cœur pur.
    `ezk board show --json` lira le même calcul pour son bloc `versions.prochaineCoupe` (voir
    [Les versions publiées comme coupes](done/20261114131612759_versions-publiees-comme-coupes.md)).
-2. **Le numéro proposé.** Sans numéro imposé : patch si correctifs seuls, mineure sinon, majeure sur
-   `--major` seulement.
-3. **La gate exigée.** Le verbe refuse si `ezk release <v>` n'est pas GO sur HEAD, avec la règle
-   actuelle de `close --tag`. La soupape `--release-ok "<raison>"` reste, journalisée.
-4. **L'écriture.** Le verbe écrit `version: <v>` sur les fiches coupées, pose l'étiquette locale sur
-   HEAD, régénère les vues. Le push reste au PO, dit en toutes lettres dans la sortie.
-5. **Le retrait.** `close --tag`, `--seal-versions` (`products/mega-city/bin/run-context.ts:28` et
-   `:71`) et `ezk run versions` (`products/mega-city/bin/run-versions.ts`, manifeste
-   `products/mega-city/ezk-manifest.yml:337-342`) disparaissent quand `tag` existe : pas de code
-   mort. La compétence `ezk-product-build` décrit le nouveau geste (`skills/ezk-product-build/SKILL.md:369`).
-6. **Les étiquettes `freeze/`.** `freezeTagOf` les nomme (`versions.ts:86`) ; le verbe `freeze` les
-   pose (`backlog-version.ts:222-245`). Leur sort est la question 6 du dossier. Aucune n'existe dans
-   le dépôt (vérifié le 14 novembre). La fiche propose de les retirer avec `freeze` / `unfreeze`, si
-   le panel le confirme.
+2. **Le numéro proposé** (ADR-0088 §2.3). Sans numéro imposé : patch si chaque fiche de la coupe est
+   `type: bug`, mineure sinon, majeure sur `--major` seulement. Le verbe refuse un numéro inférieur ou
+   égal au dernier tag strict atteignable, ou déjà tagué, et un patch quand la coupe contient une fiche
+   hors `type: bug` (ADR-0088 §5) ; il nomme alors les deux sorties.
+3. **La gate d'abord** (ADR-0088 §2.4). Sans `--dry-run`, la gate de release joue sur HEAD avant toute
+   écriture ; rien n'est écrit sans son GO. La soupape `--release-ok "<raison>"` reste, journalisée.
+4. **L'écriture.** Sur GO : `version: <v>` sur les fiches coupées, le fichier de version
+   `features/versions/<v>.md` (ADR-0088 §7 : `version`, `date`, `commit`, `gate`, `numero: propose|impose`,
+   corps = notes par objectif et correctifs), un commit, puis l'étiquette **locale** sur ce commit, et les
+   vues régénérées. Le verbe refuse de tourner hors de la branche principale. Le push reste au PO, dit en
+   toutes lettres dans la sortie.
+
+Hors de cette fiche, découpée le 17 novembre : le retrait de `close --tag`, `--seal-versions`,
+`ezk run versions` et du gel, et le remplacement de la passe `dod-mecanique`, portés par la sœur
+[Retirer les anciens verbes de coupe](20261117141828103_retirer-anciens-verbes-de-coupe.md).
 
 Hors périmètre : le dossier lui-même, son panel et l'ADR-0088, portés par
 [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Le tirage par
@@ -84,33 +85,31 @@ objectif, porté par [Séquencer par milestone](20261016081021364_sequencer-par-
 - [ ] `ezk backlog version tag <v> --dry-run` liste les fiches livrées sans `version:` dont le
       commit de livraison suit la dernière étiquette `v*`, groupées par objectif complet ou
       partiel, plus les correctifs, sans rien écrire.
-- [ ] Sans numéro imposé, la commande propose un numéro : patch si correctifs seuls, mineure sinon,
-      majeure sur `--major` seulement.
+- [ ] Sans numéro imposé, la commande propose un numéro : patch si chaque fiche est `type: bug`,
+      mineure sinon, majeure sur `--major` seulement ; elle refuse un numéro inférieur ou égal au
+      dernier tag strict, et un patch qui couperait une fiche hors `type: bug`.
 - [ ] La commande refuse si le verdict `ezk release <v>` n'est pas GO sur HEAD, et accepte
       `--release-ok "<raison>"`, journalisée dans la sortie.
-- [ ] La commande écrit `version: <v>` sur les fiches coupées, pose l'étiquette locale sur HEAD et
-      régénère les vues ; sa sortie dit que le push reste au PO.
+- [ ] Sur GO, la commande écrit `version: <v>` sur les fiches coupées et `features/versions/<v>.md`,
+      committe, pose l'étiquette locale sur ce commit et régénère les vues ; sa sortie dit que le push
+      reste au PO. Tout se vérifie sur des dépôts jetables : aucune vraie étiquette n'est posée sur vectorz.
 - [ ] Les livrées d'avant le champ `version:`, sans commit de livraison connu, restent dans
       l'historique et n'entrent dans aucune coupe.
-- [ ] `close --tag`, `--seal-versions` et `ezk run versions` ne sont plus ni dans le code, ni dans
-      le manifeste, ni dans les compétences.
 - [ ] Le cœur du calcul de coupe est couvert par des tests sans I/O ; `board show --json` l'appelle
       sans le dupliquer.
 
 ## Comment vérifier
 
+Sur une copie jetable du dépôt, jamais sur vectorz lui-même : poser une version reste un geste du PO.
+
 ```bash
 ROOT="$(git rev-parse --show-toplevel)"
-ezk --root "$ROOT" backlog version tag v0.24.0 --dry-run     # la coupe, rien d'écrit
-git -C "$ROOT" status --porcelain features                   # vide
-
-ezk --root "$ROOT" release v0.24.0                           # la gate d'abord
-ezk --root "$ROOT" backlog version tag v0.24.0               # écrit version:, pose l'étiquette
-git -C "$ROOT" tag -l 'v0.24.*'                              # v0.24.0
-grep -l 'version: v0.24.0' "$ROOT"/features/done/*.md | wc -l
-
-grep -rn -E 'seal-versions|run versions' "$ROOT/products/mega-city/bin" \
-  "$ROOT/products/mega-city/skills" "$ROOT/products/mega-city/ezk-manifest.yml" | wc -l   # 0
+COPIE="$(mktemp -d)/vectorz" && git clone -q "$ROOT" "$COPIE"
+ezk --root "$COPIE" backlog version tag --dry-run          # la coupe et le numéro proposé, rien d'écrit
+git -C "$COPIE" status --porcelain features                # vide
+ezk --root "$COPIE" backlog version tag --release-ok "copie jetable"   # écrit version:, le fichier de version, committe, tague
+git -C "$COPIE" tag -l 'v0.*' | tail -1                    # la nouvelle étiquette, locale à la copie
+ls "$COPIE/features/versions/"                             # <v>.md
 ```
 
 Tests à lancer :
@@ -159,6 +158,8 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
   dernière étiquette » suppose un commit de livraison lisible par fiche. À établir au panel.
 
 ## Journal
+
+- 2026-11-17 — groomée sur l'ADR-0088 §2, §5 et §7, puis découpée en deux par le run autonome (ezk-pm, par délégation du PO) : ce verbe ici, six critères ; le retrait des anciens verbes dans la sœur [Retirer les anciens verbes de coupe](20261117141828103_retirer-anciens-verbes-de-coupe.md). Le calcul « livré depuis la dernière étiquette » existe depuis le 17 novembre (`src/core/coupe.ts`) : ce verbe le réutilise.
 
 - 2026-11-14 — créée depuis la carte des écarts (lot validé par le PO), `blocked: panel`.
 - 2026-11-14 (soir) — le panel adverse de la coupe a eu lieu ([capture](../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md)) :

@@ -1,0 +1,57 @@
+---
+id: "20261117141828102"
+title: "`ezk run context` avertit quand le dossier de la session n'est pas dans le dépôt visé"
+type: feature
+priority: P1
+product: mega-city
+milestone:
+version:
+labels: [run, product-build]
+status: idea
+blocked:
+pr:
+evidence: none # une ligne de sortie de commande, aucun écran modifié
+created: 2026-11-17
+---
+
+# 20261117141828102 — `ezk run context` avertit quand le dossier de la session n'est pas dans le dépôt visé
+
+**En clair.** Le 17 novembre, un run autonome s'est ouvert dans un dossier vide, hors de vectorz.
+L'agent développeur `ezk-dev`, qui travaille dans un worktree isolé, n'a pas pu démarrer : il exige un
+dépôt git comme dossier de session. Environ 300 000 jetons sont partis en deux appels sans code. Le
+contexte de run, affiché à l'ouverture, avertit désormais quand le dossier courant n'est pas dans le
+dépôt visé, et dit comment y déplacer la session.
+
+**Si tu arrives frais.** `ezk run context` est la première sortie d'un run `ezk-product-build` (étape 0).
+`--root` y désigne le dépôt travaillé ; le dossier courant est celui de la session Claude Code.
+
+## Contexte / Problème
+
+- Erreur vue le 17 novembre : `Cannot create agent worktree: not in a git repository`.
+- Après déplacement de la session dans un worktree de vectorz, l'agent a démarré dans son propre
+  worktree isolé, qui ne pouvait pas écrire dans celui de la story ; ce worktree vide a été effacé.
+
+## Proposition
+
+`ezk run context` compare le dossier courant à `--root`. Hors du dépôt, il imprime une ligne
+d'avertissement : « la session n'est pas dans le dépôt visé : les agents isolés ne démarreront pas ;
+déplace la session dans le dépôt avant de déléguer ». L'avertissement ne bloque jamais, comme celui du
+retard sur `origin/main`.
+
+## Critères d'acceptation
+
+- [ ] Lancé hors du dépôt visé, `ezk run context` imprime l'avertissement et sort en 0.
+- [ ] Lancé dans le dépôt ou dans un de ses worktrees, il n'imprime rien de plus qu'aujourd'hui.
+
+## Comment vérifier
+
+```bash
+(cd /tmp && ezk run context --root "$OLDPWD" --mode auto --delivery per-feature --tokens lean)   # avertit
+ezk run context --mode auto --delivery per-feature --tokens lean                                  # n'avertit pas
+```
+
+## Notes / décisions
+
+- Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P3.
+- Priorité remontée en P1 par ezk-pm le 17 novembre, par délégation du PO : le coût vécu dépasse celui de la proposition P2.
+- Mesure (retirabilité) : 0 échec de démarrage de l'agent développeur sur les 5 prochains runs.
