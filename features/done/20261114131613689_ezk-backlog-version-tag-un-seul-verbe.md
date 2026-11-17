@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [release, contrat]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (e9541392)"
 evidence: none # un verbe de la méthode, aucun écran modifié
 created: 2026-11-14
 ---
@@ -59,7 +59,7 @@ Un seul verbe, POC d'abord, qui compose ce qui existe.
    livrées sans `version:` dont le commit de livraison suit la dernière étiquette `v*`, groupées par
    objectif (complet ou partiel), plus les correctifs. Le calcul vit une fois, dans le cœur pur.
    `ezk board show --json` lira le même calcul pour son bloc `versions.prochaineCoupe` (voir
-   [Les versions publiées comme coupes](done/20261114131612759_versions-publiees-comme-coupes.md)).
+   [Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md)).
 2. **Le numéro proposé** (ADR-0088 §2.3). Sans numéro imposé : patch si chaque fiche de la coupe est
    `type: bug`, mineure sinon, majeure sur `--major` seulement. Le verbe refuse un numéro inférieur ou
    égal au dernier tag strict atteignable, ou déjà tagué, et un patch quand la coupe contient une fiche
@@ -74,11 +74,11 @@ Un seul verbe, POC d'abord, qui compose ce qui existe.
 
 Hors de cette fiche, découpée le 17 novembre : le retrait de `close --tag`, `--seal-versions`,
 `ezk run versions` et du gel, et le remplacement de la passe `dod-mecanique`, portés par la sœur
-[Retirer les anciens verbes de coupe](20261117141828103_retirer-anciens-verbes-de-coupe.md).
+[Retirer les anciens verbes de coupe](../20261117141828103_retirer-anciens-verbes-de-coupe.md).
 
 Hors périmètre : le dossier lui-même, son panel et l'ADR-0088, portés par
-[Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Le tirage par
-objectif, porté par [Séquencer par milestone](20261016081021364_sequencer-par-milestone-dependances.md).
+[Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Le tirage par
+objectif, porté par [Séquencer par milestone](../20261016081021364_sequencer-par-milestone-dependances.md).
 
 ## Critères d'acceptation
 
@@ -132,28 +132,28 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
 
 - Livrée le 2026-11-17. Critères prouvés par ezk-reviewer (GO) sur une copie jetable : dry-run sans écriture (95 fiches depuis v0.22.0) ; numéro proposé v0.23.0 et les deux refus ; gate avant toute écriture, `--release-ok` journalisé ; écriture de `version:`, du fichier de version, commit et étiquette locale ; livrées sans commit de livraison hors coupe ; cœur testé sans I/O, partagé avec `board show`. Choix gardés : une fiche déjà versionnée dans la fenêtre est réécrite avec avertissement (ADR-0088 §2.1, plus récent que le critère 1) ; `commit:` du fichier de version = le HEAD validé par la gate. Corrigé après revue : un numéro proposé déjà tagué hors de la ligne de HEAD est refusé avant toute écriture (P1), et le message de reprise distingue avant et après le commit. Reste ouvert, non bloquant : le compte « p parkées, d différées » par objectif et le rejeu des avertissements `depends:` au dry-run (ADR-0088 §2.2) ; `board show` lit toutes les étiquettes, le verbe seulement les atteignables.
 
-- Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : [la carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart E4 (pages Version, Versions).
 - **Blocage `panel`.** Le dossier du 10 novembre n'a pas eu son panel adverse. Le modèle de version
   (contenu d'une coupe, sort des verbes existants) doit être tranché avant le build :
-  [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). La fiche
+  [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). La fiche
   reste P1 parce que la page Versions repose sur ce verbe.
 - Décision du PO du 14 novembre (à confirmer par le panel adverse avant d'être écrite en ADR) : le
   nom en clair d'une version vit dans le front-matter de la version elle-même, pas dans `PLAN.md`.
-  Elle est portée par [Les versions publiées comme coupes](done/20261114131612759_versions-publiees-comme-coupes.md)
-  et [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Ce verbe
+  Elle est portée par [Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md)
+  et [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Ce verbe
   pose le numéro, pas le nom.
 - Fiches livrées dont le code bouge ou disparaît :
-  [Découper le backlog en versions](done/20260824204751403_preparation-lots-versions-coherence.md)
+  [Découper le backlog en versions](20260824204751403_preparation-lots-versions-coherence.md)
   (le socle `list / check / close`),
-  [Auto-tag et clôture de version en local](done/20261013131852581_auto-tag-close-local-opt-in.md) (`--seal-versions`),
-  [ezk-product-build enchaîne plusieurs versions](done/20261013131852375_product-build-boucle-multi-versions.md) (`run versions`),
-  [Cycle de vie d'une version](done/20261014200651962_cycle-vie-version-preparer-figer-developper.md)
+  [Auto-tag et clôture de version en local](20261013131852581_auto-tag-close-local-opt-in.md) (`--seal-versions`),
+  [ezk-product-build enchaîne plusieurs versions](20261013131852375_product-build-boucle-multi-versions.md) (`run versions`),
+  [Cycle de vie d'une version](20261014200651962_cycle-vie-version-preparer-figer-developper.md)
   (les étiquettes `freeze/`),
-  [La version est un checkpoint du run](done/20261015125606808_frontiere-version-checkpoint-run-autonome.md).
-- Voisine : [Proposer la version d'une fiche](20261008192643426_proposeur-version-sprint-aware.md), différée.
-- ADR de la méthode : [0083 — version, étiquette, milestone](../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md)
-  et [0070 — le tirage reste dans la version en cours](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md).
+  [La version est un checkpoint du run](20261015125606808_frontiere-version-checkpoint-run-autonome.md).
+- Voisine : [Proposer la version d'une fiche](../20261008192643426_proposeur-version-sprint-aware.md), différée.
+- ADR de la méthode : [0083 — version, étiquette, milestone](../../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md)
+  et [0070 — le tirage reste dans la version en cours](../../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md).
 - Risque : retirer `--seal-versions` change le comportement d'un lancement autonome qui s'en servait.
   La compétence doit dire le nouveau geste.
 - Risque : une fiche n'a pas de champ « date de livraison ». Le calcul « commit postérieur à la
@@ -161,11 +161,11 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
 
 ## Journal
 
-- 2026-11-17 — groomée sur l'ADR-0088 §2, §5 et §7, puis découpée en deux par le run autonome (ezk-pm, par délégation du PO) : ce verbe ici, six critères ; le retrait des anciens verbes dans la sœur [Retirer les anciens verbes de coupe](20261117141828103_retirer-anciens-verbes-de-coupe.md). Le calcul « livré depuis la dernière étiquette » existe depuis le 17 novembre (`src/core/coupe.ts`) : ce verbe le réutilise.
+- 2026-11-17 — groomée sur l'ADR-0088 §2, §5 et §7, puis découpée en deux par le run autonome (ezk-pm, par délégation du PO) : ce verbe ici, six critères ; le retrait des anciens verbes dans la sœur [Retirer les anciens verbes de coupe](../20261117141828103_retirer-anciens-verbes-de-coupe.md). Le calcul « livré depuis la dernière étiquette » existe depuis le 17 novembre (`src/core/coupe.ts`) : ce verbe le réutilise.
 
 - 2026-11-14 — créée depuis la carte des écarts (lot validé par le PO), `blocked: panel`.
-- 2026-11-14 (soir) — le panel adverse de la coupe a eu lieu ([capture](../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md)) :
-  blocage levé. L'[ADR-0088](../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md)
+- 2026-11-14 (soir) — le panel adverse de la coupe a eu lieu ([capture](../../docs/captures/2026-11-14-panel-coupe-deux-plans-milestone-version.md)) :
+  blocage levé. L'[ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md)
   (accepté par le PO le 15 novembre) fixe ce que cette fiche construit : la borne de la coupe, le numéro proposé
   sur le type des fiches, la séquence gate d'abord puis écriture puis tag, les deux refus, le retrait du gel et de
   `close --tag`, `--seal-versions`, `ezk run versions`. À groomer avec ces amendements avant d'être prête.

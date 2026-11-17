@@ -207,7 +207,7 @@ vers le patch) ; `milestones.yml` ou la section de `PLAN.md` comme source des no
 Les fiches de build, dans l'ordre : `park` garde l'objectif
 ([« parked » n'est plus un pseudo-objectif](../../../../features/20261114131614612_parked-n-est-plus-un-pseudo-objectif.md)) ;
 le tirage par objectif et le verbe de la coupe
-([`ezk backlog version tag <v>`](../../../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)) ;
+([`ezk backlog version tag <v>`](../../../../features/done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)) ;
 les objets d'identité et la publication
 ([les objectifs publiés](../../../../features/done/20261114131612572_objectifs-publies-comme-objets.md),
 [les versions publiées](../../../../features/done/20261114131612759_versions-publiees-comme-coupes.md)) ;

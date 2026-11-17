@@ -28,7 +28,7 @@ lance aujourd'hui `backlog version check <v>`.
 
 ## Contexte / Problème
 
-- Découpée le 17 novembre de [`ezk backlog version tag <v>` : un seul verbe pour la coupe](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
+- Découpée le 17 novembre de [`ezk backlog version tag <v>` : un seul verbe pour la coupe](done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
   qui dépassait la taille d'un sprint.
 - À retirer : `close <v> --tag` (`products/mega-city/bin/backlog-version.ts`), `--seal-versions`
   (`products/mega-city/bin/run-context.ts`), `ezk run versions` (`products/mega-city/bin/run-versions.ts`,

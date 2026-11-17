@@ -72,7 +72,7 @@ dépendent du panel de
   version lui-même, pas dans `PLAN.md` ; pas de `milestones.yml`. La forme de l'objet est tranchée
   par ce panel ; cette fiche n'en décide pas.
 - Le verbe qui pose l'étiquette est
-  [`ezk backlog version tag <v>` : un seul verbe pour la coupe](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
+  [`ezk backlog version tag <v>` : un seul verbe pour la coupe](../done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
   `board show` publie la même coupe que ce verbe calcule : une seule source, deux sorties.
 
 Hors périmètre : poser l'étiquette ; changer la page Versions ; inventer des sprints à muti.
@@ -133,7 +133,7 @@ pnpm --dir products/mega-city test -- \
   l'objet version ; pas de `milestones.yml` ; `PLAN.md` n'est pas la source des noms. À confirmer par
   le panel adverse avant d'être écrite en ADR ; le panel de la coupe en vérifie la forme.
 - Dépend de [Trancher la coupe](../done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et de
-  [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md). Le dossier
+  [`ezk backlog version tag <v>`](../done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md). Le dossier
   du 10 novembre n'est pas committé (autre worktree). Le volet a n'attend ni l'un ni l'autre.
 - Trois corrections de la contestation du 14 novembre. `ezk backlog version tag --dry-run` n'existe
   pas : les verbes sont `list`, `check`, `ready`, `close`, `freeze`, `unfreeze`, `diff`

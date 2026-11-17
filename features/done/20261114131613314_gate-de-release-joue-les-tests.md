@@ -139,5 +139,5 @@ Aucune preuve d'écran : la fiche ne modifie aucun écran.
   (`products/mega-city/src/core/release-gate.ts:22-29`) : l'état `skip` demande un champ de plus,
   dont la forme exacte se fixe au build. `backlog version close --tag` lit `passes[].go`
   (`products/mega-city/bin/backlog-version.ts:341`) ; il doit traiter `skip` comme non bloquant.
-  Si [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
+  Si [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
   remplace `close --tag`, le lecteur du verdict change de nom, pas de règle.

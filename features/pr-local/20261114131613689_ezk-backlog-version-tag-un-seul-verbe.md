@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
+> 🗎 Rendu de la fiche [features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md](../done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
 
 # 20261114131613689 — `ezk backlog version tag <v>` : un seul verbe pour la coupe
 

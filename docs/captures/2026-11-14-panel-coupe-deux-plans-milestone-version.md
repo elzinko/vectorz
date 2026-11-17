@@ -159,7 +159,7 @@ Le brouillon du dossier (annexe) reçoit ces amendements avant ratification :
 - Le lanceur de mission control tue tout appel `ezk` à 30 secondes (`ezkExec.ts:13`) : le bouton
   « Versionner » lancera une gate qui jouera les tests du projet ; il doit devenir un travail suivi avec
   journal (fiches [config-show v2](../../features/20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md)
-  et [version tag](../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)).
+  et [version tag](../../features/done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)).
 - Doctrine de la cloche (11 novembre) : une alerte naît d'un évènement, jamais d'un compteur. « Une coupe
   est possible dès que `prochaineCoupe` n'est pas vide » est un compteur : le type `couper` doit naître de
   l'évènement « une fiche livrée après le dernier tag » (fiche [la cloche](../../features/20261114131612944_ezk-now-json-alertes-de-la-cloche.md)).
@@ -203,7 +203,7 @@ juges (rapport complet du panel : `tasks/w39yjzucj.output` de la session maquett
   avec les amendements de la section 7 ; accepté le 15 novembre sur les quatre oui du PO.
 - **Amendements** : ADR-0083 §2 et §3, ADR-0070, ADR-0080 (dont le point « but de version »), ADR-0076
   (remplacé), ADR-079 D2, ADR-086 (table « à publier »).
-- **Fiches débloquées ou requalifiées** : [version tag](../../features/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
+- **Fiches débloquées ou requalifiées** : [version tag](../../features/done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
   perd `blocked: panel` ; [Séquencer par milestone + dépendances inter-milestones](../../features/20261016081021364_sequencer-par-milestone-dependances.md)
   est requalifiée (la coupe et l'ordre dérivé du plan en reprennent le cœur, le graphe reste différé) ;
   [les objectifs publiés](../../features/done/20261114131612572_objectifs-publies-comme-objets.md),

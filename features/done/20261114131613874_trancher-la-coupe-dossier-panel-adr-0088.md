@@ -83,7 +83,7 @@ Quatre gestes, dans l'ordre ; le premier est fait. Cette fiche écrit des docume
    à ADR-0088 et dit ce qui change. La table « Ce que ça amende » du dossier donne le contenu ; elle dit
    ADR-0076 « remplacé » et ne touche d'ADR-086 que la table « à publier » (ses §2-3 relèvent de la fiche voisine).
 
-Hors périmètre : le code de la coupe ([`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
+Hors périmètre : le code de la coupe ([`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md),
 qui attend ce panel) ; la publication des [objectifs](20261114131612572_objectifs-publies-comme-objets.md) et des
 [versions](20261114131612759_versions-publiees-comme-coupes.md) ; la fin du pseudo-objectif
 [« parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md) ; les notes de version elles-mêmes
@@ -147,7 +147,7 @@ Aucun test de code : la fiche ne touche que des documents et des fiches. Aucune 
   les quatre décisions réservées à l'humain, dont la coupe ; la gate de release comme précondition du tag ;
   un seul flux de code ; et « aucun objet milestone persistant » (ADR-0069). Ce dernier point heurte la
   décision 2 : le panel doit y revenir, c'est le point de tension de la fiche.
-- Dépendances : aucune fiche du lot. Dépendent de celle-ci : [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
+- Dépendances : aucune fiche du lot. Dépendent de celle-ci : [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)
   (`blocked: panel`), [les objectifs publiés](20261114131612572_objectifs-publies-comme-objets.md),
   [les versions publiées](20261114131612759_versions-publiees-comme-coupes.md) et
   [la fin du pseudo-objectif « parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md).
