@@ -44,12 +44,12 @@ Vu dans le navigateur le 2026-11-17, à la livraison de la carte (fiche 20261117
 
 ## Critères d'acceptation
 
-- [ ] Au niveau 1, avec une brique sélectionnée, chaque famille montre son nombre de voisins par verbe,
+- [x] Au niveau 1, avec une brique sélectionnée, chaque famille montre son nombre de voisins par verbe,
       et les familles sans voisin sont estompées.
-- [ ] Au niveau 2, les libellés des liens de la sélection ne se répètent pas pour un même verbe et une
+- [x] Au niveau 2, les libellés des liens de la sélection ne se répètent pas pour un même verbe et une
       même famille cible.
-- [ ] Un panneau liste les voisins de la brique choisie par verbe ; un clic sur un voisin le sélectionne.
-- [ ] La projection reste une fonction pure, testée sur le contrat réel, sélection comprise.
+- [x] Un panneau liste les voisins de la brique choisie par verbe ; un clic sur un voisin le sélectionne.
+- [x] La projection reste une fonction pure, testée sur le contrat réel, sélection comprise.
 
 ## Comment vérifier
 
@@ -59,7 +59,17 @@ cd products/cop1/packages/web && pnpm exec tsc --noEmit && pnpm exec vitest run
 
 - vue carte-methode : http://localhost:5281/ puis « Carte de la méthode », clic sur `ezk-reviewer`
 
+**Avant / après** (règle `development/pr-before-after-media`), captures du 2026-11-17 :
+
+| Vue | Avant (main) | Après (branche) |
+|---|---|---|
+| Clic sur ezk-reviewer | ![avant](../docs/pr-evidence/20261117122122557/selection-before.png) | ![après](../docs/pr-evidence/20261117122122557/selection-after.png) |
+| La même sélection, vue de loin | — | ![de loin](../docs/pr-evidence/20261117122122557/selection-de-loin-after.png) |
+
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 4 critères prouvés. Vérifié dans le navigateur sur le daemon réel : clic sur `ezk-reviewer` → panneau « applique · 1, compose · 1, ← compose · 4, ← convoque · 1, ← est-vérifié-par · 18 » ; vue de loin : Outils et Commandes estompés, les autres familles disent leurs voisins. Reste ouvert, non bloquant : pas de test composant du rendu du niveau 1 (la projection est testée).
+
 
 - Origine : [rétro du sprint 2 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
   proposition 3, retenue par délégation du PO absent. Suite directe de la demande du PO : voir ce qui

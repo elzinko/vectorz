@@ -4,7 +4,13 @@
  */
 import { describe, expect, it } from 'vitest';
 import type { GraphCheck, GraphKind } from './graphCheck.js';
-import { GRAPH_ZOOM_THRESHOLDS, graphLevelForZoom, graphNodeId, projectGraphToFlow } from './graphProjection.js';
+import {
+  GRAPH_ZOOM_THRESHOLDS,
+  graphLevelForZoom,
+  graphNodeId,
+  projectGraphToFlow,
+  selectionNeighbors,
+} from './graphProjection.js';
 import { fitZoom } from './semanticZoom.js';
 import { graphCheckExample } from './testing/graphCheckExample.js';
 
@@ -208,5 +214,85 @@ describe('graphLevelForZoom', () => {
     expect(graphLevelForZoom(low * 0.5)).toBe(1);
     expect(graphLevelForZoom(low * 1.05, 1)).toBe(1);
     expect(graphLevelForZoom(low * 1.15, 1)).toBe(2);
+  });
+});
+
+describe('projectGraphToFlow — niveau 1 avec une sélection : voisins par verbe, familles sans voisin estompées', () => {
+  const selected = graphNodeId('skill', 'ezk-sprint');
+  const { nodes } = projectGraphToFlow(contract, 1, selected);
+  const family = (kind: string) => nodes.find((n) => n.id === `famille:${kind}`)!;
+
+  it('chaque famille compte ses voisins par verbe et par sens', () => {
+    expect(family('rule').data.neighbors).toEqual([{ sens: 'sortant', verb: 'applique', count: 1 }]);
+    expect(family('command').data.neighbors).toEqual([{ sens: 'sortant', verb: 'utilise', count: 1 }]);
+  });
+
+  it('les familles sans voisin sont estompées, celles qui en ont ne le sont pas', () => {
+    expect(family('tool').data.dim).toBe(true);
+    expect(family('agent').data.dim).toBe(true);
+    expect(family('rule').data.dim).toBeUndefined();
+    expect(family('command').data.dim).toBeUndefined();
+  });
+
+  it('la famille de la brique choisie dit son nom et n’est pas estompée', () => {
+    expect(family('skill').data).toMatchObject({ selectedName: 'ezk-sprint' });
+    expect(family('skill').data.dim).toBeUndefined();
+    expect(family('rule').data.selectedName).toBeUndefined();
+  });
+
+  it('sans sélection (ou sélection inconnue), aucune famille ne porte de voisins ni n’est estompée', () => {
+    for (const sel of [undefined, 'rule:inconnue']) {
+      const plain = projectGraphToFlow(contract, 1, sel).nodes;
+      expect(plain.some((n) => n.data.dim || n.data.neighbors || n.data.selectedName)).toBe(false);
+    }
+  });
+});
+
+describe('projectGraphToFlow — niveau 2 : un libellé par verbe et par famille cible', () => {
+  const hub: GraphCheck = {
+    nodes: [
+      { kind: 'agent', id: 'a' },
+      ...['r1', 'r2', 'r3'].map((id) => ({ kind: 'rule' as GraphKind, id })),
+      { kind: 'skill', id: 's1' },
+      { kind: 'skill', id: 's2' },
+    ],
+    edges: [
+      ...['r1', 'r2', 'r3'].map((to) => ({ from: 'a', fromKind: 'agent' as GraphKind, link: 'x', verb: 'est-vérifié-par', to, toKind: 'rule' as GraphKind })),
+      { from: 'a', fromKind: 'agent', link: 'x', verb: 'compose', to: 's1', toKind: 'skill' },
+      { from: 'a', fromKind: 'agent', link: 'x', verb: 'est-vérifié-par', to: 's2', toKind: 'skill' },
+      { from: 's1', fromKind: 'skill', link: 'x', verb: 'compose', to: 'a', toKind: 'agent' },
+    ],
+    nodeCount: { profile: 0, bundle: 0, skill: 2, agent: 1, rule: 3, tool: 0, command: 0 },
+    edgeCount: 6,
+  };
+  const { edges } = projectGraphToFlow(hub, 2, 'agent:a');
+
+  it('toutes les arêtes de la sélection restent dessinées', () => {
+    expect(edges).toHaveLength(6);
+  });
+
+  it('un seul libellé par (sens, verbe, famille de l’autre bout)', () => {
+    const labelled = edges.filter((e) => e.label !== '').map((e) => e.label);
+    expect(labelled.sort()).toEqual(['compose', 'compose', 'est-vérifié-par', 'est-vérifié-par']);
+    expect(edges.filter((e) => e.target.startsWith('rule:') && e.label !== '')).toHaveLength(1);
+  });
+});
+
+describe('selectionNeighbors — les voisins groupés par sens puis verbe', () => {
+  it('liste les voisins de la brique choisie, triés, avec leur sorte', () => {
+    expect(selectionNeighbors(contract, graphNodeId('skill', 'ezk-sprint'))).toEqual([
+      { sens: 'sortant', verb: 'applique', neighbors: [{ id: 'rule:clean-code/no-dead-code', nom: 'clean-code/no-dead-code', kind: 'rule' }] },
+      { sens: 'sortant', verb: 'utilise', neighbors: [{ id: 'command:ezk forge integrate', nom: 'ezk forge integrate', kind: 'command' }] },
+    ]);
+  });
+
+  it('sépare les entrants des sortants', () => {
+    const groups = selectionNeighbors(contract, graphNodeId('command', 'ezk forge integrate'));
+    expect(groups.map((g) => [g.sens, g.verb])).toEqual([['sortant', 'lance'], ['entrant', 'utilise']]);
+  });
+
+  it('sans sélection ou sélection inconnue : rien', () => {
+    expect(selectionNeighbors(contract, undefined)).toEqual([]);
+    expect(selectionNeighbors(contract, 'rule:inconnue')).toEqual([]);
   });
 });

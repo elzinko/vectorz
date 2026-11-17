@@ -19,9 +19,9 @@ import {
   type Node,
   type NodeProps,
 } from '@xyflow/react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import type { GraphCheck } from './graphCheck.js';
-import { graphLevelForZoom, projectGraphToFlow, type GraphLevel } from './graphProjection.js';
+import { FAMILY_LABELS, graphLevelForZoom, projectGraphToFlow, selectionNeighbors, type GraphLevel } from './graphProjection.js';
 import type { BoardProject } from './types.js';
 import { useDaemonContract } from './useDaemonContract.js';
 
@@ -47,13 +47,25 @@ interface BrickLink extends CountedVerb {
   sens: 'sortant' | 'entrant';
 }
 
+const countLabel = (n: number): string => `${n} voisin${n > 1 ? 's' : ''}`;
+
 function FamilyNode({ data }: NodeProps): JSX.Element {
   const internal = data.internal as CountedVerb[];
+  const neighbors = (data.neighbors as BrickLink[] | undefined) ?? [];
   return (
-    <div className={`gm-famille gm-fam-${data.kind as string}`}>
+    <div className={`gm-famille gm-fam-${data.kind as string}${data.dim ? ' gm-dim' : ''}`}>
       <Handle type="target" position={Position.Top} />
       <div className="gm-famille-nom">{data.label as string}</div>
       <div className="gm-famille-compte">{data.count as number}</div>
+      {typeof data.selectedName === 'string' && (
+        <div className="gm-famille-choix">brique choisie : {data.selectedName}</div>
+      )}
+      {neighbors.map((n) => (
+        <div key={`${n.sens}${n.verb}`} className="gm-famille-voisins">
+          {countLabel(n.count)} · {n.sens === 'entrant' ? '← ' : ''}
+          {n.verb}
+        </div>
+      ))}
       {internal.length > 0 && (
         <div className="gm-famille-interne">
           dans la famille : {internal.map((i) => `${i.verb} · ${i.count}`).join(', ')}
@@ -88,9 +100,13 @@ function BrickNode({ data }: NodeProps): JSX.Element {
 
 const nodeTypes = { famille: FamilyNode, brique: BrickNode };
 
-function Flow({ contract, initialLevel }: { contract: GraphCheck; initialLevel: GraphLevel }): JSX.Element {
+interface Selection {
+  selection: string | undefined;
+  setSelection: Dispatch<SetStateAction<string | undefined>>;
+}
+
+function Flow({ contract, initialLevel, selection, setSelection }: { contract: GraphCheck; initialLevel: GraphLevel } & Selection): JSX.Element {
   const [level, setLevel] = useState<GraphLevel>(initialLevel);
-  const [selection, setSelection] = useState<string | undefined>(undefined);
   const { fitView } = useReactFlow();
   const { nodes, edges } = useMemo(() => projectGraphToFlow(contract, level, selection), [contract, level, selection]);
   return (
@@ -120,8 +136,44 @@ function Flow({ contract, initialLevel }: { contract: GraphCheck; initialLevel: 
   );
 }
 
+/** Le panneau à côté de la carte : les voisins de la brique choisie, cliquables pour la déplacer. */
+function NeighborPanel({ contract, selection, setSelection }: { contract: GraphCheck } & Selection): JSX.Element {
+  const groups = useMemo(() => selectionNeighbors(contract, selection), [contract, selection]);
+  const name = selection === undefined ? undefined : contract.nodes.find((n) => `${n.kind}:${n.id}` === selection)?.id;
+  return (
+    <aside className="gm-panneau" aria-label="Voisins de la brique">
+      {name === undefined ? (
+        <p>clique une brique pour voir ses voisins</p>
+      ) : (
+        <>
+          <h4>{name}</h4>
+          {groups.length === 0 && <p>aucun voisin</p>}
+          {groups.map((g) => (
+            <section key={`${g.sens}${g.verb}`} className="gm-groupe">
+              <h5>
+                {g.sens === 'entrant' ? '← ' : ''}
+                {g.verb} · {g.neighbors.length}
+              </h5>
+              <ul>
+                {g.neighbors.map((n) => (
+                  <li key={n.id}>
+                    <button type="button" className={`gm-voisin gm-fam-${n.kind}`} title={FAMILY_LABELS[n.kind]} onClick={() => setSelection(n.id)}>
+                      {n.nom}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </>
+      )}
+    </aside>
+  );
+}
+
 /** `initialLevel` ne sert qu'aux tests : jsdom ne mesure aucun zoom, la carte réelle part du niveau 1. */
 export function GraphMap({ project, initialLevel = 1 }: { project: BoardProject; initialLevel?: GraphLevel }): JSX.Element {
+  const [selection, setSelection] = useState<string | undefined>(undefined);
   const state = useDaemonContract<GraphCheck>(project.name, GRAPH_READING);
   return (
     <section className="card gm" aria-label="Carte de la méthode">
@@ -130,10 +182,13 @@ export function GraphMap({ project, initialLevel = 1 }: { project: BoardProject;
         <span className="sub">zoome pour voir les briques, puis leur détail ; clique une brique pour allumer ses voisins</span>
       </div>
       {state.kind === 'ok' ? (
-        <div className="gm-canvas">
-          <ReactFlowProvider>
-            <Flow contract={state.contract} initialLevel={initialLevel} />
-          </ReactFlowProvider>
+        <div className="gm-corps">
+          <div className="gm-canvas">
+            <ReactFlowProvider>
+              <Flow contract={state.contract} initialLevel={initialLevel} selection={selection} setSelection={setSelection} />
+            </ReactFlowProvider>
+          </div>
+          <NeighborPanel contract={state.contract} selection={selection} setSelection={setSelection} />
         </div>
       ) : (
         <div className="row">

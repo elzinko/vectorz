@@ -101,20 +101,76 @@ interface CountedVerb {
 
 const bump = (map: Map<string, number>, key: string): void => void map.set(key, (map.get(key) ?? 0) + 1);
 
-function familyNodes(contract: GraphCheck, level: GraphLevel): GraphFlowNode[] {
+/** Un voisin de la brique choisie, tel que le panneau et la carte le montrent. */
+export interface NeighborRef {
+  id: string;
+  nom: string;
+  kind: GraphKind;
+}
+
+export interface NeighborGroup {
+  sens: 'sortant' | 'entrant';
+  verb: string;
+  neighbors: NeighborRef[];
+}
+
+const nodeOf = (contract: GraphCheck, flowId: string) =>
+  contract.nodes.find((n) => graphNodeId(n.kind, n.id) === flowId);
+
+/** Les voisins directs de la brique choisie, groupés par sens (sortants d'abord) puis par verbe. */
+export function selectionNeighbors(contract: GraphCheck, selection: string | undefined): NeighborGroup[] {
+  if (selection === undefined || !nodeOf(contract, selection)) return [];
+  const groups = new Map<string, NeighborGroup>();
+  const seen = new Set<string>();
+  for (const e of contract.edges) {
+    const from = graphNodeId(e.fromKind, e.from);
+    const to = graphNodeId(e.toKind, e.to);
+    const sens = from === selection ? 'sortant' : to === selection ? 'entrant' : undefined;
+    if (sens === undefined) continue;
+    const other: NeighborRef = sens === 'sortant' ? { id: to, nom: e.to, kind: e.toKind } : { id: from, nom: e.from, kind: e.fromKind };
+    if (seen.has(`${sens}\t${e.verb}\t${other.id}`)) continue;
+    seen.add(`${sens}\t${e.verb}\t${other.id}`);
+    const key = `${sens}\t${e.verb}`;
+    const group = groups.get(key) ?? { sens, verb: e.verb, neighbors: [] };
+    group.neighbors.push(other);
+    groups.set(key, group);
+  }
+  const rank = (g: NeighborGroup) => (g.sens === 'sortant' ? 0 : 1);
+  return [...groups.values()].sort((a, b) => rank(a) - rank(b) || a.verb.localeCompare(b.verb));
+}
+
+/** Les voisins de la sélection comptés par famille : { sens, verbe, nombre } pour chaque famille. */
+function neighborCountsByFamily(contract: GraphCheck, selection: string): Map<GraphKind, CountedLink[]> {
+  const byKind = new Map<GraphKind, CountedLink[]>();
+  for (const group of selectionNeighbors(contract, selection)) {
+    const perKind = new Map<GraphKind, number>();
+    for (const n of group.neighbors) perKind.set(n.kind, (perKind.get(n.kind) ?? 0) + 1);
+    for (const [kind, count] of perKind) byKind.set(kind, [...(byKind.get(kind) ?? []), { sens: group.sens, verb: group.verb, count }]);
+  }
+  return byKind;
+}
+
+interface CountedLink extends CountedVerb {
+  sens: 'sortant' | 'entrant';
+}
+
+function familyNodes(contract: GraphCheck, level: GraphLevel, selection?: string): GraphFlowNode[] {
   const counts = countByKind(contract);
+  const selected = level === 1 && selection !== undefined ? nodeOf(contract, selection) : undefined;
+  const neighborCounts = selected ? neighborCountsByFamily(contract, selection!) : new Map<GraphKind, CountedLink[]>();
   const origins = familyOrigins(counts);
   return FAMILY_ROWS.flat().map((kind) => {
     const internal = new Map<string, number>();
     for (const e of contract.edges) if (e.fromKind === kind && e.toKind === kind) bump(internal, e.verb);
     const internalList: CountedVerb[] = [...internal].map(([verb, count]) => ({ verb, count }));
-    return {
-      id: familyId(kind),
-      type: 'famille',
-      position: origins.get(kind)!,
-      ...familySize(counts[kind]),
-      data: { level, kind, label: FAMILY_LABELS[kind], count: counts[kind], internal: internalList },
-    };
+    const data: Record<string, unknown> = { level, kind, label: FAMILY_LABELS[kind], count: counts[kind], internal: internalList };
+    if (selected) {
+      const neighbors = neighborCounts.get(kind);
+      if (neighbors) data.neighbors = neighbors;
+      if (selected.kind === kind) data.selectedName = selected.id;
+      else if (!neighbors) data.dim = true;
+    }
+    return { id: familyId(kind), type: 'famille', position: origins.get(kind)!, ...familySize(counts[kind]), data };
   });
 }
 
@@ -188,15 +244,22 @@ function familyEdges(contract: GraphCheck): FlowEdge[] {
   });
 }
 
-/** Les liens de la brique choisie, un par lien distinct, libellés de leur verbe. */
+/**
+ * Les liens de la brique choisie, un par lien distinct. Le verbe n'est écrit qu'une fois par (sens,
+ * verbe, famille de l'autre bout) : les autres liens du groupe restent dessinés, sans libellé.
+ */
 function selectionEdges(edges: GraphEdge[], selection: string): FlowEdge[] {
   const result = new Map<string, FlowEdge>();
+  const labelled = new Set<string>();
   for (const e of edges) {
     const source = graphNodeId(e.fromKind, e.from);
     const target = graphNodeId(e.toKind, e.to);
     if (source !== selection && target !== selection) continue;
     const id = `lien:${source}>${e.verb}>${target}`;
-    result.set(id, { id, source, target, label: e.verb });
+    const group = `${source === selection ? 'sortant' : 'entrant'}\t${e.verb}\t${source === selection ? e.toKind : e.fromKind}`;
+    const label = labelled.has(group) ? '' : e.verb;
+    labelled.add(group);
+    result.set(id, { id, source, target, label });
   }
   return [...result.values()];
 }
@@ -206,7 +269,7 @@ export function projectGraphToFlow(
   level: GraphLevel,
   selection?: string,
 ): { nodes: GraphFlowNode[]; edges: FlowEdge[] } {
-  const families = familyNodes(contract, level);
+  const families = familyNodes(contract, level, selection);
   if (level < 2) return { nodes: families, edges: familyEdges(contract) };
   const bricks = brickNodes(contract, level, selection);
   const selected = selection !== undefined && bricks.some((b) => b.id === selection);

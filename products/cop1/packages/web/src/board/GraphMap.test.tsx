@@ -4,7 +4,7 @@
  * mesure rien : le zoom est couvert par les tests de la projection, et le niveau 2 se force par
  * `initialLevel`.
  */
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { GraphMap } from './GraphMap.js';
 import { stubFlowBrowserApis } from './testing/flowStubs.js';
@@ -69,7 +69,7 @@ describe('GraphMap', () => {
 });
 
 describe('GraphMap — sélection d’une brique (niveau 2)', () => {
-  const brick = (name: string): HTMLElement => screen.getByText(name).closest('.gm-brique') as HTMLElement;
+  const brick = (name: string): HTMLElement => screen.getByText(name, { selector: '.gm-brique-nom' }).closest('.gm-brique') as HTMLElement;
 
   async function open(): Promise<void> {
     serve({ state: 'ok', graph: example });
@@ -103,5 +103,31 @@ describe('GraphMap — sélection d’une brique (niveau 2)', () => {
     fireEvent.click(brick('ezk-sprint'));
     expect(brick('ezk-sprint').className).toContain('gm-self');
     expect(brick('ezk help').className).toContain('gm-dim');
+  });
+});
+
+describe('GraphMap — panneau des voisins et sélection entre niveaux', () => {
+  const brick = (name: string): HTMLElement => screen.getByText(name, { selector: '.gm-brique-nom' }).closest('.gm-brique') as HTMLElement;
+  const panel = (): HTMLElement => screen.getByRole('complementary', { name: 'Voisins de la brique' });
+
+  async function open(level: 1 | 2 = 2): Promise<void> {
+    serve({ state: 'ok', graph: example });
+    render(<GraphMap project={project} initialLevel={level} />);
+    await screen.findByText('Compétences');
+  }
+
+  it('sans sélection, le panneau dit « clique une brique »', async () => {
+    await open();
+    expect(panel().textContent).toContain('clique une brique');
+  });
+
+  it('avec une sélection, liste les voisins par sens et verbe ; un clic sur un voisin le sélectionne', async () => {
+    await open();
+    fireEvent.click(brick('ezk-sprint'));
+    expect(panel().textContent).toContain('ezk-sprint');
+    expect(panel().textContent).toContain('applique');
+    fireEvent.click(within(panel()).getByRole('button', { name: 'ezk forge integrate' }));
+    expect(brick('ezk forge integrate').className).toContain('gm-self');
+    expect(within(panel()).getByRole('button', { name: 'ezk-sprint' })).toBeTruthy();
   });
 });
