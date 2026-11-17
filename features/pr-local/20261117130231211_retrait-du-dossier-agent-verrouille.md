@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117130231211_retrait-du-dossier-agent-verrouille.md](../20261117130231211_retrait-du-dossier-agent-verrouille.md)
+> 🗎 Rendu de la fiche [features/20261117130231211_retrait-du-dossier-agent-verrouille.md](../done/20261117130231211_retrait-du-dossier-agent-verrouille.md)
 
 # 20261117130231211 — Le brief du développeur isolé dit comment retirer un dossier d'agent verrouillé
 

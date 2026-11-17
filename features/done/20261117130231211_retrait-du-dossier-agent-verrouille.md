@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [ezk-sprint, agents]
-status: ready
-pr:
+status: shipped
+pr: "local (0060a88d)"
 evidence: none # pas d'écran : texte d'un skill
 created: 2026-11-17
 ---
@@ -52,5 +52,5 @@ cd products/mega-city && pnpm exec vitest run src/__tests__/ezk-sprint-dev-isole
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Garde faible notée (P2) : le test cherche le mot « verrouille » sans le lier à la commande.
 
 
-- Origine : [rétro du sprint 3 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-3-carte-lisible-et-outillage.md),
+- Origine : [rétro du sprint 3 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-3-carte-lisible-et-outillage.md),
   proposition 3, retenue par délégation du PO absent.
