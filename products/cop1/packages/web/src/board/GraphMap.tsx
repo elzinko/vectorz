@@ -21,7 +21,14 @@ import {
 } from '@xyflow/react';
 import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import type { GraphCheck } from './graphCheck.js';
-import { FAMILY_LABELS, graphLevelForZoom, projectGraphToFlow, selectionNeighbors, type GraphLevel } from './graphProjection.js';
+import {
+  FAMILY_LABELS,
+  graphLevelForZoom,
+  projectGraphToFlow,
+  searchBricks,
+  selectionNeighbors,
+  type GraphLevel,
+} from './graphProjection.js';
 import type { BoardProject } from './types.js';
 import { useDaemonContract } from './useDaemonContract.js';
 
@@ -136,12 +143,61 @@ function Flow({ contract, initialLevel, selection, setSelection }: { contract: G
   );
 }
 
+/** Le champ de recherche du panneau (fiche 20261117153250174) : choisir une brique par son nom. */
+function BrickSearchField({ contract, setSelection }: { contract: GraphCheck } & Pick<Selection, 'setSelection'>): JSX.Element {
+  const [query, setQuery] = useState('');
+  const { matches, total } = useMemo(() => searchBricks(contract, query), [contract, query]);
+  const choose = (id: string): void => {
+    setSelection(id);
+    setQuery('');
+  };
+  return (
+    <form
+      className="gm-recherche"
+      role="search"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (matches[0] !== undefined) choose(matches[0].id);
+      }}
+    >
+      <input
+        type="search"
+        aria-label="chercher une brique"
+        placeholder="chercher une brique"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+      {query.trim() !== '' && total === 0 && <p>aucune brique ne contient « {query.trim()} »</p>}
+      {total > 0 && (
+        <>
+          {total > matches.length && (
+            <p className="gm-recherche-compte">
+              {matches.length} sur {total}
+            </p>
+          )}
+          <ul aria-label="briques trouvées">
+            {matches.map((m) => (
+              <li key={m.id}>
+                <button type="button" className={`gm-voisin gm-fam-${m.kind}`} onClick={() => choose(m.id)}>
+                  {m.nom}
+                  <span className="gm-recherche-famille">{FAMILY_LABELS[m.kind]}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </form>
+  );
+}
+
 /** Le panneau à côté de la carte : les voisins de la brique choisie, cliquables pour la déplacer. */
 function NeighborPanel({ contract, selection, setSelection }: { contract: GraphCheck } & Selection): JSX.Element {
   const groups = useMemo(() => selectionNeighbors(contract, selection), [contract, selection]);
   const name = selection === undefined ? undefined : contract.nodes.find((n) => `${n.kind}:${n.id}` === selection)?.id;
   return (
     <aside className="gm-panneau" aria-label="Voisins de la brique">
+      <BrickSearchField contract={contract} setSelection={setSelection} />
       {name === undefined ? (
         <p>clique une brique pour voir ses voisins</p>
       ) : (

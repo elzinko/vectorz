@@ -118,6 +118,29 @@ export interface NeighborGroup {
 const nodeOf = (contract: GraphCheck, flowId: string) =>
   contract.nodes.find((n) => graphNodeId(n.kind, n.id) === flowId);
 
+/** Au plus tant de propositions dans le panneau ; au-delà, il dit « 8 sur N ». */
+export const SEARCH_LIMIT = 8;
+
+export interface BrickSearch {
+  matches: NeighborRef[];
+  /** Le vrai nombre de briques qui correspondent, même au-delà de la limite. */
+  total: number;
+}
+
+/**
+ * Les briques dont le nom contient le texte, sans tenir compte des majuscules (fiche
+ * 20261117153250174) : un nom exact d'abord, puis l'ordre alphabétique.
+ */
+export function searchBricks(contract: GraphCheck, query: string, limit = SEARCH_LIMIT): BrickSearch {
+  const q = query.trim().toLowerCase();
+  if (q === '') return { matches: [], total: 0 };
+  const found = contract.nodes
+    .filter((n) => n.id.toLowerCase().includes(q))
+    .map((n): NeighborRef => ({ id: graphNodeId(n.kind, n.id), nom: n.id, kind: n.kind }))
+    .sort((a, b) => Number(b.nom.toLowerCase() === q) - Number(a.nom.toLowerCase() === q) || a.nom.localeCompare(b.nom));
+  return { matches: found.slice(0, limit), total: found.length };
+}
+
 /** Les voisins directs de la brique choisie, groupés par sens (sortants d'abord) puis par verbe. */
 export function selectionNeighbors(contract: GraphCheck, selection: string | undefined): NeighborGroup[] {
   if (selection === undefined || !nodeOf(contract, selection)) return [];

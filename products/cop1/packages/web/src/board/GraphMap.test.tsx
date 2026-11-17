@@ -158,3 +158,51 @@ describe('GraphMap — panneau des voisins et sélection entre niveaux', () => {
     expect(within(panel()).getByRole('button', { name: 'ezk-sprint' })).toBeTruthy();
   });
 });
+
+describe('GraphMap — chercher une brique (fiche 20261117153250174)', () => {
+  const panel = (): HTMLElement => screen.getByRole('complementary', { name: 'Voisins de la brique' });
+  const field = (): HTMLInputElement => screen.getByRole('searchbox', { name: 'chercher une brique' });
+
+  async function open(): Promise<void> {
+    serve({ state: 'ok', graph: example });
+    render(<GraphMap project={project} />);
+    await screen.findByText('Compétences');
+  }
+
+  it('la saisie propose les briques avec leur famille ; un clic en choisit une et vide le champ', async () => {
+    await open();
+    fireEvent.change(field(), { target: { value: 'forge' } });
+    const propositions = within(panel()).getByRole('list', { name: 'briques trouvées' });
+    const options = within(propositions).getAllByRole('button');
+    expect(options.map((o) => o.textContent)).toEqual(['bin/forge-integrate.tsOutils', 'ezk forge integrateCommandes']);
+    fireEvent.click(options[1] as HTMLElement);
+    expect(within(panel()).getByRole('heading', { level: 4 }).textContent).toBe('ezk forge integrate');
+    expect(field().value).toBe('');
+  });
+
+  it('Entrée choisit la première proposition', async () => {
+    await open();
+    fireEvent.change(field(), { target: { value: 'sprint' } });
+    fireEvent.submit(field());
+    expect(within(panel()).getByRole('heading', { level: 4 }).textContent).toBe('ezk-sprint');
+  });
+
+  it('plus de 8 résultats : 8 propositions et « 8 sur N »', async () => {
+    const many = Array.from({ length: 11 }, (_, i) => ({ kind: 'rule' as const, id: `review/regle-${i}`, file: null }));
+    serve({ state: 'ok', graph: { ...example, nodes: [...example.nodes, ...many] } });
+    render(<GraphMap project={project} />);
+    await screen.findByText('Compétences');
+    fireEvent.change(field(), { target: { value: 'review/' } });
+    const propositions = within(panel()).getByRole('list', { name: 'briques trouvées' });
+    expect(within(propositions).getAllByRole('button')).toHaveLength(8);
+    expect(panel().textContent).toContain('8 sur 11');
+  });
+
+  it('aucun résultat : le dit, et rien n’est choisi', async () => {
+    await open();
+    fireEvent.change(field(), { target: { value: 'zzz' } });
+    expect(panel().textContent).toContain('aucune brique ne contient « zzz »');
+    fireEvent.submit(field());
+    expect(panel().textContent).toContain('clique une brique');
+  });
+});

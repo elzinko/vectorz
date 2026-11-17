@@ -478,6 +478,10 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .gm-panneau h4 { margin: 0 0 8px; font-size: 15px; }
 .gm-panneau h5 { margin: 10px 0 4px; font-size: 13px; color: var(--muted); }
 .gm-panneau ul { list-style: none; margin: 0; padding: 0; }
+.gm-recherche { margin: 0 0 12px; }
+.gm-recherche input { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: var(--surface); color: var(--fg); }
+.gm-recherche p { margin: 6px 0 2px; color: var(--muted); font-size: 13px; }
+.gm-recherche-famille { display: block; font-size: 12px; color: var(--muted); }
 .gm-voisin { display: block; width: 100%; text-align: left; margin: 2px 0; padding: 4px 8px; border: 1px solid var(--fam); border-radius: 6px; background: var(--fam-soft); color: var(--fg); font: inherit; cursor: pointer; overflow-wrap: anywhere; }
 .gm-famille.gm-dim { opacity: 0.2; }
 .gm-famille-choix { font-size: 20px; font-weight: 600; }

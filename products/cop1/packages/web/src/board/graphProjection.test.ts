@@ -9,6 +9,7 @@ import {
   graphLevelForZoom,
   graphNodeId,
   projectGraphToFlow,
+  searchBricks,
   selectionNeighbors,
 } from './graphProjection.js';
 import { fitZoom } from './semanticZoom.js';
@@ -336,5 +337,41 @@ describe('selectionNeighbors — les voisins groupés par sens puis verbe', () =
   it('sans sélection ou sélection inconnue : rien', () => {
     expect(selectionNeighbors(contract, undefined)).toEqual([]);
     expect(selectionNeighbors(contract, 'rule:inconnue')).toEqual([]);
+  });
+});
+
+describe('searchBricks — chercher une brique par son nom (fiche 20261117153250174)', () => {
+  const brick = (kind: GraphKind, id: string) => ({ kind, id, file: null });
+  const many: GraphCheck = {
+    ...contract,
+    nodes: [
+      brick('agent', 'ezk-reviewer'),
+      brick('skill', 'reviewer'),
+      ...Array.from({ length: 10 }, (_, i) => brick('rule', `review/regle-${String(i).padStart(2, '0')}`)),
+    ],
+    edges: [],
+  };
+
+  it('trouve sans tenir compte des majuscules, avec la famille et l’identifiant de carte', () => {
+    expect(searchBricks(contract, 'SPRINT')).toEqual({
+      matches: [{ id: 'skill:ezk-sprint', nom: 'ezk-sprint', kind: 'skill' }],
+      total: 1,
+    });
+  });
+
+  it('un nom exact passe d’abord, puis l’ordre alphabétique', () => {
+    const { matches } = searchBricks(many, 'reviewer');
+    expect(matches.map((m) => m.id)).toEqual(['skill:reviewer', 'agent:ezk-reviewer']);
+  });
+
+  it('au plus 8 propositions, avec le vrai total', () => {
+    const result = searchBricks(many, 'review');
+    expect(result.matches).toHaveLength(8);
+    expect(result.total).toBe(12);
+  });
+
+  it('aucun résultat, ou une saisie vide : rien', () => {
+    expect(searchBricks(contract, 'inconnu')).toEqual({ matches: [], total: 0 });
+    expect(searchBricks(contract, '   ')).toEqual({ matches: [], total: 0 });
   });
 });
