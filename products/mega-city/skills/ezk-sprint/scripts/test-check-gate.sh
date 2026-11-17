@@ -6,8 +6,7 @@ CHECK="$(cd "$(dirname "$0")" && pwd)/check.sh"
 chmod +x "$CHECK"
 TMP="$(mktemp -d)"
 # Restaure aussi la lib partagée si S6 l'a déplacée (même si un futur --gate sortait ≠ 0 au mauvais moment).
-LIB_BAK=""
-trap 'rm -rf "$TMP"; [[ -n "$LIB_BAK" && -f "$LIB_BAK" ]] && mv -f "$LIB_BAK" "${LIB_BAK%.bak}"' EXIT
+trap 'rm -rf "$TMP"' EXIT
 FAIL=0
 
 ok() {
@@ -141,12 +140,13 @@ OUT5c="$(cd "$TMP/w-runner" && HOME="$FAKE_HOME" bash "$CHECK" --gate)"
 ok "session dormante (vieux .jsonl) → raison d'origine"       "echo \"\$OUT5c\" | grep -q 'ALERT .*w-unmerged .*raison=unmerged'"
 
 echo "S6 — lib absente : repli sur le comptage (toute copie voisine alerte), best-effort sans erreur"
+# La lib est pointée vers un chemin absent par EZK_SPRINT_SAFETY_LIB : le vrai fichier reste en place, une
+# gate jouée en même temps dans le même dossier n'est pas touchée (fiche 20261117165112300).
 LIB="$(cd "$(dirname "$CHECK")/../../ezk-archive/scripts" && pwd)/lib-worktree-safety.sh"
-LIB_BAK="$LIB.bak"; mv "$LIB" "$LIB_BAK"      # le trap EXIT la restaure quoi qu'il arrive
-OUT6="$(cd "$TMP/w-runner" && bash "$CHECK" --gate)"; RC6=$?
-mv "$LIB_BAK" "$LIB"; LIB_BAK=""
+OUT6="$(cd "$TMP/w-runner" && EZK_SPRINT_SAFETY_LIB="$TMP/lib-absente.sh" bash "$CHECK" --gate)"; RC6=$?
 ok "repli : ALERT par comptage"            "echo \"\$OUT6\" | grep -q 'repli comptage'"
 ok "le portier ne plante pas (exit 0)"     "[ \"\$RC6\" = 0 ]"
+ok "la vraie lib n'a pas bougé"           "[ -r \"\$LIB\" ]"
 
 if (( FAIL )); then
   echo "FAIL"

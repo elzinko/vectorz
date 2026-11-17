@@ -86,7 +86,9 @@ while IFS= read -r line; do
 done < <(git worktree list --porcelain 2>/dev/null)
 WT_COUNT=$(( ${#SIBLINGS[@]} + 1 ))
 
-SAFETY_LIB="$(cd "$(dirname "$0")/../../ezk-archive/scripts" 2>/dev/null && pwd)/lib-worktree-safety.sh"
+# EZK_SPRINT_SAFETY_LIB : un autre chemin pour la lib, sans toucher au vrai fichier (les tests simulent ainsi
+# son absence ; fiche 20261117165112300). Par défaut : la lib d'ezk-archive, voisine de ce skill.
+SAFETY_LIB="${EZK_SPRINT_SAFETY_LIB:-$(cd "$(dirname "$0")/../../ezk-archive/scripts" 2>/dev/null && pwd)/lib-worktree-safety.sh}"
 SAFETY_OK=0
 if [[ -r "$SAFETY_LIB" ]]; then . "$SAFETY_LIB" && SAFETY_OK=1; fi
 
