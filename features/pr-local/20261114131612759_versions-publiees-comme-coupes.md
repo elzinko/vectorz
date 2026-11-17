@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261114131612759_versions-publiees-comme-coupes.md](../20261114131612759_versions-publiees-comme-coupes.md)
+> 🗎 Rendu de la fiche [features/20261114131612759_versions-publiees-comme-coupes.md](../done/20261114131612759_versions-publiees-comme-coupes.md)
 
 # 20261114131612759 — Les versions publiées comme coupes, avec la prochaine coupe à faire
 

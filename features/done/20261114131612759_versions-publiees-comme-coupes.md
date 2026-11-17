@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, theme:mission-control]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (14381090)"
 evidence: none # un contrat publié, aucun écran modifié
 created: 2026-11-14
 ---
@@ -48,7 +48,7 @@ Ce que le code publie aujourd'hui :
 - Les fiches livrées sans version sont comptées en interne (`history`), ni publiées ni listées : 233
   sur 379 livrées le 14 novembre (`ezk backlog show --json`). La carte des écarts compte 85 livrées
   depuis `v0.22.0` ; le « 76 sans numéro » vient du dossier du 10 novembre, repris par
-  [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Comptes git, non rejoués ici.
+  [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Comptes git, non rejoués ici.
   `products/mega-city/src/backlog/versions.ts:209-218`
 - `ezk release <vX.Y>` écrit son verdict (`GO` ou `NO-GO`, passes, date, commit) sous
   `.vectorz/release/<version>.json` ; `board show` ne le lit pas.
@@ -80,22 +80,22 @@ Ce que le code publie aujourd'hui :
 
 **Volet b — après le panel.** `nom`, `numeroPropose` et la règle de la coupe (quoi, qui, quand)
 dépendent du panel de
-[Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
+[Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
 
 - Décision du PO du 14 novembre : le nom en clair d'une version vit dans le front-matter de l'objet
   version lui-même, pas dans `PLAN.md` ; pas de `milestones.yml`. La forme de l'objet est tranchée
   par ce panel ; cette fiche n'en décide pas.
 - Le verbe qui pose l'étiquette est
-  [`ezk backlog version tag <v>` : un seul verbe pour la coupe](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
+  [`ezk backlog version tag <v>` : un seul verbe pour la coupe](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
   `board show` publie la même coupe que ce verbe calcule : une seule source, deux sorties.
 
 Hors périmètre : poser l'étiquette ; changer la page Versions ; inventer des sprints à muti.
 
-Voisines livrées : [Cycle de vie d'une version](done/20261014200651962_cycle-vie-version-preparer-figer-developper.md),
-[Release gate](done/20260922175954296_release-gate-passe-qualite-versionnement.md),
-[La version est un checkpoint du run](done/20261015125606808_frontiere-version-checkpoint-run-autonome.md),
-[Découper le backlog en versions](done/20260824204751403_preparation-lots-versions-coherence.md).
-Voisine en idée : [Proposer la version d'une fiche](20261008192643426_proposeur-version-sprint-aware.md)
+Voisines livrées : [Cycle de vie d'une version](20261014200651962_cycle-vie-version-preparer-figer-developper.md),
+[Release gate](20260922175954296_release-gate-passe-qualite-versionnement.md),
+[La version est un checkpoint du run](20261015125606808_frontiere-version-checkpoint-run-autonome.md),
+[Découper le backlog en versions](20260824204751403_preparation-lots-versions-coherence.md).
+Voisine en idée : [Proposer la version d'une fiche](../20261008192643426_proposeur-version-sprint-aware.md)
 propose un numéro par fiche, pas la coupe.
 
 ## Critères d'acceptation
@@ -141,22 +141,22 @@ pnpm --dir products/mega-city test -- \
 
 - Volet a livré le 2026-11-17. Critères prouvés par ezk-reviewer (GO) : `lots[]` porte `nom`, `milestones[]`, `dateEtiquette` (v0.22.0 daté, v0.23/v0.24 `null`) ; `prochaineCoupe.nombre` = 98 = la commande git ; `gate` et `carnet` repris ou `null` ; `board show` n'écrit rien et le calcul vit dans `core/coupe.ts` ; projet sans étiquette → `null`/`[]` ; `schema_version` 1, exemple = sortie réelle. Choix gardés : `livrees` reprend tout ajout à `done/` (closes comprises), `nombre` vaut 0 avec une étiquette et rien depuis. Corrigé après revue : un verdict de release illisible est écarté au lieu de faire tomber le board. Volet b reste à faire.
 
-- Origine : [la carte des écarts maquette ↔ code ↔ backlog du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : [la carte des écarts maquette ↔ code ↔ backlog du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart A7.
 - Décision du PO du 14 novembre (n° 2) : le nom en clair d'une version vit dans le front-matter de
   l'objet version ; pas de `milestones.yml` ; `PLAN.md` n'est pas la source des noms. À confirmer par
   le panel adverse avant d'être écrite en ADR ; le panel de la coupe en vérifie la forme.
-- Dépend de [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et de
-  [`ezk backlog version tag <v>`](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md). Le dossier
+- Dépend de [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et de
+  [`ezk backlog version tag <v>`](../20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md). Le dossier
   du 10 novembre n'est pas committé (autre worktree). Le volet a n'attend ni l'un ni l'autre.
 - Trois corrections de la contestation du 14 novembre. `ezk backlog version tag --dry-run` n'existe
   pas : les verbes sont `list`, `check`, `ready`, `close`, `freeze`, `unfreeze`, `diff`
   (`backlog-version.ts:45`). muti a des lots pleins et aucun sprint. Committer le dossier est un geste.
-- Fiche sœur : [Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md)
+- Fiche sœur : [Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md)
   porte la même décision sur le nom, côté objectif.
 - Risques : « depuis la dernière étiquette » se calcule par git (fiches ajoutées à `done/` après le
   commit étiqueté), un déplacement tardif de fiche fausse le compte ; `numeroPropose` reste `null`
   tant que la règle n'est pas écrite (ADR-0083 : le numéro s'incrémente seul, dans l'ordre).
-- ADR : [ADR-0083](../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md) ;
-  [ADR-0080](../products/mega-city/docs/adr/0080-checkpoint-de-version.md) ; [ADR-0070](../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) ;
-  [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+- ADR : [ADR-0083](../../products/mega-city/docs/adr/0083-version-etiquette-milestone-unite-de-preparation.md) ;
+  [ADR-0080](../../products/mega-city/docs/adr/0080-checkpoint-de-version.md) ; [ADR-0070](../../products/mega-city/docs/adr/0070-le-tirage-reste-dans-la-version-en-cours.md) ;
+  [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).

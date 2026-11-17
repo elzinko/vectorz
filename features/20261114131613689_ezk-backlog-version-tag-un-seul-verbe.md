@@ -59,7 +59,7 @@ Un seul verbe, POC d'abord, qui compose ce qui existe.
    livrées sans `version:` dont le commit de livraison suit la dernière étiquette `v*`, groupées par
    objectif (complet ou partiel), plus les correctifs. Le calcul vit une fois, dans le cœur pur.
    `ezk board show --json` lira le même calcul pour son bloc `versions.prochaineCoupe` (voir
-   [Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md)).
+   [Les versions publiées comme coupes](done/20261114131612759_versions-publiees-comme-coupes.md)).
 2. **Le numéro proposé.** Sans numéro imposé : patch si correctifs seuls, mineure sinon, majeure sur
    `--major` seulement.
 3. **La gate exigée.** Le verbe refuse si `ezk release <v>` n'est pas GO sur HEAD, avec la règle
@@ -139,7 +139,7 @@ Aucune preuve d'écran : la fiche change un verbe, pas un écran.
   reste P1 parce que la page Versions repose sur ce verbe.
 - Décision du PO du 14 novembre (à confirmer par le panel adverse avant d'être écrite en ADR) : le
   nom en clair d'une version vit dans le front-matter de la version elle-même, pas dans `PLAN.md`.
-  Elle est portée par [Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md)
+  Elle est portée par [Les versions publiées comme coupes](done/20261114131612759_versions-publiees-comme-coupes.md)
   et [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md). Ce verbe
   pose le numéro, pas le nom.
 - Fiches livrées dont le code bouge ou disparaît :

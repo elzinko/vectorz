@@ -188,7 +188,7 @@ Rien ne se perd : chaque page de la méthode a son remplaçant avant le retrait.
 | Page de la méthode (`ezk board open`) | Dans mission control | Fiche |
 |---|---|---|
 | Avancement : fiches, plan, versions | vue d'ensemble, Fiches | déjà là |
-| Les coupes, la prochaine coupe, les objectifs nommés (`coupes[]`, `prochaineCoupe`, `milestones[]` v2 — [ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), amendement du 2026-11-14) | Versions, Objectifs | [les versions publiées](../../features/20261114131612759_versions-publiees-comme-coupes.md), [les objectifs publiés](../../features/done/20261114131612572_objectifs-publies-comme-objets.md) |
+| Les coupes, la prochaine coupe, les objectifs nommés (`coupes[]`, `prochaineCoupe`, `milestones[]` v2 — [ADR-0088](../../products/mega-city/docs/adr/0088-deux-plans-milestone-unite-du-lancement-version-coupe.md), amendement du 2026-11-14) | Versions, Objectifs | [les versions publiées](../../features/done/20261114131612759_versions-publiees-comme-coupes.md), [les objectifs publiés](../../features/done/20261114131612572_objectifs-publies-comme-objets.md) |
 | Choix du projet, config en lecture | sélecteur de projet, Configuration | déjà là |
 | Le pouce de revue | la fenêtre d'une fiche | [la commande](../../features/done/20261102123552181_pouce-de-revue-par-une-commande-ezk.md), puis [le bouton](../../features/done/20261102151630248_mission-control-pose-le-pouce-de-revue.md) |
 | Pilotage et historique des runs | une vue « Pilotage » | [pilotage](../../features/done/20261102123552182_mission-control-montre-le-pilotage.md) |
