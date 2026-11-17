@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117135600942_chargement-des-cartes-re-tente-avec-mesure.md](../20261117135600942_chargement-des-cartes-re-tente-avec-mesure.md)
+> 🗎 Rendu de la fiche [features/20261117135600942_chargement-des-cartes-re-tente-avec-mesure.md](../done/20261117135600942_chargement-des-cartes-re-tente-avec-mesure.md)
 
 # 20261117135600942 — Le chargement des cartes re-tente avec mesure, puis dit pourquoi il s'arrête
 

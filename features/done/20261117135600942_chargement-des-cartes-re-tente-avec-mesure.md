@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, carte]
-status: ready
-pr:
+status: shipped
+pr: "local (cf5fe442)"
 evidence: none # pas de changement visible tant que le daemon répond
 created: 2026-11-17
 ---
@@ -56,5 +56,5 @@ cd products/cop1/packages/web && pnpm exec vitest run src/board/ProcessMap.test.
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés par des tests à horloge simulée. Vérifié dans le navigateur : les deux cartes chargent sur le daemon réel. Reste ouvert, non bloquant : une réponse HTTP illisible est dite « injoignable » alors que le serveur a répondu (comportement hérité).
 
 
-- Origine : [rétro du sprint 4 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-4-petites-reparations.md),
+- Origine : [rétro du sprint 4 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-4-petites-reparations.md),
   proposition 3, retenue par délégation du PO absent.
