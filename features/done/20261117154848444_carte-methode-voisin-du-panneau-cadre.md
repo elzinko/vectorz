@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [carte, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (320518f1)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -27,7 +27,7 @@ une brique.
 ## Contexte / Problème
 
 Suite de la fiche
-[La carte de la méthode se déplace sur la brique choisie par la recherche](done/20261117154145517_carte-methode-cadre-la-brique-cherchee.md).
+[La carte de la méthode se déplace sur la brique choisie par la recherche](20261117154145517_carte-methode-cadre-la-brique-cherchee.md).
 En parcourant les voisins de proche en proche, on perd la brique choisie de vue.
 
 ## Proposition
@@ -58,7 +58,7 @@ sur `ezk-backlog`.
 
 | Avant le clic : `ezk-sprint` choisi, `ezk-backlog` dans le panneau | Après le clic sur `ezk-backlog` : la carte vient sur lui |
 |---|---|
-| ![avant](../docs/pr-evidence/20261117154848444/voisin-before.jpg) | ![après](../docs/pr-evidence/20261117154848444/voisin-after.jpg) |
+| ![avant](../../docs/pr-evidence/20261117154848444/voisin-before.jpg) | ![après](../../docs/pr-evidence/20261117154848444/voisin-after.jpg) |
 
 Avant ce changement, le clic choisissait `ezk-backlog` sans bouger la carte. Le test
 `GraphMap.focus.test.tsx` l'a montré rouge avant le correctif : aucun cadrage demandé.
