@@ -206,3 +206,31 @@ describe('GraphMap — chercher une brique (fiche 20261117153250174)', () => {
     expect(panel().textContent).toContain('clique une brique');
   });
 });
+
+describe('GraphMap — la recherche se vide au changement de brique (fiche 20261117161542365)', () => {
+  const field = (): HTMLInputElement => screen.getByRole('searchbox', { name: 'chercher une brique' });
+  const brick = (name: string): HTMLElement => screen.getByText(name, { selector: '.gm-brique-nom' }).closest('.gm-brique') as HTMLElement;
+
+  async function openWithQuery(): Promise<void> {
+    serve({ state: 'ok', graph: example });
+    render(<GraphMap project={project} initialLevel={2} />);
+    await screen.findByText('ezk forge integrate', { selector: '.gm-brique-nom' });
+    fireEvent.change(field(), { target: { value: 'forge' } });
+    expect(screen.getByRole('list', { name: 'briques trouvées' })).toBeTruthy();
+  }
+
+  it('un clic sur une brique de la carte vide le champ et retire les propositions', async () => {
+    await openWithQuery();
+    fireEvent.click(brick('ezk help'));
+    expect(field().value).toBe('');
+    expect(screen.queryByRole('list', { name: 'briques trouvées' })).toBeNull();
+  });
+
+  it('un clic dans le vide vide aussi le champ', async () => {
+    await openWithQuery();
+    fireEvent.click(brick('ezk help'));
+    fireEvent.change(field(), { target: { value: 'forge' } });
+    fireEvent.click(document.querySelector('.react-flow__pane') as HTMLElement);
+    expect(field().value).toBe('');
+  });
+});

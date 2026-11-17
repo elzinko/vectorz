@@ -35,8 +35,8 @@ Le champ de recherche se vide à chaque changement de la brique choisie.
 
 ## Critères d'acceptation
 
-- [ ] Après une saisie, un clic sur une brique de la carte vide le champ et retire les propositions.
-- [ ] Un clic dans le vide, qui retire la sélection, vide aussi le champ.
+- [x] Après une saisie, un clic sur une brique de la carte vide le champ et retire les propositions.
+- [x] Un clic dans le vide, qui retire la sélection, vide aussi le champ.
 
 ## Comment vérifier
 
@@ -47,3 +47,7 @@ cd products/cop1/packages/web && pnpm exec vitest run src/board/GraphMap.test.ts
 ## Notes / décisions
 
 - Créée et tirée au sprint 15 du 17 novembre, par délégation du PO absent.
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés par des tests
+d'écran. Sa réserve P3 est gardée telle quelle. Le vidage dans le choix de la recherche reste utile
+quand on rechoisit la brique déjà choisie, et la revue le confirme.

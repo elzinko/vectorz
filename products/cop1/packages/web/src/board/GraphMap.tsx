@@ -172,8 +172,18 @@ function Flow({ contract, initialLevel, selection, setSelection, focus, clearFoc
 }
 
 /** Le champ de recherche du panneau (fiche 20261117153250174) : choisir une brique par son nom. */
-function BrickSearchField({ contract, onChoose }: { contract: GraphCheck; onChoose: (id: string) => void }): JSX.Element {
+function BrickSearchField({
+  contract,
+  selection,
+  onChoose,
+}: {
+  contract: GraphCheck;
+  selection: string | undefined;
+  onChoose: (id: string) => void;
+}): JSX.Element {
   const [query, setQuery] = useState('');
+  // Le champ se vide dès que la brique choisie change, quel que soit le geste (fiche 20261117161542365).
+  useEffect(() => setQuery(''), [selection]);
   const { matches, total } = useMemo(() => searchBricks(contract, query), [contract, query]);
   const choose = (id: string): void => {
     onChoose(id);
@@ -232,7 +242,7 @@ function NeighborPanel({
   const name = selection === undefined ? undefined : contract.nodes.find((n) => `${n.kind}:${n.id}` === selection)?.id;
   return (
     <aside className="gm-panneau" aria-label="Voisins de la brique">
-      <BrickSearchField contract={contract} onChoose={onChoose} />
+      <BrickSearchField contract={contract} selection={selection} onChoose={onChoose} />
       {name === undefined ? (
         <p>clique une brique pour voir ses voisins</p>
       ) : (
