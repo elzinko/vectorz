@@ -183,8 +183,17 @@ ship_local() {
   base_before="$(git_c rev-parse HEAD)"
   git_c merge --squash "$branch" >/dev/null
   git_c commit -q -m "$subject" -m "$body"
+  # L'identifiant du commit créé, lu tout de suite et vérifié par son sujet : une autre session peut
+  # committer sur la même base juste après, et lire HEAD plus tard donnerait SON commit
+  # (fiche 20261117150620910). L'appelant reprend la ligne INTEGRATED pour livrer la fiche.
+  local integrated
+  integrated="$(git_c rev-parse --short HEAD)"
+  if [[ "$(git_c log -1 --format=%s "$integrated")" != "$subject" ]]; then
+    integrated="$(git_c log -20 --format='%h%x09%s' | awk -F'\t' -v s="$subject" '$2 == s { print $1; exit }')"
+  fi
   prune_absorbed_branches "$base_before"
   install_if_lockfile_changed "$base_before"
+  [[ -n "$integrated" ]] && echo "INTEGRATED: $integrated $branch"
   if has_remote; then
     # On rafraîchit les refs partagées. Si le remote ne répond pas, on ne l'avale pas en
     # silence (comme ship_remote) : on signale que le réalignement partagé n'est pas

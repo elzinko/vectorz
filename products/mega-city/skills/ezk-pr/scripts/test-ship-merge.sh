@@ -424,6 +424,16 @@ for t in git bash dirname sed grep head cat; do ln -sf "$(command -v $t)" "$EMPT
 ERR12E="$(PATH="$EMPTY_BIN" bash "$SCRIPT" --local --repo "$R12E" --branch feat/p --base main --subject "feat: p" --body b 2>&1 >/dev/null)" && ok "pnpm introuvable : intégration réussie" || fail "échec sans pnpm : $ERR12E"
 grep -qF "pnpm introuvable" <<<"$ERR12E" && ok "pnpm introuvable dit en une ligne" || fail "silence sans pnpm : $ERR12E"
 
+# --- Cas 13 : l'intégration imprime le commit qu'elle a créé (fiche 20261117150620910) -------
+echo "=== Cas 13 — INTEGRATED: <sha> <branche>, le commit de l'intégration ==="
+R13="$WORK/repo-sha"; lock_repo "$R13" feat/i 0
+OUT13="$(EZK_INTEGRATE_NO_INSTALL=1 bash "$SCRIPT" --local --repo "$R13" --branch feat/i --base main --subject "feat: i" --body b 2>/dev/null)"
+SHA13="$(sed -n 's/^INTEGRATED: \([0-9a-f]*\) feat\/i$/\1/p' <<<"$OUT13")"
+[[ -n "$SHA13" ]] && ok "une ligne INTEGRATED: <sha> feat/i est imprimée" || fail "pas de ligne INTEGRATED : $OUT13"
+# Une autre session committe juste après : le commit annoncé reste celui de l'intégration.
+echo y > "$R13/y.txt"; git -C "$R13" add y.txt; git -C "$R13" commit -qm "docs: autre session"
+[[ -n "$SHA13" && "$(git -C "$R13" log -1 --format=%s "$SHA13")" == "feat: i" ]] && ok "le sha annoncé est le commit de l'intégration, pas le dernier de main" || fail "sha annoncé ($SHA13) n'est pas le squash"
+
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
   exit 1

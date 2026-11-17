@@ -37,9 +37,9 @@ après l'intégration ; l'autre session avait committé entre-temps. Corrigé à
 
 ## Critères d'acceptation
 
-- [ ] Une intégration locale réussie imprime `INTEGRATED: <sha> <branche>`, où `<sha>` est son commit.
-- [ ] Le skill ezk-sprint dit d'utiliser cette ligne pour le `--pr "local (<sha>)"` de la livraison.
-- [ ] Un test de `test-ship-merge.sh` vérifie la ligne, même quand un autre commit arrive juste après.
+- [x] Une intégration locale réussie imprime `INTEGRATED: <sha> <branche>`, où `<sha>` est son commit.
+- [x] Le skill ezk-sprint dit d'utiliser cette ligne pour le `--pr "local (<sha>)"` de la livraison.
+- [x] Un test de `test-ship-merge.sh` vérifie la ligne, même quand un autre commit arrive juste après.
 
 ## Comment vérifier
 
@@ -48,6 +48,9 @@ bash products/mega-city/skills/ezk-pr/scripts/test-ship-merge.sh
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés ; `forge integrate` relaie bien la ligne. Restes ouverts, non bloquants : deux intégrations concurrentes au sujet identique, ou un sujet avec une tabulation ou un espace final, peuvent tromper ou taire la ligne ; le chemin push-ff n'imprime rien, puisqu'il ne crée pas de commit.
+
 
 - Origine : [rétro du sprint 8 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-8-reponse-illisible.md),
   proposition 1, retenue par délégation du PO absent.
