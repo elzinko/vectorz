@@ -33,15 +33,27 @@ journal (ADR-0068). ADR-079 a séparé le run de la session et posé un journal 
 - Le compte rendu `docs/sprints/2026-11-17-sprint-mission-control-lit-les-objectifs-et-les-version.md`
   est sorti non daté.
 
+## Cause trouvée (groom du 17 novembre, 17 h 20)
+
+- Le `.mcp.json` du dossier principal lance le serveur `supervision` avec
+  `SUPERVISION_PROJECT_ROOT=/Users/elzinko/git/bacasable/vectorz`, sans `SUPERVISION_MULTI_SESSION`.
+- `resolveSupervisionRoot` (`products/mega-city/src/supervision/project-root.ts:166-184`) prend alors
+  cette racine explicite comme base. Le mode multi-sessions (ADR-079 §D5) ne fait que sauter la
+  normalisation vers l'arbre principal : avec une racine explicite, la base reste le dossier principal.
+- Toutes les sessions écrivent donc dans le même `.supervision/runs/`, et `run_start` refuse le second
+  run (`products/mega-city/src/supervision/runtime.ts:300`).
+
 ## Proposition
 
-Trouver d'abord pourquoi le journal du worktree voisin bloque celui-ci : le serveur lit-il le journal
-du dossier principal plutôt que celui du worktree appelant ? Puis faire qu'un `run_start` depuis un
-autre worktree ouvre un run distinct, sans toucher au run de la voisine.
+1. En mode multi-sessions, la base est le worktree de la session, même quand `SUPERVISION_PROJECT_ROOT`
+   désigne le dépôt : la racine explicite dit **quel dépôt**, pas **quel worktree**.
+2. `ezk supervision link` écrit `SUPERVISION_MULTI_SESSION=1` dans l'entrée qu'il pose. Changer le
+   `.mcp.json` existant de vectorz reste un geste du PO : il touche toutes les sessions du dépôt.
 
 ## Critères d'acceptation
 
-- [ ] Deux `run_start` depuis deux worktrees du même dépôt sont acceptés et donnent deux `run_id`.
+- [ ] En mode multi-sessions, deux `run_start` depuis deux worktrees du même dépôt, avec la même
+      `SUPERVISION_PROJECT_ROOT`, sont acceptés et donnent deux `run_id`.
 - [ ] `run_finished` d'une session ne ferme jamais le run de l'autre.
 - [ ] Le compte rendu d'un sprint joué en parallèle d'une autre session est daté.
 
@@ -52,6 +64,9 @@ pnpm --dir products/mega-city test -- src/supervision   # le cas « deux worktre
 ```
 
 ## Notes / décisions
+
+- 2026-11-17 — groomée par le run autonome : cause localisée en lecture seule, rien de modifié dans la
+  configuration. Reste `idea` : la proposition 2 attend l'accord du PO sur le `.mcp.json`.
 
 - Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P2.
 - Priorité P2 tranchée par ezk-pm le 17 novembre, par délégation du PO.
