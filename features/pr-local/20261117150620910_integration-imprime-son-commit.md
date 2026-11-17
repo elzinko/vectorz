@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117150620910_integration-imprime-son-commit.md](../20261117150620910_integration-imprime-son-commit.md)
+> 🗎 Rendu de la fiche [features/20261117150620910_integration-imprime-son-commit.md](../done/20261117150620910_integration-imprime-son-commit.md)
 
 # 20261117150620910 — L'intégration locale imprime l'identifiant de son commit
 

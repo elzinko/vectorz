@@ -8,8 +8,8 @@ product: mega-city
 milestone:
 version:
 labels: [forge, integration]
-status: ready
-pr:
+status: shipped
+pr: "local (59224ba8)"
 evidence: none # sortie de commande
 created: 2026-11-17
 ---
@@ -52,5 +52,5 @@ bash products/mega-city/skills/ezk-pr/scripts/test-ship-merge.sh
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés ; `forge integrate` relaie bien la ligne. Restes ouverts, non bloquants : deux intégrations concurrentes au sujet identique, ou un sujet avec une tabulation ou un espace final, peuvent tromper ou taire la ligne ; le chemin push-ff n'imprime rien, puisqu'il ne crée pas de commit.
 
 
-- Origine : [rétro du sprint 8 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-8-reponse-illisible.md),
+- Origine : [rétro du sprint 8 du 17 novembre](../../docs/captures/2026-11-17-retro-sprint-8-reponse-illisible.md),
   proposition 1, retenue par délégation du PO absent.
