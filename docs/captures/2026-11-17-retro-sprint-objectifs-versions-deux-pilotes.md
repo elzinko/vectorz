@@ -85,7 +85,7 @@ Les notes du carnet ne portent pas sur ce sprint : elles attendent une rétro co
 
 - [Le portier d'ezk-sprint dit quand une copie voisine est tenue par une session active](../../features/20261117141828100_portier-dit-copie-tenue-par-session-active.md) — P1.
 - [Deux sessions qui pilotent le même dépôt ouvrent chacune leur run de supervision](../../features/20261117141828101_un-run-de-supervision-par-session.md) — P2.
-- [`ezk run context` avertit quand le dossier de la session n'est pas dans le dépôt visé](../../features/20261117141828102_run-context-avertit-dossier-hors-depot.md) — P1.
+- [`ezk run context` avertit quand le dossier de la session n'est pas dans le dépôt visé](../../features/done/20261117141828102_run-context-avertit-dossier-hors-depot.md) — P1.
 - Même passe, hors rétro : la fiche [un seul verbe pour la coupe](../../features/done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md) est groomée et découpée ; sa sœur [Retirer les anciens verbes de coupe](../../features/done/20261117141828103_retirer-anciens-verbes-de-coupe.md) porte le retrait.
 
 ## 7 · Ce qui reste au PO

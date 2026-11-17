@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117141828102_run-context-avertit-dossier-hors-depot.md](../20261117141828102_run-context-avertit-dossier-hors-depot.md)
+> 🗎 Rendu de la fiche [features/20261117141828102_run-context-avertit-dossier-hors-depot.md](../done/20261117141828102_run-context-avertit-dossier-hors-depot.md)
 
 # 20261117141828102 — `ezk run context` avertit quand le dossier de la session n'est pas dans le dépôt visé
 

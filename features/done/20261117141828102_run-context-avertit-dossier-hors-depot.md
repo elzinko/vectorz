@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [run, product-build]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (852a60aa)"
 evidence: none # une ligne de sortie de commande, aucun écran modifié
 created: 2026-11-17
 ---
@@ -54,6 +54,6 @@ ezk run context --mode auto --delivery per-feature --tokens lean                
 
 - Livrée le 2026-11-17, écrite par l'orchestrateur (story courte du lot). Critères prouvés par ezk-reviewer (GO) : depuis /tmp, une ligne « Dossier … hors du dépôt visé … déplace la session » et code 0 ; depuis le dépôt ou un worktree, sortie inchangée (test d'égalité, 4 cas sur dépôts jetables). Le routeur `ezk` passe le vrai dossier de l'utilisateur par `INIT_CWD`.
 
-- Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P3.
+- Origine : [rétro du 17 novembre, deux pilotes sur un dépôt](../../docs/captures/2026-11-17-retro-sprint-objectifs-versions-deux-pilotes.md), proposition P3.
 - Priorité remontée en P1 par ezk-pm le 17 novembre, par délégation du PO : le coût vécu dépasse celui de la proposition P2.
 - Mesure (retirabilité) : 0 échec de démarrage de l'agent développeur sur les 5 prochains runs.
