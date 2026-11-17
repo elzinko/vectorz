@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md](../20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md)
+> 🗎 Rendu de la fiche [features/20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md](../done/20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md)
 
 # 20261117140305053 — Les recettes entrent dans le graphe de la méthode et sur sa carte
 

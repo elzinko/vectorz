@@ -8,8 +8,8 @@ product: mega-city
 milestone: board
 version:
 labels: [carte, contrat, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (2200fa27)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -29,7 +29,7 @@ mission control.
 ## Contexte / Problème
 
 Demande du PO, le 2026-11-17 : voir tout ce qui est relié dans la méthode. La fiche
-[Le graphe de la méthode en un contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md)
+[Le graphe de la méthode en un contrat compilé](../20261114131614982_graphe-de-la-methode-en-contrat-compile.md)
 prévoit que « les recettes sont des nœuds `recipe`, leurs `composes:` des arêtes compose ; une recette
 que rien ne cite figure dans `orphans` ». C'est ce critère, découpé, plus son affichage sur la carte.
 
@@ -69,8 +69,8 @@ cd products/cop1/packages/web && pnpm exec vitest run
 
 | Vue | Avant (main) | Après (branche) |
 |---|---|---|
-| Carte de la méthode, vue d'ensemble | ![avant](../docs/pr-evidence/20261117140305053/carte-recettes-before.png) | ![après](../docs/pr-evidence/20261117140305053/carte-recettes-after.png) |
-| Clic sur la recette brancher-domaine-vercel | — | ![voisins](../docs/pr-evidence/20261117140305053/recette-voisins-after.png) |
+| Carte de la méthode, vue d'ensemble | ![avant](../../docs/pr-evidence/20261117140305053/carte-recettes-before.png) | ![après](../../docs/pr-evidence/20261117140305053/carte-recettes-after.png) |
+| Clic sur la recette brancher-domaine-vercel | — | ![voisins](../../docs/pr-evidence/20261117140305053/recette-voisins-after.png) |
 
 ## Notes / décisions
 

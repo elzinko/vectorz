@@ -3,7 +3,7 @@
 **Statut :** Accepté
 **Date :** 2026-11-17
 **Deciders :** PO, par délégation pour le run autonome du 2026-11-17
-**Fiche :** [`20261117140305053`](../../../../features/20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md)
+**Fiche :** [`20261117140305053`](../../../../features/done/20261117140305053_recettes-dans-le-graphe-et-sur-la-carte.md)
 **Amende :** [ADR-0089](0089-les-commandes-ezk-entrent-dans-le-graphe.md) — les sortes passent à huit ; les verbes restent à six.
 
 ## En clair
