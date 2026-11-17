@@ -90,3 +90,25 @@ describe('GET /api/process/<projet> — le daemon câblé', () => {
     expect(JSON.parse(res.body)).toEqual({ error: 'projet inconnu : inconnu' });
   });
 });
+
+describe('GET /api/graph/<projet> (fiche 20261117114544792)', () => {
+  let server: HttpServer;
+  beforeEach(() => {
+    server = new HttpServer();
+  });
+  afterEach(async () => {
+    await server.stop();
+  });
+
+  it('rend le graphe du projet, tel que le daemon le tient ; sans gestionnaire : 503', async () => {
+    await server.start(PORT);
+    expect((await get(PORT, '/api/graph/vectorz')).status).toBe(503);
+    await server.stop();
+    server = new HttpServer();
+    server.setGraphHandler({ read: (projet) => ({ status: 200, body: { state: 'loading', projet } }) });
+    await server.start(PORT);
+    const res = await get(PORT, '/api/graph/vectorz');
+    expect(res.status).toBe(200);
+    expect(JSON.parse(res.body)).toEqual({ state: 'loading', projet: 'vectorz' });
+  });
+});

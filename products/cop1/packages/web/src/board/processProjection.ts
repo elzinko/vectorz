@@ -5,9 +5,10 @@
  * Les positions et tailles ne dépendent PAS du niveau : changer de niveau n'ajoute ou ne retire que du
  * contenu, jamais ne déplace la caméra (règle ux/no-layout-shift).
  */
+import { levelForZoom as sharedLevelForZoom, type ZoomLevel } from './semanticZoom.js';
 import type { ProcessEtape, ProcessShow, ProcessSkill } from './processShow.js';
 
-export type ProcessLevel = 1 | 2 | 3;
+export type ProcessLevel = ZoomLevel;
 
 export interface FlowNode {
   id: string;
@@ -33,9 +34,6 @@ export interface FlowEdge {
  * zoom, leur détail quand une étape remplit à peu près l'écran.
  */
 export const ZOOM_THRESHOLDS = [0.4, 0.85] as const;
-/** Marge de chaque côté d'un seuil avant de changer de niveau. */
-const HYSTERESIS = 0.1;
-
 const STEP_W = 260;
 const STEP_H = 190;
 const GAP = 20;
@@ -46,22 +44,9 @@ const SKILL_GAP = 80;
 const skillId = (id: string): string => `skill:${id}`;
 const etapeId = (skill: string, etape: string): string => `etape:${skill}:${etape}`;
 
-function plainLevel(zoom: number): ProcessLevel {
-  if (zoom < ZOOM_THRESHOLDS[0]) return 1;
-  return zoom < ZOOM_THRESHOLDS[1] ? 2 : 3;
-}
-
-/**
- * Le niveau de détail pour un zoom. Avec un niveau précédent, on ne le quitte qu'une fois le seuil
- * franchi de 10 % : à ±5 % d'un seuil, la carte ne clignote pas d'un niveau à l'autre.
- */
-export function levelForZoom(zoom: number, previous?: ProcessLevel): ProcessLevel {
-  if (previous === undefined) return plainLevel(zoom);
-  let level = previous;
-  while (level < 3 && zoom > ZOOM_THRESHOLDS[level - 1]! * (1 + HYSTERESIS)) level = (level + 1) as ProcessLevel;
-  while (level > 1 && zoom < ZOOM_THRESHOLDS[level - 2]! * (1 - HYSTERESIS)) level = (level - 1) as ProcessLevel;
-  return level;
-}
+/** Le niveau de détail pour un zoom, avec les seuils de cette carte (mécanisme partagé : `semanticZoom.ts`). */
+export const levelForZoom = (zoom: number, previous?: ProcessLevel): ProcessLevel =>
+  sharedLevelForZoom(zoom, ZOOM_THRESHOLDS, previous);
 
 function skillSize(skill: ProcessSkill): { width: number; height: number } {
   const rows = Math.max(1, Math.ceil(skill.etapes.length / 2));

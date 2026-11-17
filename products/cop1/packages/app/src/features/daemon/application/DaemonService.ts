@@ -8,6 +8,7 @@ import { execEzkRunner } from '../../board/ezkExec.js';
 import { EzkLawSource } from '../../board/ezkLawSource.js';
 import { EzkRecipesSource } from '../../board/ezkRecipesSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
+import { EzkGraphSource } from '../../board/ezkGraphSource.js';
 import { EzkProcessShowSource } from '../../board/ezkProcessShowSource.js';
 import { EzkProcessSource } from '../../board/ezkProcessSource.js';
 import { MapsService } from '../../board/mapsService.js';
@@ -51,6 +52,7 @@ export class DaemonService {
   private ezkLawSource: EzkLawSource | null = null;
   private ezkRecipesSource: EzkRecipesSource | null = null;
   private ezkProcessShowSource: EzkProcessShowSource | null = null;
+  private ezkGraphSource: EzkGraphSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -168,6 +170,18 @@ export class DaemonService {
         const snap = this.processShowSource().get(root);
         if (snap.state === 'ok')
           return { status: 200, body: { state: 'ok', process: snap.process } };
+        if (snap.state === 'unavailable')
+          return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
+        return { status: 200, body: { state: 'loading' } };
+      },
+    });
+    // fiche 20261117114544792 — le graphe de la méthode, même motif que les étapes fines.
+    this.httpServer.setGraphHandler({
+      read: (projet) => {
+        const root = this.boardProjects(projectPath).find((p) => p.name === projet)?.root;
+        if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
+        const snap = this.graphSource().get(root);
+        if (snap.state === 'ok') return { status: 200, body: { state: 'ok', graph: snap.graph } };
         if (snap.state === 'unavailable')
           return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
         return { status: 200, body: { state: 'loading' } };
@@ -291,6 +305,11 @@ export class DaemonService {
   }
 
   /** La source des étapes fines (`ezk process show --json`), créée au premier besoin comme les autres. */
+  private graphSource(): EzkGraphSource {
+    this.ezkGraphSource ??= new EzkGraphSource({ command: this.ezkCommand });
+    return this.ezkGraphSource;
+  }
+
   private processShowSource(): EzkProcessShowSource {
     this.ezkProcessShowSource ??= new EzkProcessShowSource({ command: this.ezkCommand });
     return this.ezkProcessShowSource;

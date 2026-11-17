@@ -13,6 +13,7 @@ export const VIEW_IDS = [
   'timeline',
   'config',
   'process',
+  'graph',
   'maps',
   'law',
   'recipes',

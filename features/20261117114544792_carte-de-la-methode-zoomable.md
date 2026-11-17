@@ -54,15 +54,15 @@ la carte Process :
 
 ## Critères d'acceptation
 
-- [ ] Le groupe Méthode de mission control a une page « Carte de la méthode » qui lit
+- [x] Le groupe Méthode de mission control a une page « Carte de la méthode » qui lit
       `GET /api/graph/<projet>` ; sans contrat, elle dit pourquoi, et aucune brique n'est écrite en dur.
-- [ ] De loin, la carte montre les 7 familles avec leur compte et leurs liens comptés par verbe.
-- [ ] En s'approchant, chaque brique apparaît dans sa famille ; plus près, son détail.
-- [ ] Un clic sur une brique allume la brique et ses voisins directs, dessine leurs liens et estompe le
+- [x] De loin, la carte montre les 7 familles avec leur compte et leurs liens comptés par verbe.
+- [x] En s'approchant, chaque brique apparaît dans sa famille ; plus près, son détail.
+- [x] Un clic sur une brique allume la brique et ses voisins directs, dessine leurs liens et estompe le
       reste ; un second clic, ou un clic dans le vide, rétablit la carte.
-- [ ] Le niveau suit le zoom avec la même hystérésis que la carte Process, et changer de niveau ne
+- [x] Le niveau suit le zoom avec la même hystérésis que la carte Process, et changer de niveau ne
       déplace pas la caméra.
-- [ ] La projection est une fonction pure, testée sur un contrat réel.
+- [x] La projection est une fonction pure, testée sur un contrat réel.
 
 ## Comment vérifier
 
@@ -73,12 +73,38 @@ pnpm cop1:dev   # puis « Carte de la méthode » dans le groupe Méthode
 
 - vue carte-methode : http://localhost:5281/ puis « Carte de la méthode »
 
+**Avant / après** (règle `development/pr-before-after-media`), captures du 2026-11-17 :
+
+| Vue | Avant (main) | Après (branche) |
+|---|---|---|
+| Groupe Méthode | ![avant](../docs/pr-evidence/20261117114544792/carte-methode-before.png) | ![après](../docs/pr-evidence/20261117114544792/carte-methode-after.png) |
+| Zoom : chaque brique dans sa famille | — | ![briques](../docs/pr-evidence/20261117114544792/zoom-briques-after.png) |
+| Clic sur ezk-reviewer : ses voisins | — | ![voisins](../docs/pr-evidence/20261117114544792/selection-voisins-after.png) |
+
+L'« avant » montre la page Cartes : il n'y avait pas de carte de la méthode lisant les données, et
+l'ancienne carte interactive s'ouvrait vide.
+
 ## Glossaire
 
 - `brique` — un élément de la méthode : profil, compétence, agent, paquet, règle, outil ou commande.
 - `voisin` — une brique reliée directement à la brique choisie, dans un sens ou dans l'autre.
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.**
+
+- Revue adverse `ezk-reviewer` : GO, 6 critères prouvés. Vérifié dans le navigateur sur le daemon
+  réel : 7 familles au niveau 1 (zoom 0,13), 344 briques au niveau 2, clic sur `ezk-reviewer` →
+  25 liens dessinés, 311 briques estompées.
+- Corrigé après revue (P1) : `ezk graph check` sort en code 1 dès qu'un lien est cassé, tout en
+  rendant le graphe complet ; la source du daemon garde maintenant cette sortie au lieu d'afficher
+  « indisponible ».
+- Mécanisme partagé avec la carte Process : `semanticZoom.ts` (niveau dérivé du zoom) et
+  `useDaemonContract.ts` (chargement). Seuils de la carte de la méthode : 0,3 et 0,8.
+- Reste ouvert, non bloquant : au niveau 1 la sélection ne se voit pas ; au niveau 2 les libellés des
+  liens se chevauchent quand une brique en a beaucoup ; le web ne revalide pas les sortes du contrat
+  (le daemon le fait).
+
 
 - Créée le 2026-11-17 sur la demande du PO, en run autonome jusqu'à 17 h 31 (décisions par délégation).
 - Pas de maquette d'abord : le PO a demandé une implémentation ; la page Process de la maquette porte

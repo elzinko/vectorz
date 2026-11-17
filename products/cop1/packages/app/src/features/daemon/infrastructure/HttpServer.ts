@@ -96,6 +96,7 @@ export class HttpServer {
   private lawHandler: LawHandler | null = null;
   private recipesHandler: ProjectReadHandler | null = null;
   private processShowHandler: ProjectReadHandler | null = null;
+  private graphHandler: ProjectReadHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -166,6 +167,11 @@ export class HttpServer {
   /** fiche 20261110191135802 — GET /api/process/<projet> : les étapes fines de chaque skill. */
   setProcessShowHandler(handler: ProjectReadHandler): void {
     this.processShowHandler = handler;
+  }
+
+  /** fiche 20261117114544792 — GET /api/graph/<projet> : les briques de la méthode et leurs liens. */
+  setGraphHandler(handler: ProjectReadHandler): void {
+    this.graphHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -329,6 +335,12 @@ export class HttpServer {
         req.url,
         res,
       );
+      return;
+    }
+
+    // fiche 20261117114544792 — le graphe de la méthode, servi depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/graph/')) {
+      this.handleProjectRead('/api/graph/', 'graph_unavailable', this.graphHandler, req.url, res);
       return;
     }
 

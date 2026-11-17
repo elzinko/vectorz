@@ -447,3 +447,36 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .pm-level-2 .react-flow__edge-text { font-size: 16px; }
 .pm-level-2 .pm-etape-titre { font-size: 20px; }
 .pm-level-2 .pm-etape-clair { font-size: 15px; }
+
+/* Carte de la méthode zoomable (fiche 20261117114544792) : couleur par famille, texte qui grandit de loin. */
+.gm { padding: 14px 16px; margin-bottom: 12px; }
+.gm-canvas { height: 620px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.gm .react-flow__node-famille, .gm .react-flow__node-brique { font-size: 12px; color: var(--fg); }
+.gm-fam-skill { --fam: var(--accent); --fam-soft: var(--accent-soft); }
+.gm-fam-agent { --fam: var(--go); --fam-soft: var(--go-soft); }
+.gm-fam-rule { --fam: var(--warn); --fam-soft: var(--warn-soft); }
+.gm-fam-bundle { --fam: var(--groom); --fam-soft: var(--groom-soft); }
+.gm-fam-profile { --fam: var(--idea); --fam-soft: var(--idea-soft); }
+.gm-fam-tool { --fam: var(--faint); --fam-soft: var(--surface-2); }
+.gm-fam-command { --fam: var(--crit); --fam-soft: var(--crit-soft); }
+.gm-famille { width: 100%; height: 100%; padding: 16px 20px; border-radius: 18px; border: 3px solid var(--fam); background: var(--fam-soft); }
+.gm-famille-nom { font-size: 40px; font-weight: 600; line-height: 1.1; }
+.gm-famille-compte { font-size: 28px; font-family: var(--font-data); color: var(--muted); }
+.gm-famille-interne { font-size: 16px; color: var(--muted); }
+.gm-brique { width: 100%; height: 100%; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--fam); background: var(--surface); overflow: hidden; }
+.gm-brique-nom { font-size: 24px; font-weight: 600; line-height: 1.15; overflow-wrap: anywhere; }
+.gm-brique-fichier { font-size: 16px; color: var(--muted); font-family: var(--font-data); margin-top: 4px; overflow-wrap: anywhere; }
+.gm-brique-liens { font-size: 16px; margin-top: 2px; }
+.gm-brique.gm-self { background: var(--fam-soft); box-shadow: 0 0 0 5px var(--fam); }
+.gm-brique.gm-neighbor { background: var(--fam-soft); }
+.gm-brique.gm-dim { opacity: 0.2; }
+/* De loin, la carte entière s'affiche vers 0,12 : un titre de 120 px s'y lit comme un texte de 14 px. */
+.gm-level-1 .gm-famille-nom { font-size: 120px; }
+.gm-level-1 .gm-famille-compte { font-size: 80px; }
+.gm-level-1 .gm-famille-interne { font-size: 44px; }
+.gm-level-1 .react-flow__edge-text { font-size: 52px; }
+.gm-level-1 .react-flow__edge-path { stroke-width: 6; }
+.gm-level-2 .gm-famille-nom { font-size: 80px; }
+.gm-level-2 .gm-famille-compte { font-size: 48px; }
+.gm-level-2 .react-flow__edge-text { font-size: 30px; }
+.gm-level-2 .react-flow__edge-path { stroke-width: 4; }

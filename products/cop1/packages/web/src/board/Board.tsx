@@ -22,6 +22,7 @@ import { PilotageView } from './PilotageView.js';
 import { LawView } from './LawView.js';
 import { RecipesView } from './RecipesView.js';
 import { MapsView } from './MapsView.js';
+import { GraphMap } from './GraphMap.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { TimelineView } from './TimelineView.js';
@@ -57,6 +58,7 @@ const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les proj
 
 const METHOD_NAV: NavItem[] = [
   { id: 'process', icon: '❖', label: 'Process' },
+  { id: 'graph', icon: '◎', label: 'Carte de la méthode' },
   { id: 'law', icon: '§', label: 'Loi' },
   { id: 'recipes', icon: '✦', label: 'Recettes' },
   { id: 'maps', icon: '▤', label: 'Cartes' },
@@ -426,6 +428,8 @@ export function Board(): JSX.Element {
               }
               onGotoTool={() => go('tool')}
             />
+          ) : view === 'graph' ? (
+            <GraphMap project={project} />
           ) : view === 'law' ? (
             <LawView project={project} />
           ) : view === 'recipes' ? (

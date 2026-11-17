@@ -59,7 +59,9 @@ function execRunner(command: readonly string[]): EzkRunner {
         program,
         [...baseArgs, ...args],
         { encoding: 'utf8', timeout: EXEC_TIMEOUT_MS, maxBuffer: MAX_OUTPUT_BYTES },
-        (error, stdout) => (error ? reject(error) : resolve(stdout)),
+        // La sortie reste attachée à l'erreur : une commande qui signale un problème par son code
+        // de sortie peut avoir rendu un résultat complet (`ezk graph check` et ses liens cassés).
+        (error, stdout) => (error ? reject(Object.assign(error, { stdout })) : resolve(stdout)),
       );
     });
 }

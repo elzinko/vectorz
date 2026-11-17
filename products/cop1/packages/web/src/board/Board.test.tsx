@@ -32,6 +32,12 @@ describe('Board — la coque', () => {
     expect(screen.queryByText('tranche à venir')).toBeNull();
   });
 
+  it('route vers la Carte de la méthode, dans le groupe Méthode (fiche 20261117114544792)', async () => {
+    await renderBoardOn();
+    await userEvent.click(screen.getByRole('button', { name: 'Carte de la méthode' }));
+    expect(screen.getByRole('heading', { name: /^Carte de la méthode — / })).toBeTruthy();
+  });
+
   it('le bouton ⚙ ouvre la configuration de l’outil', async () => {
     await renderBoardOn();
     await userEvent.click(screen.getByRole('button', { name: "Configuration de l'outil" }));

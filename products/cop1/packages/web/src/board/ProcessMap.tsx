@@ -18,56 +18,24 @@ import {
   type Node,
   type NodeProps,
 } from '@xyflow/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { levelForZoom, projectProcessToFlow, type ProcessLevel } from './processProjection.js';
 import type { ProcessShow } from './processShow.js';
 import type { BoardProject } from './types.js';
-
-type MapState = { kind: 'loading' } | { kind: 'ok'; contract: ProcessShow } | { kind: 'unavailable'; reason: string };
-
-/** Délai avant de redemander le process quand le daemon le lit encore. */
-const LOADING_RETRY_MS = 2000;
-
-function useProcessContract(projectName: string): MapState {
-  const [state, setState] = useState<MapState>({ kind: 'loading' });
-  useEffect(() => {
-    let alive = true;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const load = (): void => {
-      fetch(`/api/process/${encodeURIComponent(projectName)}`)
-        .then(async (res) => {
-          const body = (await res.json()) as { state?: string; process?: ProcessShow; reason?: string; error?: string };
-          if (!alive) return;
-          if (body.state === 'ok') {
-            setState(
-              isProcessShow(body.process)
-                ? { kind: 'ok', contract: body.process }
-                : { kind: 'unavailable', reason: 'contrat du process incomplet (skills ou liens absents)' },
-            );
-          } else if (body.state === 'loading') {
-            setState({ kind: 'loading' });
-            timer = setTimeout(load, LOADING_RETRY_MS);
-          } else setState({ kind: 'unavailable', reason: body.reason ?? body.error ?? `réponse ${res.status}` });
-        })
-        .catch(() => {
-          if (alive) setState({ kind: 'unavailable', reason: 'serveur de mission control injoignable' });
-        });
-    };
-    setState({ kind: 'loading' });
-    load();
-    return () => {
-      alive = false;
-      if (timer) clearTimeout(timer);
-    };
-  }, [projectName]);
-  return state;
-}
+import { useDaemonContract } from './useDaemonContract.js';
 
 /** Un contrat utilisable : ses listes de skills et de liens existent. Sinon la carte dit pourquoi, au lieu de planter. */
 function isProcessShow(value: unknown): value is ProcessShow {
   const c = value as Partial<ProcessShow> | null | undefined;
   return Array.isArray(c?.skills) && Array.isArray(c?.liens);
 }
+
+const PROCESS_READING = {
+  path: 'process',
+  field: 'process',
+  isUsable: isProcessShow,
+  incompleteReason: 'contrat du process incomplet (skills ou liens absents)',
+};
 
 const list = (items: unknown): string[] => (Array.isArray(items) ? (items as string[]) : []);
 
@@ -147,7 +115,7 @@ function Flow({ contract }: { contract: ProcessShow }): JSX.Element {
 }
 
 export function ProcessMap({ project }: { project: BoardProject }): JSX.Element {
-  const state = useProcessContract(project.name);
+  const state = useDaemonContract<ProcessShow>(project.name, PROCESS_READING);
   return (
     <section className="card pm" aria-label="Carte du process de la méthode">
       <div className="vh">

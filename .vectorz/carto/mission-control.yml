@@ -68,6 +68,11 @@ screens:
     actions:
       - id: ouvrir-fiche
         title: Ouvrir la fenêtre d'une fiche depuis sa colonne
+  - id: graph
+    title: Carte de la méthode — tout ce qui est relié dans ezk
+    actions:
+      - id: selectionner-brique
+        title: Sélectionner une brique, et voir ses voisins
   - id: law
     title: Loi — comptes, règles et liens
     actions:
