@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [carte, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (8e9bf550)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -67,8 +67,8 @@ Dans mission control : page Carte de la méthode, taper `reviewer` dans le champ
 
 | Moment | Avant (main) | Après (branche) |
 |---|---|---|
-| Panneau des voisins | ![avant](../docs/pr-evidence/20261117153250174/carte-recherche-before.jpg) | ![après, saisie « reviewer »](../docs/pr-evidence/20261117153250174/carte-recherche-after-saisie.jpg) |
-| Après Entrée | — | ![après, ezk-reviewer choisi](../docs/pr-evidence/20261117153250174/carte-recherche-after-choix.jpg) |
+| Panneau des voisins | ![avant](../../docs/pr-evidence/20261117153250174/carte-recherche-before.jpg) | ![après, saisie « reviewer »](../../docs/pr-evidence/20261117153250174/carte-recherche-after-saisie.jpg) |
+| Après Entrée | — | ![après, ezk-reviewer choisi](../../docs/pr-evidence/20261117153250174/carte-recherche-after-choix.jpg) |
 
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 4 critères prouvés, gates vertes. Sa
 réserve P2 est corrigée : un test d'écran lit maintenant « 8 sur 11 ». Deux réserves P3 restent ouvertes.
