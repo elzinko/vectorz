@@ -36,9 +36,9 @@ Distinguer les deux cas : une réponse HTTP reçue mais illisible donne « répo
 
 ## Critères d'acceptation
 
-- [ ] Une réponse reçue mais illisible affiche « réponse illisible du daemon (HTTP <code>) » et ne
+- [x] Une réponse reçue mais illisible affiche « réponse illisible du daemon (HTTP <code>) » et ne
       re-tente pas.
-- [ ] Une coupure réseau garde son comportement : trois re-tentatives, puis « injoignable ».
+- [x] Une coupure réseau garde son comportement : trois re-tentatives, puis « injoignable ».
 
 ## Comment vérifier
 
@@ -47,6 +47,9 @@ cd products/cop1/packages/web && pnpm exec vitest run src/board/useDaemonContrac
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Corrigé après revue : un JSON valide mais vide (`null`) est traité de la même façon, avec son test.
+
 
 - Origine : revue du sprint 5 et [rétro du sprint 5 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-5-cartes-qui-chargent.md),
   qui l'avait laissé en reste ouvert ; tirée au sprint 8 par délégation du PO absent.

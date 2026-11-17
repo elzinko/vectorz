@@ -39,7 +39,17 @@ export function useDaemonContract<T>(projectName: string, reading: Reading): Con
     const load = (): void => {
       fetch(`/api/${path}/${encodeURIComponent(projectName)}`)
         .then(async (res) => {
-          const body = (await res.json()) as Record<string, unknown> & { state?: string; reason?: string; error?: string };
+          // Le serveur a répondu : une réponse illisible n'est pas une coupure réseau, on ne re-tente pas
+          // (fiche 20261117150145880).
+          let body: Record<string, unknown> & { state?: string; reason?: string; error?: string };
+          try {
+            body = (await res.json()) as typeof body;
+            // Un JSON valide mais qui n'est pas un objet (`null`, un nombre) est tout aussi illisible.
+            if (typeof body !== 'object' || body === null) throw new TypeError('réponse sans objet');
+          } catch {
+            if (alive) setState({ kind: 'unavailable', reason: `réponse illisible du daemon (HTTP ${res.status})` });
+            return;
+          }
           if (!alive) return;
           networkFailures = 0;
           if (body.state === 'ok') {

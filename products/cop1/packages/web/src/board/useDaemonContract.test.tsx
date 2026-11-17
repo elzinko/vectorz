@@ -76,6 +76,30 @@ describe('useDaemonContract — re-tentatives mesurées', () => {
     expect(fetchMock.mock.calls.length).toBe(4);
   });
 
+  it('une réponse reçue mais illisible le dit, sans la prendre pour une coupure ni re-tenter', async () => {
+    const fetchMock = vi.fn(async () => ({
+      status: 502,
+      json: async () => {
+        throw new SyntaxError('Unexpected token <');
+      },
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result } = renderHook(() => useDaemonContract('vectorz', READING));
+    await wait(0);
+    expect(result.current).toEqual({ kind: 'unavailable', reason: 'réponse illisible du daemon (HTTP 502)' });
+    await wait(20_000);
+    expect(fetchMock.mock.calls.length).toBe(1);
+  });
+
+  it('un JSON valide mais vide (null) est aussi une réponse illisible, sans re-tentative', async () => {
+    const fetchMock = serve(null as unknown as Record<string, unknown>);
+    const { result } = renderHook(() => useDaemonContract('vectorz', READING));
+    await wait(0);
+    expect(result.current).toEqual({ kind: 'unavailable', reason: 'réponse illisible du daemon (HTTP 200)' });
+    await wait(20_000);
+    expect(fetchMock.mock.calls.length).toBe(1);
+  });
+
   it('changer de projet arrête les re-tentatives du projet précédent', async () => {
     const fetchMock = serve({ state: 'loading' });
     const { rerender } = renderHook(({ name }) => useDaemonContract(name, READING), {
