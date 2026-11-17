@@ -8,7 +8,7 @@ Le sprint **une-reponse-illisible-n-est-plus-prise-pour-une** n'est pas daté : 
 
 ## Lot scellé
 
-- `20261117150145880` — Une réponse illisible du daemon n'est plus dite « injoignable » (local d40c6dd4) — **livrée**
+- `20261117150145880` — Une réponse illisible du daemon n'est plus dite « injoignable » (local e4e02dfa) — **livrée**
 
 ## Détail
 

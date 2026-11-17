@@ -9,7 +9,7 @@ milestone: board
 version:
 labels: [theme:mission-control, carte]
 status: shipped
-pr: "local (d40c6dd4)"
+pr: "local (e4e02dfa)"
 evidence: none # message d'erreur, rare
 created: 2026-11-17
 ---
