@@ -19,6 +19,8 @@
 #       Sans remote (ou avec --local) : refuse si le dépôt est sale, squash local, prune
 #       les branches absorbées, fetch --prune si un remote existe quand même, puis réaligne
 #       les vues vers <base> LOCAL (refresh-worktrees.sh).
+#       Si pnpm-lock.yaml a changé, lance `pnpm install --frozen-lockfile` dans <dir>
+#       (échec dit sur stderr, sans défaire le squash ; EZK_INTEGRATE_NO_INSTALL=1 coupe le geste).
 #       --dry-run : SIMULE le merge en mémoire (git merge-tree), dit « merge propre » ou
 #       « conflit », puis SORT sans toucher <base>, l'index ni l'arbre (exit 3 si conflit).
 #   ship-merge.sh --repo <dir> --remote --pr <n> --branch <br> --subject <s> --body <b> \
@@ -139,6 +141,22 @@ prune_absorbed_branches() {
   done < <(git_c for-each-ref --format='%(refname:short)' refs/heads/)
 }
 
+# Fiche 20261117122122418 : si le squash a changé pnpm-lock.yaml, le checkout qui porte <base>
+# n'a pas les nouvelles dépendances ; on les installe. Un échec se dit, ne défait rien.
+# EZK_INTEGRATE_NO_INSTALL=1 coupe le geste (tests, CI).
+install_if_lockfile_changed() {
+  local base_before="$1"
+  [[ -n "${EZK_INTEGRATE_NO_INSTALL:-}" ]] && return 0
+  git_c diff --quiet "$base_before" "$base" -- pnpm-lock.yaml && return 0
+  if ! command -v pnpm >/dev/null 2>&1; then
+    echo "ship-merge.sh: pnpm-lock.yaml a changé mais pnpm introuvable — installe à la main : pnpm install --frozen-lockfile (dans $repo)" >&2
+    return 0
+  fi
+  echo "pnpm-lock.yaml a changé : pnpm install --frozen-lockfile dans $repo"
+  (cd "$repo" && pnpm install --frozen-lockfile >&2) \
+    || echo "ship-merge.sh: pnpm install --frozen-lockfile a échoué dans $repo — l'intégration reste en place, relance-le à la main" >&2
+}
+
 ship_local() {
   # Essai à blanc (--dry-run) : on ne touche NI <base>, NI l'index, NI l'arbre. On SIMULE
   # le merge en mémoire avec `git merge-tree` (le même outil que is_absorbed, git ≥ 2.38) et
@@ -166,6 +184,7 @@ ship_local() {
   git_c merge --squash "$branch" >/dev/null
   git_c commit -q -m "$subject" -m "$body"
   prune_absorbed_branches "$base_before"
+  install_if_lockfile_changed "$base_before"
   if has_remote; then
     # On rafraîchit les refs partagées. Si le remote ne répond pas, on ne l'avale pas en
     # silence (comme ship_remote) : on signale que le réalignement partagé n'est pas

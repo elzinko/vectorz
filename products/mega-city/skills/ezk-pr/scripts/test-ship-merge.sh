@@ -377,6 +377,53 @@ git -C "$REPO11" show-ref --verify -q refs/heads/docs/archive && fail "docs/arch
 grep -qxF "pruned: docs/archive ($SHA_DOC) — git branch docs/archive $SHA_DOC" <<<"$OUT11" && ok "la suppression de docs/archive se dit, avec la commande qui la recrée" || fail "suppression de docs/archive muette : $OUT11"
 git -C "$REPO11" show-ref --verify -q refs/heads/fresh-session && ok "fresh-session toujours là (branche neuve, épargnée)" || fail "fresh-session supprimée : $OUT11"
 
+# --- Cas 12 : lockfile changé -> pnpm install --frozen-lockfile dans le dépôt visé ------
+echo "=== Cas 12 — lockfile : installe si pnpm-lock.yaml change, sinon rien ==="
+PNPM_LOG="$WORK/pnpm-log"
+PNPM_BIN="$WORK/pnpmbin"; mkdir -p "$PNPM_BIN"
+cat > "$PNPM_BIN/pnpm" <<EOF2
+#!/usr/bin/env bash
+echo "\$PWD :: \$*" >> "$PNPM_LOG"
+exit "\${FAKE_PNPM_EXIT:-0}"
+EOF2
+chmod +x "$PNPM_BIN/pnpm"
+
+lock_repo() {  # <dir> <branche> <touche le lockfile 0|1>
+  git init -q -b main "$1"
+  git -C "$1" config user.email t@t.io; git -C "$1" config user.name t
+  echo l1 > "$1/pnpm-lock.yaml"; git -C "$1" add .; git -C "$1" commit -qm "chore: v1"
+  git -C "$1" checkout -qb "$2"
+  if [[ "$3" == 1 ]]; then echo l2 > "$1/pnpm-lock.yaml"; else echo x > "$1/x.txt"; fi
+  git -C "$1" add .; git -C "$1" commit -qm "feat: s"
+  git -C "$1" checkout -q main
+}
+
+R12="$WORK/repo-lock"; lock_repo "$R12" feat/l 1
+OUT12="$(PATH="$PNPM_BIN:$PATH" bash "$SCRIPT" --local --repo "$R12" --branch feat/l --base main --subject "feat: l" --body b 2>&1)"
+grep -qE "/repo-lock :: install --frozen-lockfile$" "$PNPM_LOG" 2>/dev/null && ok "lockfile changé : pnpm install --frozen-lockfile lancé dans le dépôt" || fail "pnpm non lancé : $OUT12"
+
+rm -f "$PNPM_LOG"
+R12B="$WORK/repo-nolock"; lock_repo "$R12B" feat/n 0
+PATH="$PNPM_BIN:$PATH" bash "$SCRIPT" --local --repo "$R12B" --branch feat/n --base main --subject "feat: n" --body b >/dev/null 2>&1
+[[ ! -e "$PNPM_LOG" ]] && ok "lockfile inchangé : rien installé" || fail "pnpm lancé sans changement de lockfile"
+
+R12C="$WORK/repo-off"; lock_repo "$R12C" feat/o 1
+EZK_INTEGRATE_NO_INSTALL=1 PATH="$PNPM_BIN:$PATH" bash "$SCRIPT" --local --repo "$R12C" --branch feat/o --base main --subject "feat: o" --body b >/dev/null 2>&1
+[[ ! -e "$PNPM_LOG" ]] && ok "EZK_INTEGRATE_NO_INSTALL=1 coupe le geste" || fail "pnpm lancé malgré EZK_INTEGRATE_NO_INSTALL"
+
+R12D="$WORK/repo-fail"; lock_repo "$R12D" feat/f 1
+RC12=0
+ERR12="$(FAKE_PNPM_EXIT=1 PATH="$PNPM_BIN:$PATH" bash "$SCRIPT" --local --repo "$R12D" --branch feat/f --base main --subject "feat: f" --body b 2>&1 >/dev/null)" || RC12=$?
+[[ "$RC12" == 0 ]] && ok "installation en échec : intégration réussie (exit 0)" || fail "exit $RC12 malgré l'échec d'installation"
+grep -qF "pnpm install --frozen-lockfile a échoué" <<<"$ERR12" && ok "échec dit en une ligne sur stderr" || fail "échec muet : $ERR12"
+[[ "$(git -C "$R12D" log -1 --format=%s)" == "feat: f" ]] && ok "intégration laissée en place" || fail "squash perdu"
+
+R12E="$WORK/repo-nopnpm"; lock_repo "$R12E" feat/p 1
+EMPTY_BIN="$WORK/emptybin"; mkdir -p "$EMPTY_BIN"
+for t in git bash dirname sed grep head cat; do ln -sf "$(command -v $t)" "$EMPTY_BIN/$t"; done
+ERR12E="$(PATH="$EMPTY_BIN" bash "$SCRIPT" --local --repo "$R12E" --branch feat/p --base main --subject "feat: p" --body b 2>&1 >/dev/null)" && ok "pnpm introuvable : intégration réussie" || fail "échec sans pnpm : $ERR12E"
+grep -qF "pnpm introuvable" <<<"$ERR12E" && ok "pnpm introuvable dit en une ligne" || fail "silence sans pnpm : $ERR12E"
+
 if (( FAIL )); then
   echo "❌ test-ship-merge — ÉCHEC"
   exit 1

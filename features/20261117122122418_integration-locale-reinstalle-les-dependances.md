@@ -39,9 +39,9 @@ principal. Si l'installation échoue, il le dit en une ligne, sans annuler l'int
 
 ## Critères d'acceptation
 
-- [ ] Une intégration qui change le lockfile installe les dépendances dans le dossier principal.
-- [ ] Une intégration qui ne change pas le lockfile n'installe rien.
-- [ ] Un échec d'installation est dit en une ligne et laisse l'intégration en place.
+- [x] Une intégration qui change le lockfile installe les dépendances dans le dossier principal.
+- [x] Une intégration qui ne change pas le lockfile n'installe rien.
+- [x] Un échec d'installation est dit en une ligne et laisse l'intégration en place.
 
 ## Comment vérifier
 
@@ -50,6 +50,9 @@ cd products/mega-city && pnpm exec vitest run -t "forge integrate"
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés, dont un rejeu du script sur entrées hostiles. Le geste vit dans `ship-merge.sh --local` ; `EZK_INTEGRATE_NO_INSTALL=1` le coupe. Portée : le squash local seulement ; push-ff et --remote n'installent rien (fiche à part si besoin). Latent, non bloquant : un `git diff` en échec déclencherait l'installation au lieu d'être signalé.
+
 
 - Origine : [rétro du sprint 2 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-2-tout-ce-qui-est-relie.md),
   proposition 2, retenue par délégation du PO absent.

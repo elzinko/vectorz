@@ -26,7 +26,9 @@ function usage(): never {
                        (dépôt où tu es, ou --root <projet>)
 
   Choisit l'intégration d'après .vectorz/ : pr allumé → gh pr merge --squash (--pr requis) ;
-  pr coupé → local-squash (défaut) ou push-ff (clé « integration: push-ff »).`);
+  pr coupé → local-squash (défaut) ou push-ff (clé « integration: push-ff »).
+  Squash local : si pnpm-lock.yaml change, lance « pnpm install --frozen-lockfile » dans le dépôt
+  (échec dit sur stderr, intégration gardée). EZK_INTEGRATE_NO_INSTALL=1 coupe ce geste.`);
   process.exit(2);
 }
 
