@@ -196,7 +196,13 @@ export function makeContractFixture(): string {
   write('features/reviews/verdicts/20990101000000003.json', '{ illisible\n');
   write('.vectorz/config.yml', FIXTURE_CONFIG);
   // Ce que la méthode a mené (fiche 20261102104443762) : 2 comptes rendus, 1 rétro, et un intrus par dossier.
-  write('docs/sprints/2026-10-30-sprint-premier.md', '# Rapport de sprint — premier\n');
+  // La déclaration d'un objectif (ADR-0088 §7) : son nom en clair. `parked` n'en a pas.
+  write('features/milestones/board.md', '---\nmilestone: board\nnom: Le board dit vrai\ncreated: 2026-11-17\n---\n');
+  // La fiche livrée 20990101000000006 est citée par les deux lots scellés : le plus récent fait foi.
+  write(
+    'docs/sprints/2026-10-30-sprint-premier.md',
+    '# Rapport de sprint — premier\n\n## Lot scellé\n\n- `20990101000000006` — Livrée — **livrée**\n',
+  );
   write(
     'docs/sprints/2026-10-31-sprint-second.md',
     [
@@ -205,6 +211,7 @@ export function makeContractFixture(): string {
       '## Lot scellé',
       '',
       '- `20990101000000001` — Une fiche livrée (PR local (abc1234)) — **livrée**',
+      '- `20990101000000006` — Livrée — **livrée**',
       '- `20990101000000002` — Une fiche reportée — **reportée**',
       '',
       '## Détail',
@@ -212,7 +219,7 @@ export function makeContractFixture(): string {
       '- **Fenêtre** : 2026-10-31T09:00:00.000Z → 2026-10-31T09:42:00.000Z',
       '- **Durée** : 2520000 ms',
       '- **Tokens** : entrée 10 / sortie 20 / cache lu 30 / cache créé 40 / total 100 (grain `sprint`)',
-      '- **Fiches livrées** (1) : 20990101000000001',
+      '- **Fiches livrées** (2) : 20990101000000001, 20990101000000006',
       '- **Blocages** (0)',
       '',
     ].join('\n'),

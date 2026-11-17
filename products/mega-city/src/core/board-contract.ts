@@ -53,11 +53,16 @@ const BoardFicheSchema = z.strictObject({
 
 const BoardMilestoneSchema = z.strictObject({
   milestone: z.string(),
+  nom: z
+    .string()
+    .describe("Nom en clair, lu dans la déclaration `features/milestones/<slug>.md` ; '' sans déclaration. Jamais lu dans PLAN.md."),
   status: z.string(),
   total: count(),
   shipped: count(),
   counts: z.record(z.string(), count()),
-  children: z.array(z.string()),
+  children: z.array(z.string()).describe('Ids des fiches actives (hors done/) de l’objectif, triés.'),
+  livrees: z.array(z.string()).describe('Ids des fiches livrées (rangées dans done/) de l’objectif, triés : autant que shipped.'),
+  versions: z.array(z.string()).describe('Versions distinctes et non vides de ces livrées, dans l’ordre des versions.'),
 });
 
 const ComptesSchema = z
@@ -176,6 +181,8 @@ export interface BoardContractInput {
   sessions: readonly RunReport[];
   /** Les derniers sprints, résumés au bord depuis leurs comptes rendus (`core/sprint-report-summary.ts`). */
   derniersSprints?: readonly SprintSummary[];
+  /** Le nom en clair des objectifs déclarés, lus au bord (`loaders/milestones.ts`). */
+  nomsMilestones?: ReadonlyMap<string, string>;
 }
 
 const ids = (fs: readonly Fiche[]): string[] => fs.map((f) => f.id);
@@ -200,8 +207,8 @@ function colonneOf(f: Fiche, inProgressIds: ReadonlySet<string>): Colonne {
 
 /** Compile le contrat. Tout est trié : la même entrée donne toujours la même sortie. */
 export function buildBoardContract(input: BoardContractInput): BoardContract {
-  const { fiches, inProgressIds, tags, verdicts, historique, sessions, derniersSprints = [] } = input;
-  const board = buildAvancementData([...fiches], inProgressIds);
+  const { fiches, inProgressIds, tags, verdicts, historique, sessions, derniersSprints = [], nomsMilestones } = input;
+  const board = buildAvancementData([...fiches], inProgressIds, nomsMilestones);
   const report = buildVersions(fiches, tags);
   const scope = versionScope(report);
 

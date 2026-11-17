@@ -3,7 +3,7 @@
  * publié, ce qui ne l'est pas reste `null`, jamais un faux zéro.
  */
 import { describe, expect, it } from 'vitest';
-import { latestSprints, parseSprintReport } from '../sprint-report-summary.js';
+import { latestSprints, parseSprintReport, sprintOfFiches } from '../sprint-report-summary.js';
 
 const report = (over: { fenetre?: string; duree?: string; tokens?: string; blocages?: string; lot?: string[] } = {}) =>
   [
@@ -72,5 +72,27 @@ describe('latestSprints', () => {
       { name: '2026-11-02-sprint-d.md', text: '# nu\n' },
     ];
     expect(latestSprints('d', reports, 3).map((s) => s.slug)).toEqual(['c', 'b', 'd']);
+  });
+});
+
+// fiche 20261114131612572 — le sprint qui a livré une fiche, lu dans les lots scellés.
+describe('sprintOfFiches', () => {
+  it('chaque fiche livrée pointe le sprint le plus récent dont le lot scellé la cite', () => {
+    const lot = (ids: string[]) => ids.map((id) => `- \`${id}\` — Fiche ${id} — **livrée**`);
+    const reports = [
+      { name: '2026-11-01-sprint-ancien.md', text: report({ fenetre: 'x → 2026-11-01T10:00:00.000Z', lot: lot(['1', '2']) }) },
+      { name: '2026-11-03-sprint-recent.md', text: report({ fenetre: 'x → 2026-11-03T10:00:00.000Z', lot: lot(['2']) }) },
+      { name: 'notes.md', text: report({ lot: lot(['9']) }) },
+    ];
+    const sprints = sprintOfFiches('d', reports);
+    expect(sprints.get('1')).toBe('ancien');
+    expect(sprints.get('2')).toBe('recent'); // citée deux fois : le plus récent l'emporte
+    expect(sprints.has('9')).toBe(false); // pas un compte rendu de sprint
+  });
+
+  it('une fiche reportée ou absente des lots n’a pas de sprint', () => {
+    const sprints = sprintOfFiches('d', [{ name: '2026-11-01-sprint-a.md', text: report() }]);
+    expect(sprints.get('1')).toBe('a');
+    expect(sprints.has('2')).toBe(false); // reportée, pas livrée
   });
 });

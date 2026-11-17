@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un contrat publié, aucun écran modifié
@@ -102,16 +102,16 @@ Voisines :
 
 ## Critères d'acceptation
 
-- [ ] Chaque entrée de `milestones[]` de `ezk board show --json` porte `nom`, `livrees[]` et
+- [x] Chaque entrée de `milestones[]` de `ezk board show --json` porte `nom`, `livrees[]` et
       `versions[]`, en plus de `children`. Un objectif entièrement livré a `children` vide et
       `livrees` pleine.
-- [ ] `nom` est lu d'une source déclarée par la méthode et vaut `''` quand il n'est pas déclaré. La
+- [x] `nom` est lu d'une source déclarée par la méthode et vaut `''` quand il n'est pas déclaré. La
       méthode ne le lit jamais dans `PLAN.md`.
-- [ ] Chaque entrée de `livrees[]` de `ezk backlog show --json` porte `milestone`, `labels` et
+- [x] Chaque entrée de `livrees[]` de `ezk backlog show --json` porte `milestone`, `labels` et
       `sprint`. `sprint` vaut `null` quand aucun lot scellé ne cite la fiche.
-- [ ] Les deux contrats restent en `schema_version: 1`. Leur schéma et leur exemple publiés sont
+- [x] Les deux contrats restent en `schema_version: 1`. Leur schéma et leur exemple publiés sont
       régénérés et décrivent les nouveaux champs.
-- [ ] Sur le dépôt du 14 novembre, `fondation` publie neuf ids dans `livrees[]`, et la somme des
+- [x] Sur le dépôt du 14 novembre, `fondation` publie neuf ids dans `livrees[]`, et la somme des
       `livrees[]` de tous les objectifs vaut le nombre de fiches livrées qui portent un objectif.
 
 ## Comment vérifier
@@ -139,6 +139,8 @@ pnpm --dir products/mega-city test -- \
 - `lot scellé` — la liste des fiches livrées, écrite dans le compte rendu d'un sprint à sa clôture.
 
 ## Notes / décisions
+
+- Critères prouvés le 2026-11-17 par ezk-reviewer (GO) : champs présents et objectif livré à `children` vide ; `nom` lu de `features/milestones/<slug>.md`, `''` sinon ; `milestone`, `labels`, `sprint` sur chaque livrée ; `schema_version` 1 et contrats régénérés sans dérive ; `fondation` = 9 ids, somme des `livrees` = 114 = livrées portant un objectif. Ouvert non bloquant : deux déclarations du même objectif, la dernière l'emporte en silence.
 
 - Origine : [la carte des écarts maquette ↔ code ↔ backlog du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écart A6, volet additif.

@@ -144,6 +144,23 @@
           },
           "pr": {
             "type": "string"
+          },
+          "milestone": {
+            "type": "string",
+            "description": "L'objectif de la fiche, '' sans objectif."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sprint": {
+            "description": "Slug du compte rendu de sprint (`docs/sprints/`) dont le lot scellé cite la fiche, le plus récent si plusieurs ; null si aucun.",
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -151,7 +168,10 @@
           "title",
           "priority",
           "version",
-          "pr"
+          "pr",
+          "milestone",
+          "labels",
+          "sprint"
         ]
       },
       "description": "Les fiches livrées (rangées dans done/, statut shipped), en résumé, triées par id."

@@ -101,6 +101,10 @@
           "milestone": {
             "type": "string"
           },
+          "nom": {
+            "type": "string",
+            "description": "Nom en clair, lu dans la déclaration `features/milestones/<slug>.md` ; '' sans déclaration. Jamais lu dans PLAN.md."
+          },
           "status": {
             "type": "string"
           },
@@ -129,16 +133,34 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Ids des fiches actives (hors done/) de l’objectif, triés."
+          },
+          "livrees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ids des fiches livrées (rangées dans done/) de l’objectif, triés : autant que shipped."
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Versions distinctes et non vides de ces livrées, dans l’ordre des versions."
           }
         },
         "required": [
           "milestone",
+          "nom",
           "status",
           "total",
           "shipped",
           "counts",
-          "children"
+          "children",
+          "livrees",
+          "versions"
         ]
       }
     },

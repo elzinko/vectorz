@@ -51,6 +51,20 @@ else
   fail "--strict a bloqué un corpus pourtant conforme"
 fi
 
+echo "=== Cas 2b — une déclaration d'objectif (features/milestones/) n'est pas lue comme une fiche ==="
+# ADR-0088 §7 : `features/milestones/<slug>.md` n'a ni id ni statut. Un slug qui commence par des
+# chiffres (`2027-cap`) ressemble à un nom de fiche : seul le fait de ne pas descendre dans le
+# sous-dossier le protège. Le statut hors liste (`not-a-status`) ferait échouer --strict si le
+# loader descendait dans le sous-dossier : le cas échoue donc sur une régression de récursion.
+mk_fiche "$WORK/milestones" "idea"
+mkdir -p "$WORK/milestones/features/milestones"
+printf -- '---\nid: "2027"\nmilestone: 2027-cap\nnom: Le cap 2027\nstatus: not-a-status\n---\n' > "$WORK/milestones/features/milestones/2027-cap.md"
+if strict_root "$WORK/milestones"; then
+  ok "--strict ignore features/milestones/ (exit 0)"
+else
+  fail "--strict a lu une déclaration d'objectif comme une fiche"
+fi
+
 echo "=== Cas 3 — VRAI repo : --strict est VERT (0 anomalie mesurée, gate réelle) ==="
 if ( cd "$MC" && pnpm -s exec tsx bin/check-fiches.ts --strict >/dev/null 2>&1 ); then
   ok "le backlog réel passe --strict (0 anomalie) — la gate peut rester bloquante"

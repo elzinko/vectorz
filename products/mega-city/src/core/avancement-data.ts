@@ -6,6 +6,7 @@
  * à la main. C'est le pendant « flux » de la carte « structure ». Le bord I/O (bin)
  * charge les fiches ; ici on ne fait que trier/compter/grouper.
  */
+import { compareLoose } from '../backlog/versions.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { isParked, STATUTS, TERMINAUX } from './fiche-schema.js';
 
@@ -17,6 +18,9 @@ export { STATUTS, TERMINAUX };
 
 /** Ensemble vide partagé : défaut quand aucun signal « en cours » déduit des branches n'est fourni (board hors dépôt git, tests). */
 const EMPTY_IDS: ReadonlySet<string> = new Set();
+
+/** Aucun objectif déclaré : défaut quand les déclarations ne sont pas lues (vue HTML, tests). */
+const NO_NOMS: ReadonlyMap<string, string> = new Map();
 
 /** Source unique — réutilisée par le validateur de conformité (fiche 652/281, ADR-0040 D2). */
 export const PRIOS: readonly string[] = ['P0', 'P1', 'P2', 'P3'];
@@ -72,6 +76,8 @@ export interface BoardFiche {
 export interface BoardMilestone {
   /** Nom du jalon (`fondation`, `rationalisation`, …). */
   milestone: string;
+  /** Nom en clair, lu dans la déclaration `features/milestones/<slug>.md` ; '' sans déclaration (ADR-0088 §7). */
+  nom: string;
   /** Statut CALCULÉ depuis les fiches du jalon (jamais saisi) — ADR-0017 A16. */
   status: string;
   /** Fiches non-terminales du jalon (idea/ready/in-progress/shipped). */
@@ -82,6 +88,10 @@ export interface BoardMilestone {
   counts: Record<string, number>;
   /** ids des fiches ACTIVES (non-`done/`) du jalon, pour l'affichage détaillé. */
   children: string[];
+  /** ids des fiches LIVRÉES (rangées dans `done/`) du jalon, triés : autant que `shipped`. */
+  livrees: string[];
+  /** Versions distinctes et non vides de ces livrées, dans l'ordre des versions. */
+  versions: string[];
 }
 
 export interface AvancementData {
@@ -146,6 +156,7 @@ function deriveMilestoneStatus(
 export function buildAvancementData(
   fiches: Fiche[],
   inProgressIds: ReadonlySet<string> = EMPTY_IDS,
+  nomsMilestones: ReadonlyMap<string, string> = NO_NOMS,
 ): AvancementData {
   const counts: Record<string, number> = {};
   for (const f of fiches) counts[f.status] = (counts[f.status] ?? 0) + 1;
@@ -166,7 +177,7 @@ export function buildAvancementData(
   // milestone. « N fiches — k livrées » : total = fiches du jalon (idea/ready/in-progress/shipped),
   // shipped = celles rangées dans `done/`. Statuts terminaux et fiches sans milestone = hors cumul.
   const countsByMs = new Map<string, Record<string, number>>();
-  const doneByMs = new Map<string, number>();
+  const doneByMs = new Map<string, Fiche[]>();
   const activeChildrenByMs = new Map<string, string[]>();
   for (const f of fiches) {
     if (!f.milestone || TERMINAUX.includes(f.status)) continue;
@@ -174,7 +185,9 @@ export function buildAvancementData(
     rec[f.status] = (rec[f.status] ?? 0) + 1;
     countsByMs.set(f.milestone, rec);
     if (f.done) {
-      doneByMs.set(f.milestone, (doneByMs.get(f.milestone) ?? 0) + 1);
+      const done = doneByMs.get(f.milestone) ?? [];
+      done.push(f);
+      doneByMs.set(f.milestone, done);
     } else {
       const list = activeChildrenByMs.get(f.milestone) ?? [];
       list.push(f.id);
@@ -190,14 +203,18 @@ export function buildAvancementData(
     .map((m) => {
       const counts = countsByMs.get(m) ?? {};
       const total = Object.values(counts).reduce((n, k) => n + k, 0);
-      const shipped = doneByMs.get(m) ?? 0;
+      const livrees = doneByMs.get(m) ?? [];
+      const shipped = livrees.length;
       return {
         milestone: m,
+        nom: nomsMilestones.get(m) ?? '',
         status: deriveMilestoneStatus(counts, shipped, total),
         total,
         shipped,
         counts,
         children: (activeChildrenByMs.get(m) ?? []).sort(),
+        livrees: livrees.map((f) => f.id).sort(),
+        versions: [...new Set(livrees.map((f) => f.version).filter(Boolean))].sort(compareLoose),
       };
     });
 

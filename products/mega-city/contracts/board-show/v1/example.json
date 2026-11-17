@@ -89,6 +89,7 @@
  "milestones": [
   {
    "milestone": "parked",
+   "nom": "",
    "status": "idea",
    "total": 1,
    "shipped": 0,
@@ -97,10 +98,13 @@
    },
    "children": [
     "20990101000000007"
-   ]
+   ],
+   "livrees": [],
+   "versions": []
   },
   {
    "milestone": "board",
+   "nom": "Le board dit vrai",
    "status": "in-progress",
    "total": 2,
    "shipped": 1,
@@ -110,6 +114,12 @@
    },
    "children": [
     "20990101000000008"
+   ],
+   "livrees": [
+    "20990101000000006"
+   ],
+   "versions": [
+    "v1.0.0"
    ]
   }
  ],
@@ -222,6 +232,10 @@
     {
      "id": "20990101000000001",
      "title": "Une fiche livrée"
+    },
+    {
+     "id": "20990101000000006",
+     "title": "Livrée"
     }
    ],
    "blocages": 0
@@ -233,7 +247,12 @@
    "fin": null,
    "dureeMs": null,
    "tokens": null,
-   "livrees": [],
+   "livrees": [
+    {
+     "id": "20990101000000006",
+     "title": "Livrée"
+    }
+   ],
    "blocages": null
   }
  ],

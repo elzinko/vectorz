@@ -105,3 +105,15 @@ export function latestSprints(
     .sort((a, b) => (key(a) === key(b) ? b.fichier.localeCompare(a.fichier) : key(b).localeCompare(key(a))))
     .slice(0, limit);
 }
+
+/**
+ * Le sprint qui a livré chaque fiche : le slug du compte rendu le plus récent dont le lot scellé la
+ * cite comme livrée (fiche 20261114131612572). Une fiche qu'aucun lot ne cite n'a pas d'entrée.
+ */
+export function sprintOfFiches(dir: string, reports: readonly { name: string; text: string }[]): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const sprint of latestSprints(dir, reports, reports.length)) {
+    for (const fiche of sprint.livrees) if (!out.has(fiche.id)) out.set(fiche.id, sprint.slug);
+  }
+  return out;
+}

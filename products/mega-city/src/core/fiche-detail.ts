@@ -65,6 +65,14 @@ export const FicheLivreeSchema = z.strictObject({
   priority: z.string(),
   version: z.string().describe("Version de la livraison telle qu'écrite, '' sans version."),
   pr: z.string(),
+  milestone: z.string().describe("L'objectif de la fiche, '' sans objectif."),
+  labels: z.array(z.string()),
+  sprint: z
+    .string()
+    .nullable()
+    .describe(
+      'Slug du compte rendu de sprint (`docs/sprints/`) dont le lot scellé cite la fiche, le plus récent si plusieurs ; null si aucun.',
+    ),
 });
 
 /**

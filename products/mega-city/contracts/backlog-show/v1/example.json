@@ -145,7 +145,10 @@
    "title": "Livrée",
    "priority": "P2",
    "version": "v1.0.0",
-   "pr": ""
+   "pr": "",
+   "milestone": "board",
+   "labels": [],
+   "sprint": "second"
   }
  ]
 }

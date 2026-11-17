@@ -25,6 +25,7 @@ import {
 import { boardShowData } from '../io/board-show.js';
 import { collectInProgressIds } from '../io/sessions-collect.js';
 import { type Fiche, loadFiches } from '../loaders/fiches.js';
+import { loadMilestoneNoms } from '../loaders/milestones.js';
 
 // La fixture lance des sous-process git, et le test de la commande lance tsx : sous la charge de la
 // gate complète, le délai vitest par défaut (5 s) ne suffit pas (revue du 2026-11-01). La fixture
@@ -112,9 +113,27 @@ describe('board show --json — le contrat', () => {
   });
 
   it('les champs d’avant restent identiques à ceux du board d’avancement', () => {
-    const before = buildAvancementData(loadFiches(fixture), collectInProgressIds(fixture));
+    const before = buildAvancementData(loadFiches(fixture), collectInProgressIds(fixture), loadMilestoneNoms(fixture));
     const { counts, tirables, actives, milestones, filtres } = data;
     expect({ counts, tirables, actives, milestones, filtres }).toEqual(before);
+  });
+});
+
+// fiche 20261114131612572 — chaque objectif publié avec son nom, ses livrées et leurs versions.
+describe('board show --json — les objectifs publiés comme objets', () => {
+  const objectif = (m: string) => data.milestones.find((x) => x.milestone === m);
+
+  it('l’objectif déclaré porte son nom, ses livrées et leurs versions ; children garde les actives', () => {
+    expect(objectif('board')).toMatchObject({
+      nom: 'Le board dit vrai',
+      livrees: ['20990101000000006'],
+      versions: ['v1.0.0'],
+      children: ['20990101000000008'],
+    });
+  });
+
+  it('un objectif non déclaré publie un nom vide, jamais un nom inventé', () => {
+    expect(objectif('parked')).toMatchObject({ nom: '', livrees: [], versions: [] });
   });
 });
 
@@ -203,6 +222,16 @@ describe('board show --json — sur le vrai dépôt', () => {
     expect(real.comptes.closes).toBe(TERMINAUX.reduce((n, t) => n + (real.counts[t] ?? 0), 0));
     expect(real.comptes.pretes).toBeLessThanOrEqual(real.counts.ready ?? 0);
     expect(real.comptes.idees + real.comptes.parkees).toBeLessThanOrEqual(real.counts.idea ?? 0);
+  });
+
+  it('chaque livrée qui porte un objectif est publiée une fois, dans les livrées de son objectif', () => {
+    const real = boardShowData(repoRoot);
+    const attendues = loadFiches(repoRoot)
+      .filter((f) => f.done && f.milestone !== '' && !TERMINAUX.includes(f.status))
+      .map((f) => f.id)
+      .sort();
+    expect(real.milestones.flatMap((m) => m.livrees).sort()).toEqual(attendues);
+    for (const m of real.milestones) expect(m.livrees, m.milestone).toHaveLength(m.shipped);
   });
 });
 

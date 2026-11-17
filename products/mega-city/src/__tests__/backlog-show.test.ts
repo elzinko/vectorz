@@ -191,10 +191,30 @@ describe('ezk backlog show — sur la fixture', () => {
   it('sans id : le résumé des fiches livrées, sans les closes rangées dans done/', () => {
     const liste = backlogShowListe(fixture);
     expect(liste.livrees).toEqual([
-      { id: '20990101000000006', title: 'Livrée', priority: 'P2', version: 'v1.0.0', pr: '' },
+      {
+        id: '20990101000000006',
+        title: 'Livrée',
+        priority: 'P2',
+        version: 'v1.0.0',
+        pr: '',
+        milestone: 'board',
+        labels: [],
+        sprint: 'second', // citée par les lots de « premier » et de « second » : le plus récent
+      },
     ]);
     expect(liste.livrees.map((f) => f.id)).not.toContain('20990101000000004'); // superseded
     expect(liste.fiches.map((f) => f.id)).not.toContain('20990101000000006');
+  });
+
+  // fiche 20261114131612572 — une livrée qu'aucun lot scellé ne cite n'a pas de sprint
+  it('sans id : une livrée qu’aucun lot scellé ne cite publie sprint null', () => {
+    const sansSprints = makeContractFixture();
+    try {
+      rmSync(join(sansSprints, 'docs', 'sprints'), { recursive: true, force: true });
+      expect(backlogShowListe(sansSprints).livrees.map((f) => f.sprint)).toEqual([null]);
+    } finally {
+      rmSync(sansSprints, { recursive: true, force: true });
+    }
   });
 
   it('avec un id : une fiche, même rangée dans done/', () => {
