@@ -75,21 +75,21 @@ fines, styles des nœuds) ensuite.
 
 ## Critères d'acceptation
 
-- [ ] La vue Process est **une surface zoomable continue** (molette, pinch, boutons), plus
+- [x] La vue Process est **une surface zoomable continue** (molette, pinch, boutons), plus
       une série de boutons de niveau.
-- [ ] À faible zoom, on voit **les 4 boîtes du workflow et la boucle rétro → backlog**.
-- [ ] En s'approchant, on voit **les étapes de chaque skill** ; plus près, **le détail
+- [x] À faible zoom, on voit **les 4 boîtes du workflow et la boucle rétro → backlog**.
+- [x] En s'approchant, on voit **les étapes de chaque skill** ; plus près, **le détail
       d'une étape**.
-- [ ] Le niveau affiché est **dérivé du zoom** (pas d'un bouton de niveau), avec une
+- [x] Le niveau affiché est **dérivé du zoom** (pas d'un bouton de niveau), avec une
       **hystérésis** qui empêche le clignotement à la frontière.
-- [ ] Changer de niveau **ne déplace pas la caméra** (`ux/no-layout-shift`).
-- [ ] **Double-clic** sur une boîte la cadre par un `fitView` animé.
-- [ ] La **projection par niveau** est une fonction pure, testée en **Vitest sur un
+- [x] Changer de niveau **ne déplace pas la caméra** (`ux/no-layout-shift`).
+- [x] **Double-clic** sur une boîte la cadre par un `fitView` animé.
+- [x] La **projection par niveau** est une fonction pure, testée en **Vitest sur un
       contrat réel** (`ezk process show --json`, contrat `process-show/v1`).
-- [ ] Aucune étape du workflow n'est **codée en dur** dans le web : toutes viennent du
+- [x] Aucune étape du workflow n'est **codée en dur** dans le web : toutes viennent du
       contrat **du projet affiché**, lu sur `GET /api/process/<projet>` (plus de constante
       `SPRINT_STEPS`). Changer de projet recharge son process.
-- [ ] La `carte-interactive.html` existante est **inchangée**.
+- [x] La `carte-interactive.html` existante est **inchangée**.
 
 ## Comment vérifier
 
@@ -100,6 +100,16 @@ pnpm --dir packages/web test -- process-projection
 # Lancer cop1 et sonder la vue Process à la main / au navigateur
 pnpm --dir packages/web dev
 ```
+
+- vue process : http://localhost:5281/ puis « Process » dans la navigation (lancer `pnpm cop1:dev`)
+
+**Avant / après** (règle `development/pr-before-after-media`), captures du 2026-11-15 :
+
+| Vue | Avant (main) | Après (branche) |
+|---|---|---|
+| Process, vue d'ensemble | ![avant](../docs/pr-evidence/20261110185357446/process-before.png) | ![après](../docs/pr-evidence/20261110185357446/process-after.png) |
+| Zoom : étapes de chaque skill | — | ![étapes](../docs/pr-evidence/20261110185357446/zoom-etapes-after.png) |
+| Double-clic sur « Gate » : détail | — | ![détail](../docs/pr-evidence/20261110185357446/zoom-detail-after.png) |
 
 Preuve en PR (règle `development/pr-before-after-media`) : **captures avant / après aux
 trois niveaux** — vue d'ensemble, étapes de skill, détail d'une étape —, l'« avant » étant
@@ -149,6 +159,18 @@ le schéma statique, l'« après » la surface zoomée au même niveau.
   4. **Absent du v1** : le niveau de modèle des agents, et les champs `momentEmis`, `gateId` et
      `effetStatutFiche` (prévus pour un v2). Le niveau 3 ne les montre pas tant que le contrat ne
      les publie pas.
+
+**Livraison du 2026-11-15 (sprint « voir le process de chaque projet »).**
+
+- La carte remplace le bandeau « Workflow » et sa liste écrite à la main. Le tableau des fiches par
+  étape reste dessous : il montre les fiches du projet, la carte montre le process de la méthode.
+- Seuils de zoom calés sur la carte réelle : 0,4 et 0,85, avec 10 % de marge. Cadrée en entier, la
+  carte s'affiche vers 0,3. Le texte grandit quand on s'éloigne, pour rester lisible de loin.
+- Le double-clic cadre une boîte sans dépasser un zoom de 1,5.
+- Un contrat sans `skills` ou sans `liens` affiche « contrat du process incomplet » au lieu de planter.
+- Revue adverse `ezk-reviewer` : GO, 9 critères prouvés. Reste ouvert, non bloquant : la re-tentative
+  sur « en cours de lecture » n'a pas de borne, et une erreur réseau n'est pas re-tentée. Même
+  comportement que la vue Recettes.
 
 ## Avis architecte (2026-11-11)
 

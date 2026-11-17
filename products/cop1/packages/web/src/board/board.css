@@ -284,26 +284,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .pill.rc-draft { background: var(--groom-soft); color: var(--groom); }
 @media (max-width: 620px) { .rc-row { grid-template-columns: 1fr; } }
 
-/* --- Vue Process : le schéma du workflow (fiche 20261104090517801) --- */
-.wflow { padding: 14px 16px; margin-bottom: 12px; }
-.wf-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-.wf-steps { list-style: none; margin: 0; padding: 0; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px 0; }
-.wf-step { display: flex; align-items: flex-start; }
-.wf-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.wf-node { display: flex; flex-direction: column; align-items: center; min-width: 112px; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); }
-.wf-node:hover, .wf-node:focus-visible { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
-.wf-n { font-family: var(--font-data); font-size: 22px; font-weight: 600; line-height: 1.1; }
-.wf-l { font-size: 12.5px; color: var(--muted); }
-.wf-idee .wf-node { border-top: 3px solid var(--idea); }
-.wf-prete .wf-node { border-top: 3px solid var(--groom); }
-.wf-en-sprint .wf-node { border-top: 3px solid var(--warn); }
-.wf-en-revue .wf-node { border-top: 3px solid var(--accent); }
-.wf-livree .wf-node { border-top: 3px solid var(--go); }
-.wf-arrow { align-self: center; margin: 0 10px; margin-top: -2px; color: var(--faint); font-size: 18px; }
-.wf-sub { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 210px; }
-.wf-sub i { font-style: normal; font-family: var(--font-data); font-size: 10.5px; color: var(--warn); background: var(--warn-soft); border-radius: 5px; padding: 1px 6px; }
+/* --- Vue Process : la ligne des parkées, sous la carte --- */
 .wf-parked { margin: 12px 0 0; font-size: 12.5px; color: var(--faint); border-top: 1px dashed var(--line); padding-top: 9px; }
-.kanban.process > .col:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .tgl { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 8px; padding: 4px 11px; font-size: 12.5px; }
 .tgl.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 .fcard .why { margin-top: 5px; font-size: 11.5px; color: var(--muted); font-family: var(--font-data); overflow-wrap: anywhere; }
@@ -442,3 +424,26 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .verdictbar .verdictnow { font-size: 18px; }
 .verdictbar .btn.on { border-color: var(--accent, #3b5bdb); }
 .verdictbar .verdicterr { color: var(--danger, #c92a2a); font-size: 12px; }
+
+/* Carte zoomable du process (fiche 20261110185357446) : hauteur fixe, boîtes sobres. */
+.pm { padding: 14px 16px; margin-bottom: 12px; }
+.pm-canvas { height: 520px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.pm .react-flow__node-skill, .pm .react-flow__node-etape { font-size: 12px; color: var(--fg); }
+.pm-skill { width: 100%; height: 100%; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--accent); background: var(--surface-2); }
+.pm-skill-nom { font-size: 18px; font-weight: 600; }
+.pm-skill-clair { margin-top: 4px; color: var(--muted); }
+.pm-etape { width: 100%; height: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
+.pm-etape-titre { font-weight: 600; }
+.pm-etape-clair { color: var(--muted); margin: 3px 0 5px; }
+.pm-detail { font-size: 11px; margin-top: 2px; }
+.pm-vide { color: var(--faint); }
+/* Le texte grandit quand on s'éloigne : de loin, la carte s'affiche vers 0,25 ; un titre de 56 px
+   s'y lit comme un texte de 14 px. Les étapes, elles, ne montrent leur détail qu'au niveau 3. */
+.pm-level-1 .pm-skill-nom { font-size: 56px; line-height: 1.1; }
+.pm-level-1 .pm-skill-clair { font-size: 28px; margin-top: 10px; }
+.pm-level-1 .react-flow__edge-text { font-size: 26px; }
+.pm-level-2 .pm-skill-nom { font-size: 30px; }
+.pm-level-2 .pm-skill-clair { font-size: 16px; }
+.pm-level-2 .react-flow__edge-text { font-size: 16px; }
+.pm-level-2 .pm-etape-titre { font-size: 20px; }
+.pm-level-2 .pm-etape-clair { font-size: 15px; }
