@@ -8,7 +8,7 @@ product: mega-city
 milestone:
 version:
 labels: [forge, integration]
-status: idea
+status: ready
 pr:
 evidence: none # sortie de commande
 created: 2026-11-17
