@@ -10,7 +10,7 @@ version:
 labels: [carte, theme:mission-control]
 status: ready
 pr:
-evidence: required # écran modifié : captures avant / après
+evidence: before-after
 created: 2026-11-17
 ---
 
@@ -45,10 +45,10 @@ Hors périmètre : déplacer la caméra sur la brique choisie.
 
 ## Critères d'acceptation
 
-- [ ] Taper `reviewer` propose `ezk-reviewer` avec sa famille ; un clic le choisit, et le panneau liste ses voisins.
-- [ ] Entrée choisit la première proposition ; un nom exact passe avant un nom qui le contient.
-- [ ] Plus de 8 résultats : 8 propositions et la mention « 8 sur N », N étant le vrai total.
-- [ ] Aucun résultat : la phrase « aucune brique ne contient « texte » » ; rien n'est choisi.
+- [x] Taper `reviewer` propose `ezk-reviewer` avec sa famille ; un clic le choisit, et le panneau liste ses voisins.
+- [x] Entrée choisit la première proposition ; un nom exact passe avant un nom qui le contient.
+- [x] Plus de 8 résultats : 8 propositions et la mention « 8 sur N », N étant le vrai total.
+- [x] Aucun résultat : la phrase « aucune brique ne contient « texte » » ; rien n'est choisi.
 
 ## Comment vérifier
 
@@ -62,3 +62,15 @@ Dans mission control : page Carte de la méthode, taper `reviewer` dans le champ
 
 - Créée et tirée au sprint 11 du 17 novembre, par délégation du PO absent : la recherche sert le test
   annoncé dans le résumé du run.
+
+**Avant / après** (règle `development/pr-before-after-media`), captures du 2026-11-17 sur les vraies données de vectorz :
+
+| Moment | Avant (main) | Après (branche) |
+|---|---|---|
+| Panneau des voisins | ![avant](../docs/pr-evidence/20261117153250174/carte-recherche-before.jpg) | ![après, saisie « reviewer »](../docs/pr-evidence/20261117153250174/carte-recherche-after-saisie.jpg) |
+| Après Entrée | — | ![après, ezk-reviewer choisi](../docs/pr-evidence/20261117153250174/carte-recherche-after-choix.jpg) |
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 4 critères prouvés, gates vertes. Sa
+réserve P2 est corrigée : un test d'écran lit maintenant « 8 sur 11 ». Deux réserves P3 restent ouvertes.
+Un clic sur la carte laisse les propositions affichées, ce qui est conforme à la fiche. Le paramètre
+`limit` garde sa valeur par défaut partout.
