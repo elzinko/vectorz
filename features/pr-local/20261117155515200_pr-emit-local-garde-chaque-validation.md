@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117155515200_pr-emit-local-garde-chaque-validation.md](../20261117155515200_pr-emit-local-garde-chaque-validation.md)
+> 🗎 Rendu de la fiche [features/20261117155515200_pr-emit-local-garde-chaque-validation.md](../done/20261117155515200_pr-emit-local-garde-chaque-validation.md)
 
 # 20261117155515200 — `ezk pr emit-local` garde chaque `--validation`, au lieu de la dernière
 

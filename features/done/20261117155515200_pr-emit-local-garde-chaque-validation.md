@@ -7,9 +7,9 @@ product: mega-city
 milestone:
 version:
 labels: [pr, outillage]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (604e5a50)"
 evidence: none # une commande qui écrit un fichier, aucun écran modifié
 created: 2026-11-17
 ---
@@ -53,6 +53,6 @@ ezk pr emit-local --fiche <fiche> --validation "A=✅" --validation "B=✅"   # 
 
 - Livrée le 2026-11-17, écrite par l'orchestrateur. Critères prouvés par ezk-reviewer (GO) : deux `--validation` donnent deux lignes dans l'ordre, une virgule dans un statut ne le coupe plus ; la forme à virgules d'une seule option marche comme avant. Lecteur pur dans `src/pr-body/validation-args.ts`.
 
-- Origine : [rétro de fin de run du 17 novembre](../docs/captures/2026-11-17-retro-fin-de-run-coupe-de-version.md), proposition P1.
+- Origine : [rétro de fin de run du 17 novembre](../../docs/captures/2026-11-17-retro-fin-de-run-coupe-de-version.md), proposition P1.
 - Priorité P1 tranchée par ezk-pm le 17 novembre, par délégation du PO.
 - Mesure (retirabilité) : 0 corps de PR sans ligne de revue sur les 5 prochains.
