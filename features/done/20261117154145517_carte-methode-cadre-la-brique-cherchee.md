@@ -8,8 +8,8 @@ product: cop1
 milestone: board
 version:
 labels: [carte, theme:mission-control]
-status: ready
-pr:
+status: shipped
+pr: "local (e87a7da4)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -27,7 +27,7 @@ vit dans le panneau des voisins, à droite.
 ## Contexte / Problème
 
 La fiche
-[On cherche une brique par son nom sur la carte de la méthode](done/20261117153250174_carte-methode-chercher-une-brique.md)
+[On cherche une brique par son nom sur la carte de la méthode](20261117153250174_carte-methode-chercher-une-brique.md)
 a laissé ce point hors de son périmètre.
 
 ## Proposition
@@ -63,8 +63,8 @@ vient sur `ezk-reviewer`.
 
 | Moment | Avant (main) | Après (branche) |
 |---|---|---|
-| Vue de loin, `reviewer` puis Entrée | ![avant : la carte ne bouge pas](../docs/pr-evidence/20261117154145517/cadrage-before.jpg) | ![après : la carte vient sur ezk-reviewer](../docs/pr-evidence/20261117154145517/cadrage-after-de-loin.jpg) |
-| Déjà de près, `ezk-sprint` puis Entrée | — | ![après : la carte saute sur ezk-sprint](../docs/pr-evidence/20261117154145517/cadrage-after-de-pres.jpg) |
+| Vue de loin, `reviewer` puis Entrée | ![avant : la carte ne bouge pas](../../docs/pr-evidence/20261117154145517/cadrage-before.jpg) | ![après : la carte vient sur ezk-reviewer](../../docs/pr-evidence/20261117154145517/cadrage-after-de-loin.jpg) |
+| Déjà de près, `ezk-sprint` puis Entrée | — | ![après : la carte saute sur ezk-sprint](../../docs/pr-evidence/20261117154145517/cadrage-after-de-pres.jpg) |
 
 **Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO. Les critères 2 et 3 sont prouvés par
 les tests de `focusStep`. Le critère 1 est prouvé par les captures ci-dessus, prises dans le navigateur.
