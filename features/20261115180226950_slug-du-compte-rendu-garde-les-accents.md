@@ -2,7 +2,7 @@
 id: "20261115180226950"
 title: "Le nom du compte rendu de sprint garde les lettres accentuées"
 type: bug
-priority: P3
+priority: P2
 product: mega-city
 milestone:
 version:
@@ -67,3 +67,4 @@ Ajouter au banc du cycle de vie un sprint au but accentué et vérifier le nom d
   retenue par le PO le 15 novembre (« 1 à 6 oui »). Priorité P3 : un défaut d'affichage, sans perte.
 - Risque : `iconv` n'a pas le même comportement partout ; vérifier sur macOS (BSD) et Linux, ou faire la
   translittération en Node dans le script de compte rendu.
+- 2026-11-17 : troisième et quatrième cas (« voir-tout-ce-qui-est-reli-dans-la-m-thode »). Priorité montée en P2 par délégation du PO absent (rétro du sprint 2 du 17 novembre).

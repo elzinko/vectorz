@@ -3,7 +3,7 @@
 id: "20261117114426425"
 title: ezk-sprint prévoit le développeur isolé et rapatrie son travail par patch
 type: feature
-priority: P3
+priority: P2
 product: mega-city
 milestone:
 version:
@@ -30,10 +30,17 @@ session ». L'outil a placé l'agent dans `.claude/worktrees/agent-<id>` et lui 
 ailleurs. Le travail est revenu par un patch, appliqué à la main. La mémoire du projet note le même
 symptôme lors de sprints antérieurs.
 
+**Deuxième cas, sprint 2 du 17 novembre.** Les deux dossiers isolés des développeurs partaient de
+`174ab4a2`, une version de main vieille de deux jours, et non du main courant. Le développeur de la carte
+de la méthode n'aurait pas vu la carte Process qu'il devait réutiliser. Parade appliquée : le brief lui a
+fait lancer `git checkout --detach <commit de la story>` avant tout, puis `pnpm install --frozen-lockfile`,
+et le rapatriement s'est fait par `git diff <ce commit>`.
+
 ## Proposition
 
 1. Le brief type d'ezk-dev, dans `skills/ezk-sprint/SKILL.md`, dit : tu écris dans ton dossier isolé,
-   tu ne committes pas, tu rends la liste des fichiers.
+   tu commences par te placer sur le commit donné (`git checkout --detach <sha>`) et installer les
+   dépendances, tu ne committes pas, tu rends la liste des fichiers.
 2. L'étape suivante d'ezk-sprint nomme le geste de rapatriement : patch indexé du dossier de l'agent,
    appliqué sur la branche de la story, puis installation des dépendances si le lockfile a changé.
 
@@ -56,4 +63,4 @@ cd products/mega-city && pnpm exec vitest run src/__tests__ -t "ezk-sprint"
 
 - Origine : [rétro du sprint 1 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-1-voir-le-process-de-chaque-projet.md),
   proposition 2, retenue par délégation du PO absent.
-- Priorité P3 posée par délégation ; le PO peut la revoir.
+- Priorité P3 posée par délégation, montée en P2 à la rétro du sprint 2 (second cas, base périmée) ; le PO peut la revoir.
