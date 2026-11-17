@@ -18,88 +18,98 @@
  */
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { type Edge, graphEdges, validateGraph } from '../src/core/graph.js';
-import { type PathRef, checkPathRefs } from '../src/core/structural-refs.js';
-import { loadCatalog } from '../src/loaders/catalog.js';
-import { scanPathRefs } from '../src/loaders/path-refs.js';
+import type { Edge } from '../src/core/graph.js';
+import type { PathRef } from '../src/core/structural-refs.js';
+import { graphCheckData } from '../src/io/graph-check.js';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const asJson = process.argv.slice(2).includes('--json');
 
-const catalog = loadCatalog(repoRoot);
-const report = validateGraph(catalog);
-const pathRefs = checkPathRefs(scanPathRefs(repoRoot), graphEdges(catalog));
-const ok = report.broken.length === 0 && pathRefs.undeclared.length === 0;
+const data = graphCheckData(repoRoot);
+const { nodeCount: n, edgeCount, broken, orphans, pathRefs } = data;
+const ok = broken.length === 0 && pathRefs.undeclared.length === 0;
+
+// Le code de sortie se pose par `exitCode`, jamais par `process.exit` après la sortie : il couperait
+// le JSON à 64 Ko dans un tuyau (constat du 2026-11-01), et le graphe dépasse ce seuil.
+process.exitCode = ok ? 0 : 1;
 
 if (asJson) {
-  console.log(JSON.stringify({ ...report, edges: graphEdges(catalog), pathRefs }, null, 2));
-  process.exit(ok ? 0 : 1);
-}
-
-const { nodeCount: n, edgeCount, broken, orphans } = report;
-const arrow = (e: Edge): string => `${e.from} --(${e.link})--> ${e.to}`;
-const where = (r: PathRef): string => `${r.file}:${r.line}`;
-
-// En clair d'abord (règle human-facing-lisibility) : le verdict en une ligne.
-if (ok) {
-  console.log(
-    `En clair : le graphe de la méthode compile. ${edgeCount} liens, aucun cassé, aucun lien par chemin sans id. ✅`,
-  );
+  console.log(JSON.stringify(data, null, 2));
 } else {
-  const problems = [
-    broken.length > 0 ? `${broken.length} lien(s) cassé(s) sur ${edgeCount}` : '',
-    pathRefs.undeclared.length > 0
-      ? `${pathRefs.undeclared.length} lien(s) par chemin à déclarer par id`
-      : '',
-  ].filter(Boolean);
-  console.log(`En clair : ⚠️ ${problems.join(' et ')}.`);
-}
-console.log(
-  `\nNœuds   : rules ${n.rule} · agents ${n.agent} · skills ${n.skill} · bundles ${n.bundle} · profiles ${n.profile} · outils ${n.tool}`,
-);
-console.log(`Liens   : ${edgeCount}`);
-
-if (broken.length > 0) {
-  console.log(`\nLiens cassés (${broken.length}) — la cible n'existe dans aucun catalogue :`);
-  for (const e of broken) console.log(`  ✗ ${arrow(e)}   [${e.fromKind} → ${e.toKind}]`);
+  printReport();
 }
 
-if (pathRefs.undeclared.length > 0) {
-  console.log(
-    `\nLiens par chemin vers un skill / agent / règle, non déclarés par id (${pathRefs.undeclared.length}) :`,
-  );
-  for (const r of pathRefs.undeclared) {
+function printReport(): void {
+  const arrow = (e: Edge): string => `${e.from} --(${e.link})--> ${e.to}`;
+  const where = (r: PathRef): string => `${r.file}:${r.line}`;
+
+  // En clair d'abord (règle human-facing-lisibility) : le verdict en une ligne.
+  if (ok) {
     console.log(
-      `  ✗ ${where(r)} → ${r.to.kind} ${r.to.id}   déclare-le dans le frontmatter : ${r.declareWith.join(' | ')}`,
+      `En clair : le graphe de la méthode compile. ${edgeCount} liens, aucun cassé, aucun lien par chemin sans id. ✅`,
+    );
+  } else {
+    const problems = [
+      broken.length > 0 ? `${broken.length} lien(s) cassé(s) sur ${edgeCount}` : '',
+      pathRefs.undeclared.length > 0
+        ? `${pathRefs.undeclared.length} lien(s) par chemin à déclarer par id`
+        : '',
+    ].filter(Boolean);
+    console.log(`En clair : ⚠️ ${problems.join(' et ')}.`);
+  }
+  console.log(
+    `\nNœuds   : rules ${n.rule} · agents ${n.agent} · skills ${n.skill} · bundles ${n.bundle} · profiles ${n.profile} · outils ${n.tool} · commandes ${n.command}`,
+  );
+  console.log(`Liens   : ${edgeCount}`);
+
+  if (broken.length > 0) {
+    console.log(`\nLiens cassés (${broken.length}) — la cible n'existe dans aucun catalogue :`);
+    for (const e of broken) console.log(`  ✗ ${arrow(e)}   [${e.fromKind} → ${e.toKind}]`);
+  }
+
+  if (pathRefs.undeclared.length > 0) {
+    console.log(
+      `\nLiens par chemin vers un skill / agent / règle, non déclarés par id (${pathRefs.undeclared.length}) :`,
+    );
+    for (const r of pathRefs.undeclared) {
+      console.log(
+        `  ✗ ${where(r)} → ${r.to.kind} ${r.to.id}   déclare-le dans le frontmatter : ${r.declareWith.join(' | ')}`,
+      );
+    }
+  }
+
+  if (pathRefs.unsupported.length > 0) {
+    // Info : aucun champ d'id n'existe encore pour cette relation (reliquat de la fiche 357).
+    console.log(
+      `\nLiens par chemin sans champ d'id possible (${pathRefs.unsupported.length}, info — relation à nommer) :`,
+    );
+    for (const r of pathRefs.unsupported) {
+      console.log(`  · ${where(r)} : ${r.from.kind} ${r.from.id} → ${r.to.kind} ${r.to.id}`);
+    }
+  }
+
+  const catalogOrphans = orphans.filter((o) => o.kind !== 'tool' && o.kind !== 'command');
+  if (catalogOrphans.length > 0) {
+    // Info, pas erreur : un profil racine, ou une règle pas encore bundlée, est orphelin sans faute.
+    const shown = catalogOrphans.map((o) => `${o.kind}:${o.id}`).join(', ');
+    console.log(`\nOrphelins (${catalogOrphans.length}, info — rien ne les cite) : ${shown}`);
+  }
+
+  // Un outil est justifié par un skill qui le cite, une commande `ezk …` ou une raison « internal »
+  // du manifeste (ADR-0058). Sans rien de cela, personne ne le lance : on le dit, jamais en silence.
+  const toolOrphans = orphans.filter((o) => o.kind === 'tool');
+  if (toolOrphans.length > 0) {
+    console.log(
+      `\nOutils orphelins (${toolOrphans.length}, info — aucun skill ne les cite, aucune commande ezk ne les lance, aucune raison « internal ») :`,
+    );
+    for (const o of toolOrphans) console.log(`  · ${o.id}`);
+  }
+
+  // Une commande qu'aucun skill ne cite se tape à la main : information, jamais une faute (ADR-0089).
+  const commandOrphans = orphans.filter((o) => o.kind === 'command');
+  if (commandOrphans.length > 0) {
+    console.log(
+      `\nCommandes qu'aucun skill ne cite : ${commandOrphans.length} sur ${n.command} (info, à lire dans --json).`,
     );
   }
 }
-
-if (pathRefs.unsupported.length > 0) {
-  // Info : aucun champ d'id n'existe encore pour cette relation (reliquat de la fiche 357).
-  console.log(
-    `\nLiens par chemin sans champ d'id possible (${pathRefs.unsupported.length}, info — relation à nommer) :`,
-  );
-  for (const r of pathRefs.unsupported) {
-    console.log(`  · ${where(r)} : ${r.from.kind} ${r.from.id} → ${r.to.kind} ${r.to.id}`);
-  }
-}
-
-const catalogOrphans = orphans.filter((o) => o.kind !== 'tool');
-if (catalogOrphans.length > 0) {
-  // Info, pas erreur : un profil racine, ou une règle pas encore bundlée, est orphelin sans faute.
-  const shown = catalogOrphans.map((o) => `${o.kind}:${o.id}`).join(', ');
-  console.log(`\nOrphelins (${catalogOrphans.length}, info — rien ne les cite) : ${shown}`);
-}
-
-// Un outil est justifié par un skill qui le cite, une commande `ezk …` ou une raison « internal »
-// du manifeste (ADR-0058). Sans rien de cela, personne ne le lance : on le dit, jamais en silence.
-const toolOrphans = orphans.filter((o) => o.kind === 'tool');
-if (toolOrphans.length > 0) {
-  console.log(
-    `\nOutils orphelins (${toolOrphans.length}, info — aucun skill ne les cite, aucune commande ezk ne les lance, aucune raison « internal ») :`,
-  );
-  for (const o of toolOrphans) console.log(`  · ${o.id}`);
-}
-
-process.exit(ok ? 0 : 1);

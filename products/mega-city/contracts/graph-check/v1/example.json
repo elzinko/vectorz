@@ -1,0 +1,81 @@
+{
+ "schema_version": 1,
+ "nodes": [
+  {
+   "kind": "rule",
+   "id": "clean-code/no-dead-code",
+   "fichier": "rules/clean-code/no-dead-code.md"
+  },
+  {
+   "kind": "skill",
+   "id": "ezk-sprint",
+   "fichier": "skills/ezk-sprint/SKILL.md"
+  },
+  {
+   "kind": "tool",
+   "id": "bin/forge-integrate.ts",
+   "fichier": "bin/forge-integrate.ts"
+  },
+  {
+   "kind": "command",
+   "id": "ezk forge integrate",
+   "fichier": "ezk-manifest.yml"
+  },
+  {
+   "kind": "command",
+   "id": "ezk help",
+   "fichier": "ezk-manifest.yml"
+  }
+ ],
+ "nodeCount": {
+  "rule": 1,
+  "agent": 0,
+  "skill": 1,
+  "bundle": 0,
+  "profile": 0,
+  "tool": 1,
+  "command": 2
+ },
+ "edgeCount": 3,
+ "broken": [],
+ "orphans": [
+  {
+   "kind": "skill",
+   "id": "ezk-sprint"
+  },
+  {
+   "kind": "command",
+   "id": "ezk help"
+  }
+ ],
+ "edges": [
+  {
+   "from": "ezk-sprint",
+   "fromKind": "skill",
+   "link": "applies",
+   "verb": "applique",
+   "to": "clean-code/no-dead-code",
+   "toKind": "rule"
+  },
+  {
+   "from": "ezk forge integrate",
+   "fromKind": "command",
+   "link": "launches",
+   "verb": "lance",
+   "to": "bin/forge-integrate.ts",
+   "toKind": "tool"
+  },
+  {
+   "from": "ezk-sprint",
+   "fromKind": "skill",
+   "link": "uses-command",
+   "verb": "utilise",
+   "to": "ezk forge integrate",
+   "toKind": "command"
+  }
+ ],
+ "pathRefs": {
+  "undeclared": [],
+  "unsupported": []
+ }
+}

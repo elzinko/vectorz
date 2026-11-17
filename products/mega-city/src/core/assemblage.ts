@@ -44,6 +44,7 @@ export function buildAssemblage(graph: CompiledGraph, bind: AssemblageBind = {})
     bundle: 0,
     profile: 0,
     tool: 0,
+    command: 0,
   };
   for (const n of graph.nodes) nodes[n.kind] += 1;
 

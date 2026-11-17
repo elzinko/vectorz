@@ -21,13 +21,21 @@ import type { Catalog } from '../loaders/catalog.js';
 
 /**
  * Les types de nœud du graphe : les cinq catalogues, plus les OUTILS (scripts de `bin/` et des
- * `scripts/` des skills, ADR-0058). Un outil n'est pas un catalogue : il est CALCULÉ depuis les
- * fichiers, jamais écrit à la main.
+ * `scripts/` des skills, ADR-0058) et les COMMANDES `ezk` du manifeste (ADR-0089). Un outil ou une
+ * commande n'est pas un catalogue : il est CALCULÉ depuis les fichiers, jamais écrit à la main.
  */
-export type NodeKind = 'rule' | 'agent' | 'skill' | 'bundle' | 'profile' | 'tool';
+export type NodeKind = 'rule' | 'agent' | 'skill' | 'bundle' | 'profile' | 'tool' | 'command';
 
 /** L'ordre d'énumération des nœuds — la source unique, partagée avec le graphe compilé. */
-export const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundle', 'profile', 'tool'];
+export const NODE_KINDS: readonly NodeKind[] = [
+  'rule',
+  'agent',
+  'skill',
+  'bundle',
+  'profile',
+  'tool',
+  'command',
+];
 
 /**
  * Le VOCABULAIRE de lien réuni. Chaque variante = un champ de frontmatter/YAML aujourd'hui
@@ -39,6 +47,8 @@ export const NODE_KINDS: readonly NodeKind[] = ['rule', 'agent', 'skill', 'bundl
  *   enforces   rule  → agent   (enforcement agent-check, seul lien inter-catalogue, domain.ts)
  *   participants rule(interaction) → agent      (ADR-0002)
  *   uses       skill → outil   (ADR-0058 : « ce skill cite et lance cet outil », CALCULÉ depuis sa doc)
+ *   uses-command skill → commande `ezk` (ADR-0089 : « ce skill cite cette commande en code »)
+ *   launches   commande → outil (ADR-0089 : « cette commande exécute ce script », lue dans le manifeste)
  *   les `*-…` = composition STRUCTURELLE des bundles/profiles (le keystone).
  */
 export type LinkType =
@@ -53,6 +63,8 @@ export type LinkType =
   | 'enforces'
   | 'participants'
   | 'uses'
+  | 'uses-command'
+  | 'launches'
   | 'bundle-extends'
   | 'bundle-rule'
   | 'profile-extends'
@@ -68,11 +80,19 @@ export type LinkType =
  *   convoque         X fait venir le rôle Y
  *   applique         X suit la règle Y
  *   est-verifie-par  la règle X est contrôlée par Y
- *   utilise          le skill X lance l'outil Y   (ADR-0058)
+ *   utilise          le skill X lance l'outil Y   (ADR-0058), ou cite la commande `ezk` Y (ADR-0089)
+ *   lance            la commande `ezk` X exécute l'outil Y   (ADR-0089)
  * Fermé volontairement : un nouveau verbe est une décision de conception, pas un ajout
  * en passant (le test `graph-vocabulary` fige le jeu et ses couples source → cible).
  */
-export const LINK_VERBS = ['compose', 'convoque', 'applique', 'est-verifie-par', 'utilise'] as const;
+export const LINK_VERBS = [
+  'compose',
+  'convoque',
+  'applique',
+  'est-verifie-par',
+  'utilise',
+  'lance',
+] as const;
 export type LinkVerb = (typeof LINK_VERBS)[number];
 
 /** Une arête du graphe : `from` (un nœud `fromKind`) référence `to` (attendu dans `toKind`) via `link`, qui dit `verb`. */
@@ -117,6 +137,10 @@ export const EDGE_SOURCES: readonly EdgeSource[] = [
   { link: 'participants', fromKind: 'rule', toKind: 'agent', verb: 'convoque' },
   // Un skill lance un outil : le lien est calculé depuis la doc du skill (core/tools.ts).
   { link: 'uses', fromKind: 'skill', toKind: 'tool', verb: 'utilise' },
+  // Même verbe pour une commande `ezk` citée en code par le skill (ADR-0089 : pas de verbe neuf).
+  { link: 'uses-command', fromKind: 'skill', toKind: 'command', verb: 'utilise' },
+  // Une commande lance le script que le manifeste lui donne ; sans outil connu, aucune arête.
+  { link: 'launches', fromKind: 'command', toKind: 'tool', verb: 'lance' },
   { link: 'bundle-extends', fromKind: 'bundle', toKind: 'bundle', verb: 'compose' },
   { link: 'bundle-rule', fromKind: 'bundle', toKind: 'rule', verb: 'compose' },
   { link: 'profile-extends', fromKind: 'profile', toKind: 'profile', verb: 'compose' },
@@ -147,6 +171,8 @@ export function nodesOf(catalog: Catalog, kind: NodeKind): Map<string, { id: str
       return catalog.profiles;
     case 'tool':
       return catalog.tools ?? new Map();
+    case 'command':
+      return catalog.cliCommands ?? new Map();
   }
 }
 
@@ -171,19 +197,31 @@ function targetsFor(catalog: Catalog, src: EdgeSource): { from: string; to: stri
       break;
     case 'interactions':
       for (const a of catalog.agents.values())
-        push(a.id, a.interactions?.filter((id) => !catalog.bundles.has(id)));
+        push(
+          a.id,
+          a.interactions?.filter((id) => !catalog.bundles.has(id)),
+        );
       break;
     case 'interactions-bundle':
       for (const a of catalog.agents.values())
-        push(a.id, a.interactions?.filter((id) => catalog.bundles.has(id)));
+        push(
+          a.id,
+          a.interactions?.filter((id) => catalog.bundles.has(id)),
+        );
       break;
     case 'applies':
       for (const s of catalog.skills.values())
-        push(s.id, s.applies?.filter((id) => !catalog.bundles.has(id)));
+        push(
+          s.id,
+          s.applies?.filter((id) => !catalog.bundles.has(id)),
+        );
       break;
     case 'applies-bundle':
       for (const s of catalog.skills.values())
-        push(s.id, s.applies?.filter((id) => catalog.bundles.has(id)));
+        push(
+          s.id,
+          s.applies?.filter((id) => catalog.bundles.has(id)),
+        );
       break;
     case 'enforces':
       for (const r of catalog.rules.values())
@@ -194,7 +232,17 @@ function targetsFor(catalog: Catalog, src: EdgeSource): { from: string; to: stri
       break;
     case 'uses':
       // Le lien est porté par l'outil (`usedBy`) : c'est lui qui sait qui le cite.
-      for (const t of catalog.tools?.values() ?? []) for (const skill of t.usedBy) out.push({ from: skill, to: t.id });
+      for (const t of catalog.tools?.values() ?? [])
+        for (const skill of t.usedBy) out.push({ from: skill, to: t.id });
+      break;
+    case 'uses-command':
+      for (const c of catalog.cliCommands?.values() ?? [])
+        for (const skill of c.usedBy) out.push({ from: skill, to: c.id });
+      break;
+    case 'launches':
+      // Un script qui n'est pas un outil connu n'émet pas d'arête : jamais un lien cassé de plus.
+      for (const c of catalog.cliCommands?.values() ?? [])
+        if (catalog.tools?.has(c.script)) out.push({ from: c.id, to: c.script });
       break;
     case 'bundle-extends':
       for (const b of catalog.bundles.values()) push(b.id, b.extends);

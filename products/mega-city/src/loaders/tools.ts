@@ -6,13 +6,22 @@
  * la commande `ezk` en dit, puis laisse le cœur pur (`core/tools.ts`) calculer qui cite quoi.
  * Rien ici ne juge : le cœur calcule, le validateur du graphe rapporte.
  */
-import { closeSync, existsSync, openSync, readFileSync, readSync, readdirSync, statSync } from 'node:fs';
+import {
+  closeSync,
+  existsSync,
+  openSync,
+  readFileSync,
+  readSync,
+  readdirSync,
+  statSync,
+} from 'node:fs';
 import { join } from 'node:path';
+import { type CliCommand, deriveCliCommands } from '../core/cli-commands.js';
 import { parseManifest } from '../core/ezk-cli.js';
 import { type RoutedTools, type Tool, deriveTools, isToolFile } from '../core/tools.js';
 import type { Skill } from '../domain/model.js';
 
-const MANIFEST_FILE = 'ezk-manifest.yml';
+export const MANIFEST_FILE = 'ezk-manifest.yml';
 const SKILL_FILE = 'SKILL.md';
 
 /** Les deux premiers octets du fichier sont `#!` : c'est un script, même sans extension ni droit d'exécution. */
@@ -118,12 +127,33 @@ export function readRouting(rootDir: string): RoutedTools {
  * Le nom du dossier d'un skill est son id (convention de `skills/`, tenue par un test).
  */
 export function loadTools(rootDir: string, skills: ReadonlyMap<string, Skill>): Tool[] {
-  const docs = [...skills.values()].map((skill) => ({
+  return deriveTools(listToolFiles(rootDir), skillTexts(skills), readRouting(rootDir));
+}
+
+/** Les skills du catalogue sous la forme que lit le calcul des liens : leur id et leurs textes de doc. */
+function skillTexts(skills: ReadonlyMap<string, Skill>): { skill: string; texts: string[] }[] {
+  return [...skills.values()].map((skill) => ({
     skill: skill.id,
     texts: [
       skill.content,
       ...(skill.assets ?? []).filter((a) => a.path.endsWith('.md')).map((a) => a.content),
     ],
   }));
-  return deriveTools(listToolFiles(rootDir), docs, readRouting(rootDir));
+}
+
+/**
+ * Les commandes `ezk` du manifeste, avec les skills qui les citent en code (ADR-0089). Pas de
+ * manifeste, ou un manifeste illisible : aucune commande (même tolérance que `readRouting`).
+ */
+export function loadCliCommands(rootDir: string, skills: ReadonlyMap<string, Skill>): CliCommand[] {
+  const path = join(rootDir, MANIFEST_FILE);
+  if (!existsSync(path)) return [];
+  try {
+    return deriveCliCommands(
+      parseManifest(readFileSync(path, 'utf8')).commands,
+      skillTexts(skills),
+    );
+  } catch {
+    return [];
+  }
 }

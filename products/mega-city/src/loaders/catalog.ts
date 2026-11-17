@@ -13,6 +13,7 @@ import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'n
 import { basename, join, relative, resolve, sep } from 'node:path';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
+import type { CliCommand } from '../core/cli-commands.js';
 import type { Tool } from '../core/tools.js';
 import type {
   Agent,
@@ -25,7 +26,7 @@ import type {
   Skill,
   SkillAsset,
 } from '../domain/model.js';
-import { listToolFiles, loadTools } from './tools.js';
+import { MANIFEST_FILE, listToolFiles, loadCliCommands, loadTools } from './tools.js';
 
 export interface Catalog {
   rules: Map<string, Rule>;
@@ -44,6 +45,11 @@ export interface Catalog {
    * (un projet hôte, un catalogue de test) : ni le bind ni les écritures n'en dépendent.
    */
   tools?: Map<string, Tool>;
+  /**
+   * Les commandes `ezk` du manifeste (`ezk-manifest.yml`), CALCULÉES — fiche 20261117114544666, ADR-0089.
+   * Distinct de `commands` (les slash-commands de Claude Code). Absent quand la racine n'a pas de manifeste.
+   */
+  cliCommands?: Map<string, CliCommand>;
 }
 
 const MARKDOWN = /\.md$/;
@@ -335,6 +341,7 @@ export function loadCatalog(rootDir: string): Catalog {
   const skills = loadSkills(join(rootDir, 'skills'));
   const tools = loadTools(rootDir, skills);
   const commands = loadCommands(join(rootDir, 'commands'));
+  const cliCommands = loadCliCommands(rootDir, skills);
   return {
     rules: loadMarkdown(join(rootDir, 'rules'), (file) => readRule(file, rootDir), true), // récursif : ids slashés → sous-dossiers (fiche 0037)
     agents: loadMarkdown(join(rootDir, 'agents'), readAgent),
@@ -343,6 +350,7 @@ export function loadCatalog(rootDir: string): Catalog {
     profiles: loadYaml<Profile>(join(rootDir, 'profiles')),
     ...(commands.size > 0 ? { commands } : {}),
     ...(tools.length > 0 ? { tools: indexById(tools) } : {}),
+    ...(cliCommands.length > 0 ? { cliCommands: indexById(cliCommands) } : {}),
   };
 }
 
@@ -403,13 +411,17 @@ export function catalogSources(rootDir: string, baseDir: string = rootDir): Map<
   }
   // Les outils : leur id EST leur chemin depuis `rootDir` (fiche 20260917123943914).
   for (const id of listToolFiles(rootDir)) out.set(`tool:${id}`, rel(join(rootDir, id)));
+  // Les commandes `ezk` : toutes déclarées dans le manifeste (ADR-0089).
+  for (const c of loadCliCommands(rootDir, new Map()))
+    out.set(`command:${c.id}`, rel(join(rootDir, MANIFEST_FILE)));
   for (const [kind, dir] of [
     ['bundle', 'bundles'],
     ['profile', 'profiles'],
   ] as const) {
     for (const file of listFiles(join(rootDir, dir), YAML)) {
       const id = readYamlEntity<{ id?: unknown } | null>(file)?.id;
-      if (typeof id === 'string' && id.length > 0) out.set(`${kind}:${assertSafeId(id)}`, rel(file));
+      if (typeof id === 'string' && id.length > 0)
+        out.set(`${kind}:${assertSafeId(id)}`, rel(file));
     }
   }
   return out;

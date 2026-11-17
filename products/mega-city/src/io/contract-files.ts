@@ -11,6 +11,7 @@
  *   contracts/board-process/v1/schema.json, example.json           ← chaque fiche sur son étape
  *   contracts/board-maps/v1/schema.json, example.json              ← les documents de la méthode
  *   contracts/process-show/v1/schema.json, example.json            ← les étapes fines de chaque skill
+ *   contracts/graph-check/v1/schema.json, example.json             ← le graphe de la méthode, briques et liens
  * Chaque schéma est tiré du schéma zod ; chaque exemple est la sortie de la commande sur la fixture.
  * L'exemple de `ezk process show --json` porte les VRAIES étapes de `method/etapes.yml` (la fixture ne
  * donne que les réglages) : une étape ajoutée au fichier demande de régénérer l'exemple.
@@ -30,12 +31,14 @@ import { CONFIG_SCHEMA_VERSION, ConfigShowSchema } from '../core/config-contract
 import { MAPS_SCHEMA_VERSION, MapsContractSchema } from '../core/maps-contract.js';
 import { PROCESS_SCHEMA_VERSION, ProcessContractSchema } from '../core/process-contract.js';
 import { PROCESS_SHOW_SCHEMA_VERSION, ProcessShowSchema } from '../core/process-show.js';
+import { GRAPH_CHECK_SCHEMA_VERSION, GraphCheckSchema } from '../core/graph-check.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
 import { RECIPES_SCHEMA_VERSION, RecipesContractSchema, discover, recipesContract } from '../core/recipe-discovery.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
 import { boardProcessData } from './board-process.js';
 import { boardShowData } from './board-show.js';
 import { configShowData } from './config-show.js';
+import { graphCheckExample } from './graph-check.js';
 import { methodMapsData } from './method-maps.js';
 import { processShowData } from './process-show.js';
 
@@ -63,6 +66,9 @@ export const RECIPES_EXAMPLE_FILE = `${RECIPES_DIR}/example.json`;
 const PROCESS_SHOW_DIR = `contracts/process-show/v${PROCESS_SHOW_SCHEMA_VERSION}`;
 export const PROCESS_SHOW_SCHEMA_FILE = `${PROCESS_SHOW_DIR}/schema.json`;
 export const PROCESS_SHOW_EXAMPLE_FILE = `${PROCESS_SHOW_DIR}/example.json`;
+const GRAPH_CHECK_DIR = `contracts/graph-check/v${GRAPH_CHECK_SCHEMA_VERSION}`;
+export const GRAPH_CHECK_SCHEMA_FILE = `${GRAPH_CHECK_DIR}/schema.json`;
+export const GRAPH_CHECK_EXAMPLE_FILE = `${GRAPH_CHECK_DIR}/example.json`;
 
 /**
  * L'exemple de `ezk recipes --json` part d'entrées écrites ici, pas de `recipes/` : l'exemple ne doit
@@ -288,6 +294,9 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [RECIPES_EXAMPLE_FILE]: exampleText(recipesExample()),
       [PROCESS_SHOW_SCHEMA_FILE]: schemaText(ProcessShowSchema),
       [PROCESS_SHOW_EXAMPLE_FILE]: exampleText(processShowData(root)),
+      [GRAPH_CHECK_SCHEMA_FILE]: schemaText(GraphCheckSchema),
+      // Un petit graphe écrit à la main : l'exemple ne bouge pas quand la méthode gagne une brique.
+      [GRAPH_CHECK_EXAMPLE_FILE]: exampleText(graphCheckExample()),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

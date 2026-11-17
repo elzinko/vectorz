@@ -2,7 +2,7 @@
  * graph-vocabulary — les cinq mots de lien (`composes` · `roles` · `competences` ·
  * `interactions` · `enforcements`) se lisent comme des verbes fermés (fiche 357,
  * ADR-0040 D1 : l'unification vit dans le compilateur, par ALIAS — aucun champ renommé).
- * Quatre verbes à l'origine ; l'ADR-0058 en ajoute un cinquième, `utilise` (skill → outil).
+ * Quatre verbes à l'origine ; l'ADR-0058 en ajoute un cinquième, `utilise` (skill → outil) ; l'ADR-0089 un sixième, `lance` (commande → outil).
  *
  * Ce fichier fige la décision : si quelqu'un ajoute un lien, change son verbe ou ouvre
  * un sixième verbe, un test rougit et force un choix conscient.
@@ -27,14 +27,15 @@ function catalogOf(parts: Partial<Catalog>): Catalog {
   };
 }
 
-describe('vocabulaire de liens — jeu fermé de 5 verbes (ADR-0040 D1, amendé par ADR-0058)', () => {
-  it('le jeu est fermé : exactement cinq verbes', () => {
+describe('vocabulaire de liens — jeu fermé de 6 verbes (ADR-0040 D1, amendé par ADR-0058 et ADR-0089)', () => {
+  it('le jeu est fermé : exactement six verbes', () => {
     expect([...LINK_VERBS]).toEqual([
       'compose',
       'convoque',
       'applique',
       'est-verifie-par',
       'utilise',
+      'lance',
     ]);
   });
 
@@ -85,7 +86,9 @@ describe('vocabulaire de liens — jeu fermé de 5 verbes (ADR-0040 D1, amendé 
       'skill>rule',
     ]);
     expect(couples('est-verifie-par')).toEqual(['rule>agent']);
-    expect(couples('utilise')).toEqual(['skill>tool']); // ADR-0058 : « ce skill lance cet outil »
+    // ADR-0058 : « ce skill lance cet outil » ; ADR-0089 : « ce skill cite cette commande ».
+    expect(couples('utilise')).toEqual(['skill>command', 'skill>tool']);
+    expect(couples('lance')).toEqual(['command>tool']); // ADR-0089 : « cette commande exécute cet outil »
   });
 
   it('chaque arête sortie de graphEdges porte le verbe de son lien', () => {

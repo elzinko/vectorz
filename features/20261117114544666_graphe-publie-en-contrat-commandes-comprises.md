@@ -56,14 +56,14 @@ C'est la première tranche de la fiche
 
 ## Critères d'acceptation
 
-- [ ] `ezk graph check --json` porte `schema_version: 1` et `nodes[]`, chaque brique avec sa sorte et
+- [x] `ezk graph check --json` porte `schema_version: 1` et `nodes[]`, chaque brique avec sa sorte et
       son id ; le nombre de briques par sorte égale `nodeCount`.
-- [ ] `contracts/graph-check/v1/schema.json` et `example.json` existent ; un test valide la sortie
+- [x] `contracts/graph-check/v1/schema.json` et `example.json` existent ; un test valide la sortie
       réelle contre le schéma.
-- [ ] Chaque commande du manifeste est une brique `command`, reliée par `lance` à l'outil qu'elle exécute.
-- [ ] Une compétence dont le SKILL.md cite `` `ezk <domaine> <verbe>` `` a un lien `utilise` vers cette
+- [x] Chaque commande du manifeste est une brique `command`, reliée par `lance` à l'outil qu'elle exécute.
+- [x] Une compétence dont le SKILL.md cite `` `ezk <domaine> <verbe>` `` a un lien `utilise` vers cette
       commande ; un test le prouve sur une compétence réelle.
-- [ ] Le graphe ne compte aucun lien cassé de plus qu'avant ; la gate reste verte.
+- [x] Le graphe ne compte aucun lien cassé de plus qu'avant ; la gate reste verte.
 
 ## Comment vérifier
 
@@ -78,6 +78,12 @@ cd products/mega-city && pnpm gate
 - `lien` — une arête typée par un verbe : compose, convoque, applique, est-vérifié-par, utilise, lance.
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 5 critères prouvés sur le vrai graphe
+(337 briques, 437 liens, 0 cassé). ADR-0089 amende l'ADR-0040 : 7ᵉ sorte `command`, 6ᵉ verbe `lance`.
+Corrigé en passant : la sortie `--json` était tronquée à 64 Ko dans un tuyau (`process.exit`).
+Reste ouvert, non bloquant : un triple-backtick sur une seule ligne compterait comme une citation.
+
 
 - Découpée le 2026-11-17 de la fiche du graphe compilé, par délégation du PO absent (run autonome
   jusqu'à 17 h 31). Restent dans la fiche d'origine : les recettes, le bloc santé, la dette de la loi et

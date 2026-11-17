@@ -1,0 +1,468 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "rule",
+              "agent",
+              "skill",
+              "bundle",
+              "profile",
+              "tool",
+              "command"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "fichier": {
+            "description": "Le fichier qui déclare la brique, relatif à `products/mega-city`. Absent si elle n’en a pas.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "id"
+        ]
+      },
+      "description": "Toutes les briques, triées par sorte puis par id. Leur nombre par sorte égale `nodeCount`."
+    },
+    "nodeCount": {
+      "type": "object",
+      "properties": {
+        "rule": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "agent": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "skill": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "bundle": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "profile": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "tool": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "command": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "rule",
+        "agent",
+        "skill",
+        "bundle",
+        "profile",
+        "tool",
+        "command"
+      ]
+    },
+    "edgeCount": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "fromKind": {
+            "type": "string",
+            "enum": [
+              "rule",
+              "agent",
+              "skill",
+              "bundle",
+              "profile",
+              "tool",
+              "command"
+            ]
+          },
+          "link": {
+            "type": "string",
+            "enum": [
+              "composes",
+              "delegates",
+              "roles",
+              "competences",
+              "interactions",
+              "applies",
+              "interactions-bundle",
+              "applies-bundle",
+              "enforces",
+              "participants",
+              "uses",
+              "uses-command",
+              "launches",
+              "bundle-extends",
+              "bundle-rule",
+              "profile-extends",
+              "profile-bundle",
+              "profile-agent",
+              "profile-skill",
+              "profile-interaction"
+            ],
+            "description": "Le nom du champ qui porte le lien (`composes`, `uses`, `launches`…)."
+          },
+          "verb": {
+            "type": "string",
+            "enum": [
+              "compose",
+              "convoque",
+              "applique",
+              "est-verifie-par",
+              "utilise",
+              "lance"
+            ],
+            "description": "Ce que le lien veut dire : le jeu fermé de verbes."
+          },
+          "to": {
+            "type": "string"
+          },
+          "toKind": {
+            "type": "string",
+            "enum": [
+              "rule",
+              "agent",
+              "skill",
+              "bundle",
+              "profile",
+              "tool",
+              "command"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "fromKind",
+          "link",
+          "verb",
+          "to",
+          "toKind"
+        ]
+      },
+      "description": "Tous les liens, source → verbe → cible."
+    },
+    "broken": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "fromKind": {
+            "type": "string",
+            "enum": [
+              "rule",
+              "agent",
+              "skill",
+              "bundle",
+              "profile",
+              "tool",
+              "command"
+            ]
+          },
+          "link": {
+            "type": "string",
+            "enum": [
+              "composes",
+              "delegates",
+              "roles",
+              "competences",
+              "interactions",
+              "applies",
+              "interactions-bundle",
+              "applies-bundle",
+              "enforces",
+              "participants",
+              "uses",
+              "uses-command",
+              "launches",
+              "bundle-extends",
+              "bundle-rule",
+              "profile-extends",
+              "profile-bundle",
+              "profile-agent",
+              "profile-skill",
+              "profile-interaction"
+            ],
+            "description": "Le nom du champ qui porte le lien (`composes`, `uses`, `launches`…)."
+          },
+          "verb": {
+            "type": "string",
+            "enum": [
+              "compose",
+              "convoque",
+              "applique",
+              "est-verifie-par",
+              "utilise",
+              "lance"
+            ],
+            "description": "Ce que le lien veut dire : le jeu fermé de verbes."
+          },
+          "to": {
+            "type": "string"
+          },
+          "toKind": {
+            "type": "string",
+            "enum": [
+              "rule",
+              "agent",
+              "skill",
+              "bundle",
+              "profile",
+              "tool",
+              "command"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "fromKind",
+          "link",
+          "verb",
+          "to",
+          "toKind"
+        ]
+      },
+      "description": "Les liens dont la cible n’existe pas. Vide quand la méthode tient."
+    },
+    "orphans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "rule",
+              "agent",
+              "skill",
+              "bundle",
+              "profile",
+              "tool",
+              "command"
+            ]
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "id"
+        ]
+      },
+      "description": "Information, pas erreur : les briques que rien ne cite."
+    },
+    "pathRefs": {
+      "type": "object",
+      "properties": {
+        "undeclared": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "rule",
+                      "agent",
+                      "skill",
+                      "bundle",
+                      "profile",
+                      "tool",
+                      "command"
+                    ]
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ]
+              },
+              "to": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "rule",
+                      "agent",
+                      "skill",
+                      "bundle",
+                      "profile",
+                      "tool",
+                      "command"
+                    ]
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ]
+              },
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "href": {
+                "type": "string"
+              },
+              "declareWith": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "file",
+              "line",
+              "href",
+              "declareWith"
+            ]
+          }
+        },
+        "unsupported": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "rule",
+                      "agent",
+                      "skill",
+                      "bundle",
+                      "profile",
+                      "tool",
+                      "command"
+                    ]
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ]
+              },
+              "to": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "rule",
+                      "agent",
+                      "skill",
+                      "bundle",
+                      "profile",
+                      "tool",
+                      "command"
+                    ]
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ]
+              },
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "href": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "file",
+              "line",
+              "href"
+            ]
+          }
+        }
+      },
+      "required": [
+        "undeclared",
+        "unsupported"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "nodes",
+    "nodeCount",
+    "edgeCount",
+    "edges",
+    "broken",
+    "orphans",
+    "pathRefs"
+  ]
+}
