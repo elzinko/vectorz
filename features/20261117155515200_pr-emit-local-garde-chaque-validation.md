@@ -7,7 +7,7 @@ product: mega-city
 milestone:
 version:
 labels: [pr, outillage]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande qui écrit un fichier, aucun écran modifié
@@ -39,8 +39,8 @@ statut ne coupe plus la paire quand l'option est répétée.
 
 ## Critères d'acceptation
 
-- [ ] Deux `--validation` donnent les lignes des deux, dans l'ordre de la commande.
-- [ ] La forme à virgules d'un seul `--validation` marche comme avant.
+- [x] Deux `--validation` donnent les lignes des deux, dans l'ordre de la commande.
+- [x] La forme à virgules d'un seul `--validation` marche comme avant.
 
 ## Comment vérifier
 
@@ -50,6 +50,8 @@ ezk pr emit-local --fiche <fiche> --validation "A=✅" --validation "B=✅"   # 
 ```
 
 ## Notes / décisions
+
+- Livrée le 2026-11-17, écrite par l'orchestrateur. Critères prouvés par ezk-reviewer (GO) : deux `--validation` donnent deux lignes dans l'ordre, une virgule dans un statut ne le coupe plus ; la forme à virgules d'une seule option marche comme avant. Lecteur pur dans `src/pr-body/validation-args.ts`.
 
 - Origine : [rétro de fin de run du 17 novembre](../docs/captures/2026-11-17-retro-fin-de-run-coupe-de-version.md), proposition P1.
 - Priorité P1 tranchée par ezk-pm le 17 novembre, par délégation du PO.

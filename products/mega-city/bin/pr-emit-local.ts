@@ -5,7 +5,7 @@
  *
  * Usage :
  *   pnpm --dir products/mega-city pr:emit-local --fiche features/<id>_<slug>.md \
- *     [--out-root features/pr-local] [--validation "Gate locale=✅,Revue=✅"]
+ *     [--out-root features/pr-local] [--validation "Gate locale=✅,Revue=✅" | --validation "Gate=✅" --validation "Revue=✅" …]
  *
  * Le projet est celui que désigne `ezk` (`--root`, ou le dépôt du dossier courant), sinon `INIT_CWD`
  * (répertoire d'invocation de `pnpm --dir …`) : jamais le monorepo de la méthode. La fiche et
@@ -18,39 +18,41 @@ import { basename, join, posix, relative, resolve, sep } from 'node:path';
 import { recalLinks } from '../src/backlog/ship-fiche.js';
 import { projectRootOrExit } from '../src/io/project-root.js';
 import { renderPrBody, type ValidationRow } from '../src/pr-body/render.js';
+import { parseValidationSpecs } from '../src/pr-body/validation-args.js';
 
 function fail(message: string): never {
   console.error(`✗ ${message}`);
   process.exit(2);
 }
 
-function parseArgs(argv: readonly string[]): Record<string, string> {
+/** Les options à valeur ; `--validation` peut se répéter, chaque valeur est gardée dans l'ordre. */
+function parseArgs(argv: readonly string[]): { values: Record<string, string>; validations: string[] } {
   const values: Record<string, string> = {};
+  const validations: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (!arg.startsWith('--')) continue;
     const key = arg.slice(2);
     const value = argv[i + 1];
     if (value === undefined || value.startsWith('--')) fail(`option --${key} attend une valeur`);
-    values[key] = value;
+    if (key === 'validation') validations.push(value);
+    else values[key] = value;
     i++;
   }
-  return values;
+  return { values, validations };
 }
 
-/** "Gate locale=✅,Revue=⏳" → [{modalite,statut}, …]. Absent → défaut du cœur (gates locales). */
-function parseValidation(spec: string | undefined): ValidationRow[] | undefined {
-  if (!spec) return undefined;
-  return spec.split(',').map((pair) => {
-    const idx = pair.indexOf('=');
-    if (idx < 0) fail(`--validation : « ${pair} » attendu au format « Modalité=Statut »`);
-    return { modalite: pair.slice(0, idx).trim(), statut: pair.slice(idx + 1).trim() };
-  });
+/** Les lignes de la matrice « Validation ». Absent → défaut du cœur (gates locales). */
+function parseValidation(specs: readonly string[]): ValidationRow[] | undefined {
+  const parsed = parseValidationSpecs(specs);
+  if (parsed === undefined) return undefined;
+  if (!parsed.ok) fail(`--validation : « ${parsed.pair} » attendu au format « Modalité=Statut »`);
+  return parsed.rows;
 }
 
 // Sans projet désigné : le dossier où l'on a tapé la commande (pnpm change de dossier avant le script).
 const project = projectRootOrExit(process.env.INIT_CWD ?? process.cwd());
-const values = parseArgs(project.rest);
+const { values, validations } = parseArgs(project.rest);
 const ficheArg = values.fiche;
 if (!ficheArg) fail('option --fiche est requise (chemin de la fiche, ex. features/<id>_<slug>.md)');
 
@@ -78,7 +80,7 @@ const body = renderPrBody({
   ficheText: rebased.text,
   fichePath: fichePathRel,
   ficheHref: posix.relative(posix.dirname(outPathRel), fichePathRel),
-  validation: parseValidation(values.validation),
+  validation: parseValidation(validations),
 });
 
 mkdirSync(outRoot, { recursive: true });
