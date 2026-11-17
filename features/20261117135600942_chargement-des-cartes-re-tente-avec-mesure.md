@@ -40,10 +40,10 @@ non bloquant à chaque fois. Le mécanisme est partagé depuis le 17 novembre :
 
 ## Critères d'acceptation
 
-- [ ] Après 30 réponses « en cours de lecture », la carte dit qu'elle attend depuis plus d'une minute
+- [x] Après 30 réponses « en cours de lecture », la carte dit qu'elle attend depuis plus d'une minute
       et cesse de redemander.
-- [ ] Une erreur réseau suivie d'une réponse correcte affiche la carte, sans rechargement de la page.
-- [ ] Après 4 erreurs réseau de suite, la carte dit « injoignable » et cesse de redemander.
+- [x] Une erreur réseau suivie d'une réponse correcte affiche la carte, sans rechargement de la page.
+- [x] Après 4 erreurs réseau de suite, la carte dit « injoignable » et cesse de redemander.
 
 ## Comment vérifier
 
@@ -52,6 +52,9 @@ cd products/cop1/packages/web && pnpm exec vitest run src/board/ProcessMap.test.
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 3 critères prouvés par des tests à horloge simulée. Vérifié dans le navigateur : les deux cartes chargent sur le daemon réel. Reste ouvert, non bloquant : une réponse HTTP illisible est dite « injoignable » alors que le serveur a répondu (comportement hérité).
+
 
 - Origine : [rétro du sprint 4 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-4-petites-reparations.md),
   proposition 3, retenue par délégation du PO absent.

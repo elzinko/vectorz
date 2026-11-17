@@ -4,7 +4,7 @@
  * mesure rien : le zoom est couvert par les tests de la projection, et le niveau 2 se force par
  * `initialLevel`.
  */
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { GraphMap } from './GraphMap.js';
 import { stubFlowBrowserApis } from './testing/flowStubs.js';
@@ -53,12 +53,20 @@ describe('GraphMap', () => {
     );
   });
 
-  it('daemon injoignable : le dit', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('down'))));
-    render(<GraphMap project={project} />);
-    expect((await screen.findByRole('status')).textContent).toBe(
-      'carte indisponible : serveur de mission control injoignable',
-    );
+  it('daemon injoignable : le dit, après trois re-tentatives', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('down'))));
+      render(<GraphMap project={project} />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000 + 4000 + 8000 + 1000);
+      });
+      expect(screen.getByRole('status').textContent).toBe(
+        'carte indisponible : serveur de mission control injoignable',
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('en lecture : la carte attend', () => {

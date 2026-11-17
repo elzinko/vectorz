@@ -3,7 +3,7 @@
  * skills, et dit pourquoi quand le contrat manque. jsdom ne mesure rien : ResizeObserver et
  * DOMMatrixReadOnly sont simulés ; le zoom, lui, est couvert par les tests de la projection.
  */
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { ProcessMap } from './ProcessMap.js';
 import { stubFlowBrowserApis } from './testing/flowStubs.js';
@@ -61,12 +61,20 @@ describe('ProcessMap', () => {
     );
   });
 
-  it('daemon injoignable : le dit', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('down'))));
-    render(<ProcessMap project={project} />);
-    expect((await screen.findByRole('status')).textContent).toBe(
-      'process indisponible : serveur de mission control injoignable',
-    );
+  it('daemon injoignable : le dit, après trois re-tentatives', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('down'))));
+      render(<ProcessMap project={project} />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000 + 4000 + 8000 + 1000);
+      });
+      expect(screen.getByRole('status').textContent).toBe(
+        'process indisponible : serveur de mission control injoignable',
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('en lecture : la carte attend', () => {
