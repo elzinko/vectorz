@@ -36,8 +36,8 @@ Dans `products/cop1/packages/app/src/features/board/ezkGraphSource.ts`, une sort
 
 ## Critères d'acceptation
 
-- [ ] Un graphe sans `nodeCount.recipe` ni `nodeCount.command` est accepté, ces comptes valant 0.
-- [ ] Une sorte inconnue dans `nodes` reste refusée, avec un message clair.
+- [x] Un graphe sans `nodeCount.recipe` ni `nodeCount.command` est accepté, ces comptes valant 0.
+- [x] Une sorte inconnue dans `nodes` reste refusée, avec un message clair.
 
 ## Comment vérifier
 
@@ -46,6 +46,9 @@ pnpm exec vitest run products/cop1/packages/app/src/features/board/ezkGraphSourc
 ```
 
 ## Notes / décisions
+
+**Livraison du 2026-11-17.** Revue adverse `ezk-reviewer` : GO, 2 critères prouvés. Toute sorte connue absente vaut 0 ; c'est sans risque, car la carte recompte ses familles depuis `nodes`.
+
 
 - Origine : [rétro du sprint 6 du 17 novembre](../docs/captures/2026-11-17-retro-sprint-6-recettes-dans-le-graphe.md),
   proposition 1, retenue par délégation du PO absent.

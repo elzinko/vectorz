@@ -40,6 +40,26 @@ describe('translateGraphCheck', () => {
     expect(() => translateGraphCheck({ ...example(), edges: [{ from: 'a' }] })).toThrow(/champ fromKind absent/);
     expect(() => translateGraphCheck({ schema_version: 1, nodes: 'x' })).toThrow(/champ nodes mal formé/);
   });
+
+  it('accepte le graphe d’une méthode plus ancienne : une sorte récente absente de nodeCount vaut 0', () => {
+    const old = example();
+    const nodeCount = { ...(old.nodeCount as Record<string, unknown>) };
+    delete nodeCount.recipe;
+    delete nodeCount.command;
+    const nodes = (old.nodes as { kind: string }[]).filter((n) => n.kind !== 'recipe' && n.kind !== 'command');
+    const edges = (old.edges as { fromKind: string; toKind: string }[]).filter(
+      (e) => !['recipe', 'command'].includes(e.fromKind) && !['recipe', 'command'].includes(e.toKind),
+    );
+    const graph = translateGraphCheck({ ...old, nodeCount, nodes, edges });
+    expect(graph.nodeCount.recipe).toBe(0);
+    expect(graph.nodeCount.command).toBe(0);
+  });
+
+  it('refuse un compte présent mais mal formé', () => {
+    const old = example();
+    const nodeCount = { ...(old.nodeCount as Record<string, unknown>), recipe: 'trois' };
+    expect(() => translateGraphCheck({ ...old, nodeCount })).toThrow(/nodeCount\.recipe mal formé/);
+  });
 });
 
 describe('EzkGraphSource', () => {

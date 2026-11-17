@@ -64,7 +64,11 @@ function readNodeCount(json: Record<string, unknown>): Record<GraphKind, number>
   const count = {} as Record<GraphKind, number>;
   for (const k of GRAPH_KINDS) {
     const n = raw[k];
-    count[k] = typeof n === 'number' ? n : fail(`nodeCount.${k} absent`);
+    // Toute sorte connue absente vaut 0. Cas visé : le graphe d'une méthode plus ancienne n'a pas encore
+    // les sortes récentes (command, recipe), et la carte doit s'afficher quand même (fiche
+    // 20261117145515980). La carte recompte ses familles depuis `nodes`, pas depuis ce champ.
+    if (n === undefined) count[k] = 0;
+    else count[k] = typeof n === 'number' ? n : fail(`nodeCount.${k} mal formé`);
   }
   return count;
 }
