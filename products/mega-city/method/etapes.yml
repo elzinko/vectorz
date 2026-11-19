@@ -15,6 +15,9 @@
 #   - ancre : un passage du SKILL.md du skill, recopié MOT POUR MOT. Renommer ou retirer l'étape
 #     dans le skill sans toucher ce fichier la fait disparaître : la validation échoue.
 #   - reglages : une clé que `ezk config show` n'affiche pas. La valeur sort pour le projet lu.
+#   - regles : une règle absente du catalogue (rules/), ou citée deux fois sur la même étape. Une règle
+#     se rattache directement à l'étape qu'elle gouverne : pas d'héritage par skill, qui donnerait les
+#     mêmes règles à toutes ses étapes (fiche 20261117223348335).
 #
 # Ajouter une étape ici la fait apparaître dans la sortie, sans toucher au code. Régénère ensuite
 # l'exemple du contrat : pnpm --dir products/mega-city board:contract --write
@@ -33,17 +36,20 @@ skills:
         en_clair: Une idée ou un bug devient une fiche, sans doublon.
         joue_par: [ezk-backlog:add]
         ancre: "### `add <description>`"
+        regles: [documentation-guidelines/human-facing-lisibility]
       - id: groomer
         titre: Groomer
         en_clair: La fiche mûrit vers la Definition of Ready, technique par technique.
         joue_par: [ezk-backlog:groom]
         ancre: "### `groom <id>`"
         reglages: [grooming.techniques]
+        regles: [agent-ops/preuve-mince-question-pas-veto]
       - id: prete
         titre: Prête
         en_clair: La porte de la Definition of Ready vérifie la fiche, le PO la déclare tirable.
         joue_par: [ezk-backlog:ready, humain]
         ancre: "### `ready <id>` — le gate DoR"
+        regles: [development/acceptance-criteria-before-merge, token-economy/fiche-tient-dans-un-sprint]
       - id: tirer-un-lot
         titre: Tirer un lot
         en_clair: Les prochaines fiches tirables forment le lot du sprint.
@@ -59,6 +65,7 @@ skills:
         en_clair: Le périmètre minimal qui prouve la valeur.
         joue_par: [ezk-sprint]
         ancre: "1. **Cadrage POC**"
+        regles: [development/story-dans-un-worktree-dedie]
       - id: archi
         titre: Archi
         en_clair: Une décision de conception, et son ADR, quand la story le justifie.
@@ -74,28 +81,33 @@ skills:
         en_clair: Le cœur de la story, test d'abord.
         joue_par: [agent:ezk-dev]
         ancre: "4. **TDD POC**"
+        regles: [clean-code/no-dead-code]
       - id: gate
         titre: Gate
         en_clair: Toute la validation locale du projet ; rien ne part sans elle.
         joue_par: [ezk-sprint, ezk-ci]
         ancre: "5. **Gate locale (pipeline)**"
+        regles: [agent-ops/pipe-garde-le-code-de-sortie, testing/sortie-machine-verifiee-par-un-tuyau]
       - id: e2e
         titre: E2E
         en_clair: Les parcours critiques validés sur l'app qui tourne, dès qu'il y a une interface.
         joue_par: [agent:ezk-qa]
         ancre: "6. **Validation E2E**"
+        regles: [development/pr-before-after-media]
       - id: revue-adverse
         titre: Revue adverse
         en_clair: Un relecteur cherche à casser la story et prouve chaque critère.
         joue_par: [agent:ezk-reviewer]
         ancre: "7. **Revue**"
         reglages: [review.adverse]
+        regles: [development/acceptance-criteria-before-merge]
       - id: integration
         titre: Intégration
         en_clair: Après accord du PO, la story arrive sur main selon la config du projet.
         joue_par: [ezk-sprint, humain]
         ancre: "10. **Intégration — `ezk forge integrate`**"
         reglages: [github.pr, integration]
+        regles: [conventional-commits/format, development/one-story-one-commit-local, agent-ops/push-nomme-les-commits-d-autrui]
 
   - id: ezk-retro
     nom: La rétro
@@ -106,6 +118,7 @@ skills:
         en_clair: Le périmètre et les symptômes observés.
         joue_par: [ezk-retro:run]
         ancre: "### 1. Cadrer & rassembler les signaux"
+        regles: [token-economy/retro-due-choix-chiffre]
       - id: round-robin
         titre: Round-robin
         en_clair: Chaque agent propose à travers sa lentille, en deux tours.
@@ -121,6 +134,7 @@ skills:
         en_clair: Le PO tranche ; les propositions retenues vont au backlog ou aux règles.
         joue_par: [humain, ezk-backlog:add]
         ancre: "### 5. Rangement sous contrôle PO"
+        regles: [documentation-guidelines/readable-deliverable-trio]
 
   - id: ezk-archive
     nom: L'archive

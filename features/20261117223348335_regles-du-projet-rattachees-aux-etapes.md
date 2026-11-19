@@ -73,14 +73,14 @@ sa couche ; ce sera une fiche à part, quand un projet en aura besoin.
 
 ## Critères d'acceptation
 
-- [ ] Une étape de `method/etapes.yml` peut porter `regles:` ; `ezk process show --json` publie ces
+- [x] Une étape de `method/etapes.yml` peut porter `regles:` ; `ezk process show --json` publie ces
       ids dans le champ `regles` de l'étape, dans l'ordre déclaré. Le contrat reste en version 1.
-- [ ] Une règle absente du catalogue, ou citée deux fois sur la même étape, fait échouer
+- [x] Une règle absente du catalogue, ou citée deux fois sur la même étape, fait échouer
       `ezk process show`, avec un message qui nomme l'étape et la règle. La gate rougit.
-- [ ] Les rattachements de départ de la table ci-dessus sont publiés, et chaque règle citée existe.
-- [ ] Le panneau d'une étape titre sa rubrique « Règles » et liste les ids ; une étape sans règle
+- [x] Les rattachements de départ de la table ci-dessus sont publiés, et chaque règle citée existe.
+- [x] Le panneau d'une étape titre sa rubrique « Règles » et liste les ids ; une étape sans règle
       dit « aucune règle rattachée ».
-- [ ] Le schéma et l'exemple du contrat sont régénérés ; la description de `regles` ne dit plus
+- [x] Le schéma et l'exemple du contrat sont régénérés ; la description de `regles` ne dit plus
       « toujours vide ».
 
 ## Comment vérifier
@@ -89,11 +89,18 @@ sa couche ; ce sera une fiche à part, quand un projet en aura besoin.
 pnpm --dir products/mega-city exec vitest run src/__tests__/process-show.test.ts
 ezk --root . process show --json | jq '[.skills[] | .etapes[] | {id, regles}]'
 pnpm --dir products/mega-city board:contract --write && git diff --stat products/mega-city/contracts/
-npx vitest run products/cop1/packages/web/src/board/ProcessMap.test.tsx
+pnpm --dir products/cop1/packages/web exec vitest run src/board/ProcessMap.test.tsx
 ```
 
 Puis ouvrir mission control, page Process : un clic sur l'étape « Gate » du sprint montre ses deux
 règles dans le panneau.
+
+**Avant / après** (règle `development/pr-before-after-media`)
+| Vue | Avant | Après |
+|---|---|---|
+| process-panel | ![process-panel avant](https://github.com/elzinko/vectorz/blob/49ae38f1ac24baa20426d9f0ccc6c06caf6e68ce/docs/pr-evidence/20261117223348335/process-panel-before.png?raw=true) | ![process-panel après](https://github.com/elzinko/vectorz/blob/49ae38f1ac24baa20426d9f0ccc6c06caf6e68ce/docs/pr-evidence/20261117223348335/process-panel-after.png?raw=true) |
+
+Avant : [panneau de l'étape Revue adverse, sans règle](../docs/pr-evidence/20261117223348335/process-panel-before.png). Après : [panneau de l'étape Gate, avec ses deux règles](../docs/pr-evidence/20261117223348335/process-panel-after.png).
 
 ## Notes / décisions
 
@@ -106,3 +113,11 @@ règles dans le panneau.
 - Taille : deux surfaces, la commande publiée et le libellé du panneau. Cinq critères.
 
 Prête le 2026-11-19 : DoR atteinte, concurrence `ezk-pm` GO (run autonome, sans `--stamp-ready`).
+
+### Revue adverse du 2026-11-19
+
+Verdict GO, les cinq critères prouvés par le relecteur (`ezk-reviewer`). Corrigé : la commande du
+test de l'écran se lance depuis son paquet (la configuration de tests à la racine l'exclut). Réserves
+gardées : `?? []` reste utile aux appels directs de `buildProcessShow` ; une règle à la fois inconnue
+et citée deux fois est dite « inconnue », ce qui suffit.
+

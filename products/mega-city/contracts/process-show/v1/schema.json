@@ -72,7 +72,7 @@
                   "items": {
                     "type": "string"
                   },
-                  "description": "Les règles de l’étape. Toujours vide en v1 : aucune règle n’est encore rattachée à une étape."
+                  "description": "Les règles du catalogue qui gouvernent l’étape, par leur id, dans l’ordre déclaré ; vide si aucune n’y est rattachée."
                 },
                 "reglages": {
                   "type": "array",

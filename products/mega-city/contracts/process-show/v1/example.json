@@ -19,7 +19,9 @@
      "commandes": [
       "/ezk-backlog add"
      ],
-     "regles": [],
+     "regles": [
+      "documentation-guidelines/human-facing-lisibility"
+     ],
      "reglages": []
     },
     {
@@ -34,7 +36,9 @@
      "commandes": [
       "/ezk-backlog groom"
      ],
-     "regles": [],
+     "regles": [
+      "agent-ops/preuve-mince-question-pas-veto"
+     ],
      "reglages": [
       {
        "cle": "grooming.techniques",
@@ -55,7 +59,10 @@
      "commandes": [
       "/ezk-backlog ready"
      ],
-     "regles": [],
+     "regles": [
+      "development/acceptance-criteria-before-merge",
+      "token-economy/fiche-tient-dans-un-sprint"
+     ],
      "reglages": []
     },
     {
@@ -93,7 +100,9 @@
      "commandes": [
       "/ezk-sprint"
      ],
-     "regles": [],
+     "regles": [
+      "development/story-dans-un-worktree-dedie"
+     ],
      "reglages": []
     },
     {
@@ -138,7 +147,9 @@
       "ezk-dev"
      ],
      "commandes": [],
-     "regles": [],
+     "regles": [
+      "clean-code/no-dead-code"
+     ],
      "reglages": []
     },
     {
@@ -155,7 +166,10 @@
       "/ezk-sprint",
       "/ezk-ci"
      ],
-     "regles": [],
+     "regles": [
+      "agent-ops/pipe-garde-le-code-de-sortie",
+      "testing/sortie-machine-verifiee-par-un-tuyau"
+     ],
      "reglages": []
     },
     {
@@ -170,7 +184,9 @@
       "ezk-qa"
      ],
      "commandes": [],
-     "regles": [],
+     "regles": [
+      "development/pr-before-after-media"
+     ],
      "reglages": []
     },
     {
@@ -185,7 +201,9 @@
       "ezk-reviewer"
      ],
      "commandes": [],
-     "regles": [],
+     "regles": [
+      "development/acceptance-criteria-before-merge"
+     ],
      "reglages": [
       {
        "cle": "review.adverse",
@@ -206,7 +224,11 @@
      "commandes": [
       "/ezk-sprint"
      ],
-     "regles": [],
+     "regles": [
+      "conventional-commits/format",
+      "development/one-story-one-commit-local",
+      "agent-ops/push-nomme-les-commits-d-autrui"
+     ],
      "reglages": [
       {
        "cle": "github.pr",
@@ -238,7 +260,9 @@
      "commandes": [
       "/ezk-retro run"
      ],
-     "regles": [],
+     "regles": [
+      "token-economy/retro-due-choix-chiffre"
+     ],
      "reglages": []
     },
     {
@@ -290,7 +314,9 @@
      "commandes": [
       "/ezk-backlog add"
      ],
-     "regles": [],
+     "regles": [
+      "documentation-guidelines/readable-deliverable-trio"
+     ],
      "reglages": []
     }
    ]

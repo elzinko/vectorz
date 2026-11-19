@@ -75,10 +75,19 @@ describe('ProcessMap', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Le sprint, étape 7 : Revue adverse' }));
     expect(crumbs()).toEqual(['Process', 'Le sprint', 'Revue adverse']);
     const panel = screen.getByRole('complementary', { name: "Détail de l'étape" });
-    for (const title of ['Commandes', 'Agents', 'Règles du projet', 'Réglages du projet']) expect(within(panel).getByText(title)).toBeTruthy();
+    for (const title of ['Commandes', 'Agents', 'Règles', 'Réglages du projet']) expect(within(panel).getByText(title)).toBeTruthy();
     expect(within(panel).getByText('ezk-reviewer')).toBeTruthy();
     expect(within(panel).getByText('review.adverse = run')).toBeTruthy();
-    // Aucune règle n'est rattachée : la rubrique le dit, l'écran n'invente aucun exemple.
+    // La revue adverse porte sa règle, rattachée par la méthode : l'écran la recopie, n'en invente aucune.
+    expect(within(panel).getByText('development/acceptance-criteria-before-merge')).toBeTruthy();
+    expect(within(panel).queryByText('aucune règle rattachée')).toBeNull();
+  });
+
+  it('une étape sans règle rattachée le dit, sans exemple inventé', async () => {
+    await open();
+    fireEvent.click(screen.getByRole('button', { name: 'Zoomer sur La rétro' }));
+    fireEvent.click(screen.getByRole('button', { name: 'La rétro, étape 3 : Juge' }));
+    const panel = screen.getByRole('complementary', { name: "Détail de l'étape" });
     expect(within(panel).getByText('aucune règle rattachée')).toBeTruthy();
   });
 

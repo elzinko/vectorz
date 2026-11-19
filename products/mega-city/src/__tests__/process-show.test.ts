@@ -108,6 +108,33 @@ describe('validateEtapes — vérifiées : une référence inventée fait échou
   });
 });
 
+describe('validateEtapes — règles rattachées à une étape (fiche 20261117223348335)', () => {
+  const withRules = (): Catalog => {
+    const c = tiny();
+    c.rules.set('clean-code/no-dead-code', { id: 'clean-code/no-dead-code' } as never);
+    c.rules.set('testing/sortie-machine-verifiee-par-un-tuyau', { id: 'testing/sortie-machine-verifiee-par-un-tuyau' } as never);
+    return c;
+  };
+
+  it('publie les règles d’une étape, dans l’ordre déclaré', () => {
+    const regles = ['testing/sortie-machine-verifiee-par-un-tuyau', 'clean-code/no-dead-code'];
+    const out = buildProcessShow(validateEtapes(withRules(), doc({ regles })), configShowData(megaCity));
+    expect(out.skills[1].etapes[0].regles).toEqual(regles);
+  });
+
+  it('jette sur une règle absente du catalogue, en nommant l’étape et la règle', () => {
+    expect(() => validateEtapes(withRules(), doc({ regles: ['clean-code/inventee'] }))).toThrow(
+      /étape « scenarios ».*règle « clean-code\/inventee » inconnue du catalogue/,
+    );
+  });
+
+  it('jette sur une règle citée deux fois sur la même étape', () => {
+    expect(() => validateEtapes(withRules(), doc({ regles: ['clean-code/no-dead-code', 'clean-code/no-dead-code'] }))).toThrow(
+      /étape « scenarios ».*règle « clean-code\/no-dead-code » citée deux fois/,
+    );
+  });
+});
+
 describe('validateEtapes — boucles et outils (fiche 20261117223348250)', () => {
   const boucle = (de: string, vers: string): NonNullable<EtapesDoc['boucles']>[number] => ({ de, vers, libelle: 'on reprend' });
   const withBoucles = (boucles: EtapesDoc['boucles']): EtapesDoc => ({ ...doc(), boucles });
@@ -299,6 +326,24 @@ describe('method/etapes.yml — la vraie déclaration', () => {
       ['ezk-sprint:integration', 'ezk-sprint:cadrage'],
       ['ezk-sprint:integration', 'ezk-backlog:tirer-un-lot'],
     ]);
+  });
+
+  it('règles : les rattachements de départ sont publiés, et chaque règle citée existe au catalogue', () => {
+    const out = processShowData(fixture);
+    const regles = (skill: string, etape: string): string[] =>
+      out.skills.find((s) => s.id === skill)?.etapes.find((e) => e.id === etape)?.regles ?? [];
+    expect(regles('ezk-sprint', 'gate')).toEqual(['agent-ops/pipe-garde-le-code-de-sortie', 'testing/sortie-machine-verifiee-par-un-tuyau']);
+    expect(regles('ezk-sprint', 'code')).toEqual(['clean-code/no-dead-code']);
+    expect(regles('ezk-sprint', 'integration')).toEqual([
+      'conventional-commits/format',
+      'development/one-story-one-commit-local',
+      'agent-ops/push-nomme-les-commits-d-autrui',
+    ]);
+    expect(regles('ezk-retro', 'rangement-po')).toEqual(['documentation-guidelines/readable-deliverable-trio']);
+    const catalog = loadCatalog(megaCity);
+    const all = out.skills.flatMap((s) => s.etapes.flatMap((e) => e.regles));
+    expect(all.length).toBeGreaterThanOrEqual(15);
+    for (const id of all) expect(catalog.rules.has(id)).toBe(true);
   });
 
   it('réglages : la revue adverse porte `review.adverse` et sa valeur pour le projet lu', () => {

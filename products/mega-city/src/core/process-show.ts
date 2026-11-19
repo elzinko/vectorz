@@ -8,7 +8,7 @@
  * control affiche (ADR-086). Quatre refus, chacun jette à la première erreur :
  *   - une référence `joue_par` hors catalogue (même grammaire que `ceremonies.yml`) ;
  *   - une étape dont l'`ancre` ne figure plus, mot pour mot, dans le SKILL.md de son skill ;
- *   - un réglage que `ezk config show` ne connaît pas ;
+ *   - un réglage que `ezk config show` ne connaît pas, ou une règle absente du catalogue ;
  *   - une boucle qui vise une étape inconnue, ou un lien ou une boucle qui touche un outil (l'archive
  *     est hors du flux, fiche 20261117223348250).
  *
@@ -33,6 +33,8 @@ export interface EtapeDecl {
   ancre: string;
   /** Les réglages du projet qui gouvernent l'étape, par leur clé dans `ezk config show`. */
   reglages?: string[];
+  /** Les règles du catalogue qui gouvernent l'étape, par leur id (fiche 20261117223348335). */
+  regles?: string[];
 }
 
 export interface SkillDecl {
@@ -115,7 +117,14 @@ function validateEtape(catalog: Catalog, skillId: string, content: string, raw: 
       throw new Error(`${where} : réglage inconnu « ${cle} » (connus de ezk config show : ${[...REGLAGES.keys()].join(', ')})`);
     }
   }
-  return { id, titre: text(raw.titre, where, 'titre'), en_clair: text(raw.en_clair, where, 'en_clair'), joue_par, ancre, reglages };
+  const regles = strings(raw.regles, where, 'regles');
+  const seenRegles = new Set<string>();
+  for (const regle of regles) {
+    if (!catalog.rules.has(regle)) throw new Error(`${where} : règle « ${regle} » inconnue du catalogue (rules/)`);
+    if (seenRegles.has(regle)) throw new Error(`${where} : règle « ${regle} » citée deux fois`);
+    seenRegles.add(regle);
+  }
+  return { id, titre: text(raw.titre, where, 'titre'), en_clair: text(raw.en_clair, where, 'en_clair'), joue_par, ancre, reglages, regles };
 }
 
 /**
@@ -184,7 +193,9 @@ const EtapeSchema = z.strictObject({
     .describe('Qui la réalise, vérifié contre le catalogue : `humain`, `agent:<id>`, `<skill>` ou `<skill>:<sous-commande>`.'),
   agents: z.array(z.string()).describe('Les agents parmi `joueePar`, par leur id.'),
   commandes: z.array(z.string()).describe('Les skills parmi `joueePar`, écrits comme on les lance (`/ezk-backlog groom`).'),
-  regles: z.array(z.string()).describe('Les règles de l’étape. Toujours vide en v1 : aucune règle n’est encore rattachée à une étape.'),
+  regles: z
+    .array(z.string())
+    .describe('Les règles du catalogue qui gouvernent l’étape, par leur id, dans l’ordre déclaré ; vide si aucune n’y est rattachée.'),
   reglages: z
     .array(z.strictObject({ cle: z.string(), valeur: z.string() }))
     .describe('Les réglages du projet qui gouvernent l’étape : la clé de `ezk config show` et sa valeur pour le projet lu.'),
@@ -245,7 +256,7 @@ export function buildProcessShow(doc: EtapesDoc, config: ConfigShow): ProcessSho
         joueePar: [...e.joue_par],
         agents: e.joue_par.filter((r) => r.startsWith('agent:')).map((r) => r.slice('agent:'.length)),
         commandes: e.joue_par.filter((r) => r !== 'humain' && !r.startsWith('agent:')).map(asCommand),
-        regles: [],
+        regles: [...(e.regles ?? [])],
         reglages: (e.reglages ?? []).map((cle) => ({ cle, valeur: reglageValue(cle, config) })),
       })),
     })),

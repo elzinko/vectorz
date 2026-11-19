@@ -76,7 +76,7 @@ function StepPanel({ skill, etape }: { skill: ProcessSkill; etape: ProcessEtape 
       <p>{etape.enClair}</p>
       <Items title="Commandes" items={etape.commandes} empty="aucune commande" />
       <Items title="Agents" items={agents} empty="aucun agent" />
-      <Items title="Règles du projet" items={etape.regles} empty="aucune règle rattachée" />
+      <Items title="Règles" items={etape.regles} empty="aucune règle rattachée" />
       <Items title="Réglages du projet" items={etape.reglages.map((r) => `${r.cle} = ${r.valeur}`)} empty="aucun réglage" />
     </>
   );
