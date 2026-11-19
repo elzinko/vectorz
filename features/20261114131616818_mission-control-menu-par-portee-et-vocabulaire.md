@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, convention]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -71,8 +71,8 @@ Prérequis de la page Annuaire, hors de cette fiche : `ezk help` ne rend que du 
 
 Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec son lot.
 
-- Deux groupes. « Global » : « Projets » (l'actuel « Tous les projets ») et « Annuaire de la
-  méthode ». « Projet · nom du projet » : Vue d'ensemble, Pilotage, Cadrage, Développement, Fiches,
+- Deux groupes. « Global » : « Projets » (l'actuel « Tous les projets »), « Carte de la méthode »
+  et « Annuaire de la méthode ». « Projet · nom du projet » : Vue d'ensemble, Pilotage, Cadrage, Développement, Fiches,
   Chronologie, Process, Loi, Recettes, Cartes, Configuration. Le groupe « Méthode » disparaît.
 - « Annuaire de la méthode » est présente mais grisée tant que la page n'existe pas. Son « i » nomme
   ce que la méthode doit publier d'abord :
@@ -82,8 +82,8 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
   Le lot Objectifs ([Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md))
   tranche si Pilotage devient Objectifs, ou si une page s'ajoute.
 - Libellés : « Lancements de cadrage récents » et « Lancements de développement » dans
-  ActivityTable ; « But du sprint » à la place du nom de branche dans OverviewView, sous réserve de
-  la confirmation PO de ce mot ; « Modules » à la place d'« Intégration » dans ConfigView, la ligne
+  ActivityTable ; « But du sprint » à la place du nom de branche dans OverviewView (mot confirmé par
+  le PO le 15 novembre) ; « Modules » à la place d'« Intégration » dans ConfigView, la ligne
   « Sans PR » gardant son nom.
 - Vocabulaire des chaînes de l'écran : compétence (skill), agent, commande (`ezk <domaine> <verbe>`).
   Une forme `/ezk-x` n'apparaît que comme « rendu Claude Code » d'une compétence, jamais comme son
@@ -99,16 +99,17 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
 
 ## Critères d'acceptation
 
-- [ ] Le menu a deux groupes : « Global » (Projets, Annuaire de la méthode) et « Projet · nom du
-      projet » (Vue d'ensemble, Pilotage, Cadrage, Développement, Fiches, Chronologie, Process, Loi,
-      Recettes, Cartes, Configuration) ; le groupe « Méthode » n'existe plus.
+- [ ] Le menu a deux groupes : « Global » (Projets, Carte de la méthode, Annuaire de la méthode) et
+      « Projet · nom du projet » (Vue d'ensemble, Pilotage, Cadrage, Développement, Fiches,
+      Chronologie, Process, Loi, Recettes, Cartes, Configuration) ; le groupe « Méthode » n'existe
+      plus. Le groupe « Archives » ne change pas.
 - [ ] « mega-city » n'apparaît pas dans le menu, ni dans un titre de groupe ni dans une entrée ; il ne
       vit que dans le titre de la page Annuaire et dans son « i ».
 - [ ] L'entrée « Annuaire de la méthode » est grisée tant que la page n'existe pas, et son « i » nomme
       ce que la méthode doit publier ; aucune entrée « Objectifs » n'est ajoutée avant la décision du
       lot Objectifs.
-- [ ] Les écrans disent « Lancements … » au lieu de « Runs … », « But du sprint » (libellé sous réserve
-      de la confirmation du PO) au lieu du nom de branche lu comme objectif, « Modules » au lieu
+- [ ] Les écrans disent « Lancements … » au lieu de « Runs … », « But du sprint » au lieu du nom de
+      branche lu comme objectif, « Modules » au lieu
       d'« Intégration » ; la ligne « Sans PR » garde son nom.
 - [ ] Les chaînes de l'écran disent compétence, agent, commande ; aucune forme `/ezk-x` n'y sert
       d'identité.
@@ -155,6 +156,17 @@ Puis ouvrir mission control sur vectorz : la barre de gauche a deux groupes, « 
   qui devient l'entrée « Projets » ;
   [Un test vérifie que chaque écran montre ce que la méthode publie](20261104204526516_controle-auto-des-ecrans-mission-control.md),
   qui porte déjà le contrôle « tout vient de `ezk --json` ».
-- Risques : « But du sprint » n'est pas confirmé par le PO (point ouvert le 12 novembre ;
-  `start --objective` reste un nom interne), le libellé attend ; le « i » de l'entrée grisée est un
-  texte figé, contre le critère strict « aucun texte figé » de l'écart I2 : écart assumé, à valider.
+- Risque restant : le « i » de l'entrée grisée est un texte figé, contre le critère strict « aucun
+  texte figé » de l'écart I2. Écart assumé tant que `ezk glossaire show --json` n'existe pas.
+
+### Grooming du 2026-11-19
+
+Run autonome. La Carte de la méthode, livrée le 17 novembre, décrit la méthode entière, la même
+pour tous les projets : elle va dans « Global », à côté de l'Annuaire. Le groupe « Archives » (lien
+vers les archives v1) reste hors périmètre, inchangé. « But du sprint » est confirmé par le PO le 15 novembre (décisions de la coupe,
+ADR-0088) : la réserve est levée. La dépendance aux
+[Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md) est
+livrée. Le Process, désormais l'écran de gauche à droite, passe dans le groupe « Projet » avec Loi,
+Recettes et Cartes. Aucune dépendance externe.
+
+Prête le 2026-11-19 : DoR atteinte, concurrence `ezk-pm` GO (run autonome, sans `--stamp-ready`).

@@ -7,10 +7,10 @@ product: mega-city
 milestone: board
 version:
 labels: [loi, contrat, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
-evidence: none # une donnée publiée par une commande ; l'écran qui l'affiche relève de la fiche Process
+evidence: before-after
 created: 2026-11-17
 ---
 
@@ -37,39 +37,63 @@ les règles propres au projet ne portent aucun lien vers une étape.
 
 ## Proposition
 
-Deux sources, publiées ensemble dans `regles` :
+**Groomé le 2026-11-19 (run autonome, avis d'architecte porté par l'orchestrateur).** Les deux
+questions ouvertes sont tranchées ainsi :
 
-1. **Par héritage** : une étape reçoit les règles des skills et des agents qui la jouent
-   (`joue_par` dans `method/etapes.yml`). Rien à déclarer de plus.
-2. **Par rattachement direct** : `etapes.yml` peut nommer une règle sur une étape précise. Le
-   compilateur refuse une règle absente du catalogue ou de la couche du projet.
+- **Pas d'héritage par skill.** Le champ `applies:` d'`ezk-sprint` donnerait les mêmes sept règles
+  à ses huit étapes. Le panneau en serait noyé et ne dirait rien de propre à l'étape.
+- **Un rattachement direct, déclaré dans `method/etapes.yml`.** Chaque étape peut nommer les règles
+  du catalogue qui la gouvernent : `regles: [clean-code/no-dead-code]`. Le compilateur refuse une
+  règle absente du catalogue, comme il refuse déjà un agent inconnu.
+- **Le contrat garde sa forme.** `regles` reste une liste d'ids, documentée « toujours vide en v1 » :
+  elle se remplit, sans changer de type. Le contrat reste en version 1. Le niveau et le texte d'une
+  règle se lisent déjà ailleurs, par `ezk law show`.
+- **L'écran dit « Règles », plus « Règles du projet ».** Ces règles viennent du catalogue de la
+  méthode ; les appeler « du projet » serait faux.
 
-Chaque règle publiée dit sa provenance : héritée de tel skill, ou rattachée à l'étape. Le champ
-`regles` passe de liste de textes à liste d'objets ; le contrat change de version.
+Rattachements de départ :
 
-À trancher au grooming :
+```
+backlog · capturer     documentation-guidelines/human-facing-lisibility
+backlog · groomer      agent-ops/preuve-mince-question-pas-veto
+backlog · prete        development/acceptance-criteria-before-merge, token-economy/fiche-tient-dans-un-sprint
+sprint · cadrage       development/story-dans-un-worktree-dedie
+sprint · code          clean-code/no-dead-code
+sprint · gate          agent-ops/pipe-garde-le-code-de-sortie, testing/sortie-machine-verifiee-par-un-tuyau
+sprint · e2e           development/pr-before-after-media
+sprint · revue-adverse development/acceptance-criteria-before-merge
+sprint · integration   conventional-commits/format, development/one-story-one-commit-local, agent-ops/push-nomme-les-commits-d-autrui
+retro · cadrer         token-economy/retro-due-choix-chiffre
+retro · rangement-po   documentation-guidelines/readable-deliverable-trio
+```
 
-- Une règle du projet se rattache-t-elle dans `etapes.yml` (méthode) ou dans sa propre fiche
-  `.vectorz/rules/<id>.md` (projet) ? La seconde garde le projet maître de sa couche.
-- L'héritage par skill noie-t-il le panneau ? `ezk-sprint` en donnerait sept à chacune de ses huit
-  étapes. Le rattachement direct pourrait alors primer, l'héritage passant en second plan.
+Hors périmètre : les règles de la couche d'un projet (`.vectorz/rules/<id>.md`). vectorz n'en a
+aucune aujourd'hui. Les rattacher à une étape depuis leur propre fichier gardera le projet maître de
+sa couche ; ce sera une fiche à part, quand un projet en aura besoin.
 
 ## Critères d'acceptation
 
-- [ ] `ezk process show --json` publie, pour chaque étape, ses règles avec leur id, leur niveau
-      (MUST, SHOULD, MAY) et leur provenance.
-- [ ] Une règle rattachée à une étape inconnue, ou une étape qui cite une règle inexistante, fait
-      échouer `ezk process show`. La gate rougit.
-- [ ] Une règle du projet lu (`--root`) apparaît sur l'étape où elle est rattachée.
-- [ ] Le contrat `process-show` décrit le nouveau champ, et son exemple est régénéré.
+- [ ] Une étape de `method/etapes.yml` peut porter `regles:` ; `ezk process show --json` publie ces
+      ids dans le champ `regles` de l'étape, dans l'ordre déclaré. Le contrat reste en version 1.
+- [ ] Une règle absente du catalogue, ou citée deux fois sur la même étape, fait échouer
+      `ezk process show`, avec un message qui nomme l'étape et la règle. La gate rougit.
+- [ ] Les rattachements de départ de la table ci-dessus sont publiés, et chaque règle citée existe.
+- [ ] Le panneau d'une étape titre sa rubrique « Règles » et liste les ids ; une étape sans règle
+      dit « aucune règle rattachée ».
+- [ ] Le schéma et l'exemple du contrat sont régénérés ; la description de `regles` ne dit plus
+      « toujours vide ».
 
 ## Comment vérifier
 
 ```bash
-pnpm --dir products/mega-city test -- process-show
-ezk --root . process show --json | jq '.skills[] | .etapes[] | {id, regles}'
-pnpm --dir products/mega-city board:contract --write && git diff --stat contracts/
+pnpm --dir products/mega-city exec vitest run src/__tests__/process-show.test.ts
+ezk --root . process show --json | jq '[.skills[] | .etapes[] | {id, regles}]'
+pnpm --dir products/mega-city board:contract --write && git diff --stat products/mega-city/contracts/
+npx vitest run products/cop1/packages/web/src/board/ProcessMap.test.tsx
 ```
+
+Puis ouvrir mission control, page Process : un clic sur l'étape « Gate » du sprint montre ses deux
+règles dans le panneau.
 
 ## Notes / décisions
 
@@ -79,4 +103,6 @@ pnpm --dir products/mega-city board:contract --write && git diff --stat contract
 - Voisines, sans doublon : [`ezk law show` sert chaque objet de la loi](20261114131615350_ezk-law-show-regle-paquet-profil.md)
   publie une règle seule ; [Un seul lecteur de la loi du projet](20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md)
   unifie la lecture des règles du projet. Cette fiche-ci relie une règle à une étape.
-- Taille : une surface, la commande publiée. Quatre critères.
+- Taille : deux surfaces, la commande publiée et le libellé du panneau. Cinq critères.
+
+Prête le 2026-11-19 : DoR atteinte, concurrence `ezk-pm` GO (run autonome, sans `--stamp-ready`).
