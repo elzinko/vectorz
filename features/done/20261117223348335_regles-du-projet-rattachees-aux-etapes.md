@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [loi, contrat, theme:mission-control]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (9c45d4ce)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -100,15 +100,15 @@ règles dans le panneau.
 |---|---|---|
 | process-panel | ![process-panel avant](https://github.com/elzinko/vectorz/blob/49ae38f1ac24baa20426d9f0ccc6c06caf6e68ce/docs/pr-evidence/20261117223348335/process-panel-before.png?raw=true) | ![process-panel après](https://github.com/elzinko/vectorz/blob/49ae38f1ac24baa20426d9f0ccc6c06caf6e68ce/docs/pr-evidence/20261117223348335/process-panel-after.png?raw=true) |
 
-Avant : [panneau de l'étape Revue adverse, sans règle](../docs/pr-evidence/20261117223348335/process-panel-before.png). Après : [panneau de l'étape Gate, avec ses deux règles](../docs/pr-evidence/20261117223348335/process-panel-after.png).
+Avant : [panneau de l'étape Revue adverse, sans règle](../../docs/pr-evidence/20261117223348335/process-panel-before.png). Après : [panneau de l'étape Gate, avec ses deux règles](../../docs/pr-evidence/20261117223348335/process-panel-after.png).
 
 ## Notes / décisions
 
 - Née de la décision PO du 2026-11-17 sur l'écran Process (maquette B + panneau). L'écran est la
-  fiche [L'écran Process se lit de gauche à droite](done/20261117223348250_ecran-process-en-ligne-avec-ses-boucles.md),
+  fiche [L'écran Process se lit de gauche à droite](20261117223348250_ecran-process-en-ligne-avec-ses-boucles.md),
   qui se livre sans celle-ci.
-- Voisines, sans doublon : [`ezk law show` sert chaque objet de la loi](20261114131615350_ezk-law-show-regle-paquet-profil.md)
-  publie une règle seule ; [Un seul lecteur de la loi du projet](20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md)
+- Voisines, sans doublon : [`ezk law show` sert chaque objet de la loi](../20261114131615350_ezk-law-show-regle-paquet-profil.md)
+  publie une règle seule ; [Un seul lecteur de la loi du projet](../20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md)
   unifie la lecture des règles du projet. Cette fiche-ci relie une règle à une étape.
 - Taille : deux surfaces, la commande publiée et le libellé du panneau. Cinq critères.
 

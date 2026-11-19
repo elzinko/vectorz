@@ -144,7 +144,7 @@ Débordement horizontal mesuré à 375 px : 0 px.
   mais soit ! ». La question « garder ou retirer l'ancienne carte de la page Cartes » est un autre
   sujet, encore ouvert.
 - Les règles du panneau restent vides tant que la fiche
-  [Rattacher les règles du projet aux étapes du process](../20261117223348335_regles-du-projet-rattachees-aux-etapes.md)
+  [Rattacher les règles du projet aux étapes du process](20261117223348335_regles-du-projet-rattachees-aux-etapes.md)
   n'est pas livrée. Cette fiche-ci se livre sans elle.
 - Remplace le dessin livré par la fiche
   [Schéma Process zoomable](20261110185357446_schema-process-zoomable-semantic-zoom.md)

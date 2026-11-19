@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261117223348335_regles-du-projet-rattachees-aux-etapes.md](../20261117223348335_regles-du-projet-rattachees-aux-etapes.md)
+> 🗎 Rendu de la fiche [features/20261117223348335_regles-du-projet-rattachees-aux-etapes.md](../done/20261117223348335_regles-du-projet-rattachees-aux-etapes.md)
 
 # 20261117223348335 — Rattacher les règles du projet aux étapes du process
 
