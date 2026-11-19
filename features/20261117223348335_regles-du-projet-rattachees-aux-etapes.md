@@ -74,7 +74,7 @@ pnpm --dir products/mega-city board:contract --write && git diff --stat contract
 ## Notes / décisions
 
 - Née de la décision PO du 2026-11-17 sur l'écran Process (maquette B + panneau). L'écran est la
-  fiche [L'écran Process se lit de gauche à droite](20261117223348250_ecran-process-en-ligne-avec-ses-boucles.md),
+  fiche [L'écran Process se lit de gauche à droite](done/20261117223348250_ecran-process-en-ligne-avec-ses-boucles.md),
   qui se livre sans celle-ci.
 - Voisines, sans doublon : [`ezk law show` sert chaque objet de la loi](20261114131615350_ezk-law-show-regle-paquet-profil.md)
   publie une règle seule ; [Un seul lecteur de la loi du projet](20261114131615534_un-seul-lecteur-de-la-loi-du-projet.md)

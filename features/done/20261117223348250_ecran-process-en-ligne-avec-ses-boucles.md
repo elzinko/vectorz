@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (c091536b)"
 evidence: before-after
 created: 2026-11-17
 ---
@@ -23,7 +23,7 @@ une phase, un clic sur une étape ouvre son détail dans un panneau à droite.
 
 **Si tu arrives frais.** *Mission control* est l'écran web de pilotage, dans le produit cop1
 (`products/cop1/packages/web`). Il n'affiche que ce que la méthode publie par
-`ezk process show --json` ([ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)).
+`ezk process show --json` ([ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)).
 Une *étape* est un pas à l'intérieur d'un skill, par exemple « Gate » dans le sprint.
 
 ## Contexte / Problème
@@ -124,9 +124,9 @@ qui ouvre le panneau, et Échap qui revient. Rejouer à 375 px de large pour le 
 | process | ![process avant](https://github.com/elzinko/vectorz/blob/d8649145f6ed85dea69095b563ccf6b976425804/docs/pr-evidence/20261117223348250/process-before.png?raw=true) | ![process après](https://github.com/elzinko/vectorz/blob/d8649145f6ed85dea69095b563ccf6b976425804/docs/pr-evidence/20261117223348250/process-after.png?raw=true) |
 
 Captures de l'après, au zoom et sur téléphone (`docs/pr-evidence/20261117223348250/`) :
-[phase Sprint et panneau de l'étape Revue adverse](../docs/pr-evidence/20261117223348250/process-step-panel-desktop-after.png),
-[vue d'ensemble à 375 px](../docs/pr-evidence/20261117223348250/process-overview-mobile-after.png),
-[tiroir à 375 px](../docs/pr-evidence/20261117223348250/process-step-panel-mobile-after.png).
+[phase Sprint et panneau de l'étape Revue adverse](../../docs/pr-evidence/20261117223348250/process-step-panel-desktop-after.png),
+[vue d'ensemble à 375 px](../../docs/pr-evidence/20261117223348250/process-overview-mobile-after.png),
+[tiroir à 375 px](../../docs/pr-evidence/20261117223348250/process-step-panel-mobile-after.png).
 Débordement horizontal mesuré à 375 px : 0 px.
 
 ## Glossaire
@@ -144,10 +144,10 @@ Débordement horizontal mesuré à 375 px : 0 px.
   mais soit ! ». La question « garder ou retirer l'ancienne carte de la page Cartes » est un autre
   sujet, encore ouvert.
 - Les règles du panneau restent vides tant que la fiche
-  [Rattacher les règles du projet aux étapes du process](20261117223348335_regles-du-projet-rattachees-aux-etapes.md)
+  [Rattacher les règles du projet aux étapes du process](../20261117223348335_regles-du-projet-rattachees-aux-etapes.md)
   n'est pas livrée. Cette fiche-ci se livre sans elle.
 - Remplace le dessin livré par la fiche
-  [Schéma Process zoomable](done/20261110185357446_schema-process-zoomable-semantic-zoom.md)
+  [Schéma Process zoomable](20261110185357446_schema-process-zoomable-semantic-zoom.md)
   (React Flow, zoom à la molette). Code concerné : `ProcessMap.tsx` et `processProjection.ts`
   dans `products/cop1/packages/web/src/board/` ; `ProcessView.tsx` ne change que pour monter le
   nouveau schéma.

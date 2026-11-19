@@ -29,7 +29,7 @@ fonctionnel et graphiquement compréhensible) :
 - ~~`20261104095412223` — deux tests à sous-process dépassent leur délai sous charge · groom (rétro 27-28)~~ — shipped
 - ~~`20261110191135802` — la méthode émet ses étapes fines, validées par le compilateur · build (prête le 2026-11-11, en tête sur demande du PO du 2026-11-12 ; débloque le schéma Process zoomable `20261110185357446`)~~ — shipped
 - ~~`20261110185357446` — le schéma Process zoomable : chaque projet voit le process de la méthode sur une carte qu'on approche · build (sprint du 2026-11-15, local 7c0f350f)~~ — shipped
-- `20261117223348250` — l'écran Process se lit de gauche à droite, avec ses boucles, et une étape s'ouvre dans un panneau · build (prête le 2026-11-19, en tête sur décision PO du 2026-11-19 : maquette B + panneau)
+- ~~`20261117223348250` — l'écran Process se lit de gauche à droite, avec ses boucles, et une étape s'ouvre dans un panneau · build (prête le 2026-11-19, en tête sur décision PO du 2026-11-19 : maquette B + panneau)~~ — shipped
 
 **Correctifs de la passe scout du 2026-11-02** (hors milestone, en tête sur décision PO du 2026-11-02) :
 - ~~`20261102100505427` — le lanceur refuse un port web déjà pris, au lieu d'annoncer un port faux · build~~ — shipped
