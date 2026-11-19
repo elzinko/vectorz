@@ -2,7 +2,7 @@
  * Board unifié cop1 (ADR-074) — la coque.
  *
  * L'en-tête (marque, sélecteur de projet, recherche, bouton ⚙), la navigation de
- * gauche (Projet / Méthode) et la zone principale qui route vers une vue. La vue
+ * gauche (Global / Projet) et la zone principale qui route vers une vue. La vue
  * d'ensemble est livrée ici (tranche 20261012231419185) ; chaque autre vue vit
  * dans son fichier, la dernière à arriver étant « Process » (fiche 20261102123552183).
  */
@@ -44,6 +44,7 @@ interface NavItem {
   label: string;
 }
 
+/** Le menu suit la portée (fiche 20261114131616818) : ce qui vaut pour tous les projets, puis le projet. */
 const PROJECT_NAV: NavItem[] = [
   { id: 'overview', icon: '◧', label: "Vue d'ensemble" },
   { id: 'pilotage', icon: '◔', label: 'Pilotage' },
@@ -51,18 +52,21 @@ const PROJECT_NAV: NavItem[] = [
   { id: 'dev', icon: '▸', label: 'Développement' },
   { id: 'fiches', icon: '▦', label: 'Fiches' },
   { id: 'timeline', icon: '◷', label: 'Chronologie' },
-  { id: 'config', icon: '⚙', label: 'Configuration' },
-];
-
-const GLOBAL_NAV: NavItem[] = [{ id: 'fleet', icon: '◳', label: 'Tous les projets' }];
-
-const METHOD_NAV: NavItem[] = [
   { id: 'process', icon: '❖', label: 'Process' },
-  { id: 'graph', icon: '◎', label: 'Carte de la méthode' },
   { id: 'law', icon: '§', label: 'Loi' },
   { id: 'recipes', icon: '✦', label: 'Recettes' },
   { id: 'maps', icon: '▤', label: 'Cartes' },
+  { id: 'config', icon: '⚙', label: 'Configuration' },
 ];
+
+const GLOBAL_NAV: NavItem[] = [
+  { id: 'fleet', icon: '◳', label: 'Projets' },
+  { id: 'graph', icon: '◎', label: 'Carte de la méthode' },
+];
+
+/** L'Annuaire de la méthode n'existe pas encore : son entrée est grisée et dit ce qui manque. */
+const ANNUAIRE_INFO =
+  "À venir. La méthode publie déjà ses commandes (ezk help --json) ; il lui reste à publier son graphe en contrat compilé.";
 
 function basename(path: string): string {
   const parts = path.split('/').filter(Boolean);
@@ -285,6 +289,20 @@ export function Board(): JSX.Element {
   const ficheModal =
     liveFiche ?? (ficheModalId && lastFicheSeen.current?.id === ficheModalId ? lastFicheSeen.current : undefined);
 
+  const navButton = (item: NavItem): JSX.Element => (
+    <button
+      key={item.id}
+      type="button"
+      className={view === item.id ? 'on' : undefined}
+      aria-current={view === item.id ? 'page' : undefined}
+      title={item.label}
+      onClick={() => go(item.id)}
+    >
+      <span className="ic" aria-hidden="true">{item.icon}</span>
+      <span className="lbl">{item.label}</span>
+    </button>
+  );
+
   return (
     <div className="bd">
       <div className="top">
@@ -338,47 +356,14 @@ export function Board(): JSX.Element {
       <div className="shell">
         <nav className="nav" aria-label="Navigation du board">
           <div className="grp">Global</div>
-          {GLOBAL_NAV.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={view === item.id ? 'on' : undefined}
-              aria-current={view === item.id ? 'page' : undefined}
-              title={item.label}
-              onClick={() => go(item.id)}
-            >
-              <span className="ic" aria-hidden="true">{item.icon}</span>
-              <span className="lbl">{item.label}</span>
-            </button>
-          ))}
-          <div className="grp">Projet</div>
-          {PROJECT_NAV.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={view === item.id ? 'on' : undefined}
-              aria-current={view === item.id ? 'page' : undefined}
-              title={item.label}
-              onClick={() => go(item.id)}
-            >
-              <span className="ic" aria-hidden="true">{item.icon}</span>
-              <span className="lbl">{item.label}</span>
-            </button>
-          ))}
-          <div className="grp">Méthode</div>
-          {METHOD_NAV.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={view === item.id ? 'on' : undefined}
-              aria-current={view === item.id ? 'page' : undefined}
-              title={item.label}
-              onClick={() => go(item.id)}
-            >
-              <span className="ic" aria-hidden="true">{item.icon}</span>
-              <span className="lbl">{item.label}</span>
-            </button>
-          ))}
+          {GLOBAL_NAV.map(navButton)}
+          <button type="button" disabled title={ANNUAIRE_INFO} aria-label={`Annuaire de la méthode — ${ANNUAIRE_INFO}`}>
+            <span className="ic" aria-hidden="true">☰</span>
+            <span className="lbl">Annuaire de la méthode</span>
+            <span className="faint" aria-hidden="true">ⓘ</span>
+          </button>
+          <div className="grp">Projet · {project.name}</div>
+          {PROJECT_NAV.map(navButton)}
           <div className="grp">Archives</div>
           <a href="/v1/index.html" title="Pages archivées de la v1 (benchmark, diagrammes qualité, cartes)">
             <span className="ic" aria-hidden="true">🗄</span>

@@ -155,7 +155,7 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
           </dl>
         </section>
         <section className="card">
-          <h3>Intégration</h3>
+          <h3>Modules</h3>
           <dl className="kv">
             <dt>GitHub</dt>
             <dd>{c.github}</dd>

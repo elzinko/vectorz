@@ -23,7 +23,7 @@ const PROCESS_READING = {
   path: 'process',
   field: 'process',
   isUsable: isProcessShow,
-  incompleteReason: 'contrat du process incomplet (skills, liens ou boucles absents)',
+  incompleteReason: 'contrat du process incomplet (compétences, liens ou boucles absents)',
 };
 
 /** La couleur d'une phase suit son rang dans le flux ; un outil a la sienne. */

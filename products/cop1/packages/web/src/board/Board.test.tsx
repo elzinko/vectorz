@@ -18,11 +18,37 @@ describe('Board — la coque', () => {
     expect(overviewNav.getAttribute('aria-current')).toBe('page');
   });
 
-  it('porte la navigation Projet et Méthode', async () => {
+  it('range le menu par portée : Global, puis Projet · nom du projet (fiche 20261114131616818)', async () => {
     await renderBoardOn();
-    for (const label of ['Vue d\'ensemble', 'Cadrage', 'Développement', 'Fiches', 'Chronologie', 'Configuration', 'Process']) {
-      expect(screen.getByRole('button', { name: label })).toBeTruthy();
-    }
+    const nav = screen.getByRole('navigation', { name: 'Navigation du board' });
+    expect([...nav.querySelectorAll('.grp')].map((g) => g.textContent)).toEqual(['Global', 'Projet · vectorz', 'Archives']);
+    const entries = [...nav.querySelectorAll('button .lbl')].map((l) => l.textContent);
+    expect(entries).toEqual([
+      'Projets',
+      'Carte de la méthode',
+      'Annuaire de la méthode',
+      "Vue d'ensemble",
+      'Pilotage',
+      'Cadrage',
+      'Développement',
+      'Fiches',
+      'Chronologie',
+      'Process',
+      'Loi',
+      'Recettes',
+      'Cartes',
+      'Configuration',
+    ]);
+    // Le menu ne nomme pas la méthode : ni groupe « Méthode », ni « mega-city ».
+    expect(nav.textContent).not.toMatch(/Méthode\b(?! de)|mega-city/);
+  });
+
+  it('l’Annuaire de la méthode est grisé, et son « i » dit ce que la méthode doit publier', async () => {
+    await renderBoardOn();
+    const annuaire = screen.getByRole('button', { name: /Annuaire de la méthode/ }) as HTMLButtonElement;
+    expect(annuaire.disabled).toBe(true);
+    expect(annuaire.title).toMatch(/graphe .*contrat compilé/);
+    expect(screen.queryByRole('button', { name: 'Objectifs' })).toBeNull();
   });
 
   it('route vers la vue Process : plus de coquille « tranche à venir » (fiche 20261102123552183)', async () => {
@@ -32,7 +58,7 @@ describe('Board — la coque', () => {
     expect(screen.queryByText('tranche à venir')).toBeNull();
   });
 
-  it('route vers la Carte de la méthode, dans le groupe Méthode (fiche 20261117114544792)', async () => {
+  it('route vers la Carte de la méthode, dans le groupe Global (fiches 20261117114544792, 20261114131616818)', async () => {
     await renderBoardOn();
     await userEvent.click(screen.getByRole('button', { name: 'Carte de la méthode' }));
     expect(screen.getByRole('heading', { name: /^Carte de la méthode — / })).toBeTruthy();
@@ -96,7 +122,7 @@ describe('Board — la coque', () => {
     expect(screen.getByText('Étapes du run')).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: /retour/ }));
     // De retour sur la table d'activité dev.
-    expect(screen.getByText('Runs de développement')).toBeTruthy();
+    expect(screen.getByText('Lancements de développement')).toBeTruthy();
   });
 
   it('« Voir le run » de la vue d’ensemble ouvre le détail du run', async () => {

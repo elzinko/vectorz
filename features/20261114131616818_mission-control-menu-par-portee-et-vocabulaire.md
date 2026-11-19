@@ -99,21 +99,21 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
 
 ## Critères d'acceptation
 
-- [ ] Le menu a deux groupes : « Global » (Projets, Carte de la méthode, Annuaire de la méthode) et
+- [x] Le menu a deux groupes : « Global » (Projets, Carte de la méthode, Annuaire de la méthode) et
       « Projet · nom du projet » (Vue d'ensemble, Pilotage, Cadrage, Développement, Fiches,
       Chronologie, Process, Loi, Recettes, Cartes, Configuration) ; le groupe « Méthode » n'existe
       plus. Le groupe « Archives » ne change pas.
-- [ ] « mega-city » n'apparaît pas dans le menu, ni dans un titre de groupe ni dans une entrée ; il ne
+- [x] « mega-city » n'apparaît pas dans le menu, ni dans un titre de groupe ni dans une entrée ; il ne
       vit que dans le titre de la page Annuaire et dans son « i ».
-- [ ] L'entrée « Annuaire de la méthode » est grisée tant que la page n'existe pas, et son « i » nomme
+- [x] L'entrée « Annuaire de la méthode » est grisée tant que la page n'existe pas, et son « i » nomme
       ce que la méthode doit publier ; aucune entrée « Objectifs » n'est ajoutée avant la décision du
       lot Objectifs.
-- [ ] Les écrans disent « Lancements … » au lieu de « Runs … », « But du sprint » au lieu du nom de
+- [x] Les écrans disent « Lancements … » au lieu de « Runs … », « But du sprint » au lieu du nom de
       branche lu comme objectif, « Modules » au lieu
       d'« Intégration » ; la ligne « Sans PR » garde son nom.
-- [ ] Les chaînes de l'écran disent compétence, agent, commande ; aucune forme `/ezk-x` n'y sert
+- [x] Les chaînes de l'écran disent compétence, agent, commande ; aucune forme `/ezk-x` n'y sert
       d'identité.
-- [ ] Un test de la vue vérifie les deux groupes et leur ordre ; le carnet de tests déclare toute vue
+- [x] Un test de la vue vérifie les deux groupes et leur ordre ; le carnet de tests déclare toute vue
       ajoutée ; la page ne lit aucune donnée nouvelle hors `ezk … --json`.
 
 ## Comment vérifier
@@ -129,6 +129,12 @@ Puis ouvrir mission control sur vectorz : la barre de gauche a deux groupes, « 
 « But du sprint » ; Configuration titre « Modules ». Preuve avant/après dans
 `docs/pr-evidence/20261114131616818/` : la barre de gauche à trois groupes puis à deux ; la carte
 « Intégration » puis « Modules » ; « Runs de cadrage récents » puis « Lancements de cadrage récents ».
+
+Captures rangées (1440 px) : [menu avant](../docs/pr-evidence/20261114131616818/menu-before.png),
+[menu après](../docs/pr-evidence/20261114131616818/menu-after.png),
+[configuration après](../docs/pr-evidence/20261114131616818/configuration-after.png),
+[cadrage après](../docs/pr-evidence/20261114131616818/cadrage-after.png),
+[vue d'ensemble après](../docs/pr-evidence/20261114131616818/overview-after.png).
 
 ## Glossaire
 
@@ -170,3 +176,16 @@ livrée. Le Process, désormais l'écran de gauche à droite, passe dans le grou
 Recettes et Cartes. Aucune dépendance externe.
 
 Prête le 2026-11-19 : DoR atteinte, concurrence `ezk-pm` GO (run autonome, sans `--stamp-ready`).
+
+### Revue adverse du 2026-11-19
+
+Verdict GO, les six critères prouvés par le relecteur (`ezk-reviewer`). La seule ligne que rend la
+recherche `/ezk-` est un chemin de fichier dans un test, pas une identité de compétence. Réserves
+gardées :
+
+- P2 : « run » reste dans quatre boutons et titres hors du périmètre de la fiche (« Lancer le run »,
+  « Voir le run », « Étapes du run », « Tout le run »). À reprendre dans une suite, si le PO veut
+  « lancement » partout.
+- P3 : le « i » de l'Annuaire ne nomme que ce qui reste à publier (le graphe en contrat), puisque
+  `ezk help --json` est déjà livré.
+

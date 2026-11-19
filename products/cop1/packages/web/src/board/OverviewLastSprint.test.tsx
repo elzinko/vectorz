@@ -42,6 +42,8 @@ describe('Vue d’ensemble — le dernier sprint', () => {
     show({ lastSprints: [sprint('mission-control-se-lit-sans-deviner')] });
     const c = within(card());
     expect(c.getByText('mission control se lit sans deviner')).toBeTruthy();
+    // Le titre est le but du sprint, et l'écran le nomme ainsi (fiche 20261114131616818).
+    expect(c.getByText('But du sprint')).toBeTruthy();
     expect(c.getByText('2026-11-03')).toBeTruthy();
     expect(c.getByText('48 min')).toBeTruthy();
     expect(c.getByText('142,2 M')).toBeTruthy();

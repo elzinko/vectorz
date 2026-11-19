@@ -135,7 +135,7 @@ export function LawView({ project }: { project: BoardProject }): JSX.Element {
           </section>
           <div className="lawcols" ref={box}>
             <section className="card">
-              <h3>Skills et agents — {law.objets.length}</h3>
+              <h3>Compétences et agents — {law.objets.length}</h3>
               {law.objets.map((o) => (
                 <button
                   type="button"

@@ -126,8 +126,8 @@ export function fmtTokens(n: number | null): string {
   return String(n);
 }
 
-/** Le slug d'un sprint, lu comme son objectif. */
-const objectif = (s: SprintSummary): string => s.slug.replace(/-/g, ' ');
+/** Le but du sprint, lu dans le slug de son compte rendu (le slug dérive du but saisi à l'ouverture). */
+const butDuSprint = (s: SprintSummary): string => s.slug.replace(/-/g, ' ');
 
 /** La carte « Dernier sprint » : le plus récent en grand, les précédents en une ligne chacun. */
 function LastSprint({ sprints }: { sprints: SprintSummary[] | undefined }): JSX.Element {
@@ -140,7 +140,8 @@ function LastSprint({ sprints }: { sprints: SprintSummary[] | undefined }): JSX.
       ) : (
         <>
           <div className="ls-head">
-            <b className="ls-obj">{objectif(last)}</b>
+            <span className="faint">But du sprint</span>
+            <b className="ls-obj">{butDuSprint(last)}</b>
             <span className="sub">{last.jour}</span>
           </div>
           <div className="mgrid">
@@ -170,7 +171,7 @@ function LastSprint({ sprints }: { sprints: SprintSummary[] | undefined }): JSX.
               {previous.map((s) => (
                 <div className="ls-row" key={s.fichier}>
                   <span className="faint">{s.jour}</span>
-                  <span className="ls-name">{objectif(s)}</span>
+                  <span className="ls-name">{butDuSprint(s)}</span>
                   <span>{s.livrees.length} livrée(s)</span>
                   <span>{fmtDuree(s.dureeMs)}</span>
                   <span>{fmtTokens(s.tokens)}</span>

@@ -120,11 +120,11 @@ describe('ProcessMap', () => {
     expect((await screen.findByRole('status')).textContent).toBe('process indisponible : ezk trop ancien');
   });
 
-  it('contrat incomplet (sans skills, liens ni boucles) : le dit au lieu de planter', async () => {
+  it('contrat incomplet (sans compétences, liens ni boucles) : le dit au lieu de planter', async () => {
     serve({ state: 'ok', process: { schema_version: 1 } });
     render(<ProcessMap project={project} />);
     expect((await screen.findByRole('status')).textContent).toBe(
-      'process indisponible : contrat du process incomplet (skills, liens ou boucles absents)',
+      'process indisponible : contrat du process incomplet (compétences, liens ou boucles absents)',
     );
   });
 

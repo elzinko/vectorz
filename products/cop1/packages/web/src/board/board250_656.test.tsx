@@ -76,7 +76,7 @@ describe('ConfigView (fiche 250)', () => {
     renderConfig();
     expect(screen.getByText('Lancement par défaut')).toBeTruthy();
     expect(screen.getByText('Qualité')).toBeTruthy();
-    expect(screen.getByText('Intégration')).toBeTruthy();
+    expect(screen.getByText('Modules')).toBeTruthy();
     // ezk-architect = high → Opus 4.8 ; ezk-qa = low → Haiku 5.5
     expect(screen.getByText('Haiku 5.5')).toBeTruthy();
   });

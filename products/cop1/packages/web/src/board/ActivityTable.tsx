@@ -16,7 +16,7 @@ interface ActivityTableProps {
 
 export function ActivityTable({ project, lens, onOpenRun }: ActivityTableProps): JSX.Element {
   const runs = runsForLens(project, lens);
-  const title = lens === 'cadrage' ? 'Runs de cadrage récents' : 'Runs de développement';
+  const title = lens === 'cadrage' ? 'Lancements de cadrage récents' : 'Lancements de développement';
 
   return (
     <section className="card">

@@ -77,7 +77,7 @@ describe('CadrageView', () => {
     expect(screen.getByText('À venir — à cadrer')).toBeTruthy();
     expect(screen.getByText('En cours')).toBeTruthy();
     expect(screen.getByText('Cadré')).toBeTruthy();
-    expect(screen.getByText('Runs de cadrage récents')).toBeTruthy();
+    expect(screen.getByText('Lancements de cadrage récents')).toBeTruthy();
   });
 });
 
