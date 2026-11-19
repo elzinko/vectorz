@@ -4,7 +4,9 @@
 
 `ezk process show --json` sort les étapes fines de chaque skill de la méthode, dans l'ordre. Pour
 chaque étape, il dit qui la réalise et quel réglage du projet la gouverne, avec sa valeur. Il donne
-aussi les liens entre skills. Mission control dessine le schéma Process avec, sans recopier de liste.
+aussi les liens entre skills, et les boucles de retour entre étapes (gate rouge, revue NO-GO, story
+suivante, sprint suivant). Un skill marqué `outil` (l'archive) se lance à côté du flux : aucun lien
+ni aucune boucle ne le touche. Mission control dessine le schéma Process avec, sans recopier de liste.
 
 **Si tu arrives frais.** Les étapes sont déclarées dans `method/etapes.yml`. Le compilateur de la
 méthode refuse une référence inventée, une étape qu'on ne retrouve plus dans son skill, ou un réglage

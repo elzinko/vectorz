@@ -5,6 +5,7 @@
    "id": "ezk-backlog",
    "nom": "Le backlog",
    "enClair": "Les idées deviennent des fiches prêtes, puis un lot à construire.",
+   "outil": false,
    "etapes": [
     {
      "id": "capturer",
@@ -78,6 +79,7 @@
    "id": "ezk-sprint",
    "nom": "Le sprint",
    "enClair": "Chaque story du lot est construite, validée, relue, puis intégrée.",
+   "outil": false,
    "etapes": [
     {
      "id": "cadrage",
@@ -222,6 +224,7 @@
    "id": "ezk-retro",
    "nom": "La rétro",
    "enClair": "L'équipe transforme une friction vécue en proposition mesurable.",
+   "outil": false,
    "etapes": [
     {
      "id": "cadrer",
@@ -296,6 +299,7 @@
    "id": "ezk-archive",
    "nom": "L'archive",
    "enClair": "La session se clôt sans rien perdre.",
+   "outil": true,
    "etapes": [
     {
      "id": "portier",
@@ -348,11 +352,28 @@
    "de": "ezk-retro",
    "vers": "ezk-backlog",
    "libelle": "Les propositions retenues par le PO deviennent des fiches."
+  }
+ ],
+ "boucles": [
+  {
+   "de": "ezk-sprint:gate",
+   "vers": "ezk-sprint:code",
+   "libelle": "Gate rouge, on reprend le code."
   },
   {
-   "de": "ezk-sprint",
-   "vers": "ezk-archive",
-   "libelle": "La session se clôt après le sprint."
+   "de": "ezk-sprint:revue-adverse",
+   "vers": "ezk-sprint:code",
+   "libelle": "Revue NO-GO, on reprend le code."
+  },
+  {
+   "de": "ezk-sprint:integration",
+   "vers": "ezk-sprint:cadrage",
+   "libelle": "Story suivante du lot."
+  },
+  {
+   "de": "ezk-sprint:integration",
+   "vers": "ezk-backlog:tirer-un-lot",
+   "libelle": "Sprint suivant, la boucle autonome tire un nouveau lot."
   }
  ]
 }

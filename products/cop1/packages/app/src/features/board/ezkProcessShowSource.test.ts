@@ -47,4 +47,30 @@ describe('translateProcessShow', () => {
       /champ skills mal formé/,
     );
   });
+
+  it('relaie les boucles entre étapes et le drapeau outil (fiche 20261117223348250)', () => {
+    const { skills, boucles } = translateProcessShow(example());
+    expect(skills.filter((s) => s.outil).map((s) => s.id)).toEqual(['ezk-archive']);
+    expect(boucles).toContainEqual({
+      de: 'ezk-sprint:gate',
+      vers: 'ezk-sprint:code',
+      libelle: 'Gate rouge, on reprend le code.',
+    });
+  });
+
+  it('une méthode d’avant les boucles (champs absents) se lit sans boucle ni outil ; mal formés, ils sont refusés', () => {
+    const older = example();
+    delete older.boucles;
+    for (const s of older.skills as Record<string, unknown>[]) delete s.outil;
+    const out = translateProcessShow(older);
+    expect(out.boucles).toEqual([]);
+    expect(out.skills.some((s) => s.outil)).toBe(false);
+    expect(() => translateProcessShow({ ...example(), boucles: [{ de: 'a' }] })).toThrow(/champ vers absent/);
+    expect(() =>
+      translateProcessShow({
+        ...example(),
+        skills: [{ id: 'x', nom: 'X', enClair: 'x', outil: 'oui', etapes: [] }],
+      }),
+    ).toThrow(/champ outil mal formé/);
+  });
 });

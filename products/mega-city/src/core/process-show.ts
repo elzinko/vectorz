@@ -5,10 +5,12 @@
  *
  * En clair : `method/etapes.yml` liste, pour chaque skill, ses pas dans l'ordre. Ce module refuse
  * une déclaration qui mentirait, puis en tire le contrat de `ezk process show --json` que mission
- * control affiche (ADR-086). Trois refus, chacun jette à la première erreur :
+ * control affiche (ADR-086). Quatre refus, chacun jette à la première erreur :
  *   - une référence `joue_par` hors catalogue (même grammaire que `ceremonies.yml`) ;
  *   - une étape dont l'`ancre` ne figure plus, mot pour mot, dans le SKILL.md de son skill ;
- *   - un réglage que `ezk config show` ne connaît pas.
+ *   - un réglage que `ezk config show` ne connaît pas ;
+ *   - une boucle qui vise une étape inconnue, ou un lien ou une boucle qui touche un outil (l'archive
+ *     est hors du flux, fiche 20261117223348250).
  *
  * Le format est décrit UNE fois, ici, en zod ; `contracts/process-show/v1/` en est tiré
  * (`pnpm board:contract --write`). `schema_version` monte quand un champ disparaît, change de nom
@@ -37,6 +39,8 @@ export interface SkillDecl {
   id: string;
   nom: string;
   en_clair: string;
+  /** Un outil se lance à côté du flux (l'archive) : aucun lien ni aucune boucle ne le touche. */
+  outil?: boolean;
   etapes: EtapeDecl[];
 }
 
@@ -46,9 +50,17 @@ export interface LienDecl {
   libelle: string;
 }
 
+/** Un retour d'une étape vers une autre, écrites `<skill>:<étape>` (fiche 20261117223348250). */
+export interface BoucleDecl {
+  de: string;
+  vers: string;
+  libelle: string;
+}
+
 export interface EtapesDoc {
   skills: SkillDecl[];
   liens: LienDecl[];
+  boucles?: BoucleDecl[];
 }
 
 const onOff = (on: boolean): string => (on ? 'on' : 'off');
@@ -128,18 +140,35 @@ export function validateEtapes(catalog: Catalog, doc: EtapesDoc): EtapesDoc {
       seenEtapes.add(etape.id);
       return etape;
     });
-    return { id, nom: text(raw.nom, where, 'nom'), en_clair: text(raw.en_clair, where, 'en_clair'), etapes };
+    if (raw.outil !== undefined && typeof raw.outil !== 'boolean') throw new Error(`${where} : outil doit être true ou false`);
+    return { id, nom: text(raw.nom, where, 'nom'), en_clair: text(raw.en_clair, where, 'en_clair'), outil: raw.outil === true, etapes };
   });
+  const outils = new Set(skills.filter((s) => s.outil).map((s) => s.id));
+  const horsFlux = (where: string, skillId: string): void => {
+    if (outils.has(skillId)) throw new Error(`${where} : « ${skillId} » est un outil, hors du flux du process`);
+  };
   const liens = (doc.liens ?? []).map((l, i) => {
     const where = `${FILE} → lien n° ${i + 1}`;
     for (const end of [l?.de, l?.vers]) {
       if (typeof end !== 'string' || !seenSkills.has(end)) {
         throw new Error(`${where} : le lien vise « ${String(end)} », qui n’est pas un skill déclaré`);
       }
+      horsFlux(where, end);
     }
     return { de: l.de, vers: l.vers, libelle: text(l.libelle, where, 'libelle') };
   });
-  return { skills, liens };
+  const etapeIds = new Set(skills.flatMap((s) => s.etapes.map((e) => `${s.id}:${e.id}`)));
+  const boucles = (doc.boucles ?? []).map((b, i) => {
+    const where = `${FILE} → boucle n° ${i + 1}`;
+    for (const end of [b?.de, b?.vers]) {
+      if (typeof end !== 'string' || !etapeIds.has(end)) {
+        throw new Error(`${where} : la boucle vise « ${String(end)} », qui n’est pas une étape déclarée (<skill>:<étape>)`);
+      }
+      horsFlux(where, end.split(':')[0]);
+    }
+    return { de: b.de, vers: b.vers, libelle: text(b.libelle, where, 'libelle') };
+  });
+  return { skills, liens, boucles };
 }
 
 /** La version du format. Un consommateur qui lit une autre valeur le dit, et n'affiche rien de faux. */
@@ -169,6 +198,7 @@ export const ProcessShowSchema = z.strictObject({
         id: z.string(),
         nom: z.string(),
         enClair: z.string(),
+        outil: z.boolean().describe('Un outil se lance à côté du flux (l’archive) : aucun lien ni aucune boucle ne le touche.'),
         etapes: z.array(EtapeSchema).describe('Les étapes du skill, dans l’ordre.'),
       }),
     )
@@ -176,6 +206,15 @@ export const ProcessShowSchema = z.strictObject({
   liens: z
     .array(z.strictObject({ de: z.string(), vers: z.string(), libelle: z.string() }))
     .describe('Les liens entre skills : ce qui passe de l’un à l’autre.'),
+  boucles: z
+    .array(
+      z.strictObject({
+        de: z.string().describe('L’étape de départ, `<skill>:<étape>`.'),
+        vers: z.string().describe('L’étape où l’on revient, `<skill>:<étape>`.'),
+        libelle: z.string(),
+      }),
+    )
+    .describe('Les boucles de retour entre étapes : gate rouge, revue NO-GO, story suivante, sprint suivant.'),
 });
 
 export type ProcessShow = z.infer<typeof ProcessShowSchema>;
@@ -197,6 +236,7 @@ export function buildProcessShow(doc: EtapesDoc, config: ConfigShow): ProcessSho
       id: s.id,
       nom: s.nom,
       enClair: s.en_clair,
+      outil: s.outil === true,
       etapes: s.etapes.map((e, i) => ({
         id: e.id,
         num: i + 1,
@@ -210,5 +250,6 @@ export function buildProcessShow(doc: EtapesDoc, config: ConfigShow): ProcessSho
       })),
     })),
     liens: doc.liens.map((l) => ({ ...l })),
+    boucles: (doc.boucles ?? []).map((b) => ({ ...b })),
   };
 }

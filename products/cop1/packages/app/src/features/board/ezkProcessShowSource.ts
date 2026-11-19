@@ -30,12 +30,22 @@ export interface SkillStepsView {
   id: string;
   nom: string;
   enClair: string;
+  /** Un outil se lance à côté du flux (l'archive) : l'écran le range dans sa boîte à outils. */
+  outil: boolean;
   etapes: EtapeView[];
+}
+
+interface Arrow {
+  de: string;
+  vers: string;
+  libelle: string;
 }
 
 export interface ProcessShowViewData {
   skills: SkillStepsView[];
-  liens: { de: string; vers: string; libelle: string }[];
+  liens: Arrow[];
+  /** Les retours entre étapes, `<skill>:<étape>` (fiche 20261117223348250). */
+  boucles: Arrow[];
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
@@ -80,6 +90,18 @@ function readEtape(v: Record<string, unknown>): EtapeView {
   };
 }
 
+/** Un champ ajouté en v1 : absent chez une méthode plus ancienne, il prend sa valeur neutre ; mal formé, il est refusé. */
+function outilOf(v: Record<string, unknown>): boolean {
+  if (v.outil === undefined) return false;
+  return typeof v.outil === 'boolean' ? v.outil : fail('champ outil mal formé');
+}
+
+const arrow = (l: Record<string, unknown>): Arrow => ({
+  de: text(l, 'de'),
+  vers: text(l, 'vers'),
+  libelle: text(l, 'libelle'),
+});
+
 /** Le JSON publié, vérifié ; un format inconnu est refusé net, jamais deviné. */
 export function translateProcessShow(json: unknown): ProcessShowViewData {
   if (!isRecord(json)) fail('réponse mal formée');
@@ -92,13 +114,11 @@ export function translateProcessShow(json: unknown): ProcessShowViewData {
       id: text(s, 'id'),
       nom: text(s, 'nom'),
       enClair: text(s, 'enClair'),
+      outil: outilOf(s),
       etapes: records(s, 'etapes').map(readEtape),
     })),
-    liens: records(json, 'liens').map((l) => ({
-      de: text(l, 'de'),
-      vers: text(l, 'vers'),
-      libelle: text(l, 'libelle'),
-    })),
+    liens: records(json, 'liens').map(arrow),
+    boucles: json.boucles === undefined ? [] : records(json, 'boucles').map(arrow),
   };
 }
 

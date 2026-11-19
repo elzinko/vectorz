@@ -125,6 +125,7 @@ skills:
   - id: ezk-archive
     nom: L'archive
     en_clair: La session se clôt sans rien perdre.
+    outil: true          # un outil, pas une étape du process (décision PO du 2026-11-17)
     etapes:
       - id: portier
         titre: Portier
@@ -147,6 +148,20 @@ liens:
   - de: ezk-retro
     vers: ezk-backlog
     libelle: Les propositions retenues par le PO deviennent des fiches.
-  - de: ezk-sprint
-    vers: ezk-archive
-    libelle: La session se clôt après le sprint.
+
+# Les BOUCLES : un retour d'une étape vers une autre, écrites `<skill>:<étape>` (fiche
+# 20261117223348250). Un lien relie deux skills ; une boucle relie deux étapes. La validation refuse
+# une étape inconnue, et tout lien ou boucle qui touche un outil (l'archive est hors du flux).
+boucles:
+  - de: ezk-sprint:gate
+    vers: ezk-sprint:code
+    libelle: Gate rouge, on reprend le code.
+  - de: ezk-sprint:revue-adverse
+    vers: ezk-sprint:code
+    libelle: Revue NO-GO, on reprend le code.
+  - de: ezk-sprint:integration
+    vers: ezk-sprint:cadrage
+    libelle: Story suivante du lot.
+  - de: ezk-sprint:integration
+    vers: ezk-backlog:tirer-un-lot
+    libelle: Sprint suivant, la boucle autonome tire un nouveau lot.

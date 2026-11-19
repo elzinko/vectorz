@@ -20,6 +20,10 @@
           "enClair": {
             "type": "string"
           },
+          "outil": {
+            "type": "boolean",
+            "description": "Un outil se lance à côté du flux (l’archive) : aucun lien ni aucune boucle ne le touche."
+          },
           "etapes": {
             "type": "array",
             "items": {
@@ -109,6 +113,7 @@
           "id",
           "nom",
           "enClair",
+          "outil",
           "etapes"
         ]
       },
@@ -136,11 +141,37 @@
         ]
       },
       "description": "Les liens entre skills : ce qui passe de l’un à l’autre."
+    },
+    "boucles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "de": {
+            "type": "string",
+            "description": "L’étape de départ, `<skill>:<étape>`."
+          },
+          "vers": {
+            "type": "string",
+            "description": "L’étape où l’on revient, `<skill>:<étape>`."
+          },
+          "libelle": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "de",
+          "vers",
+          "libelle"
+        ]
+      },
+      "description": "Les boucles de retour entre étapes : gate rouge, revue NO-GO, story suivante, sprint suivant."
     }
   },
   "required": [
     "schema_version",
     "skills",
-    "liens"
+    "liens",
+    "boucles"
   ]
 }

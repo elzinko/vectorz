@@ -108,6 +108,52 @@ describe('validateEtapes — vérifiées : une référence inventée fait échou
   });
 });
 
+describe('validateEtapes — boucles et outils (fiche 20261117223348250)', () => {
+  const boucle = (de: string, vers: string): NonNullable<EtapesDoc['boucles']>[number] => ({ de, vers, libelle: 'on reprend' });
+  const withBoucles = (boucles: EtapesDoc['boucles']): EtapesDoc => ({ ...doc(), boucles });
+
+  it('accepte une boucle entre deux étapes déclarées, même d’un skill à l’autre', () => {
+    const out = validateEtapes(tiny(), withBoucles([boucle('ezk-sprint:scenarios', 'ezk-backlog:groomer')]));
+    expect(out.boucles).toEqual([{ de: 'ezk-sprint:scenarios', vers: 'ezk-backlog:groomer', libelle: 'on reprend' }]);
+  });
+
+  it('sans boucles déclarées, la liste est vide et aucun skill n’est un outil', () => {
+    const out = validateEtapes(tiny(), doc());
+    expect(out.boucles).toEqual([]);
+    expect(out.skills.map((s) => s.outil)).toEqual([false, false]);
+  });
+
+  it('jette sur une boucle qui vise une étape inconnue, ou une référence sans étape', () => {
+    expect(() => validateEtapes(tiny(), withBoucles([boucle('ezk-sprint:code', 'ezk-sprint:scenarios')]))).toThrow(
+      /boucle n° 1.*ezk-sprint:code/,
+    );
+    expect(() => validateEtapes(tiny(), withBoucles([boucle('ezk-sprint', 'ezk-backlog:groomer')]))).toThrow(/boucle n° 1.*ezk-sprint/);
+    expect(() => validateEtapes(tiny(), withBoucles([{ de: 'ezk-sprint:scenarios', vers: 'ezk-backlog:groomer', libelle: '' }]))).toThrow(
+      /boucle n° 1.*libelle manquant/,
+    );
+  });
+
+  it('jette sur un drapeau outil qui n’est pas un booléen', () => {
+    const bad = doc();
+    (bad.skills[1] as { outil?: unknown }).outil = 'oui';
+    expect(() => validateEtapes(tiny(), bad)).toThrow(/ezk-sprint.*outil doit être true ou false/);
+  });
+
+  it('jette sur un lien ou une boucle qui touche un outil : un outil est hors du flux', () => {
+    const tool = (extra: Partial<EtapesDoc>): EtapesDoc => {
+      const d = { ...doc(), ...extra };
+      d.skills[1] = { ...d.skills[1], outil: true };
+      return d;
+    };
+    expect(() => validateEtapes(tiny(), tool({ liens: [{ de: 'ezk-backlog', vers: 'ezk-sprint', libelle: 'part' }] }))).toThrow(
+      /lien n° 1.*ezk-sprint.*outil/,
+    );
+    expect(() => validateEtapes(tiny(), tool({ boucles: [boucle('ezk-backlog:groomer', 'ezk-sprint:scenarios')] }))).toThrow(
+      /boucle n° 1.*ezk-sprint.*outil/,
+    );
+  });
+});
+
 describe('validateEtapes — ancrées : l’étape se retrouve dans le texte de son skill', () => {
   it('jette quand l’ancre ne figure plus dans le SKILL.md du skill', () => {
     expect(() => validateEtapes(tiny(), doc({ ancre: '3. **Scénarios BDD**' }))).toThrow(
@@ -241,6 +287,18 @@ describe('method/etapes.yml — la vraie déclaration', () => {
       ['ezk-archive', ['portier', 'cloture']],
     ]);
     expect(out.liens).toContainEqual(expect.objectContaining({ de: 'ezk-retro', vers: 'ezk-backlog' }));
+  });
+
+  it('l’archive est un outil, hors du flux : aucun lien n’y mène, et les quatre boucles internes sont publiées', () => {
+    const out = processShowData(fixture);
+    expect(out.skills.filter((s) => s.outil).map((s) => s.id)).toEqual(['ezk-archive']);
+    expect(out.liens.some((l) => l.de === 'ezk-archive' || l.vers === 'ezk-archive')).toBe(false);
+    expect(out.boucles.map((b) => [b.de, b.vers])).toEqual([
+      ['ezk-sprint:gate', 'ezk-sprint:code'],
+      ['ezk-sprint:revue-adverse', 'ezk-sprint:code'],
+      ['ezk-sprint:integration', 'ezk-sprint:cadrage'],
+      ['ezk-sprint:integration', 'ezk-backlog:tirer-un-lot'],
+    ]);
   });
 
   it('réglages : la revue adverse porte `review.adverse` et sa valeur pour le projet lu', () => {

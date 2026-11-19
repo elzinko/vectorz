@@ -6,10 +6,16 @@
  * contenu, jamais ne déplace la caméra (règle ux/no-layout-shift).
  */
 import type { GraphCheck, GraphEdge, GraphKind } from './graphCheck.js';
-import type { FlowEdge } from './processProjection.js';
 import { levelForZoom, type ZoomLevel, type ZoomThresholds } from './semanticZoom.js';
 
 export type GraphLevel = ZoomLevel;
+
+export interface FlowEdge {
+  id: string;
+  source: string;
+  target: string;
+  label: string;
+}
 
 export interface GraphFlowNode {
   id: string;

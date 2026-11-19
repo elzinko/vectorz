@@ -426,28 +426,78 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .verdictbar .btn.on { border-color: var(--accent, #3b5bdb); }
 .verdictbar .verdicterr { color: var(--danger, #c92a2a); font-size: 12px; }
 
-/* Carte zoomable du process (fiche 20261110185357446) : hauteur fixe, boîtes sobres. */
-.pm { padding: 14px 16px; margin-bottom: 12px; }
-.pm-canvas { height: 520px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.pm .react-flow__node-skill, .pm .react-flow__node-etape { font-size: 12px; color: var(--fg); }
-.pm-skill { width: 100%; height: 100%; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--accent); background: var(--surface-2); }
-.pm-skill-nom { font-size: 18px; font-weight: 600; }
-.pm-skill-clair { margin-top: 4px; color: var(--muted); }
-.pm-etape { width: 100%; height: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
-.pm-etape-titre { font-weight: 600; }
-.pm-etape-clair { color: var(--muted); margin: 3px 0 5px; }
-.pm-detail { font-size: 11px; margin-top: 2px; }
-.pm-vide { color: var(--faint); }
-/* Le texte grandit quand on s'éloigne : de loin, la carte s'affiche vers 0,25 ; un titre de 56 px
-   s'y lit comme un texte de 14 px. Les étapes, elles, ne montrent leur détail qu'au niveau 3. */
-.pm-level-1 .pm-skill-nom { font-size: 56px; line-height: 1.1; }
-.pm-level-1 .pm-skill-clair { font-size: 28px; margin-top: 10px; }
-.pm-level-1 .react-flow__edge-text { font-size: 26px; }
-.pm-level-2 .pm-skill-nom { font-size: 30px; }
-.pm-level-2 .pm-skill-clair { font-size: 16px; }
-.pm-level-2 .react-flow__edge-text { font-size: 16px; }
-.pm-level-2 .pm-etape-titre { font-size: 20px; }
-.pm-level-2 .pm-etape-clair { font-size: 15px; }
+/* Écran Process de gauche à droite (fiche 20261117223348250, maquette B + panneau) : un monde en
+   coordonnées fixes, une caméra CSS animée, un panneau de détail à droite (tiroir sous 700 px). */
+.pr { padding: 14px 16px; margin-bottom: 12px; }
+/* La scène décide seule de son tiroir : la même largeur que la caméra (700 px) dans le code. */
+.pr-stage-box { container-type: inline-size; }
+.pr-stage { position: relative; height: min(68vh, 640px); min-height: 380px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.pr-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; transition: transform 520ms cubic-bezier(.2,.7,.2,1); will-change: transform; }
+.pr-world svg { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.pr-crumbs { position: absolute; z-index: 5; left: 12px; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; pointer-events: none; }
+.pr-crumbs > * { pointer-events: auto; }
+.pr-crumb { font: 500 13px var(--font-ui, inherit); background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.pr-crumb[aria-current="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); cursor: default; }
+.pr-crumb-sep { color: var(--muted); font-size: 13px; }
+.pr-navbtns { margin-left: auto; display: flex; gap: 6px; }
+.pr-stage.has-panel .pr-navbtns { margin-right: 340px; }
+.pr-navbtns button { font-size: 13px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.pr-navbtns button:disabled { opacity: .4; cursor: default; }
+.hue-backlog { --hue: var(--accent); --hue-bg: var(--accent-soft); }
+.hue-sprint { --hue: var(--go); --hue-bg: var(--go-soft); }
+.hue-retro { --hue: var(--warn); --hue-bg: var(--warn-soft); }
+.hue-tool { --hue: var(--faint); --hue-bg: var(--surface); }
+.pr-phase { position: absolute; border-radius: 22px; border: 2px solid var(--hue); background: var(--hue-bg); cursor: zoom-in; padding: 0; text-align: left; color: var(--fg); }
+.pr-stage.lvl-0 .pr-phase:hover { box-shadow: 0 0 0 6px color-mix(in srgb, var(--hue) 25%, transparent); }
+.pr-p-head { position: absolute; left: 30px; top: 24px; max-width: 520px; display: grid; gap: 10px; pointer-events: none; }
+.pr-p-tag { font-size: 15px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--hue); }
+.pr-p-title { font-size: 44px; line-height: 1.05; font-weight: 700; color: var(--hue); }
+.pr-p-sub { font-size: 20px; line-height: 1.35; }
+.pr-tools-label { position: absolute; font-size: 22px; font-weight: 600; color: var(--faint); letter-spacing: .04em; text-transform: uppercase; pointer-events: none; }
+.pr-step { position: absolute; background: var(--surface); color: var(--fg); border: 1.5px solid color-mix(in srgb, var(--hue) 55%, var(--line)); border-radius: 10px; padding: 9px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; text-align: left; transition: box-shadow 200ms; }
+.pr-step:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--hue) 30%, transparent); }
+.pr-step.is-focus { box-shadow: 0 0 0 3px var(--fg); }
+.pr-s-num { font-family: var(--font-data); font-size: 11px; font-weight: 600; color: var(--hue); }
+.pr-s-title { font-size: 18px; line-height: 1.15; font-weight: 600; overflow-wrap: anywhere; }
+.pr-s-body { font-size: 11.5px; line-height: 1.35; color: var(--muted); }
+.pr-s-big { display: none; font-size: 48px; line-height: 1; font-weight: 700; color: var(--hue); margin: auto; }
+/* Vue d'ensemble : les étapes ne montrent que leur numéro, un clic zoome sur leur phase. */
+.pr-stage.lvl-0 .pr-step { cursor: zoom-in; }
+.pr-stage.lvl-0 .pr-step > :not(.pr-s-big) { display: none; }
+.pr-stage.lvl-0 .pr-s-big { display: block; }
+.pr-edge { fill: none; stroke-width: 3; }
+.pr-edge.flow { stroke: var(--muted); }
+.pr-edge.improve { stroke: var(--warn); stroke-width: 6; }
+.pr-edge.story { stroke: var(--go); stroke-width: 3.5; }
+.pr-edge.fail { stroke: var(--crit); stroke-dasharray: 9 6; }
+.pr-edge.auto { stroke: var(--accent); stroke-width: 4; stroke-dasharray: 14 8; }
+.pr-elabel { font-weight: 600; }
+.pr-elabel.flow { fill: var(--muted); font-size: 20px; }
+.pr-elabel.improve { fill: var(--warn); font-size: 24px; }
+.pr-elabel.story { fill: var(--go); font-size: 16px; }
+.pr-elabel.fail { fill: var(--crit); font-size: 14px; }
+.pr-elabel.auto { fill: var(--accent); font-size: 22px; }
+/* De loin, la carte s'affiche vers 0,35 : les libellés grossissent pour rester lisibles. */
+.pr-stage.lvl-0 .pr-elabel.flow { font-size: 26px; }
+.pr-stage.lvl-0 .pr-elabel.improve { font-size: 40px; }
+.pr-stage.lvl-0 .pr-elabel.auto { font-size: 36px; }
+.pr-stage.lvl-0 .pr-elabel.story, .pr-stage.lvl-0 .pr-elabel.fail { display: none; }
+.pr-mk.flow { fill: var(--muted); } .pr-mk.improve { fill: var(--warn); } .pr-mk.story { fill: var(--go); } .pr-mk.fail { fill: var(--crit); } .pr-mk.auto { fill: var(--accent); }
+.pr-panel { position: absolute; z-index: 6; top: 0; right: 0; bottom: 0; width: 340px; background: var(--surface); border-left: 1px solid var(--line); padding: 56px 20px 20px; overflow-y: auto; display: grid; align-content: start; gap: 14px; }
+.pr-panel h3 { font-size: 24px; line-height: 1.15; margin: 0; }
+.pr-panel p { margin: 0; color: var(--muted); }
+.pr-panel .pr-k { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--hue); margin: 0 0 4px; }
+.pr-panel ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.pr-panel li { font-family: var(--font-data); font-size: 13px; overflow-wrap: anywhere; }
+.pr-panel li.none { font-family: inherit; font-style: italic; color: var(--muted); }
+.pr-panel ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.pr-lnk { font: inherit; color: var(--fg); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+@container (max-width: 700px) {
+  .pr-panel { top: auto; left: 0; width: auto; height: 52%; border-left: 0; border-top: 1px solid var(--line); padding-top: 16px; }
+  .pr-stage.has-panel .pr-navbtns { margin-right: 0; }
+  .pr-navbtns { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .pr-world { transition: none; } }
 
 /* Carte de la méthode zoomable (fiche 20261117114544792) : couleur par famille, texte qui grandit de loin. */
 .gm { padding: 14px 16px; margin-bottom: 12px; }

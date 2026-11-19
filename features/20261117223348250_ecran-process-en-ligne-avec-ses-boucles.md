@@ -90,19 +90,19 @@ au code de la page.
 
 ## Critères d'acceptation
 
-- [ ] `ezk process show --json` publie `boucles[]` (de, vers, libellé) et marque l'archive
+- [x] `ezk process show --json` publie `boucles[]` (de, vers, libellé) et marque l'archive
       `outil: true`. Aucun lien ne mène plus à l'archive. Une boucle vers une étape inconnue fait
       échouer la commande, et la gate rougit.
-- [ ] De loin, le schéma montre trois phases de gauche à droite, Backlog, Sprint et Rétro, avec
+- [x] De loin, le schéma montre trois phases de gauche à droite, Backlog, Sprint et Rétro, avec
       leurs étapes numérotées. L'archive est dans une boîte à outils, hors du flux. La liste des
       fiches par étape, sous le schéma, ne change pas.
-- [ ] Les cinq boucles sont dessinées et nommées. Elles viennent de `liens[]` et `boucles[]` : le
+- [x] Les cinq boucles sont dessinées et nommées. Elles viennent de `liens[]` et `boucles[]` : le
       code de la page n'en écrit aucune.
-- [ ] Un clic sur une phase zoome dessus. Un clic sur une étape ouvre le panneau à droite. Le fil
+- [x] Un clic sur une phase zoome dessus. Un clic sur une étape ouvre le panneau à droite. Le fil
       d'Ariane, la touche Échap et les boutons précédent / suivant permettent de revenir et d'avancer.
-- [ ] Le panneau montre les commandes, les agents, les règles du projet et les réglages du projet de
+- [x] Le panneau montre les commandes, les agents, les règles du projet et les réglages du projet de
       l'étape. Une rubrique vide le dit (« aucune règle rattachée ») : l'écran n'invente aucun exemple.
-- [ ] Sous 700 px de large, le panneau devient un tiroir en bas d'écran. La page ne défile pas à
+- [x] Sous 700 px de large, le panneau devient un tiroir en bas d'écran. La page ne défile pas à
       l'horizontale.
 
 ## Comment vérifier
@@ -117,6 +117,17 @@ pnpm cop1:dev   # puis http://localhost:5273, page Process
 
 À l'écran : capture avant (graphe actuel) et après (maquette B). Puis un clic sur « Revue adverse »
 qui ouvre le panneau, et Échap qui revient. Rejouer à 375 px de large pour le tiroir.
+
+**Avant / après** (règle `development/pr-before-after-media`)
+| Vue | Avant | Après |
+|---|---|---|
+| process | ![process avant](https://github.com/elzinko/vectorz/blob/d8649145f6ed85dea69095b563ccf6b976425804/docs/pr-evidence/20261117223348250/process-before.png?raw=true) | ![process après](https://github.com/elzinko/vectorz/blob/d8649145f6ed85dea69095b563ccf6b976425804/docs/pr-evidence/20261117223348250/process-after.png?raw=true) |
+
+Captures de l'après, au zoom et sur téléphone (`docs/pr-evidence/20261117223348250/`) :
+[phase Sprint et panneau de l'étape Revue adverse](../docs/pr-evidence/20261117223348250/process-step-panel-desktop-after.png),
+[vue d'ensemble à 375 px](../docs/pr-evidence/20261117223348250/process-overview-mobile-after.png),
+[tiroir à 375 px](../docs/pr-evidence/20261117223348250/process-step-panel-mobile-after.png).
+Débordement horizontal mesuré à 375 px : 0 px.
 
 ## Glossaire
 
@@ -156,3 +167,18 @@ Mené par l'orchestrateur, à la demande du PO (« groome-la »). Trois passes :
 - **Périmètre** : la Carte de la méthode est hors sujet ; seul le schéma de la page Process change.
 
 Aucune dépendance externe : tout vit dans le monorepo.
+
+### Revue adverse du 2026-11-19
+
+Verdict GO, les six critères prouvés par le relecteur (`ezk-reviewer`). Réserves gardées, aucune
+bloquante :
+
+- P2 : le schéma publié rend `outil` et `boucles` obligatoires, alors que le lecteur du daemon les
+  tolère absents, pour lire une méthode d'avant les boucles. Aucun code ne valide contre ce schéma.
+  Le lecteur tolérant est voulu : il évite un écran vide pendant qu'un poste a encore l'ancienne méthode.
+- P3 : la scène n'a pas de `tabIndex` ; Échap et les flèches marchent depuis n'importe quel bouton
+  de la scène, qui sont tous atteignables au clavier.
+- P3 : de loin, le libellé « Sprint suivant » frôle son trait ; les libellés d'échec n'apparaissent
+  qu'au zoom, par choix.
+- P3 : la clé d'un arc repose sur son tracé, unique avec les données actuelles.
+
