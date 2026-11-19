@@ -101,7 +101,7 @@ Des gestes de texte, bon marché, plus deux renommages. Les amendements d'abord,
 
 Hors périmètre : le glossaire publié ([`ezk glossaire show --json`](../20261114131616634_ezk-glossaire-show-json.md)) ;
 les renommages d'écran (« Runs de cadrage », slug du sprint lu comme « objectif »), portés par
-[Mission control range son menu par portée](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) ;
+[Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) ;
 le spike [outiller l'ajout d'une règle](../20261011113632688_spike-flux-ajout-regle-fichier-bundle-bind.md), à enrichir
 du cas du PO ; les verbes `ezk rules add|bind|remove`, inexistants (`products/mega-city/bin/ezk-rules.ts:28-31`), fiche à part.
 
@@ -149,10 +149,10 @@ ezk --root "$R" docs check-links
   écarts I1 et I3 ; première de l'ordre d'attaque, avec [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md).
 - Décisions du PO du 14 novembre : 1 et 3 portées ici comme matière d'ADR à confirmer par le panel, 5 comme prise ;
   2 renvoyée à « Trancher la coupe » ; A8 (pas de numéro court stocké) notée dans
-  [Mission control range son menu par portée](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
+  [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
   Restent ouverts depuis le 12 novembre : la confirmation de « But du sprint », et le « but de version » (ADR-0080, lignes 87-88).
 - Dépendances : aucune fiche du lot. Dépendent de celle-ci : [le glossaire publié](../20261114131616634_ezk-glossaire-show-json.md),
-  [le menu par portée](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) et [la cloche](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md).
+  [le menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) et [la cloche](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md).
 - Voisines livrées : [Un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md) ;
   [La Vue d'ensemble résume le dernier sprint](20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md), origine du mot « objectif » pour le slug ;
   [Aligner le vocabulaire des commandes sur Scrum](20260903085150321_nommage-commandes-scrum-safe.md), absorbée par ADR-0054 § Nommage.

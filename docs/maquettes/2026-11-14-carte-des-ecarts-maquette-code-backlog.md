@@ -282,7 +282,7 @@ d'être écrites en ADR. Les fiches les portent comme décisions du PO à confir
 | 23 | [`ezk recipes show <id> --json` publie le corps d'une recette](../../features/20261114131616266_ezk-recipes-show-json-corps-de-recette.md) | P2 | mega-city | G1 |
 | 24 | [Mission control montre une recette : corps, sections, et où elle est implémentée](../../features/20261114131616451_mission-control-montre-une-recette.md) | P2 | cop1 | G1, G2 |
 | 25 | [`ezk glossaire show --json` : le glossaire publié par la méthode, source unique des boutons « i »](../../features/20261114131616634_ezk-glossaire-show-json.md) | P2 | mega-city | I1 |
-| 26 | [Mission control range son menu par portée et parle compétence, agent, commande, module](../../features/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) | P2 | cop1 | I2 |
+| 26 | [Mission control range son menu par portée et parle compétence, agent, commande, module](../../features/done/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) | P2 | cop1 | I2 |
 | 27 | [Demander une rétro sur des sprints cochés depuis mission control](../../features/20261114131617010_demander-une-retro-depuis-mission-control.md) | P3 | cop1 | F3 |
 
 ### Fiches existantes enrichies, et la fiche fermée

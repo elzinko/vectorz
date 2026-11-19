@@ -89,7 +89,7 @@ exemple. Mission control, l'écran de cop1, ne lit que ces contrats (ADR-086).
   `bin/ezk-recipes.ts:26-30` le lit depuis la racine de la méthode. L'ADR court fixe cette racine.
 - La dette de la loi sort dans `law show --json` : la liste `uncited` et sa date de mesure. Pas dans le graphe, c'est une donnée
   de la loi. Un champ qui s'ajoute ne change pas `schema_version` (règle de la recette) : schéma et exemple sont regénérés par `pnpm law:contract --write`.
-- Hors périmètre : les écrans, fiches [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
+- Hors périmètre : les écrans, fiches [Mission control range son menu par portée](done/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
   et [Mission control montre une recette](20261114131616451_mission-control-montre-une-recette.md) ; le corps d'une recette, fiche [`ezk recipes show <id> --json`](20261114131616266_ezk-recipes-show-json-corps-de-recette.md).
 
 ## Critères d'acceptation

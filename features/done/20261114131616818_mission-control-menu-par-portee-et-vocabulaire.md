@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, convention]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (3a5ed22b)"
 evidence: before-after
 created: 2026-11-14
 ---
@@ -31,12 +31,12 @@ est ce que le code appelle encore « skill ».
 ## Contexte / Problème
 
 Ce que l'écran attend : l'amendement du 12 novembre de la
-[capture du panel Loi / Annuaire](../docs/captures/2026-11-11-panel-loi-projet-annuaire-maquette.md),
+[capture du panel Loi / Annuaire](../../docs/captures/2026-11-11-panel-loi-projet-annuaire-maquette.md),
 lignes 129 à 131. Le menu suit la portée : « Global » porte « Projets » et « Annuaire de la
 méthode » ; « Projet · nom du projet » porte le reste. Le nom de la méthode ne vit plus que dans le
 titre de la page Annuaire et son « i » (« lu par ezk »). L'écran parle Scrum ; « run » devient
 « lancement ». C'est l'écart I2 de la
-[carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
+[carte des écarts](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
 
 Ce que le code fait le 14 novembre, dans `products/cop1/packages/web/src/board/` :
 
@@ -57,7 +57,7 @@ Ce que le code fait le 14 novembre, dans `products/cop1/packages/web/src/board/`
 - Déjà conforme : `TimelineView.tsx:25,34` dit « jalon » pour le gate ; aucune forme `/ezk-x` ni le
   mot « plugin » dans `web/src/board`. La maquette, elle, dit encore « Plugins ».
 - Côté méthode, les mots sont tranchés : « module » par l'amendement de
-  [l'ADR-0039](../products/mega-city/docs/adr/0039-trois-etages-moteur-methode-branchements-plugin.md)
+  [l'ADR-0039](../../products/mega-city/docs/adr/0039-trois-etages-moteur-methode-branchements-plugin.md)
   (lignes 137-146, « Plugin » écarté à cause des plugins Claude Code) et par
   `products/mega-city/taxonomie.yml:38` ; « compétence » par `products/mega-city/src/core/loi-view.ts:207,214` ;
   les ids `skill:<id>` et `agent:<id>` du contrat `law-show`. Restent « Plugin GitHub » dans
@@ -76,10 +76,10 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
   Chronologie, Process, Loi, Recettes, Cartes, Configuration. Le groupe « Méthode » disparaît.
 - « Annuaire de la méthode » est présente mais grisée tant que la page n'existe pas. Son « i » nomme
   ce que la méthode doit publier d'abord :
-  [`ezk help --json`](done/20261114131613129_ezk-help-json-commandes-etage-famille.md) et
-  [le graphe en contrat compilé](20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
+  [`ezk help --json`](20261114131613129_ezk-help-json-commandes-etage-famille.md) et
+  [le graphe en contrat compilé](../20261114131614982_graphe-de-la-methode-en-contrat-compile.md).
 - Pas d'entrée « Objectifs » grisée : Pilotage montre déjà les objectifs, les milestones (`PilotageView.tsx:73`).
-  Le lot Objectifs ([Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md))
+  Le lot Objectifs ([Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md))
   tranche si Pilotage devient Objectifs, ou si une page s'ajoute.
 - Libellés : « Lancements de cadrage récents » et « Lancements de développement » dans
   ActivityTable ; « But du sprint » à la place du nom de branche dans OverviewView (mot confirmé par
@@ -89,13 +89,13 @@ Première coupe : le menu et les libellés. Le contenu de l'Annuaire vient avec 
   Une forme `/ezk-x` n'apparaît que comme « rendu Claude Code » d'une compétence, jamais comme son
   identité : l'identité est l'id `skill:<id>` publié par `law show`.
 - Les textes des « i » viennent de
-  [`ezk glossaire show --json`](20261114131616634_ezk-glossaire-show-json.md) quand il existe. En
+  [`ezk glossaire show --json`](../20261114131616634_ezk-glossaire-show-json.md) quand il existe. En
   première coupe, le seul texte figé toléré est le « i » de l'entrée grisée.
 - Hors périmètre : le contenu de l'Annuaire ; l'amendement d'ADR-086 décision 3 et « module » côté
   méthode (`config.example.yml`, `ezk config github`), portés par
-  [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md) ; la
+  [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md) ; la
   chronologie à deux niveaux (ADR-079 D11) : elle reprend l'écran livré par
-  [Board : chronologie à 3 niveaux](done/20261015082118382_board-chronologie-3-niveaux-accueil-projets.md), et aucune fiche du 14 novembre ne la porte.
+  [Board : chronologie à 3 niveaux](20261015082118382_board-chronologie-3-niveaux-accueil-projets.md), et aucune fiche du 14 novembre ne la porte.
 
 ## Critères d'acceptation
 
@@ -130,11 +130,11 @@ Puis ouvrir mission control sur vectorz : la barre de gauche a deux groupes, « 
 `docs/pr-evidence/20261114131616818/` : la barre de gauche à trois groupes puis à deux ; la carte
 « Intégration » puis « Modules » ; « Runs de cadrage récents » puis « Lancements de cadrage récents ».
 
-Captures rangées (1440 px) : [menu avant](../docs/pr-evidence/20261114131616818/menu-before.png),
-[menu après](../docs/pr-evidence/20261114131616818/menu-after.png),
-[configuration après](../docs/pr-evidence/20261114131616818/configuration-after.png),
-[cadrage après](../docs/pr-evidence/20261114131616818/cadrage-after.png),
-[vue d'ensemble après](../docs/pr-evidence/20261114131616818/overview-after.png).
+Captures rangées (1440 px) : [menu avant](../../docs/pr-evidence/20261114131616818/menu-before.png),
+[menu après](../../docs/pr-evidence/20261114131616818/menu-after.png),
+[configuration après](../../docs/pr-evidence/20261114131616818/configuration-after.png),
+[cadrage après](../../docs/pr-evidence/20261114131616818/cadrage-after.png),
+[vue d'ensemble après](../../docs/pr-evidence/20261114131616818/overview-after.png).
 
 ## Glossaire
 
@@ -145,22 +145,22 @@ Captures rangées (1440 px) : [menu avant](../docs/pr-evidence/20261114131616818
 
 ## Notes / décisions
 
-- Origine : la [carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md)
+- Origine : la [carte des écarts](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md)
   du 14 novembre, écart I2 ; pilote « Oui, crée-les ». Statut `idea` : le PO tranche.
 - Décisions du PO relayées par la capture : menu par portée, pas par produit (amendement du 12
   novembre) ; « Objectif » reste le mot des milestones (11 novembre). Compétence, agent, commande,
-  module entrent dans [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
+  module entrent dans [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md)
   décision 3 par la fiche des amendements, dont celle-ci dépend.
 - Décision A8 du PO du 14 novembre : aucun numéro court n'est stocké sur les fiches ; les ids
-  horodatés restent ([Fiches datées](done/0180-idees-sans-numero.md) tient). Si l'écran affiche un
+  horodatés restent ([Fiches datées](0180-idees-sans-numero.md) tient). Si l'écran affiche un
   numéro court, c'est un affichage calculé par cop1, pas un champ de la méthode ni d'un contrat. Une
   note, pas un critère.
-- Dépend de [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md)
+- Dépend de [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md)
   et, pour les textes des « i », de
-  [`ezk glossaire show --json`](20261114131616634_ezk-glossaire-show-json.md).
-- Fiches voisines : [Une page d'accueil, une ligne par projet](20261002115451451_page-une-ligne-par-projet.md),
+  [`ezk glossaire show --json`](../20261114131616634_ezk-glossaire-show-json.md).
+- Fiches voisines : [Une page d'accueil, une ligne par projet](../20261002115451451_page-une-ligne-par-projet.md),
   qui devient l'entrée « Projets » ;
-  [Un test vérifie que chaque écran montre ce que la méthode publie](20261104204526516_controle-auto-des-ecrans-mission-control.md),
+  [Un test vérifie que chaque écran montre ce que la méthode publie](../20261104204526516_controle-auto-des-ecrans-mission-control.md),
   qui porte déjà le contrôle « tout vient de `ezk --json` ».
 - Risque restant : le « i » de l'entrée grisée est un texte figé, contre le critère strict « aucun
   texte figé » de l'écart I2. Écart assumé tant que `ezk glossaire show --json` n'existe pas.
@@ -171,7 +171,7 @@ Run autonome. La Carte de la méthode, livrée le 17 novembre, décrit la métho
 pour tous les projets : elle va dans « Global », à côté de l'Annuaire. Le groupe « Archives » (lien
 vers les archives v1) reste hors périmètre, inchangé. « But du sprint » est confirmé par le PO le 15 novembre (décisions de la coupe,
 ADR-0088) : la réserve est levée. La dépendance aux
-[Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md) est
+[Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md) est
 livrée. Le Process, désormais l'écran de gauche à droite, passe dans le groupe « Projet » avec Loi,
 Recettes et Cartes. Aucune dépendance externe.
 

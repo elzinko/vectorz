@@ -97,7 +97,7 @@ cop1 : il ne lit que ces contrats, jamais les fichiers (ADR-086).
 - Hors périmètre : le texte de `ezk help` ; un framework de commandes publié, fiche
   [CLI `ezk` complet et publié](../20260903134908019_cli-ezk-complet-publie.md) (parkée) ; les écrans de
   mission control, fiche
-  [Mission control range son menu par portée](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
+  [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
 
 ## Critères d'acceptation
 

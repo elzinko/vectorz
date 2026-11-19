@@ -84,7 +84,7 @@ POC d'abord : un fichier déplacé, une commande, un contrat.
   une fois les ADR amendés : sprint, but du sprint, lot, incrément, rétro, version, objectif
   (milestone), jalon (gate), session, lancement (run), module, compétence (skill), agent, commande.
 - Hors périmètre : les boutons « i » eux-mêmes et le menu, portés par
-  [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
+  [Mission control range son menu par portée](done/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
   et le lot Annuaire ; les amendements d'ADR et le renommage « Le run » → « Le sprint » (fiche des
   amendements) ; `ezk help --json`
   ([`ezk help --json` publie les commandes](done/20261114131613129_ezk-help-json-commandes-etage-famille.md)).

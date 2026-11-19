@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md](../20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
+> 🗎 Rendu de la fiche [features/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md](../done/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md)
 
 # 20261114131616818 — Mission control range son menu par portée et parle compétence, agent, commande, module
 

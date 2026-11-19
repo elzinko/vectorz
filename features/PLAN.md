@@ -31,7 +31,7 @@ fonctionnel et graphiquement compréhensible) :
 - ~~`20261110185357446` — le schéma Process zoomable : chaque projet voit le process de la méthode sur une carte qu'on approche · build (sprint du 2026-11-15, local 7c0f350f)~~ — shipped
 - ~~`20261117223348250` — l'écran Process se lit de gauche à droite, avec ses boucles, et une étape s'ouvre dans un panneau · build (prête le 2026-11-19, en tête sur décision PO du 2026-11-19 : maquette B + panneau)~~ — shipped
 - ~~`20261117223348335` — rattacher les règles aux étapes du process · build (prête le 2026-11-19, run autonome)~~ — shipped
-- `20261114131616818` — mission control range son menu par portée et parle compétence, agent, commande, module · build (prête le 2026-11-19, run autonome)
+- ~~`20261114131616818` — mission control range son menu par portée et parle compétence, agent, commande, module · build (prête le 2026-11-19, run autonome)~~ — shipped
 
 **Correctifs de la passe scout du 2026-11-02** (hors milestone, en tête sur décision PO du 2026-11-02) :
 - ~~`20261102100505427` — le lanceur refuse un port web déjà pris, au lieu d'annoncer un port faux · build~~ — shipped

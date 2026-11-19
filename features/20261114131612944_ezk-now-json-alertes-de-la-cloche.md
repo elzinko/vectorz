@@ -138,7 +138,7 @@ Pas de preuve d'écran : la fiche livre une commande et un contrat. L'écran vie
   `fiche-bloquee`. Pas de suppression, pas de gonflage de vélocité ; le pilote édite l'ancienne fiche.
 - Décision du PO du 14 novembre (point A8) : pas de numéro court stocké sur les fiches ; les ids
   horodatés restent ([Idées sans numéro](done/0180-idees-sans-numero.md)). Le numéro court est un
-  affichage calculé par l'écran cop1, noté dans [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
+  affichage calculé par l'écran cop1, noté dans [Mission control range son menu par portée](done/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
 - Décisions à prendre par le PO : l'emplacement du fichier des alertes fermées, pour lequel la fiche
   propose un dossier du projet écrit par `ezk`, jamais un stockage navigateur par poste, comme
   [les verdicts de revue](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md) ;
