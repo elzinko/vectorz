@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261124111115955_page-sprints-et-page-d-un-sprint.md](../20261124111115955_page-sprints-et-page-d-un-sprint.md)
+> 🗎 Rendu de la fiche [features/20261124111115955_page-sprints-et-page-d-un-sprint.md](../done/20261124111115955_page-sprints-et-page-d-un-sprint.md)
 
 # 20261124111115955 — Mission control a une page Sprints et une page par sprint, comme la maquette
 

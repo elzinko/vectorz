@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (squash-merge 459d0147)"
 evidence: before-after
 created: 2026-11-24
 ---
@@ -45,9 +45,9 @@ compte rendu, le jour, la fin, la durée, les jetons, les fiches livrées et les
 - la branche, donc la session, qui l'a joué ;
 - la liste complète, au-delà des cinq derniers.
 
-La fiche [Le sprint se publie avec son numéro continu, son but et sa branche](20261114131612204_sprint-publie-numero-but-branche.md)
+La fiche [Le sprint se publie avec son numéro continu, son but et sa branche](../20261114131612204_sprint-publie-numero-but-branche.md)
 porte ces données. Cette fiche-ci en dépend pour être complète. C'est l'écart A1 de la
-[carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
+[carte des écarts](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
 
 ## Proposition
 
@@ -64,7 +64,7 @@ porte ces données. Cette fiche-ci en dépend pour être complète. C'est l'éca
    sprints. Des jetons non mesurés s'écrivent « non mesuré », jamais « 0 ».
 4. **Lancer une rétro reste une commande.** Le bouton « Lancer une rétro » de la maquette n'écrit
    rien ; il montre la commande. Le geste depuis l'écran est porté par la fiche
-   [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md).
+   [Demander une rétro depuis mission control](../20261114131617010_demander-une-retro-depuis-mission-control.md).
 
 ## Critères d'acceptation
 
@@ -110,7 +110,7 @@ de la maquette ». Décisions :
   `historique.sprints` pour le total. La page dit « 5 sprints sur 55 » tant que la liste est
   tronquée.
 - **La dépendance n'est pas tirée dans ce run.** La fiche
-  [Le sprint se publie avec son numéro continu, son but et sa branche](20261114131612204_sprint-publie-numero-but-branche.md)
+  [Le sprint se publie avec son numéro continu, son but et sa branche](../20261114131612204_sprint-publie-numero-but-branche.md)
   attend une décision de numérotation à confirmer par panel. En attendant, numéro, but et session
   s'écrivent « non publié ».
 - **L'état de la rétro n'est pas publié** par sprint : la colonne dit « non publié ».

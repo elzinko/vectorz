@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261124111116042_page-sessions-et-page-d-une-session.md](../20261124111116042_page-sessions-et-page-d-une-session.md)
+> 🗎 Rendu de la fiche [features/20261124111116042_page-sessions-et-page-d-une-session.md](../done/20261124111116042_page-sessions-et-page-d-une-session.md)
 
 # 20261124111116042 — Mission control a une page Sessions et une page par session, qui remplacent la Chronologie
 
@@ -92,7 +92,7 @@ pages Sessions et Une session de la maquette.
 - P2, parce que trois dépendances doivent être livrées pour que la page soit vraie. Elle se
   construit après les pages Versions, Objectifs et Sprints.
 - Elle dépend de la page Sprints pour ouvrir un sprint :
-  [Mission control a une page Sprints](../20261124111115955_page-sprints-et-page-d-un-sprint.md).
+  [Mission control a une page Sprints](../done/20261124111115955_page-sprints-et-page-d-un-sprint.md).
 
 ### Grooming du 2026-11-24 (run autonome)
 

@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: ["20261124111115955"]
-pr:
+pr: "local (squash-merge 459d0147)"
 evidence: before-after
 created: 2026-11-24
 ---
@@ -40,14 +40,14 @@ les fiches citées et les PR. Le journal de supervision donne les lancements et 
 manque trois choses, chacune portée par une fiche :
 
 - le nom de la session et sa branche dans le journal :
-  [L'émetteur nomme la session](20261114131612388_session-nommee-cle-de-chantier-derivee.md) ;
+  [L'émetteur nomme la session](../20261114131612388_session-nommee-cle-de-chantier-derivee.md) ;
 - la durée, la branche et les sprints d'un récit :
-  [Le récit de session porte un en-tête structuré](20261114131614243_recit-de-session-en-tete-structure.md) ;
+  [Le récit de session porte un en-tête structuré](../20261114131614243_recit-de-session-en-tete-structure.md) ;
 - une session entière, avec ses sprints, ses lancements et ses fiches :
-  [`ezk board session --json`](20261114131614424_ezk-board-session-json.md).
+  [`ezk board session --json`](../20261114131614424_ezk-board-session-json.md).
 
 Ce sont les écarts A2, A4 et A5 de la
-[carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
+[carte des écarts](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
 
 ## Proposition
 
@@ -69,7 +69,7 @@ Ce sont les écarts A2, A4 et A5 de la
    journal ne porte pas le nom de session.
 4. **La Chronologie s'efface.** Son contenu vit désormais dans le fil d'une session. Son entrée de
    menu est retirée par la fiche
-   [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+   [Le menu de mission control suit la maquette](../20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
 
 ## Critères d'acceptation
 
