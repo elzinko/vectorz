@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: idea
+status: ready
 blocked:
 depends: []
 pr:
@@ -153,3 +153,7 @@ Fait par l'orchestrateur, sur délégation du PO (« Oui, groome-les »). Décis
 - **Données réelles au 24 novembre** : 24 versions, dernière étiquette v0.22.0, 126 fiches livrées
   depuis, gate GO, numéro proposé non publié.
 - **Preuve avant/après** : un script de capture, faute d'adresse pour la commande de capture.
+- **Taille : la fiche reste entière, sur décision du PO du 2026-11-24** (« Oui, telles quelles »).
+  Le contrôle signale plus de six critères et trois surfaces : fichiers d'identité, relais, écran.
+  Raison : chaque critère est petit, et l'ensemble a la taille de l'écran Process, livré en un
+  sprint de 33 minutes. Passée « prête » le même jour.
