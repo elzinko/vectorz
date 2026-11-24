@@ -176,4 +176,8 @@ export interface PlanSprint {
   tokens: number | null;
   livrees: { id: string; title: string }[];
   blocages: number | null;
+  /** Le numéro continu, le but et la branche, quand la méthode les publie (fiche 20261114131612204). */
+  numero?: number;
+  but?: string;
+  branche?: string;
 }

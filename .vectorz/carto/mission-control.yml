@@ -27,6 +27,20 @@ screens:
         title: Filtrer les objectifs par état et par version
       - id: ouvrir-objectif
         title: Ouvrir la page d'un objectif, et revenir par le fil d'Ariane
+  - id: sprints
+    title: Sprints — les sprints publiés, puis la page d'un sprint
+    actions:
+      - id: filtrer-periode
+        title: Filtrer les sprints par période
+      - id: ouvrir-sprint
+        title: Ouvrir la page d'un sprint, et revenir par le fil d'Ariane
+  - id: sessions
+    title: Sessions — en cours, closes, puis la page d'une session
+    actions:
+      - id: ouvrir-session
+        title: Ouvrir la page d'une session close, et revenir par le fil d'Ariane
+      - id: ouvrir-sprint-de-session
+        title: Ouvrir un sprint depuis la page d'une session
   - id: versions
     title: Versions — à versionner, en construction, étiquetées, puis la page d'une version
     actions:

@@ -11,6 +11,8 @@ export const VIEW_IDS = [
   'cadrage',
   'dev',
   'fiches',
+  'sprints',
+  'sessions',
   'versions',
   'timeline',
   'config',

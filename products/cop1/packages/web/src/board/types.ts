@@ -165,6 +165,10 @@ export interface ChantierSession {
   pilot?: boolean;
   /** Le fil propre de cette session (niveau 3). */
   events: TimelineEvent[];
+  /** L'horodatage ISO de son premier évènement du journal ; absent s'il est illisible. */
+  startedAt?: string;
+  /** L'horodatage ISO de son dernier évènement ; absent s'il est illisible. */
+  lastAt?: string;
 }
 
 /**
@@ -368,4 +372,8 @@ export interface SprintSummary {
   tokens: number | null;
   livrees: { id: string; title: string }[];
   blocages: number | null;
+  /** Le numéro continu, le but et la branche, quand la méthode les publie (fiche 20261114131612204). */
+  numero?: number;
+  but?: string;
+  branche?: string;
 }

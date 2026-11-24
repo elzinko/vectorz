@@ -49,6 +49,14 @@ export interface LiveSession {
   pilot?: boolean;
   /** Fil propre de la session (niveau 3), du plus récent au plus ancien. */
   events: LiveEvent[];
+  /**
+   * L'horodatage ISO du premier évènement de la session dans le journal, tel quel ; absent s'il est
+   * illisible. Il sert à ranger la session sous un récit de session close, par le jour
+   * (fiche 20261124111116042).
+   */
+  startedAt?: string;
+  /** L'horodatage ISO de son dernier évènement ; absent s'il est illisible. */
+  lastAt?: string;
 }
 
 /** Un chantier (miroir de `BoardChantier`). */
@@ -184,17 +192,21 @@ function liveEvents(
 export function chantierToLive(proj: ChantierProjection, now: number): LiveChantier {
   const branchById = new Map(proj.sessions.map((s) => [s.sessionId, s.branch ?? s.sessionId]));
   const labelFor = (id: string): string => branchById.get(id) ?? id;
-  const sessions: LiveSession[] = proj.sessions.map((s) => ({
-    id: s.sessionId,
-    label: s.branch ?? s.sessionId,
-    state: runStateToState(s.state),
-    ...(s.pilotedBy !== undefined ? { pilot: true } : {}),
-    events: liveEvents(
-      proj.events.filter((e) => e.sessionId === s.sessionId),
-      now,
-      labelFor,
-    ),
-  }));
+  const sessions: LiveSession[] = proj.sessions.map((s) => {
+    const own = proj.events.filter((e) => e.sessionId === s.sessionId);
+    const readable = own.filter((e) => tsMs(e.ts) !== Number.NEGATIVE_INFINITY);
+    const first = readable[0]?.ts;
+    const last = readable[readable.length - 1]?.ts;
+    return {
+      id: s.sessionId,
+      label: s.branch ?? s.sessionId,
+      state: runStateToState(s.state),
+      ...(s.pilotedBy !== undefined ? { pilot: true } : {}),
+      events: liveEvents(own, now, labelFor),
+      ...(first !== undefined ? { startedAt: first } : {}),
+      ...(last !== undefined ? { lastAt: last } : {}),
+    };
+  });
   return {
     key: proj.key,
     name: proj.key,

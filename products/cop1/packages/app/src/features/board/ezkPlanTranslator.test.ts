@@ -470,3 +470,13 @@ describe('translatePlan — les versions et la prochaine coupe (fiche 2026112411
     expect(translatePlan(d, backlog()).plan.versionsPage).toBeUndefined();
   });
 });
+
+describe('translatePlan — numéro, but et branche d’un sprint, quand la méthode les publie (fiche 20261124111115955)', () => {
+  it('les relaie s’ils sont publiés, et les omet sinon', () => {
+    const b = board();
+    Object.assign(b.derniersSprints[0], { numero: 61, but: 'Pages Sprints', branche: 'feat/x' });
+    const { plan } = translatePlan(b, backlog());
+    expect(plan.lastSprints?.[0]).toMatchObject({ numero: 61, but: 'Pages Sprints', branche: 'feat/x' });
+    expect(plan.lastSprints?.[1]?.numero).toBeUndefined();
+  });
+});

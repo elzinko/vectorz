@@ -33,6 +33,8 @@ describe('Board — la coque', () => {
       'Cadrage',
       'Développement',
       'Fiches',
+      'Sprints',
+      'Sessions',
       'Versions',
       'Chronologie',
       'Process',

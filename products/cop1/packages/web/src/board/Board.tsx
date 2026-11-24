@@ -27,6 +27,8 @@ import { MapsView } from './MapsView.js';
 import { GraphMap } from './GraphMap.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
+import { SessionsView } from './SessionsView.js';
+import { SprintsView } from './SprintsView.js';
 import { TimelineView } from './TimelineView.js';
 import type { ViewId } from './viewIds.js';
 
@@ -54,6 +56,8 @@ const PROJECT_NAV: NavItem[] = [
   { id: 'cadrage', icon: '✎', label: 'Cadrage' },
   { id: 'dev', icon: '▸', label: 'Développement' },
   { id: 'fiches', icon: '▦', label: 'Fiches' },
+  { id: 'sprints', icon: '↻', label: 'Sprints' },
+  { id: 'sessions', icon: '☰', label: 'Sessions' },
   { id: 'versions', icon: '⑂', label: 'Versions' },
   { id: 'timeline', icon: '◷', label: 'Chronologie' },
   { id: 'process', icon: '❖', label: 'Process' },
@@ -182,6 +186,10 @@ export function Board(): JSX.Element {
   const [view, setView] = useState<ViewId>('overview');
   // Drill-down dans la vue courante (détail d'un run) — null = la vue elle-même.
   const [runDetailId, setRunDetailId] = useState<string | null>(null);
+  // Le sprint à ouvrir quand une autre page mène à la page Sprints (page d'une session).
+  const [sprintFocus, setSprintFocus] = useState<string | null>(null);
+  // La session close ouverte, retrouvée au retour du détail d'un lancement.
+  const [sessionFocus, setSessionFocus] = useState<number | null>(null);
   // Fiche ouverte en modale par-dessus — null = aucune.
   const [ficheModalId, setFicheModalId] = useState<string | null>(null);
   // Dernier détail vu de la fiche ouverte : livrée entre deux relectures, elle quitte le plan,
@@ -276,6 +284,8 @@ export function Board(): JSX.Element {
   function go(v: ViewId): void {
     setRunDetailId(null);
     setFicheModalId(null);
+    setSprintFocus(null);
+    setSessionFocus(null);
     setView(v);
   }
 
@@ -398,6 +408,20 @@ export function Board(): JSX.Element {
             <ObjectifsView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'versions' ? (
             <VersionsView project={project} onOpenFiche={setFicheModalId} />
+          ) : view === 'sprints' ? (
+            <SprintsView key={sprintFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={sprintFocus} />
+          ) : view === 'sessions' ? (
+            <SessionsView
+              project={project}
+              initialOpen={sessionFocus}
+              onOpenChange={setSessionFocus}
+              onOpenFiche={setFicheModalId}
+              onOpenSprint={(slug) => {
+                setSprintFocus(slug);
+                setView('sprints');
+              }}
+              onViewRun={(runId) => setRunDetailId(runId)}
+            />
           ) : view === 'pilotage' ? (
             <PilotageView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'cadrage' ? (

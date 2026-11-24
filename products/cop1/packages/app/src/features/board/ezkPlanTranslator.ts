@@ -245,6 +245,10 @@ function readSprint(value: unknown): PlanSprint | undefined {
     tokens: value.tokens,
     livrees: livrees.map((f) => ({ id: f.id, title: f.title })),
     blocages: value.blocages,
+    // Publiés plus tard par la méthode (fiche 20261114131612204) : relayés s'ils sont bien formés.
+    ...(isCount(value.numero) ? { numero: value.numero } : {}),
+    ...(typeof value.but === 'string' && value.but !== '' ? { but: value.but } : {}),
+    ...(typeof value.branche === 'string' && value.branche !== '' ? { branche: value.branche } : {}),
   };
 }
 

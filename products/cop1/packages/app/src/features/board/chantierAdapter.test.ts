@@ -112,6 +112,25 @@ describe('chantier → chantier d’affichage', () => {
     expect(c.merged.every((e) => e.session === 'feat/x')).toBe(true);
   });
 
+  it('date chaque session par son premier et son dernier évènement, tels quels (fiche 20261124111116042)', () => {
+    const c = chantierToLive(chantier(), NOW);
+    expect(c.sessions[0]?.startedAt).toBe(new Date(NOW - 600_000).toISOString());
+    expect(c.sessions[0]?.lastAt).toBe(new Date(NOW - 60_000).toISOString());
+  });
+
+  it('un horodatage illisible ne date pas la session : le champ manque, jamais une date inventée', () => {
+    const bad = { ...ev('run.started', 10), ts: 'pas-une-date' };
+    const c = chantierToLive(chantier({ events: [bad] }), NOW);
+    expect(c.sessions[0]?.startedAt).toBeUndefined();
+    expect(c.sessions[0]?.lastAt).toBeUndefined();
+  });
+
+  it('un premier horodatage illisible n’empêche pas de dater la session par le suivant', () => {
+    const bad = { ...ev('run.started', 600), ts: 'pas-une-date' };
+    const c = chantierToLive(chantier({ events: [bad, ev('gate.reached', 60)] }), NOW);
+    expect(c.sessions[0]?.startedAt).toBe(new Date(NOW - 60_000).toISOString());
+  });
+
   it('marque la session pilote', () => {
     const c = chantierToLive(
       chantier({ sessions: [{ sessionId: 's1', runDirs: ['d1'], state: 'running', eventCount: 1, pilotedBy: 'orchestration' }] }),

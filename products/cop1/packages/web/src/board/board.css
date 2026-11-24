@@ -566,3 +566,4 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .cmdhint code { font-family: var(--font-data); background: var(--surface-2); padding: 2px 6px; border-radius: 5px; color: var(--fg); }
 .row.ficherow .pill.blocked { margin-left: 8px; }
 .row.ficherow .linkbtn, .tbl .linkbtn { text-align: left; }
+.tbl td.nowrap { white-space: nowrap; }
