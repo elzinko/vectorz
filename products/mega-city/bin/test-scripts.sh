@@ -14,6 +14,11 @@ set -uo pipefail
 export GIT_CONFIG_GLOBAL=/dev/null
 export GIT_CONFIG_SYSTEM=/dev/null
 
+# Même règle pour le routeur `ezk`. Lancée par `ezk release`, la suite hérite d'EZK_ROOT, qui
+# vise le vrai dépôt. Les suites qui appellent `ezk` sur un dépôt jetable visaient alors le
+# vrai, et deux d'entre elles échouaient (cas vécu le 2026-11-24, gate de v0.23.0).
+unset EZK_ROOT EZK_ROOT_ANNOUNCED EZK_DELEGATED
+
 MC="$(cd "$(dirname "$0")/.." && pwd)"
 SUITES=(
   "skills/ezk-archive/scripts/test-check-branches.sh"    # fiche 0076 — classification des branches
