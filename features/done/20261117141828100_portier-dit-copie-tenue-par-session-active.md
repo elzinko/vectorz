@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [sprint, portier, sessions-paralleles]
 status: shipped
 blocked:

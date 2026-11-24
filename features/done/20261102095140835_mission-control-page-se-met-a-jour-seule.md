@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: cop1
 milestone: board
-version:
+version: v0.23.0
 depends: ["20261031160441412"]
 labels: [board, mission-control]
 status: shipped

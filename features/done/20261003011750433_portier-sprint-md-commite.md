@@ -5,7 +5,7 @@ type: bug
 priority: P3
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [sprint, portier]
 status: shipped
 pr: "local (76a76cef)"

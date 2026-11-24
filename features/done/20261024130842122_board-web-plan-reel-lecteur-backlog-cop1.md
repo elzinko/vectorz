@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version: "v0.24.0"
+version: v0.23.0
 labels: [dashboard, board, read-model, backlog, cop1]
 status: shipped
 pr: "local (d4d748c5)"

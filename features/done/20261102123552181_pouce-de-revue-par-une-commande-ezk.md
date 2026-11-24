@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 depends: []
 labels: [board, un-seul-ecran]
 status: shipped

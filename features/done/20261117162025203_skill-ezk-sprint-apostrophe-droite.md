@@ -6,7 +6,7 @@ type: chore
 priority: P3
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [sprint, methode]
 status: shipped
 pr: "local (29617482)"

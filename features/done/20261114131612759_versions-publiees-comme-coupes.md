@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 labels: [contrat, theme:mission-control]
 status: shipped
 blocked:

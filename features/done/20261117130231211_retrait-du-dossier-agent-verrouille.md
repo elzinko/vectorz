@@ -6,7 +6,7 @@ type: bug
 priority: P3
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [ezk-sprint, agents]
 status: shipped
 pr: "local (0060a88d)"

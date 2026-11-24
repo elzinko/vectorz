@@ -5,7 +5,7 @@ type: bug
 priority: P3
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [retro, gate]
 status: shipped
 pr: "local (87b22080)"

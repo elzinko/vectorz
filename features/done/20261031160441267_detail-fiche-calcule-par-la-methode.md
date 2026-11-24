@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 labels: [board, contrat, json]
 status: shipped
 pr: "local (1f4434b6)"

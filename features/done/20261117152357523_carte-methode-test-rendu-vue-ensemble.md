@@ -6,7 +6,7 @@ type: chore
 priority: P3
 product: cop1
 milestone: board
-version:
+version: v0.23.0
 labels: [carte, tests]
 status: shipped
 pr: "local (971c44f6)"

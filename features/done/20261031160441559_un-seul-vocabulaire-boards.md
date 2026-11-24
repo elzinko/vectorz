@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 depends: ["20261102123552185"]
 labels: [board, documentation, vocabulaire]
 status: shipped

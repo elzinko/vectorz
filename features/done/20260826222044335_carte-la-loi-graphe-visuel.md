@@ -4,7 +4,7 @@ title: "Mission control montre la loi : les règles de chaque skill, et celles q
 type: feature
 priority: P2
 product: cop1
-version:
+version: v0.23.0
 milestone: board
 depends: ["20261101215342537"]
 labels: [carte, loi, mission-control]

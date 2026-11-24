@@ -5,7 +5,7 @@ type: bug
 priority: P1
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 labels: [theme:mission-control, retro]
 status: shipped
 pr: "local (8e46ada2)"

@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: cop1
 milestone: board
-version:
+version: v0.23.0
 depends: ["20261029112813308", "20261031160441267"]
 labels: [board, contrat, mission-control]
 status: shipped

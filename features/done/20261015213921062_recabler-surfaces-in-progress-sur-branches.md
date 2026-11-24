@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 labels: [methode, pilotage, dette]
 milestone: carte
-version:
+version: v0.23.0
 status: shipped
 pr: "local (6f13e9e4)"
 evidence: none # sortie CLI / vue texte, pas d'écran web

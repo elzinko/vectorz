@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: methode-configurable
-version:
+version: v0.23.0
 labels: [fabrique]
 status: shipped
 pr: "local (5f502df1)"

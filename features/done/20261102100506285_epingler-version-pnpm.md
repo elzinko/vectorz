@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: vectorz
 milestone:
-version:
+version: v0.23.0
 labels: [scout, outillage]
 status: shipped
 pr: "local (main 38de13e9)"

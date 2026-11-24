@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: preparation
-version:
+version: v0.23.0
 labels: [methode, backlog, versioning, sequencement, dette]
 status: shipped
 blocked:

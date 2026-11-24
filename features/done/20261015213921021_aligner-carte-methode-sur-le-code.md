@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone: carte
-version:
+version: v0.23.0
 labels: [methode, carte, dette]
 status: shipped
 pr: "local (b14c4248)"

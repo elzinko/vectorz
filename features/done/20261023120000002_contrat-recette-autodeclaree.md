@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone: recettes
-version:
+version: v0.23.0
 labels: [recettes, decouvrabilite, methode, contrat, spike]
 depends:
 status: shipped

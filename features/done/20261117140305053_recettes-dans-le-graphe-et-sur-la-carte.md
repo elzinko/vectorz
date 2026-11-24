@@ -6,7 +6,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 labels: [carte, contrat, theme:mission-control]
 status: shipped
 pr: "local (2200fa27)"

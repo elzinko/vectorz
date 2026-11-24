@@ -5,7 +5,7 @@ type: refactor
 priority: P1
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [theme:autonomie]
 status: shipped
 pr: "local (7550b68f)"

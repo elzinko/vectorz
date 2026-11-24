@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: board
-version: "v0.23.0"
+version: v0.23.0
 labels: [supervision, emetteur, board, cop1]
 status: shipped
 pr: "local a117a666"

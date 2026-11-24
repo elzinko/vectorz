@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [git, multi-sessions]
 status: shipped
 pr: "local (main 9e60c6cc)"

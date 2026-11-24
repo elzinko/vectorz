@@ -5,7 +5,7 @@ type: bug
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [methode, ship, projet-hote]
 depends:
 status: shipped

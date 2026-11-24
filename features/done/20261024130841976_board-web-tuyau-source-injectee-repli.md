@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version: "v0.24.0"
+version: v0.23.0
 labels: [dashboard, board, data-wiring, runtime, cop1]
 status: shipped
 pr: "local (8079da5c)"

@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone: observabilite
-version:
+version: v0.23.0
 labels: [sprint, compte-rendu, supervision]
 status: shipped
 pr: "local (c7b23798)"

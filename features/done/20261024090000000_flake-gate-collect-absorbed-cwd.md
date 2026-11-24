@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [qualite, gate, test-infra, flake]
 depends:
 status: shipped

@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: cop1
 milestone: board
-version:
+version: v0.23.0
 labels: [board, vocabulaire]
 status: shipped
 pr: "local (f75c5760)"

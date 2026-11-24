@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: recettes
-version:
+version: v0.23.0
 labels: [recettes, decouvrabilite, methode, derive]
 depends: ["20261023120000001"]
 status: shipped

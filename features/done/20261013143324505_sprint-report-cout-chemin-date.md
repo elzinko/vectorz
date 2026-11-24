@@ -5,7 +5,7 @@ type: refactor
 priority: P3
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [performance, supervision, github-optionnel]
 status: shipped
 pr: "local (251b3225)"

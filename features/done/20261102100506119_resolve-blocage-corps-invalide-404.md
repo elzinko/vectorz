@@ -5,7 +5,7 @@ type: bug
 priority: P3
 product: cop1
 milestone:
-version:
+version: v0.23.0
 labels: [scout, mission-control, api]
 status: shipped
 pr: "local (bb67c8a6)"

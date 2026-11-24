@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: cop1
 milestone: board
-version:
+version: v0.23.0
 labels: [theme:mission-control]
 status: shipped
 pr: "local (d192a386)"

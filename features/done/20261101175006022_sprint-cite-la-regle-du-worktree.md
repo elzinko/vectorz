@@ -5,7 +5,7 @@ type: chore
 priority: P2
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [sprint, worktree, regles]
 status: shipped
 pr: "local (4b8fdccc)"

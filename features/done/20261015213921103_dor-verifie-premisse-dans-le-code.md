@@ -6,7 +6,7 @@ priority: P2
 product: mega-city
 labels: [methode, dor]
 milestone: preparation
-version:
+version: v0.23.0
 status: shipped
 pr: "local (9e95dad8)"
 evidence: none # cran de process, pas d'écran

@@ -5,7 +5,7 @@ type: refactor
 priority: P2
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 depends: ["20261102123552181", "20261102151630248", "20261102123552182", "20261102123552183", "20261102123552184", "20260826222044335"]
 labels: [board, un-seul-ecran]
 status: shipped

@@ -5,7 +5,7 @@ type: bug
 priority: P1
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [tests, portier]
 status: shipped
 blocked:

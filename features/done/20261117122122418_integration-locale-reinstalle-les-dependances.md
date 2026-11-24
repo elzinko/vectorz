@@ -6,7 +6,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone:
-version:
+version: v0.23.0
 labels: [forge, integration]
 status: shipped
 pr: "local (6aba4519)"

@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: observabilite
-version:
+version: v0.23.0
 labels: [supervision, observabilite]
 status: shipped
 pr: "local (e7e916ce)"

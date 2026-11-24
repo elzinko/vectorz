@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: recettes
-version:
+version: v0.23.0
 labels: [recette, contrat, json]
 status: shipped
 pr: "local (c7128975)"

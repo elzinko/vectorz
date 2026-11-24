@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: methode-configurable
-version:
+version: v0.23.0
 epic:
 labels: [revue]
 status: shipped

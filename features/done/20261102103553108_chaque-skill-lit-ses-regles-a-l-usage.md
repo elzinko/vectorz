@@ -5,7 +5,7 @@ type: feature
 priority: P2
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 depends: ["20261101215342537"]
 labels: [loi, regles, jetons]
 status: shipped

@@ -5,7 +5,7 @@ type: feature
 priority: P1
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [release, design-system, ux]
 status: shipped
 pr: "local (a55e4c27)"

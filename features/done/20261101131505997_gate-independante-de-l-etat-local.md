@@ -5,7 +5,7 @@ type: bug
 priority: P2
 product: mega-city
 milestone: qualite
-version:
+version: v0.23.0
 labels: [gate, tests, worktree]
 status: shipped
 pr: "local (55a345b6)"

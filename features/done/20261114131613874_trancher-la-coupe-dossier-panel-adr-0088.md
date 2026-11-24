@@ -5,7 +5,7 @@ type: chore
 priority: P1
 product: mega-city
 milestone: board
-version:
+version: v0.23.0
 labels: [adr, release]
 status: shipped
 blocked:
