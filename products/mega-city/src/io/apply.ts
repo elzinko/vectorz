@@ -21,6 +21,7 @@ import {
   lstatSync,
   symlinkSync,
   rmSync,
+  unlinkSync,
 } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -406,7 +407,7 @@ function retireRenamedEntry(root: string, entry: RenameEntry): 'retire' | 'resid
   const rel = entry.kind === 'skill' ? `skills/${entry.ancien}` : `agents/${entry.ancien}.md`;
   const target = resolveInsideProject(root, rel);
   if (isSymlink(target)) {
-    rmSync(target, { force: true });
+    unlinkSync(target); // un lien, jamais sa cible : rmSync refuse un lien vers un dossier sous Node 24
     return 'retire';
   }
   if (!existsSync(target)) return 'absent';

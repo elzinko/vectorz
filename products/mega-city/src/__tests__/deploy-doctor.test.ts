@@ -12,6 +12,7 @@ import {
   readFileSync,
   realpathSync,
   rmSync,
+  unlinkSync,
   writeFileSync,
 } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -199,7 +200,7 @@ describe('lawgiver doctor — la commande, sur une cible jetable', () => {
     expect(existsSync(join(fakeHome, '.claude'))).toBe(false);
 
     // un lien retiré → signalé ; une loi retouchée → périmée
-    rmSync(join(target, 'skills', 'ezk-pr'), { force: true });
+    unlinkSync(join(target, 'skills', 'ezk-pr'));
     writeFileSync(join(target, GLOBAL_LAW_PATH), `${LAW_FRONT}loi d'avant\n`);
     const broken = lawgiver('doctor', 'global', '--target', target);
     expect(broken.status).toBe(1);
