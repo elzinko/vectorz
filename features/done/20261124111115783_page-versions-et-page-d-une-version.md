@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (squash-merge 4a9a9a0a)"
 evidence: before-after
 created: 2026-11-24
 ---
@@ -44,15 +44,15 @@ La méthode publie déjà ces données dans `versions` :
   gate de release.
 
 Deux fiches livrées les ont publiées :
-[Les versions publiées comme coupes](done/20261114131612759_versions-publiees-comme-coupes.md) et
-[`ezk backlog version tag`, un seul verbe pour la coupe](done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
+[Les versions publiées comme coupes](20261114131612759_versions-publiees-comme-coupes.md) et
+[`ezk backlog version tag`, un seul verbe pour la coupe](20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md).
 
 Le relais de cop1 ne transmet pas tout. Le traducteur du plan,
 `products/cop1/packages/app/src/features/board/ezkPlanTranslator.ts`, ne lit ni le nom d'une
 version, ni ses objectifs, ni la date de son étiquette, ni la prochaine coupe. C'est le même piège
 que l'écran Process du 19 novembre : un champ publié mais non relayé n'arrive jamais à l'écran.
 C'est l'écart A7 de la
-[carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
+[carte des écarts](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
 
 ## Proposition
 
@@ -133,7 +133,7 @@ v0.23.0. Compare avec les pages Versions et Version de la maquette.
 - 2026-11-24 : fiche écrite à la demande du PO, qui veut construire la maquette. Les données sont
   publiées ; le travail est le relais et l'écran.
 - Le rangement complet du menu est porté par la fiche
-  [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+  [Le menu de mission control suit la maquette](../20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
 
 ### Grooming du 2026-11-24
 
@@ -146,7 +146,7 @@ Fait par l'orchestrateur, sur délégation du PO (« Oui, groome-les »). Décis
   v0.23.0 et v0.24.0. Sans ce bloc, on ne pourrait pas les ouvrir.
 - **Pas d'adresse web pour la page.** La page s'ouvre comme le détail d'un lancement : par l'état
   de l'écran, avec un fil d'Ariane. Une adresse par vue est une proposition de la
-  [rétro du 24 novembre](../docs/captures/2026-11-24-retro-run-interface-mission-control-process.md),
+  [rétro du 24 novembre](../../docs/captures/2026-11-24-retro-run-interface-mission-control-process.md),
   en attente du PO.
 - **Le menu bouge un peu.** « Versions » s'ajoute après « Fiches ». Les anciennes pages restent
   jusqu'à la fiche du menu.

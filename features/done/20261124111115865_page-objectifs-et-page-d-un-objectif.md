@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (squash-merge 4a9a9a0a)"
 evidence: before-after
 created: 2026-11-24
 ---
@@ -37,14 +37,14 @@ La maquette dessine deux pages :
 
 La méthode publie déjà, pour chaque objectif : son nom, son état, son avancement, ses fiches, ses
 fiches livrées et ses versions. La fiche livrée
-[Les objectifs publiés comme objets](done/20261114131612572_objectifs-publies-comme-objets.md)
+[Les objectifs publiés comme objets](20261114131612572_objectifs-publies-comme-objets.md)
 les a ajoutés au contrat.
 
 Le relais de cop1 ne lit que le slug, l'état, le total et le nombre de livrées. Le traducteur du
 plan, `products/cop1/packages/app/src/features/board/ezkPlanTranslator.ts`, laisse tomber le nom,
 les fiches livrées et les versions. La page Pilotage affiche donc des slugs, sans pouvoir rien
 ouvrir. C'est l'écart A6 de la
-[carte des écarts](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
+[carte des écarts](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md).
 
 ## Proposition
 
@@ -70,7 +70,7 @@ ouvrir. C'est l'écart A6 de la
 5. **Les gestes restent des commandes.** « Groomer ses fiches » n'écrit rien : il montre la
    commande `/ezk-backlog groom <id>` de la première fiche à faire.
 6. **« parked » n'est pas un objectif.** Il regroupe 84 fiches mises de côté. Tant que la fiche
-   [« parked » n'est plus un pseudo-objectif](20261114131614612_parked-n-est-plus-un-pseudo-objectif.md)
+   [« parked » n'est plus un pseudo-objectif](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md)
    n'est pas livrée, la page le range sous le tableau, sur une ligne à part, avec une phrase qui le
    dit.
 
@@ -116,7 +116,7 @@ Objectifs et Un objectif de la maquette.
 - 2026-11-24 : fiche écrite à la demande du PO, qui veut construire la maquette.
 - La page Pilotage perd sa partie « avancement par objectif » quand celle-ci existe. Son retrait est
   porté par la fiche
-  [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+  [Le menu de mission control suit la maquette](../20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
 
 ### Grooming du 2026-11-24
 

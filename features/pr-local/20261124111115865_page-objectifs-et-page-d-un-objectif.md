@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261124111115865_page-objectifs-et-page-d-un-objectif.md](../20261124111115865_page-objectifs-et-page-d-un-objectif.md)
+> 🗎 Rendu de la fiche [features/20261124111115865_page-objectifs-et-page-d-un-objectif.md](../done/20261124111115865_page-objectifs-et-page-d-un-objectif.md)
 
 # 20261124111115865 — Mission control a une page Objectifs et une page par objectif, comme la maquette
 

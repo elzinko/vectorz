@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261124111115783_page-versions-et-page-d-une-version.md](../20261124111115783_page-versions-et-page-d-une-version.md)
+> 🗎 Rendu de la fiche [features/20261124111115783_page-versions-et-page-d-une-version.md](../done/20261124111115783_page-versions-et-page-d-une-version.md)
 
 # 20261124111115783 — Mission control a une page Versions et une page par version, comme la maquette
 

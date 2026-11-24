@@ -32,8 +32,8 @@ fonctionnel et graphiquement compréhensible) :
 - ~~`20261117223348250` — l'écran Process se lit de gauche à droite, avec ses boucles, et une étape s'ouvre dans un panneau · build (prête le 2026-11-19, en tête sur décision PO du 2026-11-19 : maquette B + panneau)~~ — shipped
 - ~~`20261117223348335` — rattacher les règles aux étapes du process · build (prête le 2026-11-19, run autonome)~~ — shipped
 - ~~`20261114131616818` — mission control range son menu par portée et parle compétence, agent, commande, module · build (prête le 2026-11-19, run autonome)~~ — shipped
-- `20261124111115865` — mission control a une page Objectifs et une page par objectif, comme la maquette · build (prête le 2026-11-24, en tête sur demande du PO du 2026-11-24 : construire la maquette)
-- `20261124111115783` — mission control a une page Versions et une page par version, comme la maquette · build (prête le 2026-11-24, en tête sur demande du PO du 2026-11-24)
+- ~~`20261124111115865` — mission control a une page Objectifs et une page par objectif, comme la maquette · build (prête le 2026-11-24, en tête sur demande du PO du 2026-11-24 : construire la maquette)~~ — shipped
+- ~~`20261124111115783` — mission control a une page Versions et une page par version, comme la maquette · build (prête le 2026-11-24, en tête sur demande du PO du 2026-11-24)~~ — shipped
 
 **Correctifs de la passe scout du 2026-11-02** (hors milestone, en tête sur décision PO du 2026-11-02) :
 - ~~`20261102100505427` — le lanceur refuse un port web déjà pris, au lieu d'annoncer un port faux · build~~ — shipped
