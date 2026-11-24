@@ -5,7 +5,7 @@ theme: "Run autonome du 19 novembre « nouvelle interface de mission control et 
 scope: "sprints 16, 17 et 18 du 19 novembre (écran Process, règles par étape, menu par portée), mode auto ; rétro légère choisie par le PO : tours portés par l'orchestrateur (round-robin dégradé), sans juge car aucune règle neuve"
 participants: [architecture, qualite, dev, produit, po]
 actions:
-  - proposition: "Le compte rendu de sprint écrit « total 0 jeton » quand le journal ne contient aucune mesure de jetons. C'est un faux zéro : 39 comptes rendus sur 84 le portent. Il doit écrire « jetons non mesurés » et dire pourquoi."
+  - proposition: "Le compte rendu de sprint écrit « total 0 jeton » quand le journal ne contient aucune mesure de jetons. C'est un faux zéro : 39 comptes rendus sur 84 le portent. Il doit écrire « jetons non mesurés » et dire pourquoi. Suite d'une fiche livrée le 4 novembre, qui couvre le sprint non daté mais pas ce repli vide."
     kind: feature
     by: [qualite, produit]
     status: ⏳
@@ -106,7 +106,10 @@ Sans objet : aucune règle neuve n'est proposée.
 ## 5 · Ce qui est proposé au PO
 
 1. **Fiche : le compte rendu dit « non mesuré » au lieu de zéro.** Fait vécu : trois comptes rendus
-   sur trois affichent zéro jeton, et 39 sur 84 dans le dossier. Mesure : sur les trois prochains
+   sur trois affichent zéro jeton, et 39 sur 84 dans le dossier. La fiche
+   [Le compte rendu de sprint écrit « 0 tokens »](../../features/done/20261104095401066_compte-rendu-sprint-faux-zero-tokens.md)
+   a réglé le sprint non daté le 4 novembre. Le repli sur le total du run, quand ce total est vide,
+   lui a échappé : c'est sa suite, pas un sujet neuf. Mesure : sur les trois prochains
    sprints sans mesure de jetons, aucun compte rendu n'affiche « total 0 ».
 2. **Fiche : un test par relais fait passer tout le contrat.** Fait vécu : l'écran Process a affiché
    « contrat incomplet » alors que le contrat était juste. Mesure : retirer un champ du relais fait
