@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: idea
+status: ready
 blocked:
-depends: ["20261114131612388", "20261114131614243", "20261114131614424", "20261124111115955"]
+depends: ["20261124111115955"]
 pr:
 evidence: before-after
 created: 2026-11-24
@@ -77,9 +77,11 @@ Ce sont les écarts A2, A4 et A5 de la
 - [ ] Chaque session close montre sa période, sa branche ou « non publiée », ses lancements et ses
       sprints.
 - [ ] Un clic ouvre la page de la session, avec son en-tête, ses lancements, son fil, ses sprints,
-      son récit en sections et ses fiches citées.
+      son récit par son chemin de fichier et ses fiches citées.
 - [ ] Le fil ne montre aucun identifiant technique : ni UUID, ni nom de jalon brut.
-- [ ] Une donnée non publiée s'écrit « non publié » ; un rattachement par période est dit à l'écran.
+- [ ] Une donnée non publiée s'écrit « non publié » : branche, durée, sections du récit. Un
+      rattachement par période est dit à l'écran, et la page dit que seuls les 5 derniers sprints
+      sont publiés : une session plus ancienne n'en montre aucun, avec cette phrase.
 - [ ] Un sprint de la page s'ouvre sur la page du sprint.
 
 ## Comment vérifier
@@ -106,3 +108,22 @@ pages Sessions et Une session de la maquette.
   construit après les pages Versions, Objectifs et Sprints.
 - Elle dépend de la page Sprints pour ouvrir un sprint :
   [Mission control a une page Sprints](20261124111115955_page-sprints-et-page-d-un-sprint.md).
+
+### Grooming du 2026-11-24 (run autonome)
+
+Fait par l'orchestrateur du run `/ezk-product-build`, sur l'objectif du PO « implémenter le reste
+de la maquette ». Décisions :
+
+- **On construit sur ce qui est publié.** Les sessions closes viennent des récits publiés dans
+  `sessions` de `ezk board show --json`. La session en cours vient des chantiers du journal de
+  supervision, déjà relayés pour la Chronologie.
+- **Les trois dépendances ne sont pas tirées dans ce run.** Elles touchent la méthode et le
+  journal. En attendant, la branche, la durée et les sections du récit s'écrivent « non publié ».
+- **Le rattachement se fait par le jour, et la page le dit.** Un lancement ou un sprint est rangé
+  sous une session close quand son jour tombe dans la période de la session.
+- **Le fil en clair** reprend les moments du journal, en phrases, sans identifiant technique.
+- **Le filtre** porte sur la période ; le filtre par branche attend la branche publiée.
+- **Le récit** se montre par son chemin ; son rendu en sections attend l'en-tête structuré.
+- **Contrôle « prête » (ezk-pm, 2026-11-24)** : NO-GO puis retouché. Le récit se montre par son
+  chemin ; la durée et la troncature des sprints ont leur critère. Les trois dépendances côté
+  méthode sortent de `depends:` : la page se construit sans elles, le texte les nomme toujours.

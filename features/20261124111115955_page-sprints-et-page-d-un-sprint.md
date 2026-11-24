@@ -7,9 +7,9 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: idea
+status: ready
 blocked:
-depends: ["20261114131612204"]
+depends: []
 pr:
 evidence: before-after
 created: 2026-11-24
@@ -69,13 +69,13 @@ porte ces données. Cette fiche-ci en dépend pour être complète. C'est l'éca
 ## Critères d'acceptation
 
 - [ ] Le menu Projet a une entrée « Sprints » qui ouvre la liste.
-- [ ] La liste montre les sprints publiés, du plus récent au plus ancien, avec jour, durée, fiches
-      et état de la rétro.
+- [ ] La liste montre les sprints publiés, du plus récent au plus ancien, avec jour, durée et
+      fiches ; un filtre « 7 derniers jours / 30 derniers jours / tout » la réduit.
 - [ ] Un clic sur un sprint ouvre sa page, avec son en-tête, ses fiches livrées et son compte rendu.
-- [ ] Sans numéro, but ou session publiés, la page écrit « non publié » à leur place.
+- [ ] Une donnée non publiée s'écrit « non publié » : numéro, but, session, état de la rétro et
+      incrément ; des jetons non mesurés s'écrivent « non mesuré ».
 - [ ] La page dit combien de sprints elle montre sur combien, tant que la liste est tronquée.
-- [ ] Des jetons non mesurés s'écrivent « non mesuré ».
-- [ ] Quand la dépendance est livrée, le numéro, le but et la session s'affichent sans autre
+- [ ] Avec un sprint d'essai qui publie numéro, but et session, la page les affiche sans autre
       changement d'écran.
 
 ## Comment vérifier
@@ -100,3 +100,26 @@ Sprints et Un sprint de la maquette.
 
 - 2026-11-24 : fiche écrite à la demande du PO, qui veut construire la maquette. Elle peut se
   construire avant sa dépendance : l'écran dit alors ce qui n'est pas publié.
+
+### Grooming du 2026-11-24 (run autonome)
+
+Fait par l'orchestrateur du run `/ezk-product-build`, sur l'objectif du PO « implémenter le reste
+de la maquette ». Décisions :
+
+- **On construit sur ce qui est publié.** La source est `derniersSprints` (5 sprints au plus) et
+  `historique.sprints` pour le total. La page dit « 5 sprints sur 55 » tant que la liste est
+  tronquée.
+- **La dépendance n'est pas tirée dans ce run.** La fiche
+  [Le sprint se publie avec son numéro continu, son but et sa branche](20261114131612204_sprint-publie-numero-but-branche.md)
+  attend une décision de numérotation à confirmer par panel. En attendant, numéro, but et session
+  s'écrivent « non publié ».
+- **L'état de la rétro n'est pas publié** par sprint : la colonne dit « non publié ».
+- **Le filtre par période** porte sur le jour du sprint : « 7 derniers jours », « 30 derniers
+  jours », « tout ».
+- **Pas d'adresse web**, comme les pages Objectifs et Versions : état de l'écran et fil d'Ariane.
+- **Le compte rendu** se montre par son chemin ; son contenu en sections attend `ezk sprint show`,
+  porté par la même dépendance.
+- **Contrôle « prête » (ezk-pm, 2026-11-24)** : NO-GO puis retouché. Critères fusionnés à six ; le
+  critère « quand la dépendance est livrée » devient testable par un sprint d'essai ; le filtre a son
+  critère. La dépendance 20261114131612204 sort de `depends:` : la page se construit sans elle, le
+  texte la nomme toujours.
