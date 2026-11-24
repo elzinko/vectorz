@@ -56,46 +56,71 @@ C'est l'écart A7 de la
 
 ## Proposition
 
-1. **Relayer.** Le traducteur du plan transmet, pour chaque version, son nom, ses objectifs et la
-   date de son étiquette, ainsi que la prochaine coupe entière. Un champ absent reçoit une valeur
-   neutre, un champ mal formé est refusé, comme pour le relais du process.
-2. **Page Versions.** Une entrée « Versions » du menu Projet ouvre la page. Elle montre deux blocs :
-   - **À versionner** : la dernière étiquette et son âge, le nombre de fiches livrées depuis, et
-     le dernier verdict de la gate. Le bouton « Versionner » n'écrit rien : il montre la commande
-     `ezk backlog version tag <v>` à lancer, car la coupe est un geste du PO.
+1. **Nommer les versions.** Le plan nomme 23 versions, de v0.1.0 à v0.23.0, dans ses titres de
+   séquence : « v0.1.0 — le socle dit vrai ». On écrit un fichier d'identité par version,
+   `features/versions/<v>.md`, avec ce nom recopié du plan, sans la parenthèse qui suit. On
+   n'invente aucun nom : une version que le plan ne nomme pas reste « nom non publié ».
+2. **Relayer.** Le traducteur du plan transmet, pour chaque version, son nom, ses objectifs et la
+   date de son étiquette, ainsi que la prochaine coupe entière : dernière étiquette, fiches livrées
+   depuis, nombre, verdict de la gate et ses passes, numéro proposé. Un champ absent reçoit une
+   valeur neutre, un champ mal formé est refusé, comme pour le relais du process.
+3. **Page Versions.** Une entrée « Versions » du menu Projet ouvre la page. Elle a trois blocs :
+   - **À versionner** : la dernière étiquette et son âge, le nombre de fiches livrées depuis, le
+     verdict de la gate avec ses passes, et le numéro proposé ou « non publié ». Le bouton
+     « Versionner » n'écrit rien : il montre la commande `ezk backlog version tag <v>`, car la coupe
+     est un geste du PO.
+   - **En construction** : les versions sans étiquette, dans l'ordre du train, avec leur état en
+     mots et leur contenu : livrées, à faire, prêtes, bloquées.
    - **Versions étiquetées** : une ligne par version, avec son numéro, son nom, ses fiches livrées,
-     ses objectifs et la date de l'étiquette, de la plus récente à la plus ancienne.
-3. **Page d'une version.** Un clic sur une ligne ouvre la page de la version :
+     ses objectifs et l'âge de l'étiquette, de la plus récente à la plus ancienne.
+4. **Page d'une version.** Un clic sur une ligne ouvre la page de la version :
    - l'en-tête : état, cycle de vie en mots, contenu, nom, date de l'étiquette ;
-   - ses objectifs, avec le nombre de fiches de la version et l'avancement total de l'objectif ;
-   - ses fiches livrées, chacune cliquable vers la fenêtre de la fiche.
-4. **Ce qui n'est pas publié se dit.** Le bloc « Qui l'a livrée » de la maquette demande le journal
-   des lancements par version : la méthode ne le publie pas. La page écrit « non publié », jamais
-   une liste vide présentée comme réelle.
+   - ses objectifs : pour chacun, le nombre de fiches de cette version et l'avancement total de
+     l'objectif ;
+   - ses fiches livrées, puis ses fiches à faire, chacune cliquable vers la fenêtre de fiche.
+   Le titre d'une fiche vient de `ezk backlog show --json`, que le relais lit déjà.
+5. **Ce qui n'est pas publié se dit.** Le bloc « Qui l'a livrée » de la maquette demande les
+   lancements par version : la méthode ne les publie pas. La page l'écrit en une ligne, sans bloc
+   vide.
+
+### Les mots de l'état
+
+| Publié par la méthode | Affiché |
+|---|---|
+| `en-cours` | en construction |
+| `a-clore` | à clore : tout est livré, l'étiquette manque |
+| `livree` | étiquetée |
+| `rouverte` | rouverte |
+| `vide` | vide |
 
 ## Critères d'acceptation
 
+- [ ] Un fichier `features/versions/<v>.md` existe pour chaque version que le plan nomme, avec le
+      nom du plan ; `ezk board show --json` publie ces noms.
 - [ ] Le traducteur du plan relaie le nom, les objectifs et la date d'étiquette de chaque version,
       et la prochaine coupe. Un test fait passer l'exemple rangé du contrat et retrouve ces champs.
-- [ ] Le menu Projet a une entrée « Versions » qui ouvre la page.
-- [ ] La page montre le bloc « À versionner » avec la dernière étiquette, le nombre de fiches
-      livrées depuis et le verdict de la gate ; sans prochaine coupe publiée, elle le dit en mots.
-- [ ] La page liste les versions étiquetées, de la plus récente à la plus ancienne, avec numéro,
-      nom, fiches livrées, objectifs et date.
-- [ ] Un clic sur une version ouvre sa page, avec son en-tête, ses objectifs et ses fiches livrées.
+- [ ] Le menu Projet a une entrée « Versions », placée après « Fiches », qui ouvre la page.
+- [ ] Le bloc « À versionner » montre la dernière étiquette, son âge, le nombre de fiches livrées
+      depuis, le verdict de la gate et le numéro proposé ou « non publié ».
+- [ ] Le bloc « En construction » liste les versions sans étiquette avec leur état en mots.
+- [ ] La liste des versions étiquetées va de la plus récente à la plus ancienne, avec numéro, nom,
+      fiches livrées, objectifs et âge.
+- [ ] Un clic sur une version ouvre sa page ; le fil d'Ariane « Versions › v… » ramène à la liste.
+- [ ] Chaque fiche de la page d'une version s'ouvre dans la fenêtre de fiche, avec son titre.
 - [ ] Le bouton « Versionner » n'écrit rien ; il montre la commande de coupe.
 - [ ] Une donnée non publiée s'écrit « non publié », jamais « 0 » ni une liste vide.
 
 ## Comment vérifier
 
 ```bash
+ezk board show --json | jq '[.versions.lots[] | select(.nom != "")] | length'
 pnpm --dir products/cop1/packages/app exec vitest run src/features/board/ezkPlanTranslator.test.ts
 pnpm --dir products/cop1/packages/web exec vitest run src/board
 pnpm cop1:dev
 ```
 
-Dans mission control, ouvre « Versions », puis clique sur la version la plus récente. Compare avec
-les pages Versions et Version de la maquette.
+La première commande doit rendre 23. Dans mission control, ouvre « Versions », puis clique sur
+v0.23.0. Compare avec les pages Versions et Version de la maquette.
 
 ## Glossaire
 
@@ -107,6 +132,24 @@ les pages Versions et Version de la maquette.
 
 - 2026-11-24 : fiche écrite à la demande du PO, qui veut construire la maquette. Les données sont
   publiées ; le travail est le relais et l'écran.
-- Le menu de la maquette range « Versions » après « Rétros ». Le rangement complet du menu est
-  porté par la fiche
+- Le rangement complet du menu est porté par la fiche
   [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+
+### Grooming du 2026-11-24
+
+Fait par l'orchestrateur, sur délégation du PO (« Oui, groome-les »). Décisions :
+
+- **Les noms viennent du plan.** Aucune version n'a de fichier d'identité : sans eux, toute la page
+  dirait « nom non publié ». Le plan nomme 23 versions ; on recopie ces noms. La maquette nommait
+  v0.19.0 à v0.22.0 « Lot aminci » ; le plan dit autre chose, et le plan fait foi.
+- **Un bloc « En construction » en plus de la maquette.** Le projet a deux versions sans étiquette,
+  v0.23.0 et v0.24.0. Sans ce bloc, on ne pourrait pas les ouvrir.
+- **Pas d'adresse web pour la page.** La page s'ouvre comme le détail d'un lancement : par l'état
+  de l'écran, avec un fil d'Ariane. Une adresse par vue est une proposition de la
+  [rétro du 24 novembre](../docs/captures/2026-11-24-retro-run-interface-mission-control-process.md),
+  en attente du PO.
+- **Le menu bouge un peu.** « Versions » s'ajoute après « Fiches ». Les anciennes pages restent
+  jusqu'à la fiche du menu.
+- **Données réelles au 24 novembre** : 24 versions, dernière étiquette v0.22.0, 126 fiches livrées
+  depuis, gate GO, numéro proposé non publié.
+- **Preuve avant/après** : un script de capture, faute d'adresse pour la commande de capture.

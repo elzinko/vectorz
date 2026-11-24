@@ -48,51 +48,62 @@ ouvrir. C'est l'écart A6 de la
 
 ## Proposition
 
-1. **Relayer.** Le traducteur du plan transmet, pour chaque objectif, son nom, ses fiches, ses
-   fiches livrées, ses versions et le décompte par état. Un champ absent reçoit une valeur neutre,
-   un champ mal formé est refusé.
-2. **Page Objectifs.** Une entrée « Objectifs » du menu Projet ouvre un tableau, dans l'ordre
-   publié par la méthode. Une ligne par objectif :
-   - son slug et son nom, ou « nom non publié » s'il n'a pas de fichier d'identité ;
+1. **Nommer ce que le plan nomme.** Aucun objectif n'a de fichier d'identité. Le plan n'en nomme
+   qu'un : `board`, « Mission control lisible ». On écrit `features/milestones/board.md` avec ce
+   nom. Les autres restent « nom non publié » : nommer un objectif est un choix du PO, pas du code.
+2. **Relayer.** Le traducteur du plan transmet, pour chaque objectif, son nom, ses fiches actives,
+   ses fiches livrées, ses versions et le décompte par état. Un champ absent reçoit une valeur
+   neutre, un champ mal formé est refusé.
+3. **Page Objectifs.** Une entrée « Objectifs » du menu Projet, juste après « Vue d'ensemble »,
+   ouvre un tableau, dans l'ordre publié par la méthode. Une ligne par objectif :
+   - son rang, son slug et son nom, ou « nom non publié » ;
    - livrées sur total ;
-   - les fiches actives en mots : idées, prêtes, bloquées avec la raison du blocage ;
+   - les fiches actives en mots : idées, prêtes, bloquées ;
    - les versions qui le portent, ou « aucune version posée ».
-   Un filtre par état et un filtre par version réduisent la liste.
-3. **Page d'un objectif.** Un clic ouvre sa page :
-   - l'en-tête : avancement, versions portées, fiches livrées sans numéro de version ;
-   - ses fiches à faire, chacune avec sa priorité, son état et sa raison de blocage ;
+   Deux filtres réduisent la liste : l'état et la version. La page dit combien de lignes restent.
+4. **Page d'un objectif.** Un clic ouvre sa page :
+   - l'en-tête : avancement, versions portées, nombre de fiches livrées sans version ;
+   - ses fiches à faire, avec priorité, état et raison de blocage telle que la méthode la publie ;
    - ses fiches livrées, chacune avec sa version ou « à étiqueter ».
-   Chaque fiche s'ouvre dans la fenêtre de fiche existante.
-4. **Les gestes restent des commandes.** « Groomer ses fiches » n'écrit rien : il montre la
-   commande `ezk-backlog groom` à lancer.
-5. **« parked » n'est pas un objectif.** Tant que la fiche
+   Les fiches actives viennent de `actives[]` de `ezk board show`. Les titres des livrées viennent
+   de `ezk backlog show`, que le relais lit déjà. Chaque fiche s'ouvre dans la fenêtre de fiche.
+5. **Les gestes restent des commandes.** « Groomer ses fiches » n'écrit rien : il montre la
+   commande `/ezk-backlog groom <id>` de la première fiche à faire.
+6. **« parked » n'est pas un objectif.** Il regroupe 84 fiches mises de côté. Tant que la fiche
    [« parked » n'est plus un pseudo-objectif](20261114131614612_parked-n-est-plus-un-pseudo-objectif.md)
-   n'est pas livrée, la page range « parked » à part, sous le tableau, avec une phrase qui le dit.
+   n'est pas livrée, la page le range sous le tableau, sur une ligne à part, avec une phrase qui le
+   dit.
 
 ## Critères d'acceptation
 
+- [ ] `features/milestones/board.md` existe avec le nom « Mission control lisible », et
+      `ezk board show --json` le publie.
 - [ ] Le traducteur du plan relaie le nom, les fiches, les livrées, les versions et le décompte de
       chaque objectif. Un test fait passer l'exemple rangé du contrat et retrouve ces champs.
-- [ ] Le menu Projet a une entrée « Objectifs » qui ouvre le tableau.
-- [ ] Chaque ligne montre slug, nom ou « nom non publié », livrées sur total, actives en mots et
-      versions ou « aucune version posée ».
+- [ ] Le menu Projet a une entrée « Objectifs », juste après « Vue d'ensemble ».
+- [ ] Chaque ligne montre rang, slug, nom ou « nom non publié », livrées sur total, actives en mots
+      et versions ou « aucune version posée ».
 - [ ] Les filtres par état et par version réduisent la liste, et la page dit combien de lignes
       restent.
-- [ ] Un clic sur un objectif ouvre sa page, avec son en-tête, ses fiches à faire et ses fiches
-      livrées ; chaque fiche s'ouvre dans la fenêtre de fiche.
-- [ ] « parked » n'apparaît pas comme un objectif du tableau.
+- [ ] Un clic sur un objectif ouvre sa page ; le fil d'Ariane « Objectifs › slug » ramène au
+      tableau.
+- [ ] La page d'un objectif montre ses fiches à faire et ses fiches livrées, chacune avec son titre,
+      et chacune s'ouvre dans la fenêtre de fiche.
+- [ ] « parked » n'apparaît pas comme une ligne du tableau ; il est rangé à part, avec sa phrase.
 - [ ] Aucun geste n'écrit : chacun montre sa commande.
 
 ## Comment vérifier
 
 ```bash
+ezk board show --json | jq '.milestones[] | select(.milestone == "board") | .nom'
 pnpm --dir products/cop1/packages/app exec vitest run src/features/board/ezkPlanTranslator.test.ts
 pnpm --dir products/cop1/packages/web exec vitest run src/board
 pnpm cop1:dev
 ```
 
-Dans mission control, ouvre « Objectifs », filtre sur « en cours », puis ouvre l'objectif `board`.
-Compare avec les pages Objectifs et Un objectif de la maquette.
+La première commande doit rendre « Mission control lisible ». Dans mission control, ouvre
+« Objectifs », filtre sur « en cours », puis ouvre l'objectif `board`. Compare avec les pages
+Objectifs et Un objectif de la maquette.
 
 ## Glossaire
 
@@ -106,3 +117,22 @@ Compare avec les pages Objectifs et Un objectif de la maquette.
 - La page Pilotage perd sa partie « avancement par objectif » quand celle-ci existe. Son retrait est
   porté par la fiche
   [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+
+### Grooming du 2026-11-24
+
+Fait par l'orchestrateur, sur délégation du PO (« Oui, groome-les »). Décisions :
+
+- **Un seul nom écrit.** Le plan ne nomme que `board`. Les 13 autres objectifs n'ont de nom nulle
+  part : la page dira « nom non publié ». La maquette les nommait, mais ces noms n'avaient pas de
+  source. Nommer les autres est un geste du PO : un fichier de quatre lignes par objectif.
+- **L'ordre est celui de la méthode.** Elle range les objectifs par son ordre de marche, puis par
+  slug. La colonne « Plan » de la maquette devient le rang dans cet ordre.
+- **La raison d'un blocage s'affiche telle que publiée.** La méthode publie un mot, par exemple
+  `panel` ou `deferred`. Son libellé en français est porté par la fiche de la cloche ; l'écran ne
+  traduit rien lui-même.
+- **Pas d'adresse web pour la page**, comme pour la page Versions : état de l'écran et fil
+  d'Ariane.
+- **La page Pilotage reste** jusqu'à la fiche du menu, qui la retire.
+- **Données réelles au 24 novembre** : 14 objectifs, dont `parked` (84 fiches) ; `board` a 72
+  fiches livrées sur 100.
+- **Preuve avant/après** : un script de capture, faute d'adresse pour la commande de capture.
