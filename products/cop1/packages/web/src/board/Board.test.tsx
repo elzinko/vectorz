@@ -28,10 +28,12 @@ describe('Board — la coque', () => {
       'Carte de la méthode',
       'Annuaire de la méthode',
       "Vue d'ensemble",
+      'Objectifs',
       'Pilotage',
       'Cadrage',
       'Développement',
       'Fiches',
+      'Versions',
       'Chronologie',
       'Process',
       'Loi',
@@ -48,7 +50,14 @@ describe('Board — la coque', () => {
     const annuaire = screen.getByRole('button', { name: /Annuaire de la méthode/ }) as HTMLButtonElement;
     expect(annuaire.disabled).toBe(true);
     expect(annuaire.title).toMatch(/graphe .*contrat compilé/);
-    expect(screen.queryByRole('button', { name: 'Objectifs' })).toBeNull();
+  });
+
+  it('route vers les pages Objectifs et Versions (fiches 20261124111115865, 20261124111115783)', async () => {
+    await renderBoardOn();
+    await userEvent.click(screen.getByRole('button', { name: 'Objectifs' }));
+    expect(screen.getByRole('heading', { name: 'Objectifs' })).toBeTruthy();
+    await userEvent.click(screen.getByRole('button', { name: 'Versions' }));
+    expect(screen.getByRole('heading', { name: 'Versions' })).toBeTruthy();
   });
 
   it('route vers la vue Process : plus de coquille « tranche à venir » (fiche 20261102123552183)', async () => {

@@ -9,10 +9,14 @@ import type {
   PlanData,
   PlanFunnel,
   PlanMilestone,
+  PlanObjectif,
   PlanPilotage,
+  PlanProchaineCoupe,
   PlanSession,
   PlanSprint,
   PlanVersion,
+  PlanVersionLot,
+  PlanVersionsPage,
 } from './planTypes.js';
 
 const SUPPORTED_SCHEMA_VERSION = 1;
@@ -39,7 +43,7 @@ interface BoardShow {
     livrees: number;
     sansVersion: number;
   };
-  versions: { courante: string | null; lots: BoardLot[] };
+  versions: { courante: string | null; lots: BoardLot[]; prochaineCoupe?: unknown };
   /** Ajouté au contrat v1 (fiche 20261102104443762) : absent d'une méthode plus ancienne. */
   historique?: unknown;
   /** Pouces de revue posés, par id de fiche (ADR-0057) ; lus sans confiance aveugle. */
@@ -288,6 +292,139 @@ function readPilotage(milestones: unknown, sessions: unknown): PlanPilotage | un
   return { milestones: ms as PlanMilestone[], sessions: ss as PlanSession[] };
 }
 
+/** Un nom publié : la chaîne vide de la méthode veut dire « pas de déclaration », donc `null`. */
+const readNom = (value: unknown): string | null | undefined =>
+  typeof value === 'string' ? (value === '' ? null : value) : undefined;
+
+function readCounts(value: unknown): Record<string, number> | undefined {
+  if (!isRecord(value)) return undefined;
+  const out: Record<string, number> = {};
+  for (const [k, v] of Object.entries(value)) {
+    if (!isCount(v)) return undefined;
+    out[k] = v;
+  }
+  return out;
+}
+
+function readObjectif(value: unknown): PlanObjectif | undefined {
+  if (!isRecord(value) || typeof value.milestone !== 'string' || typeof value.status !== 'string')
+    return undefined;
+  const nom = readNom(value.nom);
+  const counts = readCounts(value.counts);
+  if (nom === undefined || counts === undefined) return undefined;
+  if (!isCount(value.total) || !isCount(value.shipped)) return undefined;
+  const { children, livrees, versions } = value;
+  if (!isStringArray(children) || !isStringArray(livrees) || !isStringArray(versions)) return undefined;
+  return {
+    slug: value.milestone,
+    nom,
+    status: value.status,
+    total: value.total,
+    shipped: value.shipped,
+    counts,
+    aFaire: [...children],
+    livrees: [...livrees],
+    versions: [...versions],
+  };
+}
+
+/**
+ * Les objectifs publiés, dans l'ordre de la méthode, ou `undefined` si le champ manque ou porte une
+ * entrée mal formée : la page Objectifs dit alors qu'elle est indisponible, jamais une liste tronquée.
+ */
+function readObjectifs(value: unknown): PlanObjectif[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const out = value.map(readObjectif);
+  return out.every((o): o is PlanObjectif => o !== undefined) ? out : undefined;
+}
+
+const isNullableString = (value: unknown): value is string | null =>
+  value === null || typeof value === 'string';
+
+function readVersionLot(value: unknown): PlanVersionLot | undefined {
+  if (!isRecord(value) || typeof value.version !== 'string') return undefined;
+  const nom = readNom(value.nom);
+  const { milestones, etat, cycleDeVie, etiquette, dateEtiquette, livrees, aFaire, pretes, bloquees } = value;
+  if (nom === undefined || typeof etat !== 'string' || typeof cycleDeVie !== 'string') return undefined;
+  if (!isNullableString(etiquette) || !isNullableString(dateEtiquette)) return undefined;
+  if (
+    !isStringArray(milestones) ||
+    !isStringArray(livrees) ||
+    !isStringArray(aFaire) ||
+    !isStringArray(pretes) ||
+    !isStringArray(bloquees)
+  )
+    return undefined;
+  return {
+    version: value.version,
+    nom,
+    milestones: [...milestones],
+    etat,
+    cycleDeVie,
+    etiquette,
+    dateEtiquette,
+    livrees: [...livrees],
+    aFaire: [...aFaire],
+    pretes: [...pretes],
+    bloquees: [...bloquees],
+  };
+}
+
+function readGate(value: unknown): PlanProchaineCoupe['gate'] | undefined {
+  if (value === null) return null;
+  if (!isRecord(value) || typeof value.version !== 'string' || typeof value.date !== 'string') return undefined;
+  if (value.verdict !== 'GO' && value.verdict !== 'NO-GO') return undefined;
+  if (!Array.isArray(value.passes)) return undefined;
+  const passes = value.passes.filter(
+    (p): p is { id: string; title: string; go: boolean; sautee: boolean } =>
+      isRecord(p) &&
+      typeof p.id === 'string' &&
+      typeof p.title === 'string' &&
+      typeof p.go === 'boolean' &&
+      typeof p.sautee === 'boolean',
+  );
+  if (passes.length !== value.passes.length) return undefined;
+  return {
+    version: value.version,
+    verdict: value.verdict,
+    date: value.date,
+    passes: passes.map((p) => ({ id: p.id, title: p.title, go: p.go, sautee: p.sautee })),
+  };
+}
+
+function readProchaineCoupe(value: unknown): PlanProchaineCoupe | undefined {
+  if (!isRecord(value)) return undefined;
+  const { derniereEtiquette, livrees, nombre, numeroPropose } = value;
+  if (!isNullableString(derniereEtiquette) || !isNullableString(numeroPropose)) return undefined;
+  if (!isNullableCount(nombre) || !Array.isArray(livrees)) return undefined;
+  const fiches = livrees.filter(
+    (f): f is { id: string; titre: string; objectif: string } =>
+      isRecord(f) && typeof f.id === 'string' && typeof f.titre === 'string' && typeof f.objectif === 'string',
+  );
+  if (fiches.length !== livrees.length) return undefined;
+  const gate = readGate(value.gate);
+  if (gate === undefined) return undefined;
+  return {
+    derniereEtiquette,
+    livrees: fiches.map((f) => ({ id: f.id, titre: f.titre, objectif: f.objectif })),
+    nombre,
+    gate,
+    numeroPropose,
+  };
+}
+
+/**
+ * Les versions en entier et la prochaine coupe, ou `undefined` si l'une manque ou est mal formée :
+ * la page Versions dit alors qu'elle est indisponible (fiche 20261124111115783).
+ */
+function readVersionsPage(lots: unknown, prochaineCoupe: unknown): PlanVersionsPage | undefined {
+  if (!Array.isArray(lots)) return undefined;
+  const out = lots.map(readVersionLot);
+  if (!out.every((l): l is PlanVersionLot => l !== undefined)) return undefined;
+  const coupe = readProchaineCoupe(prochaineCoupe);
+  return coupe ? { lots: out, prochaineCoupe: coupe } : undefined;
+}
+
 /** Traduit les deux réponses d'`ezk` ; lève `EzkContractError` si leur forme n'est pas celle du contrat v1. */
 export function translatePlan(boardJson: unknown, backlogJson: unknown): TranslatedPlan {
   const board = asBoardShow(boardJson);
@@ -297,6 +434,8 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
   const verdicts = readVerdicts(board.verdicts);
   const pilotage = readPilotage(board.milestones, board.sessions);
   const lastSprints = readLastSprints(board.derniersSprints);
+  const objectifs = readObjectifs(board.milestones);
+  const versionsPage = readVersionsPage(board.versions.lots, board.versions.prochaineCoupe);
 
   const funnel: PlanFunnel = {
     idea: comptes.idees,
@@ -339,6 +478,8 @@ export function translatePlan(boardJson: unknown, backlogJson: unknown): Transla
       ...(history ? { history } : {}),
       ...(pilotage ? { pilotage } : {}),
       ...(lastSprints ? { lastSprints } : {}),
+      ...(objectifs ? { objectifs } : {}),
+      ...(versionsPage ? { versionsPage } : {}),
     },
     fiches,
   };

@@ -296,10 +296,63 @@ export interface BoardProject {
   pilotage?: Pilotage;
   /** Les derniers sprints et leurs indicateurs, publiés par la méthode (fiche 20261104090517904). */
   lastSprints?: SprintSummary[];
+  /** Les objectifs publiés par la méthode, dans son ordre (fiche 20261124111115865). */
+  objectifs?: Objectif[];
+  /** Les versions et la prochaine coupe publiées par la méthode (fiche 20261124111115783). */
+  versionsPage?: VersionsPage;
   /** État de la lecture du process. Absent = process reçu. Sinon `process` est absent. */
   processState?: PlanState;
   /** Chaque fiche sur son étape (vue « Process »). */
   process?: ProjectProcess;
+}
+
+/** Un objectif (une milestone) tel que la méthode le publie. `nom: null` = nom non publié. */
+export interface Objectif {
+  slug: string;
+  nom: string | null;
+  status: string;
+  total: number;
+  shipped: number;
+  counts: Record<string, number>;
+  /** Ses fiches actives, hors livrées. */
+  aFaire: string[];
+  livrees: string[];
+  versions: string[];
+}
+
+/** Un lot de version tel que la méthode le publie. `nom: null` = nom non publié. */
+export interface VersionLot {
+  version: string;
+  nom: string | null;
+  milestones: string[];
+  etat: string;
+  cycleDeVie: string;
+  etiquette: string | null;
+  dateEtiquette: string | null;
+  livrees: string[];
+  aFaire: string[];
+  pretes: string[];
+  bloquees: string[];
+}
+
+/** Ce qui attend la prochaine coupe. `null` = non publié par la méthode. */
+export interface ProchaineCoupe {
+  derniereEtiquette: string | null;
+  livrees: { id: string; titre: string; objectif: string }[];
+  nombre: number | null;
+  gate: {
+    version: string;
+    verdict: 'GO' | 'NO-GO';
+    date: string;
+    passes: { id: string; title: string; go: boolean; sautee: boolean }[];
+  } | null;
+  numeroPropose: string | null;
+}
+
+export interface VersionsPage {
+  /** Dans l'ordre publié : croissant. */
+  lots: VersionLot[];
+  prochaineCoupe: ProchaineCoupe;
 }
 
 /** L'ensemble des projets, indexés par leur nom (clé de navigation). */

@@ -377,3 +377,96 @@ describe('translatePlan — les fiches livrées (fiche 20261103191932064)', () =
     expect(translatePlan(c, b).fiches.L1?.verdict).toBe('up');
   });
 });
+
+describe('translatePlan — les objectifs en entier (fiche 20261124111115865)', () => {
+  it('reprend nom, fiches à faire, livrées, versions et décompte de chaque objectif, dans l’ordre du contrat', () => {
+    const { plan } = translatePlan(board(), backlog());
+    expect(plan.objectifs).toEqual([
+      {
+        slug: 'parked',
+        nom: null,
+        status: 'idea',
+        total: 1,
+        shipped: 0,
+        counts: { idea: 1 },
+        aFaire: ['20990101000000007'],
+        livrees: [],
+        versions: [],
+      },
+      {
+        slug: 'board',
+        nom: 'Le board dit vrai',
+        status: 'in-progress',
+        total: 2,
+        shipped: 1,
+        counts: { shipped: 1, idea: 1 },
+        aFaire: ['20990101000000008'],
+        livrees: ['20990101000000006'],
+        versions: ['v1.0.0'],
+      },
+    ]);
+  });
+
+  it('un nom vide veut dire « non publié » : null, jamais une chaîne vide affichée', () => {
+    const { plan } = translatePlan(board(), backlog());
+    expect(plan.objectifs?.[0]?.nom).toBeNull();
+  });
+
+  it('un objectif mal formé, ou une méthode sans le champ : pas d’objectifs, jamais une liste tronquée', () => {
+    const b = board();
+    b.milestones[1].livrees = 'pas une liste';
+    expect(translatePlan(b, backlog()).plan.objectifs).toBeUndefined();
+    const { milestones: _m, ...c } = board();
+    expect(translatePlan(c, backlog()).plan.objectifs).toBeUndefined();
+  });
+});
+
+describe('translatePlan — les versions et la prochaine coupe (fiche 20261124111115783)', () => {
+  it('reprend nom, objectifs, date d’étiquette et contenu de chaque version', () => {
+    const { plan } = translatePlan(board(), backlog());
+    expect(plan.versionsPage?.lots[0]).toEqual({
+      version: 'v1.0.0',
+      nom: 'Le socle',
+      milestones: ['board'],
+      etat: 'en-cours',
+      cycleDeVie: 'brouillon',
+      etiquette: null,
+      dateEtiquette: null,
+      livrees: ['20990101000000006'],
+      aFaire: ['20990101000000001', '20990101000000003'],
+      pretes: ['20990101000000001', '20990101000000003'],
+      bloquees: ['20990101000000003'],
+    });
+    expect(plan.versionsPage?.lots[1]?.nom).toBeNull();
+  });
+
+  it('reprend la prochaine coupe entière : étiquette, livrées, nombre, gate et ses passes, numéro', () => {
+    const { plan } = translatePlan(board(), backlog());
+    const coupe = board().versions.prochaineCoupe;
+    expect(plan.versionsPage?.prochaineCoupe).toEqual({
+      derniereEtiquette: coupe.derniereEtiquette,
+      livrees: coupe.livrees,
+      nombre: coupe.nombre,
+      gate: coupe.gate,
+      numeroPropose: null,
+    });
+  });
+
+  it('sans gate publiée : null, pas un faux verdict', () => {
+    const b = board();
+    b.versions.prochaineCoupe.gate = null;
+    expect(translatePlan(b, backlog()).plan.versionsPage?.prochaineCoupe.gate).toBeNull();
+  });
+
+  it('une coupe ou un lot mal formé : pas de page Versions, jamais une page à moitié vraie', () => {
+    const b = board();
+    b.versions.prochaineCoupe.nombre = -1;
+    expect(translatePlan(b, backlog()).plan.versionsPage).toBeUndefined();
+    const c = board();
+    c.versions.lots[0].dateEtiquette = 42;
+    expect(translatePlan(c, backlog()).plan.versionsPage).toBeUndefined();
+    const d = board();
+    d.versions.prochaineCoupe = undefined;
+    expect(translatePlan(d, backlog()).plan.versionsPage).toBeUndefined();
+  });
+});

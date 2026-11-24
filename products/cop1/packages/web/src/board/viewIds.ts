@@ -6,10 +6,12 @@
 export const VIEW_IDS = [
   'fleet',
   'overview',
+  'objectifs',
   'pilotage',
   'cadrage',
   'dev',
   'fiches',
+  'versions',
   'timeline',
   'config',
   'process',

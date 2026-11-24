@@ -55,6 +55,72 @@ export interface PlanData {
    * « Pilotage » le dit, jamais une liste vide présentée comme réelle.
    */
   pilotage?: PlanPilotage;
+  /**
+   * Les objectifs tels que la méthode les publie, dans son ordre (fiche 20261124111115865). Absent
+   * quand la méthode installée ne les publie pas, ou qu'une entrée est mal formée : la page le dit.
+   */
+  objectifs?: PlanObjectif[];
+  /**
+   * Les versions et la prochaine coupe, telles que la méthode les publie (fiche 20261124111115783).
+   * Absent quand la méthode installée ne les publie pas en entier : la page le dit.
+   */
+  versionsPage?: PlanVersionsPage;
+}
+
+/** Un objectif (une milestone) en entier : ce que les pages Objectifs et Un objectif montrent. */
+export interface PlanObjectif {
+  /** Le slug, valeur exacte du champ `milestone:` des fiches. */
+  slug: string;
+  /** Le nom en clair déclaré dans `features/milestones/<slug>.md` ; `null` s'il n'est pas publié. */
+  nom: string | null;
+  status: string;
+  total: number;
+  shipped: number;
+  /** Le décompte par état publié (`idea`, `ready`, `shipped`…). */
+  counts: Record<string, number>;
+  /** Les fiches actives, hors livrées, triées. */
+  aFaire: string[];
+  livrees: string[];
+  versions: string[];
+}
+
+/** Un lot de version en entier (`versions.lots[]` de `ezk board show --json`). */
+export interface PlanVersionLot {
+  version: string;
+  /** Le nom en clair déclaré dans `features/versions/<v>.md` ; `null` s'il n'est pas publié. */
+  nom: string | null;
+  milestones: string[];
+  etat: string;
+  cycleDeVie: string;
+  etiquette: string | null;
+  dateEtiquette: string | null;
+  livrees: string[];
+  aFaire: string[];
+  pretes: string[];
+  bloquees: string[];
+}
+
+/** Une passe de la gate de release. */
+export interface PlanGatePass {
+  id: string;
+  title: string;
+  go: boolean;
+  sautee: boolean;
+}
+
+/** Ce qui attend la prochaine coupe (`versions.prochaineCoupe`). `null` = non publié. */
+export interface PlanProchaineCoupe {
+  derniereEtiquette: string | null;
+  livrees: { id: string; titre: string; objectif: string }[];
+  nombre: number | null;
+  gate: { version: string; verdict: 'GO' | 'NO-GO'; date: string; passes: PlanGatePass[] } | null;
+  numeroPropose: string | null;
+}
+
+export interface PlanVersionsPage {
+  /** Dans l'ordre du contrat : croissant. */
+  lots: PlanVersionLot[];
+  prochaineCoupe: PlanProchaineCoupe;
 }
 
 /** Une milestone et son avancement (`milestones` de `ezk board show --json`). */

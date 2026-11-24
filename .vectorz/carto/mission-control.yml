@@ -20,6 +20,20 @@ screens:
         title: Lancer une version depuis le process des versions
       - id: voir-run
         title: Ouvrir le détail d'un run en cours
+  - id: objectifs
+    title: Objectifs — le tableau des objectifs, puis la page d'un objectif
+    actions:
+      - id: filtrer
+        title: Filtrer les objectifs par état et par version
+      - id: ouvrir-objectif
+        title: Ouvrir la page d'un objectif, et revenir par le fil d'Ariane
+  - id: versions
+    title: Versions — à versionner, en construction, étiquetées, puis la page d'une version
+    actions:
+      - id: ouvrir-version
+        title: Ouvrir la page d'une version, et revenir par le fil d'Ariane
+      - id: versionner
+        title: Montrer la commande de coupe sans rien écrire
   - id: pilotage
     title: Pilotage — milestones et sessions closes
   - id: cadrage

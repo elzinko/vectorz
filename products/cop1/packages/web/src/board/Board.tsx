@@ -18,7 +18,9 @@ import { FicheModal, type Pouce } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
+import { ObjectifsView } from './ObjectifsView.js';
 import { PilotageView } from './PilotageView.js';
+import { VersionsView } from './VersionsView.js';
 import { LawView } from './LawView.js';
 import { RecipesView } from './RecipesView.js';
 import { MapsView } from './MapsView.js';
@@ -47,10 +49,12 @@ interface NavItem {
 /** Le menu suit la portée (fiche 20261114131616818) : ce qui vaut pour tous les projets, puis le projet. */
 const PROJECT_NAV: NavItem[] = [
   { id: 'overview', icon: '◧', label: "Vue d'ensemble" },
+  { id: 'objectifs', icon: '◎', label: 'Objectifs' },
   { id: 'pilotage', icon: '◔', label: 'Pilotage' },
   { id: 'cadrage', icon: '✎', label: 'Cadrage' },
   { id: 'dev', icon: '▸', label: 'Développement' },
   { id: 'fiches', icon: '▦', label: 'Fiches' },
+  { id: 'versions', icon: '⑂', label: 'Versions' },
   { id: 'timeline', icon: '◷', label: 'Chronologie' },
   { id: 'process', icon: '❖', label: 'Process' },
   { id: 'law', icon: '§', label: 'Loi' },
@@ -390,6 +394,10 @@ export function Board(): JSX.Element {
               }}
               onViewRun={(runId) => setRunDetailId(runId)}
             />
+          ) : view === 'objectifs' ? (
+            <ObjectifsView project={project} onOpenFiche={setFicheModalId} />
+          ) : view === 'versions' ? (
+            <VersionsView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'pilotage' ? (
             <PilotageView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'cadrage' ? (

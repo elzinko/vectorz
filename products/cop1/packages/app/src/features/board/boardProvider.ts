@@ -30,9 +30,11 @@ import type { SourceReading } from './ezkSource.js';
 import type {
   FicheDetailData,
   PlanFunnel,
+  PlanObjectif,
   PlanPilotage,
   PlanSprint,
   PlanVersions,
+  PlanVersionsPage,
 } from './planTypes.js';
 
 /** Un projet à composer : son nom (clé du board) et la racine où lire son backlog. */
@@ -88,6 +90,10 @@ export interface BoardPlanProject {
   pilotage?: PlanPilotage;
   /** Les derniers sprints et leurs indicateurs publiés par la méthode (Vue d'ensemble) ; absent sinon. */
   lastSprints?: PlanSprint[];
+  /** Les objectifs publiés par la méthode (pages Objectifs et Un objectif) ; absent sinon. */
+  objectifs?: PlanObjectif[];
+  /** Les versions et la prochaine coupe publiées par la méthode (pages Versions et Une version) ; absent sinon. */
+  versionsPage?: PlanVersionsPage;
   /** Le process est-il arrivé (`ezk board process --json`) ? Sinon `process` est absent. */
   processState: BoardPlanState;
   /** Chaque fiche sur son étape, telle que la méthode la place (vue « Process »). */
@@ -156,6 +162,8 @@ export function shapeProject(
     fiches: received ? received.fiches : {},
     ...(received?.plan.pilotage ? { pilotage: received.plan.pilotage } : {}),
     ...(received?.plan.lastSprints ? { lastSprints: received.plan.lastSprints } : {}),
+    ...(received?.plan.objectifs ? { objectifs: received.plan.objectifs } : {}),
+    ...(received?.plan.versionsPage ? { versionsPage: received.plan.versionsPage } : {}),
     configState: readState(config),
     ...(config.state === 'ok' ? { config: config.config } : {}),
     processState: readState(process),
