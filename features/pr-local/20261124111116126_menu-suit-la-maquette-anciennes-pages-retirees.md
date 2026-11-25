@@ -1,19 +1,4 @@
----
-id: "20261124111116126"
-title: "Le menu de mission control suit la maquette : les anciennes pages sont retirées"
-type: feature
-priority: P2
-product: cop1
-milestone: board
-version:
-labels: [theme:mission-control]
-status: ready
-blocked:
-depends: ["20261124111115783", "20261124111115865", "20261124111115955", "20261124111116042"]
-pr:
-evidence: before-after
-created: 2026-11-24
----
+> 🗎 Rendu de la fiche [features/20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md](../done/20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md)
 
 # 20261124111116126 — Le menu de mission control suit la maquette : les anciennes pages sont retirées
 
@@ -56,7 +41,7 @@ Chaque page retirée a sa remplaçante :
 3. **Garder les liens vivants.** Un lien interne qui ouvrait une page retirée ouvre sa remplaçante.
    La fenêtre de détail d'un lancement reste joignable depuis le fil d'une session.
 4. **Rétros.** L'entrée « Rétros » n'apparaît que lorsque sa page existe. Elle est portée par la
-   fiche [Une page qui liste les rétros passées et leurs décisions](20260826072532537_vue-retros-actions-ezk-map.md).
+   fiche [Une page qui liste les rétros passées et leurs décisions](../20260826072532537_vue-retros-actions-ezk-map.md).
 5. **Le groupe Global ne change pas.** Le lien « v1 / archives » reste, comme décidé le 19 novembre.
 
 ## Critères d'acceptation
@@ -111,3 +96,14 @@ de la maquette », après la livraison des pages Objectifs, Versions, Sprints et
 - **Contrôle « prête » (ezk-pm, 2026-11-24)** : NO-GO sur une fiche qui se contredisait (Cartes
   retirée dans les critères d'origine, gardée dans le grooming). Critères, ouverture, proposition et
   tableau réécrits en place ; GO après correction, selon le contrôleur.
+
+
+## Validation
+
+| Modalité | Statut |
+|---|---|
+| Tests web | ✅ 271/271 |
+| Tests app | ✅ 421/421 |
+| Typecheck web + app | ✅ |
+| Revue adverse ezk-reviewer | ✅ GO (2 remarques mineures corrigées) |
+| Before / after (UI) | ✅ docs/pr-evidence/20261124111116126/menu-before.jpg → menu-after.jpg |

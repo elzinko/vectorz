@@ -69,7 +69,7 @@ Ce sont les écarts A2, A4 et A5 de la
    journal ne porte pas le nom de session.
 4. **La Chronologie s'efface.** Son contenu vit désormais dans le fil d'une session. Son entrée de
    menu est retirée par la fiche
-   [Le menu de mission control suit la maquette](../20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+   [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
 
 ## Critères d'acceptation
 

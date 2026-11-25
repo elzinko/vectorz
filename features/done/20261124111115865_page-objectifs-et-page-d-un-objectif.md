@@ -116,7 +116,7 @@ Objectifs et Un objectif de la maquette.
 - 2026-11-24 : fiche écrite à la demande du PO, qui veut construire la maquette.
 - La page Pilotage perd sa partie « avancement par objectif » quand celle-ci existe. Son retrait est
   porté par la fiche
-  [Le menu de mission control suit la maquette](../20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+  [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
 
 ### Grooming du 2026-11-24
 

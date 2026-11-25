@@ -133,7 +133,7 @@ v0.23.0. Compare avec les pages Versions et Version de la maquette.
 - 2026-11-24 : fiche écrite à la demande du PO, qui veut construire la maquette. Les données sont
   publiées ; le travail est le relais et l'écran.
 - Le rangement complet du menu est porté par la fiche
-  [Le menu de mission control suit la maquette](../20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
+  [Le menu de mission control suit la maquette](20261124111116126_menu-suit-la-maquette-anciennes-pages-retirees.md).
 
 ### Grooming du 2026-11-24
 
