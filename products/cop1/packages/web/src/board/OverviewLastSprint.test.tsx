@@ -34,7 +34,7 @@ const project = (over: Partial<BoardProject>): BoardProject =>
   }) as BoardProject;
 
 const show = (over: Partial<BoardProject>) =>
-  render(<OverviewView project={project(over)} onLaunch={() => {}} onViewRun={() => {}} />);
+  render(<OverviewView project={project(over)} onViewRun={() => {}} />);
 const card = () => screen.getByRole('region', { name: 'Dernier sprint' });
 
 describe('Vue d’ensemble — le dernier sprint', () => {

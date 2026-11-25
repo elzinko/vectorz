@@ -1,12 +1,10 @@
 /**
- * Board unifié cop1 — logique d'activité (fiche 20261012231419211), pure.
+ * Board unifié cop1 — libellés d'activité (fiche 20261012231419211), purs.
  *
- * Un *run* contient des *moments* (étapes). On le regarde par *lentille* :
- * côté cadrage (idéation → grooming → prête → release) ou côté développement
- * (sprint → revue → QA → rétro → tag). Les pastilles et libellés viennent d'ici,
- * jamais d'un texte inventé.
+ * Un *run* contient des *moments* (étapes). Les pastilles d'étape, les libellés de
+ * statut et la couleur d'un verdict viennent d'ici, jamais d'un texte inventé.
  */
-import type { BoardProject, BoardRun, FicheStatus, Moment, RunKind } from './types.js';
+import type { BoardRun, FicheStatus, Moment } from './types.js';
 
 /** Étape de process → pastille courte. */
 export const STEP_LABEL: Record<string, string> = {
@@ -29,42 +27,6 @@ export const STATUS_LABEL: Record<FicheStatus, string> = {
   done: 'livrée',
   parked: 'parkée',
 };
-
-const CAD_STEPS = ['ideation', 'grooming', 'ready', 'release'];
-const DEV_STEPS = ['sprint', 'review', 'qa', 'retro', 'livre'];
-
-function lensSteps(lens: RunKind): string[] {
-  return lens === 'cadrage' ? CAD_STEPS : DEV_STEPS;
-}
-
-/** Un run est visible dans une lentille s'il porte ≥ 1 moment de cette lentille. */
-export function runHasLens(run: BoardRun, lens: RunKind): boolean {
-  const steps = lensSteps(lens);
-  return (run.moments ?? []).some((m) => steps.includes(m.step));
-}
-
-/** Les runs d'un projet visibles dans une lentille, dans l'ordre de déclaration. */
-export function runsForLens(project: BoardProject, lens: RunKind): BoardRun[] {
-  return Object.values(project.runs).filter((r) => runHasLens(r, lens));
-}
-
-/** Une pastille d'étape (sprint numéroté → « S1 »). */
-export interface Chip {
-  key: string;
-  label: string;
-}
-
-/** Les pastilles de moments d'un run, pour une lentille donnée. */
-export function runChips(run: BoardRun, lens: RunKind): Chip[] {
-  const steps = lensSteps(lens);
-  return (run.moments ?? [])
-    .filter((m) => steps.includes(m.step))
-    .map((m, i) =>
-      m.step === 'sprint'
-        ? { key: `sprint-${m.n ?? i}`, label: `S${m.n ?? ''}` }
-        : { key: `${m.step}-${i}`, label: STEP_LABEL[m.step] ?? m.step },
-    );
-}
 
 /** Le libellé d'un moment (son `label`, sinon sa pastille d'étape). */
 export function momentLabel(m: Moment): string {

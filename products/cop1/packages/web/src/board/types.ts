@@ -233,7 +233,7 @@ export interface PilotageSession {
   prs: string[];
 }
 
-/** La vue « Pilotage » : l'avancement par milestone et les sessions closes, la plus récente d'abord. */
+/** Ce que la méthode publie pour le pilotage : l'avancement par milestone, et les sessions closes (la plus récente d'abord) que lit la page Sessions. */
 export interface Pilotage {
   milestones: PilotageMilestone[];
   sessions: PilotageSession[];
@@ -284,12 +284,10 @@ export interface BoardProject {
   runs: Record<string, BoardRun>;
   /** Les fiches en détail, indexées par id (pour la modale fiche). Facultatif. */
   fiches?: Record<string, FicheDetail>;
-  /** Les évènements de chronologie, du plus récent au plus ancien. Facultatif. */
-  timeline?: TimelineEvent[];
   /**
-   * Les chantiers du projet (multi-sessions, ADR-079). Présent = la chronologie
-   * se navigue en 3 niveaux (chantiers → chantier → session) ; absent = fil unique
-   * (`timeline`). Alimente aussi l'accueil « Tous les projets » (compte de sessions).
+   * Les chantiers du projet (multi-sessions, ADR-079), lus dans le journal : la page Sessions
+   * en tire les sessions en cours et les lancements. Alimente aussi l'accueil « Tous les
+   * projets » (compte de sessions).
    */
   chantiers?: BoardChantier[];
   /** La config du projet (portée projet, `.vectorz/config.yml`). Facultatif. */

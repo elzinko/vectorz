@@ -4,19 +4,21 @@
  * Trois blocs, pour un projet : les métriques « depuis le début », l'entonnoir du
  * pipeline actif, et le tableau « Versions dans le process » (une ligne par
  * version ; la version en run est surlignée et porte « Voir le run », une version
- * cadrée non livrée porte « ▸ Lancer »).
+ * cadrée non livrée porte « ▸ Lancer », qui montre la commande à lancer).
  */
 import type { BoardProject, SprintSummary, Version } from './types.js';
 import { allVersions, cadre, groomed, isPastVer, runByVer, svCmp } from './helpers.js';
 import { isLaunchable } from './pipeline.js';
+import { CommandHint } from './PlanBits.js';
 
 interface OverviewViewProps {
   project: BoardProject;
-  /** Lancer la réalisation d'une version cadrée. */
-  onLaunch: (ver: string) => void;
   /** Voir le run vivant d'une version. */
   onViewRun: (runId: string) => void;
 }
+
+/** La commande qui lance la réalisation des fiches prêtes. */
+export const LAUNCH_COMMAND = '/ezk-product-build run';
 
 function pct(frac: number, total: number): string {
   return `${((frac / (total || 1)) * 100).toFixed(0)}%`;
@@ -34,7 +36,7 @@ function MiniBar({ fill, frac, total }: { fill: string; frac: number; total: num
   );
 }
 
-function VersionsInProcess({ project, onLaunch, onViewRun }: OverviewViewProps): JSX.Element {
+function VersionsInProcess({ project, onViewRun }: OverviewViewProps): JSX.Element {
   const all = allVersions(project).slice().sort((a, b) => svCmp(b.ver, a.ver));
   const liveByVer = runByVer(project);
 
@@ -49,13 +51,8 @@ function VersionsInProcess({ project, onLaunch, onViewRun }: OverviewViewProps):
     }
     // Même règle de « lançable » que le pipeline de dev (pas de définition recopiée) :
     // cadré, pas commencé, sans run vivant. Le run vivant est déjà écarté ci-dessus.
-    if (isLaunchable(project, v)) {
-      return (
-        <button type="button" className="btn sm" onClick={() => onLaunch(v.ver)}>
-          ▸ Lancer
-        </button>
-      );
-    }
+    // Le web ne lance rien : il montre la commande, comme les autres gestes.
+    if (isLaunchable(project, v)) return <CommandHint label="▸ Lancer" command={LAUNCH_COMMAND} />;
     return null;
   }
 

@@ -34,14 +34,8 @@ const PROJECT: BoardProject = {
   },
 };
 
-function renderView(overrides?: { onLaunch?: (v: string) => void; onViewRun?: (id: string) => void }) {
-  return render(
-    <OverviewView
-      project={PROJECT}
-      onLaunch={overrides?.onLaunch ?? (() => {})}
-      onViewRun={overrides?.onViewRun ?? (() => {})}
-    />,
-  );
+function renderView(overrides?: { onViewRun?: (id: string) => void }) {
+  return render(<OverviewView project={PROJECT} onViewRun={overrides?.onViewRun ?? (() => {})} />);
 }
 
 describe('OverviewView', () => {
@@ -78,12 +72,10 @@ describe('OverviewView', () => {
     expect(onViewRun).toHaveBeenCalledWith('runX');
   });
 
-  it('offre « ▸ Lancer » pour une version cadrée non livrée sans run', async () => {
-    const onLaunch = vi.fn();
-    renderView({ onLaunch });
-    const btn = screen.getByRole('button', { name: '▸ Lancer' });
-    await userEvent.click(btn);
-    expect(onLaunch).toHaveBeenCalledWith('v2.1.0');
+  it('offre « ▸ Lancer » pour une version cadrée non livrée sans run : le bouton montre la commande', async () => {
+    renderView();
+    await userEvent.click(screen.getByRole('button', { name: '▸ Lancer' }));
+    expect(screen.getByRole('status').textContent).toBe('à lancer : /ezk-product-build run');
   });
 
   it('marque une version taguée et ne lui donne pas de bouton', () => {
@@ -106,7 +98,7 @@ describe('OverviewView', () => {
       },
       runs: {},
     };
-    render(<OverviewView project={project} onLaunch={() => {}} onViewRun={() => {}} />);
+    render(<OverviewView project={project} onViewRun={() => {}} />);
     const versionne = (ver: string) => {
       const row = screen.getByText(ver).closest('.ptrow');
       return row ? within(row as HTMLElement).queryByText(/à clore|✓ taguée/)?.textContent : undefined;
@@ -124,7 +116,7 @@ describe('OverviewView', () => {
       funnel: { idea: 5, ready: 0, wip: 0, unversioned: 0, parked: 0 },
     };
     const { container } = render(
-      <OverviewView project={project} onLaunch={() => {}} onViewRun={() => {}} />,
+      <OverviewView project={project} onViewRun={() => {}} />,
     );
     expect(container.querySelector('.funbar .fun-ready')?.textContent).toBe('');
     expect(container.querySelector('.funbar .fun-wip')?.textContent).toBe('');
@@ -168,7 +160,7 @@ describe('OverviewView', () => {
       },
       runs: { r: { id: 'runY', name: 'en run', ver: 'v9.0.0', live: true } },
     };
-    render(<OverviewView project={p} onLaunch={() => {}} onViewRun={() => {}} />);
+    render(<OverviewView project={p} onViewRun={() => {}} />);
     expect(screen.getByText('● en run')).toBeTruthy();
     expect(screen.getByText('5/20')).toBeTruthy();
     expect(screen.queryByText('— pas cadré')).toBeNull();
@@ -188,7 +180,7 @@ describe('OverviewView', () => {
       },
       runs: {},
     };
-    render(<OverviewView project={p} onLaunch={() => {}} onViewRun={() => {}} />);
+    render(<OverviewView project={p} onViewRun={() => {}} />);
     expect(screen.getByText('— pas cadré')).toBeTruthy();
   });
 
@@ -207,7 +199,7 @@ describe('OverviewView', () => {
       },
       runs: {},
     };
-    render(<OverviewView project={p} onLaunch={() => {}} onViewRun={() => {}} />);
+    render(<OverviewView project={p} onViewRun={() => {}} />);
     expect(screen.getByText('✓ taguée')).toBeTruthy();
     expect(screen.queryByRole('button', { name: '▸ Lancer' })).toBeNull();
   });
@@ -227,7 +219,7 @@ describe('OverviewView — les tuiles « depuis le début » (fiche 202611021044
         notes: ['Temps et jetons : non mesurés — les comptes rendus de sprint ne les mesurent pas encore de façon fiable.'],
       },
     };
-    render(<OverviewView project={project} onLaunch={() => {}} onViewRun={() => {}} />);
+    render(<OverviewView project={project} onViewRun={() => {}} />);
     expect(screen.getAllByText('non mesuré')).toHaveLength(3);
     expect(screen.getByText('29')).toBeTruthy();
     expect(screen.getByText(/ne les mesurent pas encore/)).toBeTruthy();

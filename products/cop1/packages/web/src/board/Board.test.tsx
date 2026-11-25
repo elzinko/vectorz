@@ -2,8 +2,31 @@ import { cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderBoardOn } from './testing/renderBoard.js';
+import { BOARD_DATA } from './testing/sampleBoard.js';
+import type { BoardData, BoardProject } from './types.js';
 
 afterEach(cleanup);
+
+/** Le projet vectorz avec une session en cours dont le lancement est le run « r1 » de l'échantillon. */
+const vectorz = BOARD_DATA.vectorz as BoardProject;
+const WITH_SESSION: BoardData = {
+  ...BOARD_DATA,
+  vectorz: {
+    ...vectorz,
+    plan: { state: 'ok' },
+    pilotage: { milestones: [], sessions: [] },
+    chantiers: [
+      {
+        key: 'r1',
+        name: 'r1',
+        state: 'live',
+        age: 'il y a 12 min',
+        merged: [],
+        sessions: [{ id: 's1', label: 'claude/cadrage', state: 'live', events: [{ when: 'il y a 12 min', kind: 'lancement', title: 'Run démarré' }] }],
+      },
+    ],
+  },
+};
 
 describe('Board — la coque', () => {
   it("affiche la marque et la version du board", async () => {
@@ -18,7 +41,7 @@ describe('Board — la coque', () => {
     expect(overviewNav.getAttribute('aria-current')).toBe('page');
   });
 
-  it('range le menu par portée : Global, puis Projet · nom du projet (fiche 20261114131616818)', async () => {
+  it('range le menu par portée, puis dans l’ordre de la maquette ; Cartes ferme le groupe Projet (fiches 20261114131616818, 20261124111116126)', async () => {
     await renderBoardOn();
     const nav = screen.getByRole('navigation', { name: 'Navigation du board' });
     expect([...nav.querySelectorAll('.grp')].map((g) => g.textContent)).toEqual(['Global', 'Projet · vectorz', 'Archives']);
@@ -29,19 +52,15 @@ describe('Board — la coque', () => {
       'Annuaire de la méthode',
       "Vue d'ensemble",
       'Objectifs',
-      'Pilotage',
-      'Cadrage',
-      'Développement',
       'Fiches',
       'Sprints',
       'Sessions',
       'Versions',
-      'Chronologie',
       'Process',
       'Loi',
+      'Configuration',
       'Recettes',
       'Cartes',
-      'Configuration',
     ]);
     // Le menu ne nomme pas la méthode : ni groupe « Méthode », ni « mega-city ».
     expect(nav.textContent).not.toMatch(/Méthode\b(?! de)|mega-city/);
@@ -99,41 +118,34 @@ describe('Board — la coque', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
-  it('Cadrage montre l’activité, et on descend run → fiche (modale)', async () => {
-    await renderBoardOn();
-    await userEvent.click(screen.getByRole('button', { name: 'Cadrage' }));
-    // Table d'activité : un run réel.
-    const run = screen.getByText('Cadrage & lotissement du backlog');
-    await userEvent.click(run);
-    // Détail du run : ses moments et fiches.
+  it('la page Sessions ouvre le détail d’un lancement, puis la fiche (modale) (fiche 20261124111116126)', async () => {
+    await renderBoardOn(WITH_SESSION);
+    await userEvent.click(screen.getByRole('button', { name: 'Sessions' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Voir le lancement' }));
     expect(screen.getByText('Grooming du lot v0.11')).toBeTruthy();
-    const fiche = screen.getByText('Release-gate (skill ezk-release)');
-    await userEvent.click(fiche);
-    // Modale fiche ouverte.
-    const modal = screen.getByRole('dialog');
-    expect(modal).toBeTruthy();
+    await userEvent.click(screen.getByText('Release-gate (skill ezk-release)'));
+    expect(screen.getByRole('dialog')).toBeTruthy();
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
   it('naviguer ferme la modale fiche (pas de modale orpheline)', async () => {
-    await renderBoardOn();
-    await userEvent.click(screen.getByRole('button', { name: 'Cadrage' }));
-    await userEvent.click(screen.getByText('Cadrage & lotissement du backlog'));
+    await renderBoardOn(WITH_SESSION);
+    await userEvent.click(screen.getByRole('button', { name: 'Sessions' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Voir le lancement' }));
     await userEvent.click(screen.getByText('Release-gate (skill ezk-release)'));
     expect(screen.getByRole('dialog')).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: "Vue d'ensemble" }));
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
-  it('retour depuis le détail d’un run revient à l’activité', async () => {
-    await renderBoardOn();
-    await userEvent.click(screen.getByRole('button', { name: 'Développement' }));
-    await userEvent.click(screen.getByText('Réalisation v0.10 — portabilité multi-IDE'));
+  it('retour depuis le détail d’un lancement revient à la page Sessions', async () => {
+    await renderBoardOn(WITH_SESSION);
+    await userEvent.click(screen.getByRole('button', { name: 'Sessions' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Voir le lancement' }));
     expect(screen.getByText('Étapes du run')).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: /retour/ }));
-    // De retour sur la table d'activité dev.
-    expect(screen.getByText('Lancements de développement')).toBeTruthy();
+    expect(screen.getByText('En cours — 1')).toBeTruthy();
   });
 
   it('« Voir le run » de la vue d’ensemble ouvre le détail du run', async () => {

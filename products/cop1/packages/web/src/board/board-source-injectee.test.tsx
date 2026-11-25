@@ -48,7 +48,6 @@ describe('board-web : source injectée, jamais d’échantillon', () => {
         fiches: [],
         runs: [],
         chantiers: [],
-        timeline: [],
         moments: [],
         metrics: { done: 0 },
       },

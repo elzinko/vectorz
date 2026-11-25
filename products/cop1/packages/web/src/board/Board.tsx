@@ -8,18 +8,15 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { AddProjectModal } from './AddProjectModal.js';
-import { CadrageView } from './CadrageView.js';
 import { ConfigView } from './ConfigView.js';
 import { defaultToolConfig, type Role, type Tier } from './configModel.js';
 import { ToolConfigView } from './ToolConfigView.js';
 import type { BoardData, BoardProject, FicheDetail, PlanState } from './types.js';
-import { DevView } from './DevView.js';
 import { FicheModal, type Pouce } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
 import { OverviewView } from './OverviewView.js';
 import { ObjectifsView } from './ObjectifsView.js';
-import { PilotageView } from './PilotageView.js';
 import { VersionsView } from './VersionsView.js';
 import { LawView } from './LawView.js';
 import { RecipesView } from './RecipesView.js';
@@ -29,7 +26,6 @@ import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { SessionsView } from './SessionsView.js';
 import { SprintsView } from './SprintsView.js';
-import { TimelineView } from './TimelineView.js';
 import type { ViewId } from './viewIds.js';
 
 const BRAND_VERSION = 'v0.17.0';
@@ -48,23 +44,20 @@ interface NavItem {
   label: string;
 }
 
-/** Le menu suit la portée (fiche 20261114131616818) : ce qui vaut pour tous les projets, puis le projet. */
+/** Le menu suit la portée (fiche 20261114131616818), puis l'ordre de la maquette (fiche 20261124111116126). */
 const PROJECT_NAV: NavItem[] = [
   { id: 'overview', icon: '◧', label: "Vue d'ensemble" },
   { id: 'objectifs', icon: '◎', label: 'Objectifs' },
-  { id: 'pilotage', icon: '◔', label: 'Pilotage' },
-  { id: 'cadrage', icon: '✎', label: 'Cadrage' },
-  { id: 'dev', icon: '▸', label: 'Développement' },
   { id: 'fiches', icon: '▦', label: 'Fiches' },
   { id: 'sprints', icon: '↻', label: 'Sprints' },
   { id: 'sessions', icon: '☰', label: 'Sessions' },
   { id: 'versions', icon: '⑂', label: 'Versions' },
-  { id: 'timeline', icon: '◷', label: 'Chronologie' },
   { id: 'process', icon: '❖', label: 'Process' },
   { id: 'law', icon: '§', label: 'Loi' },
-  { id: 'recipes', icon: '✦', label: 'Recettes' },
-  { id: 'maps', icon: '▤', label: 'Cartes' },
   { id: 'config', icon: '⚙', label: 'Configuration' },
+  { id: 'recipes', icon: '✦', label: 'Recettes' },
+  // Seul écart à la maquette (fiche 20261124111116126) : aucune autre page ne montre les documents de la méthode.
+  { id: 'maps', icon: '▤', label: 'Cartes' },
 ];
 
 const GLOBAL_NAV: NavItem[] = [
@@ -197,8 +190,6 @@ export function Board(): JSX.Element {
   const lastFicheSeen = useRef<FicheDetail | undefined>(undefined);
   const [projModalOpen, setProjModalOpen] = useState(false);
   const [query, setQuery] = useState('');
-  // Lot présélectionné quand on lance une version depuis la vue d'ensemble.
-  const [devLot, setDevLot] = useState<string | null>(null);
   // Config de l'outil (portée poste) : partagée par la config projet (modèle
   // résolu) et la page ⚙ config outil (édition du mapping).
   const [toolConfig, setToolConfig] = useState(defaultToolConfig());
@@ -396,14 +387,7 @@ export function Board(): JSX.Element {
           ) : view === 'fleet' ? (
             <FleetView projects={allProjects} onOpenProject={chooseProject} />
           ) : view === 'overview' ? (
-            <OverviewView
-              project={project}
-              onLaunch={(ver) => {
-                setDevLot(ver);
-                go('dev');
-              }}
-              onViewRun={(runId) => setRunDetailId(runId)}
-            />
+            <OverviewView project={project} onViewRun={(runId) => setRunDetailId(runId)} />
           ) : view === 'objectifs' ? (
             <ObjectifsView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'versions' ? (
@@ -422,16 +406,8 @@ export function Board(): JSX.Element {
               }}
               onViewRun={(runId) => setRunDetailId(runId)}
             />
-          ) : view === 'pilotage' ? (
-            <PilotageView project={project} onOpenFiche={setFicheModalId} />
-          ) : view === 'cadrage' ? (
-            <CadrageView project={project} onOpenRun={(id) => setRunDetailId(id)} />
-          ) : view === 'dev' ? (
-            <DevView project={project} onOpenRun={(id) => setRunDetailId(id)} initialLot={devLot} />
           ) : view === 'fiches' ? (
             <FichesView project={project} onOpenFiche={setFicheModalId} query={query} />
-          ) : view === 'timeline' ? (
-            <TimelineView project={project} onOpenRun={(id) => setRunDetailId(id)} />
           ) : view === 'config' ? (
             <ConfigView
               project={project}

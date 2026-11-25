@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { momentLabel, runChips, runHasLens, runsForLens, verdictClass } from './activity.js';
-import type { BoardProject, BoardRun } from './types.js';
+import { momentLabel, verdictClass } from './activity.js';
+import type { BoardRun } from './types.js';
 
 const RUN_CAD: BoardRun = {
   id: 'rc',
@@ -24,41 +24,6 @@ const RUN_DEV: BoardRun = {
     { step: 'retro', label: 'Rétro', fiches: [] },
   ],
 };
-
-const PROJECT = {
-  runs: { rc: RUN_CAD, rd: RUN_DEV },
-} as unknown as BoardProject;
-
-describe('runHasLens / runsForLens', () => {
-  it('range un run selon ses moments', () => {
-    expect(runHasLens(RUN_CAD, 'cadrage')).toBe(true);
-    expect(runHasLens(RUN_CAD, 'dev')).toBe(false);
-    expect(runHasLens(RUN_DEV, 'dev')).toBe(true);
-    expect(runHasLens(RUN_DEV, 'cadrage')).toBe(false);
-  });
-
-  it('filtre les runs par lentille', () => {
-    expect(runsForLens(PROJECT, 'cadrage').map((r) => r.id)).toEqual(['rc']);
-    expect(runsForLens(PROJECT, 'dev').map((r) => r.id)).toEqual(['rd']);
-  });
-
-  it('un run sans moments n’apparaît dans aucune lentille', () => {
-    const bare: BoardRun = { id: 'x', name: 'x', ver: 'v1', live: false };
-    expect(runHasLens(bare, 'cadrage')).toBe(false);
-    expect(runHasLens(bare, 'dev')).toBe(false);
-  });
-});
-
-describe('runChips', () => {
-  it('numérote les sprints et nomme les étapes', () => {
-    expect(runChips(RUN_DEV, 'dev').map((c) => c.label)).toEqual(['S1', 'S2', 'rétro']);
-    expect(runChips(RUN_CAD, 'cadrage').map((c) => c.label)).toEqual(['groom']);
-  });
-
-  it('ne garde que les moments de la lentille', () => {
-    expect(runChips(RUN_DEV, 'cadrage')).toEqual([]);
-  });
-});
 
 describe('momentLabel / verdictClass', () => {
   it('momentLabel prend le label, sinon la pastille', () => {
