@@ -103,6 +103,8 @@ const config: ProjectConfigData = {
   integration: 'local-squash',
   releaseGate: true,
   root: '/p',
+  groomingTechniques: { mode: 'menu' },
+  adverseReview: 'run',
   agents: [
     { agent: 'ezk-dev', tier: 'middle', model: 'sonnet', effort: 'medium', source: 'defaut' },
   ],

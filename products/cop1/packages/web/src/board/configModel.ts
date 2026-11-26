@@ -55,9 +55,6 @@ export const DEFAULT_IDE_MAP: Record<string, IdeMapping> = {
  * ADR-086) ; les réglages de lancement n'y existent pas encore, ils restent absents.
  */
 export interface ProjectConfig {
-  groomPolicy?: string;
-  sprintSize?: string;
-  retro?: string;
   releaseGate: boolean;
   github: string;
   /** Sans PR : comment une story arrive sur main (`local-squash`, `push-ff`). */
@@ -75,7 +72,17 @@ export interface ProjectConfig {
    * affiché est celui qu'elle lance, pas celui du mapping de l'outil.
    */
   agents?: AgentModel[];
+  /** Le menu de `groom` pré-réglé par la config (contrat `config-show`). Absent = non publié. */
+  groomingTechniques?: GroomingTechniques;
+  /** La revue adverse d'un sprint : `run` (le plancher) ou `skip` (mode POC). Absent = non publié. */
+  adverseReview?: 'run' | 'skip';
 }
+
+/** Le grooming tel que la méthode le publie : rien de posé, tout, rien, une sélection, ou l'erreur. */
+export type GroomingTechniques =
+  | { mode: 'menu' }
+  | { mode: 'all' | 'none' | 'selection'; ids: string[] }
+  | { mode: 'error'; error: string };
 
 /** Un agent résolu par la méthode (tier, modèle, effort, d'où vient la valeur) ou mal configuré. */
 export type AgentModel =
@@ -142,4 +149,26 @@ export function resolveRole(
 ): Resolved {
   const tier = projectRoles[role] ?? tool.defaultTier;
   return resolveTier(tool, tier);
+}
+
+/** Les niveaux en mots : un tier abstrait se dit performant, standard ou économe. */
+const TIER_LABEL: Record<Tier, string> = { high: 'performant', middle: 'standard', low: 'économe' };
+const EFFORT_LABEL: Record<string, string> = { high: 'élevé', medium: 'moyen', low: 'faible' };
+
+export function tierLabel(tier: Tier): string {
+  return TIER_LABEL[tier];
+}
+
+/** L'effort en français ; une valeur que la page ne connaît pas s'affiche telle quelle. */
+export function effortLabel(effort: string): string {
+  return EFFORT_LABEL[effort] ?? effort;
+}
+
+/**
+ * Le dossier du PROJET : un worktree (`<projet>/.claude/worktrees/<nom>`) est ramené à l'arbre
+ * principal. Le contrat ne publie que la racine d'exécution ; celle-ci peut être un worktree.
+ */
+export function projectFolder(root: string): string {
+  const cut = root.indexOf('/.claude/worktrees/');
+  return cut === -1 ? root : root.slice(0, cut);
 }

@@ -41,15 +41,18 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Critères d'acceptation
 
-- [ ] Quatre blocs Projet, Process, Niveaux, Plugins apparaissent dans cet ordre.
-- [ ] Le mot « bundle « dod » » n'apparaît plus ; le DoD se lit « 5 règles ».
-- [ ] Aucune commande ezk n'est affichée comme texte ; elle est en infobulle.
-- [ ] Le chemin lu est le dossier du projet.
-- [ ] Les niveaux s'écrivent performant, standard, économe, et l'effort élevé, moyen, faible.
-- [ ] Un seul « i » par ligne de réglage, à droite.
-- [ ] Une valeur non publiée s'écrit « non publié ».
+- [x] Quatre blocs Projet, Process, Niveaux, Plugins apparaissent dans cet ordre.
+- [x] Le mot « bundle « dod » » n'apparaît plus ; le DoD se lit « oui » avec son nombre de règles quand la méthode le publie, « non publié » sinon. (Amendé le 2026-11-26 en revue, voir Hors périmètre.)
+- [x] Aucune commande ezk n'est affichée comme texte ; elle est en infobulle.
+- [x] Le chemin lu est le dossier du projet.
+- [x] Les niveaux s'écrivent performant, standard, économe, et l'effort élevé, moyen, faible.
+- [x] Un seul « i » par ligne de réglage, à droite.
+- [x] Une valeur non publiée s'écrit « non publié ».
 
 ## Comment vérifier
+
+- Preuve avant / après (configuration) : [avant](../docs/pr-evidence/20261126170000110/configuration-before.jpg) → [après](../docs/pr-evidence/20261126170000110/configuration-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (champs morts retirés ; compte du DoD hors périmètre, entériné)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- ConfigView.test.tsx
@@ -59,6 +62,7 @@ pnpm --dir products/cop1/packages/web test -- ConfigView.test.tsx
 
 ## Hors périmètre
 
+- Le compte « 5 règles » du DoD. `ezk config show --json` ne publie pas le nombre de règles du paquet dod. L'écran ne l'invente pas (ADR-086). Il s'affichera quand le contrat le publiera. Décision de revue du 2026-11-26.
 - Ajouter de nouveaux réglages dans la méthode.
 - Créer des plugins.
 - Éditer les règles d'un paquet (voir Loi).

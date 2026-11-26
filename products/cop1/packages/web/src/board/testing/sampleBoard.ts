@@ -183,9 +183,6 @@ export const BOARD_DATA: BoardData = {
       },
     ],
     config: {
-      groomPolicy: 'auto',
-      sprintSize: 'auto',
-      retro: 'à la fin',
       releaseGate: true,
       github: 'false (sur cette branche)',
       root: '~/git/bacasable/vectorz',
@@ -255,9 +252,6 @@ export const BOARD_DATA: BoardData = {
       },
     ],
     config: {
-      groomPolicy: 'exiger mon grooming',
-      sprintSize: '3 fiches',
-      retro: 'après chaque sprint',
       releaseGate: true,
       github: 'true',
       root: '~/git/muti',
@@ -317,9 +311,6 @@ export const BOARD_DATA: BoardData = {
       },
     ],
     config: {
-      groomPolicy: 'auto',
-      sprintSize: '2 fiches',
-      retro: 'après chaque sprint',
       releaseGate: false,
       github: 'true',
       root: '~/git/samplerz',
@@ -349,9 +340,6 @@ export const BOARD_DATA: BoardData = {
     },
     runs: {},
     config: {
-      groomPolicy: '—',
-      sprintSize: '—',
-      retro: '—',
       releaseGate: false,
       github: 'n/a',
       root: '~/git/vectorz/products/cop1',

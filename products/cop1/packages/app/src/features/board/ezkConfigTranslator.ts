@@ -19,9 +19,19 @@ export interface ProjectConfigData {
   releaseGate: boolean;
   /** La racine du projet, telle que le registre la donne. */
   root: string;
+  /** Le menu de `groom` pré-réglé par la config. */
+  groomingTechniques: GroomingTechniquesData;
+  /** La revue adverse d'un sprint : `run` (le plancher) ou `skip` (mode POC). */
+  adverseReview: 'run' | 'skip';
   /** Chaque agent tel que la méthode le résout : le modèle qu'elle lance, ou la raison d'une erreur. */
   agents: AgentModelData[];
 }
+
+/** Le grooming tel que la méthode le publie : rien de posé, tout, rien, une sélection, ou l'erreur. */
+export type GroomingTechniquesData =
+  | { mode: 'menu' }
+  | { mode: 'all' | 'none' | 'selection'; ids: string[] }
+  | { mode: 'error'; error: string };
 
 /** Un agent résolu (tier, modèle, effort, d'où vient la valeur) ou mal configuré (la raison). */
 export type AgentModelData =
@@ -55,12 +65,13 @@ export function translateConfig(raw: unknown, root: string): ProjectConfigData {
       `schema_version ${String(raw.schema_version)} inconnu (attendu ${SUPPORTED_SCHEMA_VERSION})`,
     );
   }
-  const { file, github, integration, releaseGate, agents } = raw;
+  const { file, github, integration, releaseGate, agents, groomingTechniques, adverseReview } = raw;
   if (file !== null && typeof file !== 'string') fail('champ file illisible');
   if (!isRecord(github)) fail('champ github illisible');
   if (typeof integration !== 'string') fail('champ integration illisible');
   if (typeof releaseGate !== 'boolean') fail('champ releaseGate illisible');
   if (!Array.isArray(agents)) fail('champ agents illisible');
+  if (adverseReview !== 'run' && adverseReview !== 'skip') fail('champ adverseReview illisible');
 
   return {
     file,
@@ -68,8 +79,21 @@ export function translateConfig(raw: unknown, root: string): ProjectConfigData {
     integration,
     releaseGate,
     root,
+    groomingTechniques: grooming(groomingTechniques),
+    adverseReview,
     agents: agents.map(agentModel),
   };
+}
+
+function grooming(g: unknown): GroomingTechniquesData {
+  if (!isRecord(g)) fail('champ groomingTechniques illisible');
+  if (g.mode === 'menu') return { mode: 'menu' };
+  if (g.mode === 'error' && typeof g.error === 'string') return { mode: 'error', error: g.error };
+  const isIds = Array.isArray(g.ids) && g.ids.every((id) => typeof id === 'string');
+  if ((g.mode === 'all' || g.mode === 'none' || g.mode === 'selection') && isIds) {
+    return { mode: g.mode, ids: g.ids as string[] };
+  }
+  return fail('champ groomingTechniques illisible');
 }
 
 function agentModel(a: unknown): AgentModelData {

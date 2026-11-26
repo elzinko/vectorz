@@ -94,9 +94,6 @@ function makeNewProject(root: string): BoardProject {
     versions: { current: null, upcoming: [], past: [] },
     runs: {},
     config: {
-      groomPolicy: 'auto',
-      sprintSize: 'auto',
-      retro: 'à la fin',
       releaseGate: true,
       github: 'à définir',
       root,

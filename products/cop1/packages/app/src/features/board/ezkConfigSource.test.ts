@@ -29,6 +29,25 @@ describe('translateConfig — traduit le contrat, ne recalcule rien', () => {
     expect(c.root).toBe('/p');
   });
 
+  it('le grooming et la revue adverse passent tels que la méthode les publie', () => {
+    const c = translateConfig(example(), '/p');
+    expect(c.groomingTechniques).toEqual({ mode: 'menu' });
+    expect(c.adverseReview).toBe('run');
+    const picked = translateConfig(
+      { ...example(), groomingTechniques: { mode: 'selection', ids: ['a', 'b'] }, adverseReview: 'skip' },
+      '/p',
+    );
+    expect(picked.groomingTechniques).toEqual({ mode: 'selection', ids: ['a', 'b'] });
+    expect(picked.adverseReview).toBe('skip');
+    const bad = translateConfig({ ...example(), groomingTechniques: { mode: 'error', error: 'clé illisible' } }, '/p');
+    expect(bad.groomingTechniques).toEqual({ mode: 'error', error: 'clé illisible' });
+  });
+
+  it('un grooming ou une revue adverse illisibles sont refusés en les nommant', () => {
+    expect(() => translateConfig({ ...example(), groomingTechniques: { mode: 'bizarre' } }, '/p')).toThrow(/groomingTechniques/);
+    expect(() => translateConfig({ ...example(), adverseReview: 'peut-etre' }, '/p')).toThrow(/adverseReview/);
+  });
+
   it('chaque agent passe tel que la méthode le résout : tier, modèle, effort, source', () => {
     const c = translateConfig(example(), '/p');
     expect(c.agents).toHaveLength(8);
