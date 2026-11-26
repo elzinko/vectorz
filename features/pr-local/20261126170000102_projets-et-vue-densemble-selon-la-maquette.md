@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000102_projets-et-vue-densemble-selon-la-maquette.md](../20261126170000102_projets-et-vue-densemble-selon-la-maquette.md)
+> 🗎 Rendu de la fiche [features/20261126170000102_projets-et-vue-densemble-selon-la-maquette.md](../done/20261126170000102_projets-et-vue-densemble-selon-la-maquette.md)
 
 # 20261126170000102 — Les pages Projets et Vue d'ensemble montrent une carte par projet, comme la maquette
 

@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (1a12f1dc)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -51,8 +51,8 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (projets) : [avant](../docs/pr-evidence/20261126170000102/projets-before.jpg) → [après](../docs/pr-evidence/20261126170000102/projets-after.jpg)
-- Preuve avant / après (vue-ensemble) : [avant](../docs/pr-evidence/20261126170000102/vue-ensemble-before.jpg) → [après](../docs/pr-evidence/20261126170000102/vue-ensemble-after.jpg)
+- Preuve avant / après (projets) : [avant](../../docs/pr-evidence/20261126170000102/projets-before.jpg) → [après](../../docs/pr-evidence/20261126170000102/projets-after.jpg)
+- Preuve avant / après (vue-ensemble) : [avant](../../docs/pr-evidence/20261126170000102/vue-ensemble-before.jpg) → [après](../../docs/pr-evidence/20261126170000102/vue-ensemble-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (faux zéro sprints/rétros, titre du dernier objectif)
 
 ```bash
