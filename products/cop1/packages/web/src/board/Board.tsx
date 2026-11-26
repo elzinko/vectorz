@@ -180,6 +180,7 @@ export function Board(): JSX.Element {
   const [runDetailId, setRunDetailId] = useState<string | null>(null);
   // Le sprint à ouvrir quand une autre page mène à la page Sprints (page d'une session).
   const [sprintFocus, setSprintFocus] = useState<string | null>(null);
+  const [versionFocus, setVersionFocus] = useState<string | null>(null);
   // La session close ouverte, retrouvée au retour du détail d'un lancement.
   const [sessionFocus, setSessionFocus] = useState<number | null>(null);
   // Fiche ouverte en modale par-dessus — null = aucune.
@@ -275,6 +276,7 @@ export function Board(): JSX.Element {
     setRunDetailId(null);
     setFicheModalId(null);
     setSprintFocus(null);
+    setVersionFocus(null);
     setSessionFocus(null);
     setView(v);
   }
@@ -303,6 +305,7 @@ export function Board(): JSX.Element {
     if (runDetail) return [home, proj(false), page(() => setRunDetailId(null)), { label: runDetail.name }];
     if (view === 'overview') return [home, proj(true)];
     if (view === 'sprints' && sprintFocus) return [home, proj(false), page(() => go('sprints')), { label: sprintLabel(project, sprintFocus) }];
+    if (view === 'versions' && versionFocus) return [home, proj(false), page(() => go('versions')), { label: versionFocus }];
     const sessionTitle = view === 'sessions' && sessionFocus !== null ? project.pilotage?.sessions[sessionFocus]?.title : undefined;
     if (sessionTitle) return [home, proj(false), page(() => setSessionFocus(null)), { label: sessionTitle }];
     return [home, proj(false), page()];
@@ -409,7 +412,7 @@ export function Board(): JSX.Element {
           ) : view === 'objectifs' ? (
             <ObjectifsView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'versions' ? (
-            <VersionsView project={project} onOpenFiche={setFicheModalId} />
+            <VersionsView key={versionFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={versionFocus} onFocusChange={setVersionFocus} />
           ) : view === 'sprints' ? (
             <SprintsView key={sprintFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={sprintFocus} onFocusChange={setSprintFocus} onOpenSession={() => go('sessions')} />
           ) : view === 'sessions' ? (

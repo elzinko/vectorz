@@ -42,7 +42,7 @@ export function CommandHint({ label, command }: { label: string; command: string
   const [open, setOpen] = useState(false);
   return (
     <span className="cmdhint">
-      <button type="button" className="chip" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+      <button type="button" className="chip" title={command} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         {label}
       </button>
       {open && (

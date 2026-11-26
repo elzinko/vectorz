@@ -1,6 +1,6 @@
 ---
 id: "20261126170000106"
-title: "Les pages Versions et d'une version suivent la maquette, avec le choix du numéro à versionner"
+title: "Les pages Versions et d'une version suivent la maquette, avec le numéro proposé à versionner"
 type: feature
 priority: P2
 product: cop1
@@ -46,16 +46,18 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
-## Critères d'acceptation
-
-- [ ] La liste des numéros proposés apparaît à côté de « Versionner » quand la méthode les publie.
-- [ ] Sans numéros publiés, la liste est absente et rien n'est inventé.
-- [ ] La table des versions étiquetées montre les objectifs en pastilles.
-- [ ] La page d'une version contient les quatre blocs de la maquette dans l'ordre.
-- [ ] La liste de fiches d'une version affiche une page courte puis « Afficher plus » avec compteur.
-- [ ] Le bouton « Versionner » reste un geste confirmé par le PO ; un test vérifie qu'un clic seul ne pose pas l'étiquette.
+- [x] Le numéro que la méthode propose s'affiche à côté de « Versionner » quand elle le publie. (Amendé le 2026-11-26 en revue : la méthode publie un seul numéro, `numeroPropose` ; la liste de choix est en Hors périmètre.)
+- [x] Sans numéros publiés, la liste est absente et rien n'est inventé.
+- [x] La table des versions étiquetées montre les objectifs en pastilles.
+- [x] La page d'une version contient les quatre blocs de la maquette dans l'ordre.
+- [x] La liste de fiches d'une version affiche une page courte puis « Afficher plus » avec compteur.
+- [x] Le bouton « Versionner » reste un geste confirmé par le PO ; un test vérifie qu'un clic seul ne pose pas l'étiquette.
 
 ## Comment vérifier
+
+- Preuve avant / après (versions) : [avant](../docs/pr-evidence/20261126170000106/versions-before.jpg) → [après](../docs/pr-evidence/20261126170000106/versions-after.jpg)
+- Preuve avant / après (une-version) : [avant](../docs/pr-evidence/20261126170000106/une-version-before.jpg) → [après](../docs/pr-evidence/20261126170000106/une-version-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (critère du numéro amendé, carte vide masquée)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- VersionsView.test.tsx
@@ -65,6 +67,7 @@ pnpm --dir products/cop1/packages/web test -- VersionsView.test.tsx
 
 ## Hors périmètre
 
+- La liste de choix de numéros (correctif, mineure, majeure) à côté de « Versionner ». Le contrat `ezk board show --json` ne publie qu'un seul numéro proposé. L'écran n'invente pas les autres (ADR-086). La liste viendra quand la méthode publiera ses candidats. Décision de revue du 2026-11-26.
 - Pousser l'étiquette : geste du PO, hors écran.
 - Changer la façon dont la méthode calcule les numéros.
 - La gate de release (fiche Configuration).

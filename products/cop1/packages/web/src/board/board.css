@@ -546,3 +546,12 @@ button.pname-btn:hover { color: var(--accent); }
 .sess-link::after { content: ''; position: absolute; inset: 0; }
 .sess-summary { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .sess-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 18px; align-items: start; }
+
+/* Versions (fiche 20261126170000106) */
+.ver-objs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; padding: 4px 16px 14px; }
+.ver-obj { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.ver-obj .meta { font-size: 12px; color: var(--muted); }
+.ver-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding: 11px 16px; border-top: 1px solid var(--line); }
+.ver-foot .ver-more { margin-left: 0; font-weight: 600; grid-column: 2; }
+.ver-foot .meta { grid-column: 3; justify-self: end; font-size: 12px; color: var(--muted); }
+.ver-pills { display: flex; flex-wrap: wrap; gap: 4px; }

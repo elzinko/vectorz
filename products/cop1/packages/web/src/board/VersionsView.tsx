@@ -7,7 +7,8 @@
  * montre la commande, il n'écrit rien.
  */
 import { useState } from 'react';
-import { CommandHint, Crumbs, FicheLine, Unavailable, ageLabel, planUnavailable } from './PlanBits.js';
+import { InfoButton, PageHead } from './Chrome.js';
+import { CommandHint, FicheLine, Unavailable, ageLabel, planUnavailable } from './PlanBits.js';
 import type { BoardProject, ProchaineCoupe, VersionLot } from './types.js';
 
 const NOT_PUBLISHED = 'non publié';
@@ -50,12 +51,16 @@ function objectifsOfLot(l: VersionLot, project: BoardProject): { slug: string; h
 export interface VersionsViewProps {
   project: BoardProject;
   onOpenFiche: (id: string) => void;
+  /** La version ouverte au départ (celle que Board garde pour son fil d'Ariane). */
+  initialOpen?: string | null;
+  /** Dit à Board quelle version est ouverte, pour son fil d'Ariane. */
+  onFocusChange: (version: string | null) => void;
   /** L'instant de référence des âges ; défaut maintenant (les tests le figent). */
   now?: Date;
 }
 
-export function VersionsView({ project, onOpenFiche, now }: VersionsViewProps): JSX.Element {
-  const [open, setOpen] = useState<string | null>(null);
+export function VersionsView({ project, onOpenFiche, initialOpen = null, onFocusChange, now }: VersionsViewProps): JSX.Element {
+  const [open, setOpen] = useState<string | null>(initialOpen);
   const page = project.versionsPage;
   const reason =
     planUnavailable(project) ??
@@ -70,10 +75,14 @@ export function VersionsView({ project, onOpenFiche, now }: VersionsViewProps): 
       </>
     );
   }
+  const openVersion = (version: string): void => {
+    setOpen(version);
+    onFocusChange(version);
+  };
   const lot = open ? page.lots.find((l) => l.version === open) : undefined;
   if (lot) {
     return (
-      <VersionPage lot={lot} project={project} onOpenFiche={onOpenFiche} onBack={() => setOpen(null)} now={now} />
+      <VersionPage lot={lot} project={project} onOpenFiche={onOpenFiche} now={now} />
     );
   }
   const tagged = page.lots.filter((l) => l.etiquette !== null).reverse();
@@ -85,16 +94,12 @@ export function VersionsView({ project, onOpenFiche, now }: VersionsViewProps): 
         <span className="sub">{tagged.length} versions étiquetées</span>
       </div>
       <ToVersion coupe={page.prochaineCoupe} lots={page.lots} now={now} />
+      {building.length > 0 && (
       <section className="card">
         <h3>En construction — {building.length}</h3>
-        {building.length === 0 ? (
-          <div className="row">
-            <span className="meta">aucune version sans étiquette</span>
-          </div>
-        ) : (
-          building.map((l) => (
+        {building.map((l) => (
             <div key={l.version} className="row">
-              <button type="button" className="doclink linkbtn" onClick={() => setOpen(l.version)}>
+              <button type="button" className="doclink linkbtn" onClick={() => openVersion(l.version)}>
                 {l.version}
               </button>
               <span>
@@ -103,9 +108,9 @@ export function VersionsView({ project, onOpenFiche, now }: VersionsViewProps): 
               </span>
               <span className="meta">{contentWords(l)}</span>
             </div>
-          ))
-        )}
+        ))}
       </section>
+      )}
       <section className="card">
         <h3>Versions étiquetées — {tagged.length}</h3>
         <table className="tbl">
@@ -122,19 +127,20 @@ export function VersionsView({ project, onOpenFiche, now }: VersionsViewProps): 
             {tagged.map((l) => (
               <tr key={l.version}>
                 <td>
-                  <button type="button" className="doclink linkbtn" onClick={() => setOpen(l.version)}>
+                  <button type="button" className="doclink linkbtn" onClick={() => openVersion(l.version)}>
                     {l.version}
                   </button>
                 </td>
                 <td className={l.nom ? undefined : 'meta'}>{l.nom ?? NOT_PUBLISHED}</td>
                 <td>{l.livrees.length}</td>
                 <td>
-                  {objectifsOfLot(l, project).map(({ slug, here }) => (
-                    <span key={slug} className="pill">
-                      {slug}
-                      {here !== null ? ` · ${here}` : ''}
-                    </span>
-                  ))}
+                  <div className="ver-pills">
+                    {l.milestones.map((slug) => (
+                      <span key={slug} className="tag obj" title={project.objectifs?.find((o) => o.slug === slug)?.nom ?? 'nom non publié'}>
+                        {slug}
+                      </span>
+                    ))}
+                  </div>
                 </td>
                 <td className="meta">{ageLabel(l.dateEtiquette, now)}</td>
               </tr>
@@ -199,30 +205,32 @@ function ToVersion({
   );
 }
 
+const FICHES_PAGE = 8;
+
 function VersionPage({
   lot: l,
   project,
   onOpenFiche,
-  onBack,
   now,
 }: {
   lot: VersionLot;
   project: BoardProject;
   onOpenFiche: (id: string) => void;
-  onBack: () => void;
   now?: Date;
 }): JSX.Element {
+  const [shown, setShown] = useState(FICHES_PAGE);
+  const visible = l.livrees.slice(0, shown);
   return (
     <>
-      <Crumbs label="Fil d'Ariane des versions" items={[{ label: 'Versions', onClick: onBack }, { label: l.version }]} />
-      <div className="vh">
-        <h2>{l.version}</h2>
-        <span className="sub">{l.nom ?? `nom ${NOT_PUBLISHED}`}</span>
+      <PageHead title={l.version} info="Une version est une coupe : une étiquette git posée sur ce qui est livré.">
         <span className="pill">{etatWords(l.etat)}</span>
         {l.etiquette === null && <CommandHint label={`Versionner ${l.version}`} command={`ezk backlog version tag ${l.version}`} />}
-      </div>
+      </PageHead>
       <section className="card">
-        <h3>En-tête</h3>
+        <h3>
+          En-tête
+          <InfoButton text="Ce que la méthode publie sur cette version." />
+        </h3>
         <div className="row">
           <span className="meta">État</span>
           <span>{etatWords(l.etat)}</span>
@@ -239,55 +247,83 @@ function VersionPage({
           <span />
         </div>
         <div className="row">
+          <span className="meta">Nom</span>
+          <span className={l.nom ? undefined : 'meta'}>{l.nom ?? NOT_PUBLISHED}</span>
+          <span />
+        </div>
+        <div className="row">
           <span className="meta">Étiquette posée</span>
           <span>{l.dateEtiquette ? `${l.dateEtiquette.slice(0, 10)} · ${ageLabel(l.dateEtiquette, now)}` : 'pas encore'}</span>
           <span />
         </div>
       </section>
       <section className="card">
-        <h3>Objectifs de cette version — {l.milestones.length}</h3>
+        <h3>
+          Objectifs de cette version
+          <InfoButton text="Les objectifs posés sur les fiches de cette version." />
+        </h3>
         {l.milestones.length === 0 ? (
           <div className="row">
             <span className="meta">aucun objectif posé sur ses fiches</span>
           </div>
         ) : (
-          objectifsOfLot(l, project).map(({ slug, here }) => {
-            const o = project.objectifs?.find((x) => x.slug === slug);
-            return (
-              <div key={slug} className="row">
-                <span className="ttl">{slug}</span>
-                <span className="meta">{o?.nom ?? 'nom non publié'}</span>
-                <span className="meta">
-                  {here !== null ? `${here} fiches ici` : 'fiches ici : non publié'}
-                  {o ? ` · ${o.shipped} / ${o.total} livrées au total` : ''}
-                </span>
-              </div>
-            );
-          })
+          <div className="ver-objs">
+            {objectifsOfLot(l, project).map(({ slug, here }) => {
+              const o = project.objectifs?.find((x) => x.slug === slug);
+              return (
+                <div key={slug} className="ver-obj">
+                  <span className="tag obj" title={o?.nom ?? 'nom non publié'}>
+                    {slug}
+                  </span>
+                  <span className="ttl">{o?.nom ?? 'nom non publié'}</span>
+                  <span className="meta">
+                    {here !== null ? `${here} fiches ici` : 'fiches ici : non publié'}
+                    {o ? ` · ${o.shipped} / ${o.total} livrées au total` : ''}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </section>
       <section className="card">
-        <h3>Qui l'a livrée</h3>
+        <h3>
+          Qui l'a livrée
+          <InfoButton text="Les lancements et sessions qui ont livré cette version." />
+        </h3>
         <div className="row">
           <span className="meta">non publié : la méthode ne publie pas les lancements par version.</span>
         </div>
       </section>
       <section className="card">
-        <h3>Fiches livrées — {l.livrees.length}</h3>
-        {l.livrees.map((id) => (
+        <h3>
+          Fiches livrées
+          <InfoButton text="Les fiches livrées dans cette version ; chacune s'ouvre." />
+        </h3>
+        {visible.map((id) => (
           <FicheLine key={id} id={id} project={project} onOpenFiche={onOpenFiche} />
         ))}
+        <div className="ver-foot">
+          {visible.length < l.livrees.length ? (
+            <button type="button" className="linkbtn ver-more" onClick={() => setShown((n) => n + FICHES_PAGE)}>
+              Afficher plus
+            </button>
+          ) : (
+            <span />
+          )}
+          <span className="meta">
+            {visible.length} sur {l.livrees.length} fiches
+          </span>
+        </div>
       </section>
-      <section className="card">
-        <h3>Fiches à faire — {l.aFaire.length}</h3>
-        {l.aFaire.length === 0 ? (
-          <div className="row">
-            <span className="meta">rien à faire</span>
-          </div>
-        ) : (
-          l.aFaire.map((id) => <FicheLine key={id} id={id} project={project} onOpenFiche={onOpenFiche} />)
-        )}
-      </section>
+      {l.aFaire.length > 0 && (
+        <section className="card">
+          <h3>Fiches à faire — {l.aFaire.length}</h3>
+          {l.aFaire.map((id) => (
+            <FicheLine key={id} id={id} project={project} onOpenFiche={onOpenFiche} />
+          ))}
+        </section>
+      )}
     </>
   );
 }
