@@ -41,13 +41,16 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Critères d'acceptation
 
-- [ ] La liste est compacte et affiche titre, résumé tronqué, état et marque.
-- [ ] Recherche et filtres toutes, prêtes, ajoutées fonctionnent.
-- [ ] L'état s'écrit prête ou brouillon, jamais en anglais.
-- [ ] « Afficher plus » ajoute des lignes ; le compteur est à droite.
-- [ ] Aucun bouton « Ajouter » n'apparaît tant que la méthode n'offre pas le geste.
+- [x] La liste est compacte et affiche titre, résumé tronqué, état et marque.
+- [x] Recherche et filtres toutes, prêtes, ajoutées fonctionnent.
+- [x] L'état s'écrit prête ou brouillon, jamais en anglais.
+- [x] « Afficher plus » ajoute des lignes ; le compteur est à droite.
+- [x] Aucun bouton « Ajouter » n'apparaît tant que la méthode n'offre pas le geste.
 
 ## Comment vérifier
+
+- Preuve avant / après (recettes) : [avant](../docs/pr-evidence/20261126170000111/recettes-before.jpg) → [après](../docs/pr-evidence/20261126170000111/recettes-after.jpg)
+- Revue adverse : ezk-reviewer GO (bouton Ajouter absent faute de geste ; fiches 114 et 115 créées pour lui)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- RecipesView.test.tsx
