@@ -152,7 +152,7 @@ Aucun test de code : la fiche ne touche que des documents et des fiches. Aucune 
   [les versions publiées](20261114131612759_versions-publiees-comme-coupes.md) et
   [la fin du pseudo-objectif « parked »](../20261114131614612_parked-n-est-plus-un-pseudo-objectif.md).
 - Voisine : [« À trancher »](20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md), dont le cœur passe
-  dans [la cloche](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ; le dossier y prévoit un type « couper ».
+  dans [la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ; le dossier y prévoit un type « couper ».
 - Risques : les chiffres de l'En clair sont ceux du dossier, au 10 novembre, non recalculés ici.
 
 ## Journal

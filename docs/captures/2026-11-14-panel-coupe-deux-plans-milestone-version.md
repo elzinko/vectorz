@@ -162,7 +162,7 @@ Le brouillon du dossier (annexe) reçoit ces amendements avant ratification :
   et [version tag](../../features/done/20261114131613689_ezk-backlog-version-tag-un-seul-verbe.md)).
 - Doctrine de la cloche (11 novembre) : une alerte naît d'un évènement, jamais d'un compteur. « Une coupe
   est possible dès que `prochaineCoupe` n'est pas vide » est un compteur : le type `couper` doit naître de
-  l'évènement « une fiche livrée après le dernier tag » (fiche [la cloche](../../features/20261114131612944_ezk-now-json-alertes-de-la-cloche.md)).
+  l'évènement « une fiche livrée après le dernier tag » (fiche [la cloche](../../features/done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md)).
 - Les sha de `pr:` ne sont jamais le commit d'ajout à `done/` (79 sur 79 diffèrent : le code et le ship
   sont deux commits) : le repli « commit du ship » est un autre évènement, à dire tel quel.
 - `git describe --match 'v*'` attrape une pré-version : sur muti les seuls tags sont `v1.7.0-rc.4/5/6`,

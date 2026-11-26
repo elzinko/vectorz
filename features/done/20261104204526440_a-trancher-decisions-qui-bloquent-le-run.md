@@ -18,7 +18,7 @@ created: 2026-11-04
 > **🗑️ Clôturée le 2026-11-14 — `superseded`.** La carte « À trancher » de la Vue d'ensemble a disparu
 > de la maquette au profit de la cloche d'alertes. Le PO a tranché le 14 novembre : la cloche absorbe
 > cette fiche. Son cœur, la décision attendue par raison de blocage, vit désormais dans
-> [`ezk now --json` publie les alertes de la cloche, dont les décisions à trancher](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md).
+> [`ezk now --json` publie les alertes de la cloche, dont les décisions à trancher](20261114131612944_ezk-now-json-alertes-de-la-cloche.md).
 > Rien n'est supprimé ; la vélocité n'est pas gonflée.
 
 **En clair.** Le run autonome du 2026-11-04 s'est arrêté sur « plus aucune fiche tirable ». Le

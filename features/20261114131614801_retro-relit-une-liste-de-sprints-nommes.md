@@ -143,7 +143,7 @@ Pas de preuve d'écran : la fiche livre une option de compétence, un en-tête e
   continu s'affiche à côté. La carte demandait de fixer l'identifiant avant de coder : si le PO
   préfère le numéro comme clé, la fiche sur le numéro continu passe devant celle-ci.
 - Dépend de : [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md).
-- Nourrit : l'alerte « sprint clos sans rétro » de [`ezk now --json` publie les alertes de la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ;
+- Nourrit : l'alerte « sprint clos sans rétro » de [`ezk now --json` publie les alertes de la cloche](done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ;
   le bouton de [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md) ;
   la colonne « sprints relus » de [Une page qui liste les rétros passées](done/20260826072532537_vue-retros-actions-ezk-map.md).
 - Fiches livrées voisines : [La rétro et l'archive lisent les comptes rendus](done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md), la borne de date (ADR-0068) ;

@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, theme:mission-control, theme:autonomie]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (633259b6)"
 evidence: none # une commande et un contrat ; l'écran suit dans une fiche cop1
 created: 2026-11-14
 ---
@@ -66,7 +66,7 @@ POC d'abord : la commande et son contrat. L'écran suit dans une fiche cop1, éc
 
 1. `ezk now --json` publie `alertes[]`, décrit dans un nouveau contrat, proposé sous le nom
    `contracts/now-show/v1/schema.json`, avec `schema_version`, selon la recette
-   [Publier un contrat JSON versionné](done/20261101131506339_recette-publier-un-contrat-json-versionne.md).
+   [Publier un contrat JSON versionné](20261101131506339_recette-publier-un-contrat-json-versionne.md).
    Une entrée par élément, jamais de regroupement : `type`, `id`, `titre`, `raison`, `decision`, `fichier`, `date`.
 2. Six types : `fiche-bloquee`, `idee-a-groomer`, `proposition-retro`, `question-session`,
    `version-a-poser`, `sprint-sans-retro`.
@@ -77,7 +77,7 @@ POC d'abord : la commande et son contrat. L'écran suit dans une fiche cop1, éc
    - `question-session` : un `gate.reached` sans `gate.resumed` dans le dernier lancement ; rien ne le calcule encore.
    - `version-a-poser` : la projection des lots `a-clore` sans étiquette.
    - `sprint-sans-retro` attend le lien rétro → sprints de
-     [Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md) ; en attendant, `non_mesure[]`.
+     [Une rétro relit une liste de sprints nommés](../20261114131614801_retro-relit-une-liste-de-sprints-nommes.md) ; en attendant, `non_mesure[]`.
 3. Ce que la méthode ne mesure pas encore va dans `non_mesure[]`, en mots, jamais dans un faux zéro.
 4. La sortie texte de `ezk now` ne change pas. Ses suites sortent aussi dans le JSON, dans `suites[]`.
 5. Fermer une alerte passe par une commande, proposée sous la forme `ezk now close <type>:<id>`. Elle
@@ -131,33 +131,33 @@ Pas de preuve d'écran : la fiche livre une commande et un contrat. L'écran vie
 
 ## Notes / décisions
 
-- Origine : [la carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écarts B1 et A8.
+- Origine : [la carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écarts B1 et A8.
 - Décision du PO du 14 novembre (point 4) : la cloche absorbe « À trancher » ; la carte de la Vue
-  d'ensemble a disparu au profit de la cloche. La fiche [« À trancher » : les décisions qui bloquent le prochain run](done/20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md)
+  d'ensemble a disparu au profit de la cloche. La fiche [« À trancher » : les décisions qui bloquent le prochain run](20261104204526440_a-trancher-decisions-qui-bloquent-le-run.md)
   passe `superseded` au profit de celle-ci : son cœur, la décision attendue par raison, devient le type
   `fiche-bloquee`. Pas de suppression, pas de gonflage de vélocité ; le pilote édite l'ancienne fiche.
 - Décision du PO du 14 novembre (point A8) : pas de numéro court stocké sur les fiches ; les ids
-  horodatés restent ([Idées sans numéro](done/0180-idees-sans-numero.md)). Le numéro court est un
-  affichage calculé par l'écran cop1, noté dans [Mission control range son menu par portée](done/20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
+  horodatés restent ([Idées sans numéro](0180-idees-sans-numero.md)). Le numéro court est un
+  affichage calculé par l'écran cop1, noté dans [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
 - Décisions à prendre par le PO : l'emplacement du fichier des alertes fermées, pour lequel la fiche
   propose un dossier du projet écrit par `ezk`, jamais un stockage navigateur par poste, comme
-  [les verdicts de revue](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md) ;
+  [les verdicts de revue](../../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md) ;
   et, pour `proposition-retro`, la dernière rétro seulement (proposé) ou toutes les captures.
-- Dépend de : [Trancher la coupe](done/20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et
-  [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md), où vivent les
+- Dépend de : [Trancher la coupe](20261114131613874_trancher-la-coupe-dossier-panel-adr-0088.md) et
+  [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md), où vivent les
   décisions en attente que la cloche affichera comme propositions de rétro ; elle les cite sans les recopier.
-  Pour `sprint-sans-retro` : [Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md).
-- Fiches voisines : [Boussole de session](done/20261010091118580_boussole-session-quoi-faire-maintenant.md), livrée, la commande que cette fiche étend ;
-  [Le board range une version « à clore »](done/20261102100505774_board-version-a-clore-rangee-a-venir.md), livrée, l'état que `version-a-poser` projette ;
-  [Rétro systématique en fin d'itération](done/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md), livrée, la « rétro due » dont `sprint-sans-retro` descend ;
-  [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md), qui ajoutera un type d'alerte `retro-demandee` ;
-  [Un test vérifie que chaque écran montre ce que la méthode publie](20261104204526516_controle-auto-des-ecrans-mission-control.md), la preuve écran ↔ JSON ;
-  [Une reco de commande suivante à chaque réponse](20261008182705764_reco-commande-suivante-a-chaque-reponse.md), même famille, à ne pas dédoubler ;
-  [Les raisons de blocked : un mot anglais](done/20261027180541168_raisons-blocked-mot-anglais.md), dont la décision du 27 octobre porte sur la valeur écrite, pas sur le libellé affiché.
+  Pour `sprint-sans-retro` : [Une rétro relit une liste de sprints nommés](../20261114131614801_retro-relit-une-liste-de-sprints-nommes.md).
+- Fiches voisines : [Boussole de session](20261010091118580_boussole-session-quoi-faire-maintenant.md), livrée, la commande que cette fiche étend ;
+  [Le board range une version « à clore »](20261102100505774_board-version-a-clore-rangee-a-venir.md), livrée, l'état que `version-a-poser` projette ;
+  [Rétro systématique en fin d'itération](20260911224102584_retro-systematique-fin-iteration-multi-sprint.md), livrée, la « rétro due » dont `sprint-sans-retro` descend ;
+  [Demander une rétro depuis mission control](../20261114131617010_demander-une-retro-depuis-mission-control.md), qui ajoutera un type d'alerte `retro-demandee` ;
+  [Un test vérifie que chaque écran montre ce que la méthode publie](../20261104204526516_controle-auto-des-ecrans-mission-control.md), la preuve écran ↔ JSON ;
+  [Une reco de commande suivante à chaque réponse](../20261008182705764_reco-commande-suivante-a-chaque-reponse.md), même famille, à ne pas dédoubler ;
+  [Les raisons de blocked : un mot anglais](20261027180541168_raisons-blocked-mot-anglais.md), dont la décision du 27 octobre porte sur la valeur écrite, pas sur le libellé affiché.
 - Risques : la cloche déborde si on publie les 57 propositions ⏳, d'où « dernière rétro seulement ».
   La question de session vient d'un journal que cop1 lit aussi en direct : une seule source, la méthode.
-- Références : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), [ADR-085](../docs/adr/ADR-085-prete-gate-reservations-via-blocked.md),
-  règle [La rétro due est un choix chiffré](../products/mega-city/rules/token-economy/retro-due-choix-chiffre.md).
+- Références : [ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), [ADR-085](../../docs/adr/ADR-085-prete-gate-reservations-via-blocked.md),
+  règle [La rétro due est un choix chiffré](../../products/mega-city/rules/token-economy/retro-due-choix-chiffre.md).
 
 ## Note du 2026-11-26 — périmètre POC retenu (contrôle « prête » ezk-pm : GO)
 

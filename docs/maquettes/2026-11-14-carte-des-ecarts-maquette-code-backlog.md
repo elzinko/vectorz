@@ -261,7 +261,7 @@ d'être écrites en ADR. Les fiches les portent comme décisions du PO à confir
 | 2 | [L'émetteur nomme la session et dérive la clé de chantier de la milestone](../../features/20261114131612388_session-nommee-cle-de-chantier-derivee.md) | P1 | mega-city | A2, A3 |
 | 3 | [Les objectifs publiés comme objets, avec nom, fiches livrées et versions](../../features/done/20261114131612572_objectifs-publies-comme-objets.md) | P1 | mega-city | A6 |
 | 4 | [Les versions publiées comme coupes, avec la prochaine coupe à faire](../../features/done/20261114131612759_versions-publiees-comme-coupes.md) | P1 | mega-city | A7 |
-| 5 | [`ezk now --json` publie les alertes de la cloche, dont les décisions à trancher](../../features/20261114131612944_ezk-now-json-alertes-de-la-cloche.md) | P1 | mega-city | B1, A8 |
+| 5 | [`ezk now --json` publie les alertes de la cloche, dont les décisions à trancher](../../features/done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md) | P1 | mega-city | B1, A8 |
 | 6 | [`ezk help --json` publie les commandes avec leur étage et leur famille](../../features/done/20261114131613129_ezk-help-json-commandes-etage-famille.md) | P1 | mega-city | C4, C5 |
 | 7 | [La gate de release joue les tests du projet](../../features/done/20261114131613314_gate-de-release-joue-les-tests.md) | P1 | mega-city | E1 |
 | 8 | [Contrat `config-show` v2 : passes de la gate, commande de tests, niveaux en français](../../features/20261114131613503_contrat-config-show-v2-passes-tests-niveaux.md) | P1 | mega-city | E5, E7, E6 |

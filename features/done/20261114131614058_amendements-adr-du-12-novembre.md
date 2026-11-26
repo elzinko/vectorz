@@ -152,7 +152,7 @@ ezk --root "$R" docs check-links
   [Mission control range son menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md).
   Restent ouverts depuis le 12 novembre : la confirmation de « But du sprint », et le « but de version » (ADR-0080, lignes 87-88).
 - Dépendances : aucune fiche du lot. Dépendent de celle-ci : [le glossaire publié](../20261114131616634_ezk-glossaire-show-json.md),
-  [le menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) et [la cloche](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md).
+  [le menu par portée](20261114131616818_mission-control-menu-par-portee-et-vocabulaire.md) et [la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md).
 - Voisines livrées : [Un seul vocabulaire pour les boards](20261031160441559_un-seul-vocabulaire-boards.md) ;
   [La Vue d'ensemble résume le dernier sprint](20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md), origine du mot « objectif » pour le slug ;
   [Aligner le vocabulaire des commandes sur Scrum](20260903085150321_nommage-commandes-scrum-safe.md), absorbée par ADR-0054 § Nommage.

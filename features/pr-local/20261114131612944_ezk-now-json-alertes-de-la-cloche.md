@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261114131612944_ezk-now-json-alertes-de-la-cloche.md](../20261114131612944_ezk-now-json-alertes-de-la-cloche.md)
+> 🗎 Rendu de la fiche [features/20261114131612944_ezk-now-json-alertes-de-la-cloche.md](../done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md)
 
 # 20261114131612944 — `ezk now --json` publie les alertes de la cloche, dont les décisions à trancher
 

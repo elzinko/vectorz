@@ -69,7 +69,7 @@ Patron « la commande, puis le bouton », comme
    est livrée. Elle imprime le chemin de la demande. Pas de nouveau verbe `retro request` tant que
    `retro note` suffit.
 2. La demande se publie une seule fois : un type d'alerte `retro-demandee` dans `ezk now --json`
-   ([`ezk now --json` publie les alertes de la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md)).
+   ([`ezk now --json` publie les alertes de la cloche](done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md)).
    Pas de doublon dans `board show`.
 3. La prochaine rétro la joue : `/ezk-retro run` sans option prend d'abord les demandes en attente
    comme périmètre, avant le défaut de la fiche sur les sprints nommés (les comptes rendus qu'aucune
@@ -141,7 +141,7 @@ pnpm --dir products/cop1/packages/web test -- src/board/
   faisable avec `ezk retro note --type idée` ; il manque le typage, la publication, le bouton et le
   sort du lanceur simulé.
 - Dépend de :
-  [`ezk now --json` publie les alertes de la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md),
+  [`ezk now --json` publie les alertes de la cloche](done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md),
   le canal d'alerte ;
   [Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md),
   les slugs et les sprints déjà relus.

@@ -27,7 +27,7 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 - Aujourd'hui l'en-tête n'a aucune alerte.
 - La maquette montre un compteur, un panneau, et pour chaque alerte un type, un projet, un titre, un texte et une croix.
-- La donnée vient de [`ezk now --json` publie les alertes de la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md), pas encore livrée.
+- La donnée vient de [`ezk now --json` publie les alertes de la cloche](done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md), pas encore livrée.
 
 ## Proposition
 
