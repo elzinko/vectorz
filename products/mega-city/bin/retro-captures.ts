@@ -115,7 +115,7 @@ function main(): void {
   }
 
   for (const p of problems) console.error(`${p.file} : ${p.where} — ${p.message}`);
-  process.exit(problems.length > 0 ? 1 : 0);
+  process.exitCode = problems.length > 0 ? 1 : 0; // pas process.exit : il coupe la sortie à 64 Ko quand elle est lue par un tuyau
 }
 
 main();

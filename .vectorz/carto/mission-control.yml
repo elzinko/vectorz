@@ -43,6 +43,13 @@ screens:
         title: Ouvrir un sprint depuis la page d'une session
       - id: voir-lancement
         title: Ouvrir le détail d'un lancement depuis la page d'une session
+  - id: retros
+    title: Rétros — les rétros capturées, puis la page d'une rétro
+    actions:
+      - id: ouvrir-retro
+        title: Ouvrir la page d'une rétro, et revenir par le fil d'Ariane
+      - id: voir-precedente
+        title: Passer à la rétro précédente depuis la page d'une rétro
   - id: versions
     title: Versions — à versionner, en construction, étiquetées, puis la page d'une version
     actions:

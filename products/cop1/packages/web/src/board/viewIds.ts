@@ -10,6 +10,7 @@ export const VIEW_IDS = [
   'fiches',
   'sprints',
   'sessions',
+  'retros',
   'versions',
   'config',
   'process',

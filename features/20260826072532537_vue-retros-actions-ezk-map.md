@@ -208,16 +208,19 @@ n'est pas livrée.
 
 ### Critères d'acceptation (mission control)
 
-- [ ] L'entrée « Rétros » apparaît entre Sessions et Versions.
-- [ ] La liste montre titre, date, sprints, comptes de propositions et décisions du PO pour chaque rétro, plus
+- [x] L'entrée « Rétros » apparaît entre Sessions et Versions.
+- [x] La liste montre titre, date, sprints, comptes de propositions et décisions du PO pour chaque rétro, plus
       récente d'abord.
-- [ ] « Afficher plus » ajoute des lignes, avec le compteur à droite.
-- [ ] La page d'une rétro montre ses propositions avec leur état et un lien vers la capture source.
-- [ ] Une rétro sans tableau normé s'affiche en mode dégradé (date, titre, lien), sans casser la page.
-- [ ] Un champ non publié (sprints, décisions) s'écrit « non publié » ou « sprints non tracés », jamais « 0 ».
-- [ ] Aucun bouton d'action sans geste existant côté méthode.
+- [x] « Afficher plus » ajoute des lignes, avec le compteur à droite.
+- [x] La page d'une rétro montre ses propositions avec leur état et un lien vers la capture source.
+- [x] Une rétro sans tableau normé s'affiche en mode dégradé (date, titre, lien), sans casser la page.
+- [x] Un champ non publié (sprints, décisions) s'écrit « non publié » ou « sprints non tracés », jamais « 0 ».
+- [x] Aucun bouton d'action sans geste existant côté méthode.
 
 ### Comment vérifier (mission control)
+
+- Preuve avant / après (retros) : [avant, menu sans Rétros](../docs/pr-evidence/20260826072532537/retros-before.jpg) → [après](../docs/pr-evidence/20260826072532537/retros-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (capture mal formée gardée en mode dégradé). Les anciens critères `ezk:map` restent non cochés : la note du 2026-11-26 les remplace.
 
 ```bash
 ezk retro captures --json | head

@@ -25,6 +25,7 @@ import { MapsView } from './MapsView.js';
 import { GraphMap } from './GraphMap.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
+import { RetrosView, type RetroFocus } from './RetrosView.js';
 import { SessionsView } from './SessionsView.js';
 import { SprintsView, sprintLabel } from './SprintsView.js';
 import type { ViewId } from './viewIds.js';
@@ -50,6 +51,7 @@ const PROJECT_NAV: NavItem[] = [
   { id: 'fiches', icon: '▦', label: 'Fiches' },
   { id: 'sprints', icon: '↻', label: 'Sprints' },
   { id: 'sessions', icon: '☰', label: 'Sessions' },
+  { id: 'retros', icon: '↺', label: 'Rétros' },
   { id: 'versions', icon: '⑂', label: 'Versions' },
   { id: 'process', icon: '❖', label: 'Process' },
   { id: 'law', icon: '§', label: 'Loi' },
@@ -184,6 +186,7 @@ export function Board(): JSX.Element {
   const [objectifFocus, setObjectifFocus] = useState<string | null>(null);
   // La session close ouverte, retrouvée au retour du détail d'un lancement.
   const [sessionFocus, setSessionFocus] = useState<number | null>(null);
+  const [retroFocus, setRetroFocus] = useState<RetroFocus | null>(null);
   // Fiche ouverte en modale par-dessus — null = aucune.
   const [ficheModalId, setFicheModalId] = useState<string | null>(null);
   // Dernier détail vu de la fiche ouverte : livrée entre deux relectures, elle quitte le plan,
@@ -280,6 +283,7 @@ export function Board(): JSX.Element {
     setVersionFocus(null);
     setObjectifFocus(null);
     setSessionFocus(null);
+    setRetroFocus(null);
     setView(v);
   }
 
@@ -311,6 +315,7 @@ export function Board(): JSX.Element {
     if (view === 'versions' && versionFocus) return [home, proj(false), page(() => go('versions')), { label: versionFocus }];
     const sessionTitle = view === 'sessions' && sessionFocus !== null ? project.pilotage?.sessions[sessionFocus]?.title : undefined;
     if (sessionTitle) return [home, proj(false), page(() => setSessionFocus(null)), { label: sessionTitle }];
+    if (view === 'retros' && retroFocus) return [home, proj(false), page(() => go('retros')), { label: retroFocus.title }];
     return [home, proj(false), page()];
   }
 
@@ -431,6 +436,8 @@ export function Board(): JSX.Element {
               }}
               onViewRun={(runId) => setRunDetailId(runId)}
             />
+          ) : view === 'retros' ? (
+            <RetrosView project={project} openFile={retroFocus?.file ?? null} onOpenChange={setRetroFocus} />
           ) : view === 'fiches' ? (
             <FichesView project={project} onOpenFiche={setFicheModalId} query={query} />
           ) : view === 'config' ? (

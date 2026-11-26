@@ -97,6 +97,7 @@ export class HttpServer {
   private recipesHandler: ProjectReadHandler | null = null;
   private processShowHandler: ProjectReadHandler | null = null;
   private graphHandler: ProjectReadHandler | null = null;
+  private retrosHandler: ProjectReadHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -172,6 +173,11 @@ export class HttpServer {
   /** fiche 20261117114544792 — GET /api/graph/<projet> : les briques de la méthode et leurs liens. */
   setGraphHandler(handler: ProjectReadHandler): void {
     this.graphHandler = handler;
+  }
+
+  /** fiche 20260826072532537 — GET /api/retros/<projet> : les rétros capturées et leurs propositions. */
+  setRetrosHandler(handler: ProjectReadHandler): void {
+    this.retrosHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -341,6 +347,12 @@ export class HttpServer {
     // fiche 20261117114544792 — le graphe de la méthode, servi depuis la mémoire du daemon
     if (req.method === 'GET' && req.url?.startsWith('/api/graph/')) {
       this.handleProjectRead('/api/graph/', 'graph_unavailable', this.graphHandler, req.url, res);
+      return;
+    }
+
+    // fiche 20260826072532537 — les rétros capturées, servies depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/retros/')) {
+      this.handleProjectRead('/api/retros/', 'retros_unavailable', this.retrosHandler, req.url, res);
       return;
     }
 

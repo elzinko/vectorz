@@ -56,6 +56,7 @@ describe('Board — la coque', () => {
       'Fiches',
       'Sprints',
       'Sessions',
+      'Rétros',
       'Versions',
       'Process',
       'Loi',

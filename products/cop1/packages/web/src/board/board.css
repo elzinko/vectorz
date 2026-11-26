@@ -613,3 +613,6 @@ button.pname-btn:hover { color: var(--accent); }
 }
 .pc-note { margin: 4px 16px 10px; }
 .cmd + .faint { margin-right: 6px; }
+/* Rétros (fiche 20260826072532537) */
+.retro-facts { grid-column: 1 / -1; }
+.retro-prev { margin-left: 0; text-align: left; }
