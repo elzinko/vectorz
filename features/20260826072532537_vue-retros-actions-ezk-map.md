@@ -3,12 +3,12 @@ id: "20260826072532537"
 title: "Une page qui liste les rétros passées et leurs décisions"
 type: feature
 priority: P2
-product: mega-city
-labels: [carte]
+product: cop1
+labels: [carte, theme:mission-control]
 milestone: board
 version:
 epic:
-status: idea
+status: ready
 pr:
 created: 2026-08-26
 ---
@@ -175,3 +175,58 @@ Depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/20
   n'est pas livrée. Les critères `pnpm ezk:map retros` et `bin/regen-retros-data.ts` ci-dessus sont
   périmés : à réécrire au grooming sur le reliquat réel.
 - **Priorité** P2 confirmée : la donnée tourne déjà, il reste le contrat et la page.
+
+
+## Note du 2026-11-26 — l'écran Rétros de la maquette (critères à jour)
+
+**En clair.** Cette fiche couvre déjà le besoin : une page qui liste les rétros et leurs décisions. On
+la complète avec l'écran de la maquette. Les critères `pnpm ezk:map retros` plus haut sont périmés ; ceux
+de cette note les remplacent.
+
+**Si tu arrives frais.** Une rétro est un temps où l'équipe relit des sprints et propose des
+améliorations. Le PO tranche chaque proposition. Mission control affiche ce que la méthode publie
+(ADR-086) ; un champ non publié s'écrit « non publié ».
+
+### Écart constaté
+
+Le menu n'a pas d'entrée « Rétros ». La maquette en pose une entre Sessions et Versions (captures
+`19-retros-maquette.png`, dossier `comparaison/` du run). Donnée : `ezk retro captures --json`, **sans
+contrat versionné** ; le champ `sprints[]` reste vide tant que la fiche
+[Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md)
+n'est pas livrée.
+
+### Écran visé
+
+1. Entrée de menu « Rétros », entre Sessions et Versions (ajoutée quand la page existe).
+2. **Liste** : une ligne par rétro, titre, date, sprints relus (S29 S30), « 3 propositions · 1 écartée
+   par le PO · 2 en attente », « N décisions PO ». « Afficher plus » centré, compteur « 41 rétros » à droite.
+3. **Page d'une rétro** : en-tête (date, sprints, compteurs), « En clair », Propositions avec leur état
+   (écartée, en attente, adoptée), Les faits de départ, Déroulé, Sprints relus, Capture (fichier, « Afficher »).
+4. « Précédente » mène à la rétro d'avant. Sans lien rétro → sprints, la page dit « sprints non tracés ».
+5. Le bouton « Lancer une rétro » de la maquette ne figure que si un geste existe côté méthode.
+   La fiche [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md) le porte.
+
+### Critères d'acceptation (mission control)
+
+- [ ] L'entrée « Rétros » apparaît entre Sessions et Versions.
+- [ ] La liste montre titre, date, sprints, comptes de propositions et décisions du PO pour chaque rétro, plus
+      récente d'abord.
+- [ ] « Afficher plus » ajoute des lignes, avec le compteur à droite.
+- [ ] La page d'une rétro montre ses propositions avec leur état et un lien vers la capture source.
+- [ ] Une rétro sans tableau normé s'affiche en mode dégradé (date, titre, lien), sans casser la page.
+- [ ] Un champ non publié (sprints, décisions) s'écrit « non publié » ou « sprints non tracés », jamais « 0 ».
+- [ ] Aucun bouton d'action sans geste existant côté méthode.
+
+### Comment vérifier (mission control)
+
+```bash
+ezk retro captures --json | head
+pnpm --dir products/cop1/packages/web test -- RetrosView.test.tsx
+```
+
+- vue Rétros : http://localhost:5273 → menu Rétros
+
+### Dépend de
+
+Un contrat versionné des captures de rétro (`contracts/retro-captures/v1`, à créer côté méthode, hors de
+cette note). Tant qu'il manque, l'écran lit la sortie actuelle et le dit.
