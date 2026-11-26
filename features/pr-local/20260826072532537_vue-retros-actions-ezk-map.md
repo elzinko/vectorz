@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20260826072532537_vue-retros-actions-ezk-map.md](../20260826072532537_vue-retros-actions-ezk-map.md)
+> 🗎 Rendu de la fiche [features/20260826072532537_vue-retros-actions-ezk-map.md](../done/20260826072532537_vue-retros-actions-ezk-map.md)
 
 # Vue « rétrospectives » dans `ezk:map`
 

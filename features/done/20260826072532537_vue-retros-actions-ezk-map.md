@@ -8,8 +8,8 @@ labels: [carte, theme:mission-control]
 milestone: board
 version:
 epic:
-status: ready
-pr:
+status: shipped
+pr: "local (952e7d7a)"
 created: 2026-08-26
 ---
 
@@ -150,12 +150,12 @@ regen ; la modifier sans regen → le test d'invariant rougit.
 
 ## Note du 2026-11-02
 
-[L'amendement de l'ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) fait de mission control le seul écran : la page web de la méthode
+[L'amendement de l'ADR-086](../../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md) fait de mission control le seul écran : la page web de la méthode
 (`ezk:map`) sera retirée. Cette page des rétros se construira donc dans mission control.
 
 ## Note du 2026-11-14 — sortie du parking, cible mission control
 
-Depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart F1.
+Depuis la [carte des écarts maquette ↔ code ↔ backlog](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md), écart F1.
 
 - **Ce qui existe déjà.** `ezk retro captures --json` tourne : 41 captures lisibles, 0 problème,
   140 actions dont 57 à trancher, vérifié le 2026-11-14 sur vectorz. Chaque capture porte fichier,
@@ -171,7 +171,7 @@ Depuis la [carte des écarts maquette ↔ code ↔ backlog](../docs/maquettes/20
   méthode, le contrat `contracts/retro-captures/v1` (schéma, exemple rangé, test « exemple ≡
   commande ») ; côté cop1, la page Rétros (liste, décisions avec leur statut, lien vers la capture et
   vers les sprints relus). Le champ `sprints[]` reste `[]` et la page dit « sprints non tracés » tant
-  que [Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md)
+  que [Une rétro relit une liste de sprints nommés](../20261114131614801_retro-relit-une-liste-de-sprints-nommes.md)
   n'est pas livrée. Les critères `pnpm ezk:map retros` et `bin/regen-retros-data.ts` ci-dessus sont
   périmés : à réécrire au grooming sur le reliquat réel.
 - **Priorité** P2 confirmée : la donnée tourne déjà, il reste le contrat et la page.
@@ -192,7 +192,7 @@ améliorations. Le PO tranche chaque proposition. Mission control affiche ce que
 Le menu n'a pas d'entrée « Rétros ». La maquette en pose une entre Sessions et Versions (captures
 `19-retros-maquette.png`, dossier `comparaison/` du run). Donnée : `ezk retro captures --json`, **sans
 contrat versionné** ; le champ `sprints[]` reste vide tant que la fiche
-[Une rétro relit une liste de sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md)
+[Une rétro relit une liste de sprints nommés](../20261114131614801_retro-relit-une-liste-de-sprints-nommes.md)
 n'est pas livrée.
 
 ### Écran visé
@@ -204,7 +204,7 @@ n'est pas livrée.
    (écartée, en attente, adoptée), Les faits de départ, Déroulé, Sprints relus, Capture (fichier, « Afficher »).
 4. « Précédente » mène à la rétro d'avant. Sans lien rétro → sprints, la page dit « sprints non tracés ».
 5. Le bouton « Lancer une rétro » de la maquette ne figure que si un geste existe côté méthode.
-   La fiche [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md) le porte.
+   La fiche [Demander une rétro depuis mission control](../20261114131617010_demander-une-retro-depuis-mission-control.md) le porte.
 
 ### Critères d'acceptation (mission control)
 
@@ -219,7 +219,7 @@ n'est pas livrée.
 
 ### Comment vérifier (mission control)
 
-- Preuve avant / après (retros) : [avant, menu sans Rétros](../docs/pr-evidence/20260826072532537/retros-before.jpg) → [après](../docs/pr-evidence/20260826072532537/retros-after.jpg)
+- Preuve avant / après (retros) : [avant, menu sans Rétros](../../docs/pr-evidence/20260826072532537/retros-before.jpg) → [après](../../docs/pr-evidence/20260826072532537/retros-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (capture mal formée gardée en mode dégradé). Les anciens critères `ezk:map` restent non cochés : la note du 2026-11-26 les remplace.
 
 ```bash

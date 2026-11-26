@@ -204,7 +204,7 @@ Le retrait vient en dernier, quand toutes les fiches de portage sont livrées :
 - Un projet hôte sans mission control n'a plus de vue graphique : il lit dans le terminal.
 - Les fiches qui prévoyaient une page dans le board de la méthode visent désormais mission control :
   [une page d'accueil par projet](../../features/20261002115451451_page-une-ligne-par-projet.md) et
-  [la page des rétros passées](../../features/20260826072532537_vue-retros-actions-ezk-map.md).
+  [la page des rétros passées](../../features/done/20260826072532537_vue-retros-actions-ezk-map.md).
 - Le doublon de la vue « runs », noté plus haut à revisiter, disparaît : l'historique vit dans la vue
   « Pilotage » de mission control.
 - « Board de la méthode » (décision 3) désigne désormais ce que publient `ezk board show` et les

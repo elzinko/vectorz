@@ -77,7 +77,7 @@ il sert à l'affichage, le slug reste la clé (voir Notes).
 6. Publication : `ezk board show --json` ajoute `derniersSprints[].retro`, le fichier de la capture
    qui a relu le sprint, ou `null`. Le contrat `board-show` le décrit. Le lien dans l'autre sens,
    `sprints[]` par capture, se publie une seule fois, dans le contrat des captures de rétro porté par
-   [Une page qui liste les rétros passées et leurs décisions](20260826072532537_vue-retros-actions-ezk-map.md).
+   [Une page qui liste les rétros passées et leurs décisions](done/20260826072532537_vue-retros-actions-ezk-map.md).
    Pas de tableau `retros[]` en double dans `board show`.
 7. Les captures récentes nomment leurs sprints par numéro dans leur nom et leur `scope`. On peut
    renseigner `sprints:` à la main pour elles. Les autres restent « non tracées ».
@@ -145,7 +145,7 @@ Pas de preuve d'écran : la fiche livre une option de compétence, un en-tête e
 - Dépend de : [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md).
 - Nourrit : l'alerte « sprint clos sans rétro » de [`ezk now --json` publie les alertes de la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ;
   le bouton de [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md) ;
-  la colonne « sprints relus » de [Une page qui liste les rétros passées](20260826072532537_vue-retros-actions-ezk-map.md).
+  la colonne « sprints relus » de [Une page qui liste les rétros passées](done/20260826072532537_vue-retros-actions-ezk-map.md).
 - Fiches livrées voisines : [La rétro et l'archive lisent les comptes rendus](done/20261008072306360_retro-et-archive-lisent-les-comptes-rendus.md), la borne de date (ADR-0068) ;
   [La Vue d'ensemble résume le dernier sprint](done/20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md) ;
   [Rétro systématique en fin d'itération](done/20260911224102584_retro-systematique-fin-iteration-multi-sprint.md)

@@ -41,7 +41,7 @@ Chaque page retirée a sa remplaçante :
 3. **Garder les liens vivants.** Un lien interne qui ouvrait une page retirée ouvre sa remplaçante.
    La fenêtre de détail d'un lancement reste joignable depuis le fil d'une session.
 4. **Rétros.** L'entrée « Rétros » n'apparaît que lorsque sa page existe. Elle est portée par la
-   fiche [Une page qui liste les rétros passées et leurs décisions](../20260826072532537_vue-retros-actions-ezk-map.md).
+   fiche [Une page qui liste les rétros passées et leurs décisions](../done/20260826072532537_vue-retros-actions-ezk-map.md).
 5. **Le groupe Global ne change pas.** Le lien « v1 / archives » reste, comme décidé le 19 novembre.
 
 ## Critères d'acceptation

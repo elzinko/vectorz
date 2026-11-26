@@ -146,4 +146,4 @@ le prouve, et rougit si on retire le condensat.
 - **En aval** : nourrit le cluster recette / ezk-chef (labo #195 livré,
   [20260831075615809](20260831075615809_ezk-chef-suggest-recettes-du-sprint.md)), et les vues
   ([20260826072532452](20260826072532452_vue-sprints-realises-ezk-map.md) sprints,
-  [20260826072532537](../20260826072532537_vue-retros-actions-ezk-map.md) rétros).
+  [20260826072532537](20260826072532537_vue-retros-actions-ezk-map.md) rétros).
