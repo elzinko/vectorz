@@ -181,6 +181,7 @@ export function Board(): JSX.Element {
   // Le sprint à ouvrir quand une autre page mène à la page Sprints (page d'une session).
   const [sprintFocus, setSprintFocus] = useState<string | null>(null);
   const [versionFocus, setVersionFocus] = useState<string | null>(null);
+  const [objectifFocus, setObjectifFocus] = useState<string | null>(null);
   // La session close ouverte, retrouvée au retour du détail d'un lancement.
   const [sessionFocus, setSessionFocus] = useState<number | null>(null);
   // Fiche ouverte en modale par-dessus — null = aucune.
@@ -277,6 +278,7 @@ export function Board(): JSX.Element {
     setFicheModalId(null);
     setSprintFocus(null);
     setVersionFocus(null);
+    setObjectifFocus(null);
     setSessionFocus(null);
     setView(v);
   }
@@ -304,6 +306,7 @@ export function Board(): JSX.Element {
     const page = (onClick?: () => void): CrumbItem => ({ label: pageLabel as string, onClick });
     if (runDetail) return [home, proj(false), page(() => setRunDetailId(null)), { label: runDetail.name }];
     if (view === 'overview') return [home, proj(true)];
+    if (view === 'objectifs' && objectifFocus) return [home, proj(false), page(() => go('objectifs')), { label: objectifFocus }];
     if (view === 'sprints' && sprintFocus) return [home, proj(false), page(() => go('sprints')), { label: sprintLabel(project, sprintFocus) }];
     if (view === 'versions' && versionFocus) return [home, proj(false), page(() => go('versions')), { label: versionFocus }];
     const sessionTitle = view === 'sessions' && sessionFocus !== null ? project.pilotage?.sessions[sessionFocus]?.title : undefined;
@@ -410,7 +413,7 @@ export function Board(): JSX.Element {
           ) : view === 'overview' ? (
             <OverviewView project={project} onOpenObjectifs={() => go('objectifs')} />
           ) : view === 'objectifs' ? (
-            <ObjectifsView project={project} onOpenFiche={setFicheModalId} />
+            <ObjectifsView key={objectifFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={objectifFocus} onFocusChange={setObjectifFocus} />
           ) : view === 'versions' ? (
             <VersionsView key={versionFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={versionFocus} onFocusChange={setVersionFocus} />
           ) : view === 'sprints' ? (

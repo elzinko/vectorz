@@ -48,16 +48,18 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
-## Critères d'acceptation
-
-- [ ] Le filtre État vaut « en cours » à l'ouverture, et sa puce se retire.
-- [ ] La recherche et les filtres État, Version, Bloquées réduisent la liste.
-- [ ] Chaque ligne montre une barre livrées / total ; un test vérifie 45 / 49 → proportion exacte.
-- [ ] Un nom d'objectif non publié s'affiche « nom non publié ».
-- [ ] La page d'un objectif contient en-tête, fiches à faire, fiches livrées dans l'ordre de la maquette.
-- [ ] Aucune entrée du menu « ⋯ » ne simule un geste que la méthode n'offre pas.
+- [x] Le filtre État vaut « en cours » à l'ouverture, et sa puce se retire.
+- [x] La recherche et les filtres État, Version, Bloquées réduisent la liste.
+- [x] Chaque ligne montre une barre livrées / total ; un test vérifie 45 / 49 → proportion exacte.
+- [x] Un nom d'objectif non publié s'affiche « nom non publié ».
+- [x] La page d'un objectif contient en-tête, fiches à faire, fiches livrées dans l'ordre de la maquette.
+- [x] Aucune entrée du menu « ⋯ » ne simule un geste que la méthode n'offre pas.
 
 ## Comment vérifier
+
+- Preuve avant / après (objectifs) : [avant](../docs/pr-evidence/20261126170000107/objectifs-before.jpg) → [après](../docs/pr-evidence/20261126170000107/objectifs-after.jpg)
+- Preuve avant / après (un-objectif) : [avant](../docs/pr-evidence/20261126170000107/un-objectif-before.jpg) → [après](../docs/pr-evidence/20261126170000107/un-objectif-after.jpg)
+- Revue adverse : ezk-reviewer GO (aucun geste absent simulé)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- ObjectifsView.test.tsx

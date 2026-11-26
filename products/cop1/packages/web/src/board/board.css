@@ -555,3 +555,32 @@ button.pname-btn:hover { color: var(--accent); }
 .ver-foot .ver-more { margin-left: 0; font-weight: 600; grid-column: 2; }
 .ver-foot .meta { grid-column: 3; justify-self: end; font-size: 12px; color: var(--muted); }
 .ver-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+/* Objectifs (fiche 20261126170000107) */
+.obj-count { font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--accent); margin: 0 auto; }
+.obj-body { padding: 0 16px 6px; }
+.obj-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 8px 0; }
+.obj-filters select { font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); }
+.obj-search { min-width: 240px; font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface-2); color: var(--fg); }
+.obj-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 4px 0 10px; }
+.fchip { font: inherit; font-size: 12px; padding: 3px 10px; border-radius: 20px; border: 0; background: var(--accent-soft); color: var(--accent); cursor: pointer; }
+.fchip b { font-weight: 600; }
+.obj-clear { margin-left: 0; }
+.obj-table td { vertical-align: middle; }
+.obj-slug { margin-left: 0; font-family: var(--font-data); cursor: pointer; border: 0; }
+.obj-bar { display: block; width: 110px; height: 7px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+.obj-bar i { display: block; height: 100%; background: var(--go); }
+.obj-ratio { font-family: var(--font-data); font-size: 12.5px; margin-top: 4px; }
+.obj-progress { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+.obj-progress .obj-bar { width: 200px; }
+.obj-menu { position: relative; display: inline-block; }
+.obj-dots { font: inherit; font-size: 18px; line-height: 1; border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 2px 8px; }
+.obj-popup { position: absolute; right: 0; top: 100%; z-index: 5; display: flex; flex-direction: column; gap: 2px; min-width: 180px; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+.obj-popup button { font: inherit; font-size: 13px; text-align: left; border: 0; background: transparent; color: var(--fg); padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+.obj-popup button:hover { background: var(--surface-2); }
+.obj-popup code { font-family: var(--font-data); font-size: 11.5px; padding: 2px 8px; color: var(--muted); }
+.obj-empty { padding: 12px 16px; margin: 0; }
+.obj-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 11px 16px; border-top: 1px solid var(--line); }
+.obj-foot .meta { justify-self: end; font-size: 12px; color: var(--muted); }
+.obj-more { margin-left: 0; font-weight: 600; justify-self: center; }
+.obj-summary { font-size: 12.5px; color: var(--muted); margin: 6px 0 14px; }
+.vh h2 .tag.obj { font-size: 14px; }
