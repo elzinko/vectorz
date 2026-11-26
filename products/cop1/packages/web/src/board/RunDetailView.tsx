@@ -6,6 +6,7 @@
  */
 import type { BoardProject, BoardRun, FicheTransition, Moment } from './types.js';
 import { STEP_LABEL, momentLabel, verdictClass } from './activity.js';
+import { InfoButton } from './Chrome.js';
 
 interface RunDetailViewProps {
   project: BoardProject;
@@ -137,9 +138,7 @@ export function RunDetailView({ project, run, onBack, onOpenFiche }: RunDetailVi
         <section className="card">
           <h3>
             Étapes du run{' '}
-            <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
-              chaque étape traite des fiches · clique une fiche
-            </span>
+<InfoButton text="Chaque étape traite des fiches ; clique une fiche pour l'ouvrir." />
           </h3>
           {moments.length === 0 ? (
             <div className="moment">

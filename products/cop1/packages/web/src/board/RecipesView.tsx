@@ -7,6 +7,7 @@
  */
 import { useEffect, useState } from 'react';
 import type { BoardProject } from './types.js';
+import { InfoButton } from './Chrome.js';
 
 /** Une recette telle que la méthode la publie. */
 export interface Recipe {
@@ -77,7 +78,7 @@ export function RecipesView({ project }: { project: BoardProject }): JSX.Element
   const header = (
     <div className="vh">
       <h2>Recettes — {project.name}</h2>
-      <span className="sub">ce que ce projet implémente, et le catalogue de la méthode</span>
+      <InfoButton text="Ce que ce projet implémente, et le catalogue de la méthode." />
     </div>
   );
 

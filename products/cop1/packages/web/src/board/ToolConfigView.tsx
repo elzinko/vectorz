@@ -8,6 +8,7 @@
  * l'écriture est en mémoire, et les sélecteurs n'offrent que des valeurs valides.
  */
 import { EFFORTS, TIERS, type Effort, type Tier, type ToolConfig } from './configModel.js';
+import { InfoButton } from './Chrome.js';
 
 interface ToolConfigViewProps {
   tool: ToolConfig;
@@ -57,7 +58,7 @@ export function ToolConfigView({ tool, onChange }: ToolConfigViewProps): JSX.Ele
     <>
       <div className="vh">
         <h2>Configuration de l'outil</h2>
-        <span className="sub">global · partagé par tous tes projets · ne voyage pas avec les repos</span>
+        <InfoButton text="Global : partagé par tous tes projets, ne voyage pas avec les dépôts." />
       </div>
 
       <div className="banner">
@@ -96,9 +97,7 @@ export function ToolConfigView({ tool, onChange }: ToolConfigViewProps): JSX.Ele
       <section className="card">
         <h3>
           Mapping — tier → modèle concret{' '}
-          <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
-            pour {tool.ide} · éditable
-          </span>
+<InfoButton text="Pour l'IDE choisi ; éditable." />
         </h3>
         {TIERS.map((t) => (
           <div className="cfgrow" key={t}>

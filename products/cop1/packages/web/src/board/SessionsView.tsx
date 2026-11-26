@@ -18,6 +18,7 @@ import type {
   SprintSummary,
   TimelineEvent,
 } from './types.js';
+import { InfoButton } from './Chrome.js';
 
 const NOT_PUBLISHED = 'non publié';
 const DAY_MS = 86_400_000;
@@ -153,7 +154,7 @@ export function SessionsView(props: SessionsViewProps): JSX.Element {
     <>
       <div className="vh">
         <h2>Sessions</h2>
-        <span className="sub">la session en cours, puis les sessions closes</span>
+        <InfoButton text="La session en cours, puis les sessions closes." />
       </div>
       <section className="card">
         <h3>En cours — {current.length}</h3>

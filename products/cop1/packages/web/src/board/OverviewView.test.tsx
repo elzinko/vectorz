@@ -38,11 +38,14 @@ function renderView(overrides?: { onViewRun?: (id: string) => void }) {
   return render(<OverviewView project={PROJECT} onViewRun={overrides?.onViewRun ?? (() => {})} />);
 }
 
+/** Les actions de la page, sans les boutons « i » d'aide. */
+const actionButtons = (): HTMLElement[] => screen.queryAllByRole('button').filter((b) => !b.classList.contains('ibtn'));
+
 describe('OverviewView', () => {
   it('ouvre par le titre et la description du projet', () => {
     renderView();
     expect(screen.getByText("Vue d'ensemble — demo")).toBeTruthy();
-    expect(screen.getByText('projet de démonstration')).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Aide : projet de démonstration/ })).toBeTruthy();
   });
 
   it('affiche les métriques « depuis le début »', () => {
@@ -82,7 +85,7 @@ describe('OverviewView', () => {
     renderView();
     expect(screen.getByText('✓ taguée')).toBeTruthy();
     // Seules deux actions au total : « Voir le run » et « Lancer ».
-    expect(screen.getAllByRole('button')).toHaveLength(2);
+    expect(actionButtons()).toHaveLength(2);
   });
 
   it('écrit « à clore » pour une version que la méthode dit à clore, sans la dire taguée (fiche 20261102100505774)', () => {
@@ -106,7 +109,7 @@ describe('OverviewView', () => {
     expect(versionne('v2.0.0')).toBe('à clore');
     expect(versionne('v1.1.0')).toBe('à clore');
     expect(versionne('v1.0.0')).toBe('✓ taguée');
-    expect(screen.queryAllByRole('button')).toHaveLength(0);
+    expect(actionButtons()).toHaveLength(0);
   });
 
   // fiche 20261103191932077 — un segment vide de l'entonnoir n'écrit pas de « 0 » coupé
@@ -127,9 +130,7 @@ describe('OverviewView', () => {
   // fiche 20261103191932080 — une ligne de version n'ouvre rien : le sous-titre ne le promet plus
   it('le tableau des versions ne promet pas de détail au clic', () => {
     renderView();
-    expect(screen.getByText(/où en est chaque version/).textContent).toBe(
-      'où en est chaque version · ligne verte = en run',
-    );
+    expect(screen.getByRole('button', { name: /Aide : Où en est chaque version/ })).toBeTruthy();
     expect(screen.queryByText(/clique pour le détail/)).toBeNull();
   });
 

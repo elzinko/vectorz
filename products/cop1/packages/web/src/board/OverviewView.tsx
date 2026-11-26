@@ -10,6 +10,7 @@ import type { BoardProject, SprintSummary, Version } from './types.js';
 import { allVersions, cadre, groomed, isPastVer, runByVer, svCmp } from './helpers.js';
 import { isLaunchable } from './pipeline.js';
 import { CommandHint } from './PlanBits.js';
+import { InfoButton } from './Chrome.js';
 
 interface OverviewViewProps {
   project: BoardProject;
@@ -60,9 +61,7 @@ function VersionsInProcess({ project, onViewRun }: OverviewViewProps): JSX.Eleme
     <section className="card">
       <h3>
         Versions dans le process{' '}
-        <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
-          où en est chaque version · ligne verte = en run
-        </span>
+<InfoButton text="Où en est chaque version. Ligne verte : en run." />
       </h3>
       <div className="ptrow hd">
         <span>Version</span>
@@ -209,7 +208,7 @@ export function OverviewView(props: OverviewViewProps): JSX.Element {
     <>
       <div className="vh">
         <h2>Vue d'ensemble — {project.name}</h2>
-        <span className="sub">{project.desc}</span>
+        <InfoButton text={project.desc} />
       </div>
 
       <section className="card clip">

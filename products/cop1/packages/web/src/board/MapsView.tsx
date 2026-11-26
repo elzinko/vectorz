@@ -7,6 +7,7 @@
  */
 import { useEffect, useState } from 'react';
 import type { BoardProject } from './types.js';
+import { InfoButton } from './Chrome.js';
 
 interface MapDocument {
   id: string;
@@ -48,7 +49,7 @@ export function MapsView({ project }: { project: BoardProject }): JSX.Element {
     <>
       <div className="vh">
         <h2>Cartes</h2>
-        <span className="sub">les documents de la méthode : sa carte, ses schémas</span>
+        <InfoButton text="Les documents de la méthode : sa carte, ses schémas." />
       </div>
       {state.kind !== 'ok' ? (
         <section className="card">

@@ -8,6 +8,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { AddProjectModal } from './AddProjectModal.js';
+import { Crumb, Footer, latestTaggedVersion, type CrumbItem } from './Chrome.js';
 import { ConfigView } from './ConfigView.js';
 import { defaultToolConfig, type Role, type Tier } from './configModel.js';
 import { ToolConfigView } from './ToolConfigView.js';
@@ -27,8 +28,6 @@ import { RunDetailView } from './RunDetailView.js';
 import { SessionsView } from './SessionsView.js';
 import { SprintsView } from './SprintsView.js';
 import type { ViewId } from './viewIds.js';
-
-const BRAND_VERSION = 'v0.17.0';
 
 /** Le projet affiché par défaut à l'ouverture du board. */
 const DEFAULT_PROJECT = 'vectorz';
@@ -124,7 +123,7 @@ function SourceMessage({ kind }: { kind: Exclude<BoardSource['kind'], 'live'> })
       <div className="top">
         <span className="brand">
           <span className="dot" aria-hidden="true" />
-          board <span className="bv">{BRAND_VERSION}</span>
+          Mission control
           <span className="src-sample" role="status">
             {SOURCE_MESSAGE[kind]}
           </span>
@@ -294,6 +293,19 @@ export function Board(): JSX.Element {
   const ficheModal =
     liveFiche ?? (ficheModalId && lastFicheSeen.current?.id === ficheModalId ? lastFicheSeen.current : undefined);
 
+  const pageLabel = PROJECT_NAV.find((n) => n.id === view)?.label;
+  const crumbTrail: CrumbItem[] | null = pageLabel ? projectTrail() : null;
+
+  function projectTrail(): CrumbItem[] {
+    const home: CrumbItem = { label: 'Projets', onClick: () => go('fleet') };
+    const proj = (last: boolean): CrumbItem => ({ label: project.name, onClick: last ? undefined : () => go('overview') });
+    const page = (onClick?: () => void): CrumbItem => ({ label: pageLabel as string, onClick });
+    if (runDetail) return [home, proj(false), page(() => setRunDetailId(null)), { label: runDetail.name }];
+    if (view === 'overview') return [home, proj(true)];
+    if (view === 'sprints' && sprintFocus) return [home, proj(false), page(() => go('sprints')), { label: sprintFocus }];
+    return [home, proj(false), page()];
+  }
+
   const navButton = (item: NavItem): JSX.Element => (
     <button
       key={item.id}
@@ -313,7 +325,7 @@ export function Board(): JSX.Element {
       <div className="top">
         <span className="brand">
           <span className="dot" aria-hidden="true" />
-          board <span className="bv">{BRAND_VERSION}</span>
+          Mission control
           {planMessage(project.plan) && (
             <span className="src-sample" role="status">
               {planMessage(project.plan)}
@@ -329,6 +341,9 @@ export function Board(): JSX.Element {
           {project.live && <span className="live" aria-hidden="true" />}
           {project.name} <span className="cv">{currentVer}</span> <span className="ch" aria-hidden="true">▾</span>
         </button>
+        <span className="bv" title="Dernière version étiquetée du projet">
+          {latestTaggedVersion(project)}
+        </span>
         <label className="search">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
             <circle cx="11" cy="11" r="7" />
@@ -377,6 +392,7 @@ export function Board(): JSX.Element {
         </nav>
 
         <main className="main">
+          {crumbTrail && <Crumb trail={crumbTrail} />}
           {runDetail ? (
             <RunDetailView
               project={project}
@@ -434,6 +450,7 @@ export function Board(): JSX.Element {
           ) : (
             <ProcessView project={project} onOpenFiche={setFicheModalId} />
           )}
+          <Footer />
         </main>
       </div>
 

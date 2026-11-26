@@ -9,6 +9,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { type LawData, PORTEES, PORTEE_LABEL, type Portee, porteeText, shortName } from './lawModel.js';
 import type { BoardProject } from './types.js';
+import { PageHead } from './Chrome.js';
 
 type LawState = { kind: 'loading' } | { kind: 'unavailable'; reason: string } | { kind: 'ok'; law: LawData };
 type Selection = { kind: 'objet' | 'regle'; id: string } | null;
@@ -105,10 +106,7 @@ export function LawView({ project }: { project: BoardProject }): JSX.Element {
 
   return (
     <>
-      <div className="vh">
-        <h2>Loi</h2>
-        <span className="sub">les règles de la méthode, et celles que personne ne lit</span>
-      </div>
+      <PageHead title="Loi" info="Les règles de la méthode, et celles que personne ne lit." />
       {!law ? (
         <section className="card">
           <div className="row">

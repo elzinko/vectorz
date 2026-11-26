@@ -21,6 +21,7 @@ import {
   type ToolConfig,
 } from './configModel.js';
 import type { BoardProject, PlanState } from './types.js';
+import { InfoButton } from './Chrome.js';
 
 interface ConfigViewProps {
   project: BoardProject;
@@ -56,9 +57,7 @@ function MethodModels({ agents }: { agents: AgentModel[] }): JSX.Element {
     <section className="card">
       <h3>
         Modèle par agent{' '}
-        <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
-          résolu par la méthode
-        </span>
+<InfoButton text="Résolu par la méthode." />
       </h3>
       {agents.map((a) =>
         'error' in a ? (
@@ -177,12 +176,10 @@ export function ConfigView({ project, tool, roles, onSetRole, onGotoTool }: Conf
       <section className="card">
         <h3>
           Modèle par rôle{' '}
-          <span className="sub" style={{ textTransform: 'none', letterSpacing: 0 }}>
-            tier → modèle résolu par {tool.ide} ·{' '}
-            <button type="button" className="doclink linkbtn" onClick={onGotoTool}>
-              régler l'outil →
-            </button>
-          </span>
+          <InfoButton text={`Tier → modèle résolu par ${tool.ide}.`} />{' '}
+          <button type="button" className="doclink linkbtn" onClick={onGotoTool}>
+            régler l'outil →
+          </button>
         </h3>
         {ROLE_ORDER.map((role) => {
           const resolved = resolveRole(roles, role, tool);

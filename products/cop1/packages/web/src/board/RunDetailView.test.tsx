@@ -16,7 +16,7 @@ const run = vectorz.runs.r1 as BoardRun;
 describe('RunDetailView', () => {
   it('une fiche dont le détail est absent du projet n’est pas cliquable (pas de clic mort)', () => {
     render(<RunDetailView project={{ ...vectorz, fiches: {} }} run={run} onBack={() => {}} onOpenFiche={() => {}} />);
-    // Seul le bouton « retour » est un bouton ; aucune ligne de fiche cliquable.
-    expect(screen.getAllByRole('button')).toHaveLength(1);
+    // Hors boutons « i » d'aide, seul le bouton « retour » est un bouton ; aucune ligne de fiche cliquable.
+    expect(screen.getAllByRole('button').filter((b) => !b.classList.contains('ibtn'))).toHaveLength(1);
   });
 });

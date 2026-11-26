@@ -42,15 +42,13 @@ created: 2026-11-26
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
-## Critères d'acceptation
-
-- [ ] La pastille de l'en-tête affiche la dernière version étiquetée du projet choisi, et « board v0.17.0 » n'apparaît plus.
-- [ ] Sans version étiquetée publiée, la pastille dit « aucune version » ou « non publié », jamais le numéro du paquet.
-- [ ] Chaque page du groupe Projet affiche son fil d'Ariane ; chaque maillon, sauf le dernier, est un lien qui ouvre la bonne page.
-- [ ] Chaque titre de page et chaque carte portent un bouton « i » à droite ; aucun sous-titre long ne reste sous les titres.
-- [ ] Le pied de page « mega-city · Documentation » figure sur toutes les pages.
-- [ ] Un test rend l'habillage pour deux projets et vérifie que la pastille change avec le projet.
-- [ ] Capture avant / après de l'en-tête jointe à la fiche.
+- [x] La pastille de l'en-tête affiche la dernière version étiquetée du projet choisi, et « board v0.17.0 » n'apparaît plus.
+- [x] Sans version étiquetée publiée, la pastille dit « aucune version » ou « non publié », jamais le numéro du paquet.
+- [x] Chaque page du groupe Projet affiche son fil d'Ariane ; chaque maillon, sauf le dernier, est un lien qui ouvre la bonne page.
+- [x] Chaque titre de page et chaque carte portent un bouton « i » à droite ; aucun sous-titre long ne reste sous les titres.
+- [x] Le pied de page « mega-city · Documentation » figure sur toutes les pages.
+- [x] Un test rend l'habillage pour deux projets et vérifie que la pastille change avec le projet.
+- [x] Capture avant / après de l'en-tête jointe à la fiche.
 
 ## Comment vérifier
 
@@ -59,6 +57,8 @@ pnpm --dir products/cop1/packages/web test -- Board.test.tsx
 ```
 
 - vue Vue d'ensemble : http://localhost:5273 → menu Vue d'ensemble : en-tête, fil, pied de page ; changer de projet change la pastille.
+- Preuve avant / après : [avant](../docs/pr-evidence/20261126170000101/habillage-before.jpg) → [après](../docs/pr-evidence/20261126170000101/habillage-after.jpg)
+- Contrôle « prête » : ezk-pm GO le 2026-11-26 (lot de 13). Revue adverse : ezk-reviewer GO, 7 critères prouvés ; deux sous-titres de carte et la source de la pastille corrigés après revue.
 
 ## Hors périmètre
 

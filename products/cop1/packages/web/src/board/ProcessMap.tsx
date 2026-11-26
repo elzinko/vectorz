@@ -9,6 +9,7 @@
  */
 import { type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { type Arc, type ArcKind, fitCamera, layoutProcess, type ProcessLayout, type Rect, stepKey } from './processLayout.js';
+import { InfoButton } from './Chrome.js';
 import type { ProcessEtape, ProcessShow, ProcessSkill } from './processShow.js';
 import type { BoardProject } from './types.js';
 import { useDaemonContract } from './useDaemonContract.js';
@@ -290,7 +291,7 @@ export function ProcessMap({ project }: { project: BoardProject }): JSX.Element 
     <section className="card pr" aria-label="Carte du process de la méthode">
       <div className="vh">
         <h3>Process de la méthode — {project.name}</h3>
-        <span className="sub">de gauche à droite, avec ses boucles ; clique une phase pour zoomer, une étape pour son détail</span>
+        <InfoButton text="De gauche à droite, avec ses boucles. Clique une phase pour zoomer, une étape pour son détail." />
       </div>
       {state.kind === 'ok' ? (
         <div className="pr-stage-box">

@@ -7,6 +7,7 @@
  */
 import { ProcessMap } from './ProcessMap.js';
 import type { BoardProject, ProcessFiche } from './types.js';
+import { InfoButton } from './Chrome.js';
 
 /** Les parkées restent hors flux : une ligne, plan inconnu = pas de faux zéro. */
 function ParkedNote({ parked }: { parked: number }): JSX.Element {
@@ -47,7 +48,7 @@ export function ProcessView({ project, onOpenFiche }: ProcessViewProps): JSX.Ele
     <>
       <div className="vh">
         <h2>Process</h2>
-        <span className="sub">chaque fiche sur son étape, placée par la méthode</span>
+        <InfoButton text="Chaque fiche sur son étape, placée par la méthode." />
       </div>
       <ProcessMap project={project} />
       {reason !== null || !process ? (

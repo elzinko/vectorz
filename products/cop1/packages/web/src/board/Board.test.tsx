@@ -29,9 +29,10 @@ const WITH_SESSION: BoardData = {
 };
 
 describe('Board — la coque', () => {
-  it("affiche la marque et la version du board", async () => {
+  it("affiche la marque et la version étiquetée du projet, plus celle du paquet", async () => {
     await renderBoardOn();
-    expect(screen.getByText('v0.17.0')).toBeTruthy();
+    expect(screen.getByText('Mission control')).toBeTruthy();
+    expect(screen.queryByText('v0.17.0')).toBeNull();
   });
 
   it('ouvre sur la vue d’ensemble du projet par défaut (vectorz)', async () => {

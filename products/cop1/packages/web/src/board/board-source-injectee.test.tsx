@@ -57,7 +57,7 @@ describe('board-web : source injectée, jamais d’échantillon', () => {
       vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(live) } as Response),
     );
     render(<Board />);
-    await waitFor(() => expect(screen.getByText('projet-live')).toBeTruthy());
+    await waitFor(() => expect(screen.getAllByText('projet-live').length).toBeGreaterThan(0));
     expect(screen.queryByText(/injoignable/)).toBeNull();
     expect(screen.queryByText(/plan indisponible/)).toBeNull();
   });

@@ -20,6 +20,7 @@ import {
   type NodeProps,
 } from '@xyflow/react';
 import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { InfoButton } from './Chrome.js';
 import type { GraphCheck } from './graphCheck.js';
 import {
   FAMILY_LABELS,
@@ -297,7 +298,7 @@ export function GraphMap({
     <section className="card gm" aria-label="Carte de la méthode">
       <div className="vh">
         <h3>Carte de la méthode — {project.name}</h3>
-        <span className="sub">zoome pour voir les briques, puis leur détail ; clique une brique pour allumer ses voisins</span>
+        <InfoButton text="Zoome pour voir les briques, puis leur détail. Clique une brique pour allumer ses voisins." />
       </div>
       {state.kind === 'ok' ? (
         <div className="gm-corps">

@@ -8,6 +8,7 @@
 import { useMemo, useState } from 'react';
 import { CommandHint, Crumbs, FicheLine, Unavailable, planUnavailable } from './PlanBits.js';
 import type { BoardProject, Objectif } from './types.js';
+import { InfoButton } from './Chrome.js';
 
 /** Le pseudo-objectif des fiches mises de côté : il n'est pas une ligne du tableau. */
 const PARKED = 'parked';
@@ -100,7 +101,8 @@ function ObjectifsTable({
     <>
       <div className="vh">
         <h2>Objectifs</h2>
-        <span className="sub">{rows.length} objectifs, dans l'ordre de la méthode</span>
+        <InfoButton text="Les objectifs, dans l'ordre de la méthode." />
+        <span className="sub">{rows.length} objectifs</span>
       </div>
       <section className="card">
         <div className="row filters">
