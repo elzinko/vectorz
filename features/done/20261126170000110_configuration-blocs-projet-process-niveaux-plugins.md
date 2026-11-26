@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (b91e64d4)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -51,7 +51,7 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (configuration) : [avant](../docs/pr-evidence/20261126170000110/configuration-before.jpg) → [après](../docs/pr-evidence/20261126170000110/configuration-after.jpg)
+- Preuve avant / après (configuration) : [avant](../../docs/pr-evidence/20261126170000110/configuration-before.jpg) → [après](../../docs/pr-evidence/20261126170000110/configuration-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (champs morts retirés ; compte du DoD hors périmètre, entériné)
 
 ```bash

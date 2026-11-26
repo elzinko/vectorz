@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000110_configuration-blocs-projet-process-niveaux-plugins.md](../20261126170000110_configuration-blocs-projet-process-niveaux-plugins.md)
+> 🗎 Rendu de la fiche [features/20261126170000110_configuration-blocs-projet-process-niveaux-plugins.md](../done/20261126170000110_configuration-blocs-projet-process-niveaux-plugins.md)
 
 # 20261126170000110 — La page Configuration est rangée en Projet, Process, Niveaux et Plugins, sans commande ni jargon
 
