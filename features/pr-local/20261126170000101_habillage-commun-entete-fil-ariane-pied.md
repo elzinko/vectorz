@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000101_habillage-commun-entete-fil-ariane-pied.md](../20261126170000101_habillage-commun-entete-fil-ariane-pied.md)
+> 🗎 Rendu de la fiche [features/20261126170000101_habillage-commun-entete-fil-ariane-pied.md](../done/20261126170000101_habillage-commun-entete-fil-ariane-pied.md)
 
 # 20261126170000101 — Mission control a l'habillage de la maquette : en-tête, fil d'Ariane, boutons « i » et pied de page
 

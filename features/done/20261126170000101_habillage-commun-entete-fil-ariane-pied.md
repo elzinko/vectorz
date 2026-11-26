@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (3a29f901)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -57,7 +57,7 @@ pnpm --dir products/cop1/packages/web test -- Board.test.tsx
 ```
 
 - vue Vue d'ensemble : http://localhost:5273 → menu Vue d'ensemble : en-tête, fil, pied de page ; changer de projet change la pastille.
-- Preuve avant / après : [avant](../docs/pr-evidence/20261126170000101/habillage-before.jpg) → [après](../docs/pr-evidence/20261126170000101/habillage-after.jpg)
+- Preuve avant / après : [avant](../../docs/pr-evidence/20261126170000101/habillage-before.jpg) → [après](../../docs/pr-evidence/20261126170000101/habillage-after.jpg)
 - Contrôle « prête » : ezk-pm GO le 2026-11-26 (lot de 13). Revue adverse : ezk-reviewer GO, 7 critères prouvés ; deux sous-titres de carte et la source de la pastille corrigés après revue.
 
 ## Hors périmètre
