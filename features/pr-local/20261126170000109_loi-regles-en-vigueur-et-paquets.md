@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000109_loi-regles-en-vigueur-et-paquets.md](../20261126170000109_loi-regles-en-vigueur-et-paquets.md)
+> 🗎 Rendu de la fiche [features/20261126170000109_loi-regles-en-vigueur-et-paquets.md](../done/20261126170000109_loi-regles-en-vigueur-et-paquets.md)
 
 # 20261126170000109 — La page Loi montre les règles en vigueur et l'état des paquets, plus le catalogue brut
 

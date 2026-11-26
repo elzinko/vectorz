@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (5dca282e)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -51,7 +51,7 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (loi) : [avant](../docs/pr-evidence/20261126170000109/loi-before.jpg) → [après](../docs/pr-evidence/20261126170000109/loi-after.jpg)
+- Preuve avant / après (loi) : [avant](../../docs/pr-evidence/20261126170000109/loi-before.jpg) → [après](../../docs/pr-evidence/20261126170000109/loi-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (infobulle des règles installées ; lien Annuaire hors périmètre, entériné)
 
 ```bash
