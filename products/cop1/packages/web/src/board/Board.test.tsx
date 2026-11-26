@@ -149,9 +149,10 @@ describe('Board — la coque', () => {
     expect(screen.getByText('En cours — 1')).toBeTruthy();
   });
 
-  it('« Voir le run » de la vue d’ensemble ouvre le détail du run', async () => {
-    await renderBoardOn();
-    await userEvent.click(screen.getByRole('button', { name: 'Voir le run' }));
-    expect(screen.getByText('Étapes du run')).toBeTruthy();
+  it('« Tous les objectifs » de la vue d’ensemble ouvre la page Objectifs', async () => {
+    const objectifs = [{ slug: 'carte', nom: 'La carte', status: 'in-progress', total: 3, shipped: 1, counts: {}, aFaire: [], livrees: [], versions: [] }];
+    await renderBoardOn({ ...BOARD_DATA, vectorz: { ...vectorz, plan: { state: 'ok' }, objectifs } });
+    await userEvent.click(screen.getByRole('button', { name: /Tous les objectifs/ }));
+    expect(screen.getByRole('heading', { level: 2, name: 'Objectifs' })).toBeTruthy();
   });
 });

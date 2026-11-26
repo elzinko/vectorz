@@ -105,50 +105,18 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .pmcard .pv { font-family: var(--font-data); font-size: 12px; color: var(--accent); }
 .pmcard .prow { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
 
-.funnel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
-.funbar { height: 30px; border-radius: 7px; overflow: hidden; display: flex; }
-.funbar i { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; min-width: 0; }
-.fun-idea { background: var(--idea); }
-.fun-ready { background: var(--groom); }
-.fun-wip { background: var(--warn); }
-.funlegend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; }
-.funlegend span { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
-.funlegend b { color: var(--fg); font-family: var(--font-data); }
-.funextra { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 11px; }
-.funextra b { color: var(--fg); font-family: var(--font-data); }
-
 .mgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
 .mcell { padding: 13px 15px; border-right: 1px solid var(--line); border-top: 1px solid var(--line); }
 .mcell .mv { font-family: var(--font-data); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .mcell .mk { font-size: 12px; color: var(--muted); }
 .mnote { margin: 0; padding: 8px 15px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
-/* --- Vue d'ensemble : la carte « Dernier sprint » (fiche 20261104090517904) --- */
-.ls-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 0 16px 11px; }
-.ls-obj { font-size: 15px; }
-.ls-obj::first-letter { text-transform: uppercase; }
-.ls-fiches { margin: 0; padding: 10px 16px 12px 34px; border-top: 1px solid var(--line); font-size: 13px; display: grid; gap: 3px; }
-.ls-prev { border-top: 1px solid var(--line); }
-.ls-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto auto auto; gap: 14px; align-items: baseline; padding: 7px 16px; font-size: 12.5px; border-top: 1px solid var(--surface-2); font-variant-numeric: tabular-nums; }
-.ls-row:first-child { border-top: 0; }
-.ls-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-@media (max-width: 620px) { .ls-row { grid-template-columns: 1fr auto; } .ls-row .faint { display: none; } }
 
 .row { display: grid; grid-template-columns: auto 1fr auto; gap: 3px 12px; align-items: center; padding: 11px 16px; border-top: 1px solid var(--line); }
 .row .ttl { font-weight: 500; font-size: 14px; }
 .row .meta { font-size: 12px; color: var(--muted); display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
 
-.ptrow { display: grid; grid-template-columns: 1.55fr 1fr 1fr .5fr .95fr; gap: 10px; align-items: center; padding: 10px 16px; border-top: 1px solid var(--line); }
-.ptrow.run { background: var(--go-soft); }
-
-.ptrow.hd { border-top: 0; color: var(--faint); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
-.ptc { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); font-family: var(--font-data); }
-.ptn { font-size: 13px; display: flex; gap: 8px; align-items: center; min-width: 0; }
-.ptn .nm { font-weight: 500; }
-.ptact { display: flex; justify-content: flex-end; align-items: center; }
-.runbadge { font-family: var(--font-data); font-size: 10.5px; color: var(--go); font-weight: 600; white-space: nowrap; margin-left: 2px; }
 .minibar { width: 90px; height: 7px; border-radius: 5px; background: var(--surface-2); overflow: hidden; display: inline-block; vertical-align: middle; }
 .minibar i { display: block; height: 100%; }
-.fill-groom { background: var(--groom); }
 .fill-dev { background: var(--go); }
 
 /* --- Activité (runs), détail run, modale fiche (fiche 20261012231419211) --- */
@@ -327,24 +295,6 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
   .nav button, .nav a { justify-content: center; padding: 11px 0; }
 }
 
-/* Accueil flotte « Tous les projets » (fiche 20261015082118382, ADR-079 §D11) */
-
-.grow { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
-
-.age { font-family: var(--font-data); font-size: 11px; color: var(--faint); flex: none; margin-left: auto; }
-
-.projrow { display: flex; align-items: center; gap: 13px; padding: 13px 15px; border-top: 1px solid var(--line); cursor: pointer; }
-.projrow:first-child { border-top: 0; }
-.projrow:hover { background: var(--surface-2); }
-.pname { font-weight: 600; font-size: 14px; flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
-.minidots { display: flex; gap: 4px; flex: none; }
-.minidots .md { width: 8px; height: 8px; border-radius: 50%; background: var(--idea); }
-.minidots .md.live { background: var(--go); }
-.minidots .md.gate { background: var(--warn); }
-.minidots .md.dead { background: var(--crit); }
-.pcount { font-family: var(--font-data); font-size: 12px; color: var(--muted); flex: none; }
-.pcount b { color: var(--fg); }
-
 /* Le pouce de revue d'une fiche (fiche 20261102151630248). */
 .verdictbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 10px; font-size: 13px; }
 .verdictbar .verdictnow { font-size: 18px; }
@@ -489,3 +439,29 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .row.ficherow .pill.blocked { margin-left: 8px; }
 .row.ficherow .linkbtn, .tbl .linkbtn { text-align: left; }
 .tbl td.nowrap { white-space: nowrap; }
+
+/* --- Carte de projet partagée par Projets et Vue d'ensemble (fiche 20261126170000102) --- */
+.pcard { margin-bottom: 14px; }
+.pcard > h3 { text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--fg); justify-content: flex-start; flex-wrap: wrap; }
+.pname-btn { font: inherit; font-weight: 600; color: var(--fg); background: none; border: 0; padding: 0; }
+button.pname-btn { cursor: pointer; }
+button.pname-btn:hover { color: var(--accent); }
+.since { margin-left: auto; display: flex; gap: 6px 14px; align-items: center; flex-wrap: wrap; justify-content: flex-end; font-size: 12.5px; color: var(--muted); font-weight: 400; }
+.since .sl { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; }
+.since b { font-family: var(--font-data); font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums; }
+.pbody { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.tiles3 { grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.tiles3 .mcell { border-top: 0; }
+.tiles3 .mcell:last-child { border-right: 0; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; }
+.t3 { display: flex; flex-direction: column; gap: 6px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); min-height: 96px; min-width: 0; }
+.t3 .lab { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+.t3 .ttl { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.t3 .mt { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: auto; }
+.t3 .mt > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tag { font-family: var(--font-data); font-size: 11.5px; font-weight: 500; padding: 2px 9px; border-radius: 20px; white-space: nowrap; line-height: 1.5; }
+.tag.ok, .tag.done { background: var(--go-soft); color: var(--go); }
+.tag.warn, .tag.wip { background: var(--warn-soft); color: var(--warn); }
+.tag.idea { background: var(--idea-soft); color: var(--muted); }
+.tag.obj { background: #ece3fb; color: #6b3fc4; align-self: flex-start; }
+.linkbtn { font: inherit; font-size: 12px; text-transform: none; letter-spacing: 0; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; margin-left: auto; }

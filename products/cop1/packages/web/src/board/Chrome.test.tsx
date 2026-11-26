@@ -65,7 +65,7 @@ describe('Board — l’habillage commun (fiche 20261126170000101)', () => {
     expect(screen.getByText("Vue d'ensemble — vectorz")).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: 'Fiches' }));
     await userEvent.click(within(screen.getByRole('navigation', { name: "Fil d'Ariane" })).getByRole('button', { name: 'Projets' }));
-    expect(screen.getByText('Tous les projets')).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 2, name: 'Projets' })).toBeTruthy();
   });
 
   it('le dernier maillon du fil est la page où l’on est', async () => {

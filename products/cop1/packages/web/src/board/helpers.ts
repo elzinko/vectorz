@@ -5,17 +5,7 @@
  * projet et répondent une question (quelles versions, laquelle est en run,
  * est-elle cadrée…). Portées de la maquette de référence (ADR-074).
  */
-import type { BoardProject, BoardRun, Version } from './types.js';
-
-/** Nombre de fiches « groomées » (prêtes ou plus avancées) d'une version. */
-export function groomed(v: Version): number {
-  return v.done + v.wip + v.ready;
-}
-
-/** Une version est *cadrée* quand tout son lot est groomé. */
-export function cadre(v: Version): boolean {
-  return v.total > 0 && groomed(v) === v.total;
-}
+import type { BoardProject, Version } from './types.js';
 
 /** Clé de tri sémantique d'une version : `[major, minor, patch]`. */
 export function svKey(ver: string): [number, number, number] {
@@ -48,11 +38,6 @@ export function isCurVer(p: BoardProject, ver: string): boolean {
   return p.versions.current?.ver === ver;
 }
 
-/** Vrai si `ver` est une version réalisée : taguée, ou « à clore » selon la méthode. */
-export function isPastVer(p: BoardProject, ver: string): boolean {
-  return p.versions.past.some((v) => v.ver === ver);
-}
-
 /** La catégorie d'une version : à venir, en cours, ou réalisée. */
 export type VersionCategory = 'avenir' | 'encours' | 'realisees';
 
@@ -65,19 +50,17 @@ export function verCat(p: BoardProject, ver: string | undefined): VersionCategor
   return null;
 }
 
-/** Les runs vivants du projet. */
-export function liveRuns(p: BoardProject): BoardRun[] {
-  return Object.values(p.runs).filter((r) => r.live);
+/** Une durée lisible ; `null` = non mesurée, dit en mots (fiche 20261104090517904). */
+export function fmtDuree(ms: number | null): string {
+  if (ms === null) return 'non mesurée';
+  const min = Math.max(1, Math.round(ms / 60_000));
+  return min < 60 ? `${min} min` : `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, '0')}`;
 }
 
-/**
- * Indexe le run vivant par version. Une version n'a qu'un run vivant au plus ;
- * s'il y en a plusieurs (donnée incohérente), le premier rencontré gagne.
- */
-export function runByVer(p: BoardProject): Record<string, BoardRun> {
-  const out: Record<string, BoardRun> = {};
-  for (const r of liveRuns(p)) {
-    if (!out[r.ver]) out[r.ver] = r;
-  }
-  return out;
+/** Des jetons lisibles ; `null` = non mesurés, dit en mots. */
+export function fmtTokens(n: number | null): string {
+  if (n === null) return 'non mesurés';
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`;
+  if (n >= 1_000) return `${Math.round(n / 1_000)} k`;
+  return String(n);
 }

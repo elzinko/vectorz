@@ -52,9 +52,9 @@ describe('plan indisponible ou en chargement', () => {
 
   it('plan en chargement → la tuile « fiches livrées » montre « — », jamais un faux 0', async () => {
     await renderBoardOn(withoutPlan({ state: 'loading' }));
-    const tile = screen.getByText('fiches livrées').parentElement;
-    expect(tile?.textContent).toContain('—');
-    expect(tile?.textContent).not.toContain('0');
+    const since = screen.getByLabelText('Depuis le début');
+    expect(since.textContent).toMatch(/—\s*livrées/);
+    expect(since.textContent).not.toMatch(/\b0\b/);
   });
 
   it('plan en chargement → la page redemande, et montre le plan dès qu’il arrive', async () => {

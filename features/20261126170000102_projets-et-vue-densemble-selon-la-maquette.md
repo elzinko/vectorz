@@ -42,16 +42,18 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
-## Critères d'acceptation
-
-- [ ] La page Projets montre une carte par projet avec En-tête, Depuis le début, trois tuiles et trois vignettes.
-- [ ] La Vue d'ensemble montre la même carte pour le projet choisi, puis « Objectifs en cours » avec un lien vers la page Objectifs.
-- [ ] L'Entonnoir et la table « Versions dans le process » ne figurent plus ; aucune session n'apparaît sur ces pages.
-- [ ] Un champ que la méthode ne publie pas affiche « non publié » ou « — » ; un test avec un projet sans comptes rendus vérifie qu'aucun « 0 » n'est inventé.
-- [ ] Les trois tuiles comptent depuis la dernière version étiquetée, et le libellé nomme cette version.
-- [ ] Les tests existants de l'Entonnoir sont supprimés avec lui (pas de code mort).
+- [x] La page Projets montre une carte par projet avec En-tête, Depuis le début, trois tuiles et trois vignettes.
+- [x] La Vue d'ensemble montre la même carte pour le projet choisi, puis « Objectifs en cours » avec un lien vers la page Objectifs.
+- [x] L'Entonnoir et la table « Versions dans le process » ne figurent plus ; aucune session n'apparaît sur ces pages.
+- [x] Un champ que la méthode ne publie pas affiche « non publié » ou « — » ; un test avec un projet sans comptes rendus vérifie qu'aucun « 0 » n'est inventé.
+- [x] Les trois tuiles comptent depuis la dernière version étiquetée, et le libellé nomme cette version.
+- [x] Les tests existants de l'Entonnoir sont supprimés avec lui (pas de code mort).
 
 ## Comment vérifier
+
+- Preuve avant / après (projets) : [avant](../docs/pr-evidence/20261126170000102/projets-before.jpg) → [après](../docs/pr-evidence/20261126170000102/projets-after.jpg)
+- Preuve avant / après (vue-ensemble) : [avant](../docs/pr-evidence/20261126170000102/vue-ensemble-before.jpg) → [après](../docs/pr-evidence/20261126170000102/vue-ensemble-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (faux zéro sprints/rétros, titre du dernier objectif)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- FleetView.test.tsx

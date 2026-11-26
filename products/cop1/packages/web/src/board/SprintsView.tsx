@@ -7,7 +7,7 @@
  * « non publié » tant que la méthode ne les publie pas, et s'affichent dès qu'elle le fait.
  */
 import { useState } from 'react';
-import { fmtDuree, fmtTokens } from './OverviewView.js';
+import { fmtDuree, fmtTokens } from './helpers.js';
 import { CommandHint, Crumbs, FicheLine, Unavailable, planUnavailable } from './PlanBits.js';
 import type { BoardProject, SprintSummary } from './types.js';
 

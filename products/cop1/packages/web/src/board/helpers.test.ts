@@ -1,13 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   allVersions,
-  cadre,
-  groomed,
   isCurVer,
-  isPastVer,
-  liveRuns,
-  runByVer,
   svCmp,
+  fmtDuree,
+  fmtTokens,
   svKey,
 } from './helpers.js';
 import type { BoardProject, Version } from './types.js';
@@ -39,18 +36,6 @@ describe('svKey / svCmp', () => {
   });
 });
 
-describe('groomed / cadre', () => {
-  it('groomed = done + wip + ready', () => {
-    expect(groomed(V('v1', { done: 2, wip: 1, ready: 3, total: 9 }))).toBe(6);
-  });
-
-  it('cadre quand tout le lot est groomé', () => {
-    expect(cadre(V('v1', { ready: 9, total: 9 }))).toBe(true);
-    expect(cadre(V('v1', { ready: 8, total: 9 }))).toBe(false);
-    expect(cadre(V('v1', { total: 0 }))).toBe(false);
-  });
-});
-
 const PROJECT: BoardProject = {
   name: 'p',
   desc: '',
@@ -73,20 +58,19 @@ describe('versions', () => {
     expect(allVersions(PROJECT).map((v) => v.ver)).toEqual(['v0.3.0', 'v0.4.0', 'v0.2.0', 'v0.1.0']);
   });
 
-  it('isCurVer / isPastVer', () => {
+  it('isCurVer', () => {
     expect(isCurVer(PROJECT, 'v0.3.0')).toBe(true);
     expect(isCurVer(PROJECT, 'v0.2.0')).toBe(false);
-    expect(isPastVer(PROJECT, 'v0.2.0')).toBe(true);
-    expect(isPastVer(PROJECT, 'v0.3.0')).toBe(false);
   });
+});
 
-  it('liveRuns ne garde que les runs vivants', () => {
-    expect(liveRuns(PROJECT).map((r) => r.id)).toEqual(['live1']);
-  });
-
-  it('runByVer indexe le run vivant par version', () => {
-    const idx = runByVer(PROJECT);
-    expect(idx['v0.3.0']?.id).toBe('live1');
-    expect(idx['v0.2.0']).toBeUndefined();
+describe('formats', () => {
+  it('durée et jetons', () => {
+    expect(fmtDuree(2_878_825)).toBe('48 min');
+    expect(fmtDuree(5_400_000)).toBe('1 h 30');
+    expect(fmtDuree(null)).toBe('non mesurée');
+    expect(fmtTokens(28_240_940)).toBe('28,2 M');
+    expect(fmtTokens(12_400)).toBe('12 k');
+    expect(fmtTokens(null)).toBe('non mesurés');
   });
 });

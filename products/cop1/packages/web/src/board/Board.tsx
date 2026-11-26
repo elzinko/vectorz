@@ -403,7 +403,7 @@ export function Board(): JSX.Element {
           ) : view === 'fleet' ? (
             <FleetView projects={allProjects} onOpenProject={chooseProject} />
           ) : view === 'overview' ? (
-            <OverviewView project={project} onViewRun={(runId) => setRunDetailId(runId)} />
+            <OverviewView project={project} onOpenObjectifs={() => go('objectifs')} />
           ) : view === 'objectifs' ? (
             <ObjectifsView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'versions' ? (
