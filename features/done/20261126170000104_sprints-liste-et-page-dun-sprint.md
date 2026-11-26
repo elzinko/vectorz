@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (ba91f548)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -57,8 +57,8 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (sprints) : [avant](../docs/pr-evidence/20261126170000104/sprints-before.jpg) → [après](../docs/pr-evidence/20261126170000104/sprints-after.jpg)
-- Preuve avant / après (un-sprint) : [avant](../docs/pr-evidence/20261126170000104/un-sprint-before.jpg) → [après](../docs/pr-evidence/20261126170000104/un-sprint-after.jpg)
+- Preuve avant / après (sprints) : [avant](../../docs/pr-evidence/20261126170000104/sprints-before.jpg) → [après](../../docs/pr-evidence/20261126170000104/sprints-after.jpg)
+- Preuve avant / après (un-sprint) : [avant](../../docs/pr-evidence/20261126170000104/un-sprint-before.jpg) → [après](../../docs/pr-evidence/20261126170000104/un-sprint-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (lien de session branché, bouton Ouvrir mort retiré)
 
 ```bash

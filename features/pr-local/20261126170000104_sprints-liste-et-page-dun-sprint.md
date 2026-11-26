@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000104_sprints-liste-et-page-dun-sprint.md](../20261126170000104_sprints-liste-et-page-dun-sprint.md)
+> 🗎 Rendu de la fiche [features/20261126170000104_sprints-liste-et-page-dun-sprint.md](../done/20261126170000104_sprints-liste-et-page-dun-sprint.md)
 
 # 20261126170000104 — Les pages Sprints et d'un sprint suivent la maquette
 
