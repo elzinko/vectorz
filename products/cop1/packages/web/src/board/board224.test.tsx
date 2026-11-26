@@ -1,7 +1,7 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { FichesView } from './FichesView.js';
+import { FichesKanban } from './FichesKanban.js';
 import { verCat } from './helpers.js';
 import type { BoardProject, FicheDetail, FicheStatus, Version } from './types.js';
 
@@ -61,9 +61,9 @@ describe('verCat', () => {
   });
 });
 
-describe('FichesView', () => {
+describe('FichesKanban', () => {
   it('cache les fiches réalisées par défaut', () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} />);
     expect(screen.getByText('Fiche en cours')).toBeTruthy();
     expect(screen.getByText('Fiche à venir')).toBeTruthy();
     expect(screen.queryByText('Fiche réalisée')).toBeNull();
@@ -71,7 +71,7 @@ describe('FichesView', () => {
   });
 
   it('cocher « réalisées » fait apparaître l’archive', async () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} />);
     await userEvent.click(screen.getByRole('button', { name: 'réalisées' }));
     expect(screen.getByText('Fiche réalisée')).toBeTruthy();
     expect(screen.getByText('3 fiche(s)')).toBeTruthy();
@@ -81,7 +81,7 @@ describe('FichesView', () => {
   it('une fiche livrée sans version reste cachée par défaut, et sort avec « réalisées »', async () => {
     const p = makeProject();
     p.fiches = { ...p.fiches, d: fd('d', 'Livrée sans version', 'done', '') };
-    render(<FichesView project={p} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={p} onOpenFiche={() => {}} />);
     expect(screen.queryByText('Livrée sans version')).toBeNull();
     await userEvent.click(screen.getByRole('button', { name: 'réalisées' }));
     expect(screen.getByText('Livrée sans version')).toBeTruthy();
@@ -90,17 +90,17 @@ describe('FichesView', () => {
   it('une idée sans version reste visible par défaut, comme avant', () => {
     const p = makeProject();
     p.fiches = { ...p.fiches, e: fd('e', 'Idée sans version', 'idea', '') };
-    render(<FichesView project={p} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={p} onOpenFiche={() => {}} />);
     expect(screen.getByText('Idée sans version')).toBeTruthy();
   });
 
   it('le sélecteur de lot marque la version en cours', () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} />);
     expect(screen.getByRole('option', { name: /v2\.0\.0.*en cours/ })).toBeTruthy();
   });
 
   it('kanban et liste montrent le même ensemble filtré', async () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} />);
     // Kanban par défaut : 2 fiches visibles.
     expect(screen.getByText('Fiche en cours')).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: 'En ligne' }));
@@ -111,7 +111,7 @@ describe('FichesView', () => {
   });
 
   it('filtrer sur un lot précis ignore les catégories', async () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} />);
     await userEvent.selectOptions(screen.getByLabelText('Lot'), 'v1.0.0');
     // Le lot réalisé choisi explicitement : sa fiche apparaît.
     expect(screen.getByText('Fiche réalisée')).toBeTruthy();
@@ -120,13 +120,13 @@ describe('FichesView', () => {
 
   it('cliquer une fiche ouvre sa modale', async () => {
     const onOpenFiche = vi.fn();
-    render(<FichesView project={makeProject()} onOpenFiche={onOpenFiche} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={onOpenFiche} />);
     await userEvent.click(screen.getByText('Fiche en cours'));
     expect(onOpenFiche).toHaveBeenCalledWith('a');
   });
 
   it('trie par titre quand demandé', async () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} />);
     await userEvent.click(screen.getByRole('button', { name: 'En ligne' }));
     await userEvent.selectOptions(screen.getByLabelText('Trier'), 'titre');
     const list = screen.getByText('Fiche en cours').closest('.flist') as HTMLElement;
@@ -137,14 +137,14 @@ describe('FichesView', () => {
   });
 
   it('la recherche filtre les fiches par titre', () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} query="cours" />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} query="cours" />);
     expect(screen.getByText('Fiche en cours')).toBeTruthy();
     expect(screen.queryByText('Fiche à venir')).toBeNull();
     expect(screen.getByText('1 fiche(s)')).toBeTruthy();
   });
 
   it('la recherche filtre aussi par id de fiche', () => {
-    render(<FichesView project={makeProject()} onOpenFiche={() => {}} query="b" />);
+    render(<FichesKanban project={makeProject()} onOpenFiche={() => {}} query="b" />);
     // Seule la fiche d'id « b » (à venir) correspond ; les titres ne contiennent pas « b ».
     expect(screen.getByText('Fiche à venir')).toBeTruthy();
     expect(screen.queryByText('Fiche en cours')).toBeNull();

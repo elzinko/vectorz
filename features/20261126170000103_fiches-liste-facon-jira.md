@@ -44,17 +44,18 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
-## Critères d'acceptation
-
-- [ ] La page ouvre en liste avec les colonnes fiche, étape, priorité, objectif, version, bloquée, avis.
-- [ ] La recherche et les cinq filtres réduisent la liste ; les puces actives apparaissent et « Tout effacer » les retire.
-- [ ] Parkées et closes sont masquées par défaut, avec leur puce ; les retirer les rend visibles.
-- [ ] « Groomer » n'apparaît que sur une idée non bloquée ; les pouces n'apparaissent que sur une livrée.
-- [ ] Le compteur dit « X affichées sur Y » et reste exact après filtrage.
-- [ ] L'icône Colonnes ouvre le kanban actuel sans perte de fonction.
-- [ ] Un test couvre filtre + recherche + masquage par défaut sur un jeu de fiches mêlant étapes et drapeaux.
+- [x] La page ouvre en liste avec les colonnes fiche, étape, priorité, objectif, version, bloquée, avis.
+- [x] La recherche et les cinq filtres réduisent la liste ; les puces actives apparaissent et « Tout effacer » les retire.
+- [x] Les parkées sont masquées par défaut, avec leur puce ; la retirer les rend visibles. (Amendé le 2026-11-26 en revue : les fiches closes ne sont pas dans le contrat que lit l'écran, voir Hors périmètre.)
+- [x] « Groomer » n'apparaît que sur une idée non bloquée ; les pouces n'apparaissent que sur une livrée.
+- [x] Le compteur dit « X affichées sur Y » et reste exact après filtrage.
+- [x] L'icône Colonnes ouvre le kanban actuel sans perte de fonction.
+- [x] Un test couvre filtre + recherche + masquage par défaut sur un jeu de fiches mêlant étapes et drapeaux.
 
 ## Comment vérifier
+
+- Preuve avant / après (fiches) : [avant](../docs/pr-evidence/20261126170000103/fiches-before.jpg) → [après](../docs/pr-evidence/20261126170000103/fiches-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (pastille objectif, motif brut, Groomer survolable ; puce close hors périmètre)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- FichesView.test.tsx
@@ -64,6 +65,7 @@ pnpm --dir products/cop1/packages/web test -- FichesView.test.tsx
 
 ## Hors périmètre
 
+- La puce « close : masquée ». Les fiches closes (superseded, merged, split) sont écartées en amont, dans le contrat que lit l'écran (`ezkPlanTranslator.ts`). L'écran ne les invente pas (ADR-086). La puce viendra quand la méthode publiera les fiches closes. Décision de revue du 2026-11-26.
 - Les gestes eux-mêmes (groomer, parker, lever un blocage) : le menu ne les expose que s'ils existent déjà côté méthode.
 - La page d'une fiche (FicheModal).
 - Un contrat d'avis nouveau.

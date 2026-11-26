@@ -5,7 +5,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
-import { FichesView } from './FichesView.js';
+import { FichesKanban } from './FichesKanban.js';
 import type { BoardProject, FicheDetail, FicheStatus } from './types.js';
 
 afterEach(cleanup);
@@ -38,23 +38,23 @@ const project: BoardProject = {
 
 const heading = (label: string) => screen.queryByRole('heading', { level: 4, name: new RegExp(`^${label}`) });
 
-describe('FichesView — les parkées à part', () => {
+describe('FichesKanban — les parkées à part', () => {
   it('par défaut, une parkée n’apparaît pas, et les idées ne comptent que les vivantes', () => {
-    render(<FichesView project={project} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={project} onOpenFiche={() => {}} />);
     expect(screen.queryByText('Une idée parkée')).toBeNull();
     expect(heading('Idées')?.textContent).toBe('Idées 1');
     expect(heading('Parkées')).toBeNull();
   });
 
   it('la bascule montre la colonne « Parkées » avec son nombre', async () => {
-    render(<FichesView project={project} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={project} onOpenFiche={() => {}} />);
     await userEvent.click(screen.getByRole('button', { name: 'montrer les parkées (1)' }));
     expect(heading('Parkées')?.textContent).toBe('Parkées 1');
     expect(screen.getByText('Une idée parkée')).toBeTruthy();
   });
 
   it('en liste, une parkée montrée porte l’étiquette « parkée »', async () => {
-    render(<FichesView project={project} onOpenFiche={() => {}} />);
+    render(<FichesKanban project={project} onOpenFiche={() => {}} />);
     await userEvent.click(screen.getByRole('button', { name: 'montrer les parkées (1)' }));
     await userEvent.click(screen.getByRole('button', { name: 'En ligne' }));
     expect(screen.getByText('parkée')).toBeTruthy();

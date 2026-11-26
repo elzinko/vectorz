@@ -1,239 +1,236 @@
 /**
- * Board unifié cop1 — vue Fiches (fiche 20261012231419224).
- *
- * Les fiches d'un projet, en kanban (par statut) ou en liste. Un filtre les range
- * par CATÉGORIE de version (à venir / en cours / réalisées) ; par défaut on cache
- * l'archive (réalisées). Un sélecteur de lot repère la version en cours, et on
- * trie par priorité / statut / version / titre.
+ * Page Fiches (fiche 20261126170000103) : la liste filtrable de la maquette, le kanban sous l'icône
+ * « Colonnes ». Les parkées sont masquées au départ, avec leur puce. Rien n'est simulé : un geste que la
+ * méthode n'offre pas (parker, lever un blocage) n'est pas dans le menu « ⋯ ».
  */
-import { useState } from 'react';
-import { STATUS_LABEL } from './activity.js';
-import { allVersions, isCurVer, svCmp, verCat, type VersionCategory } from './helpers.js';
-import type { BoardProject, FicheDetail, FicheStatus } from './types.js';
-
-const COL_LABEL: Record<FicheStatus, string> = {
-  idea: 'Idées',
-  ready: 'Prêtes',
-  wip: 'En cours',
-  done: 'Livrées',
-  parked: 'Parkées',
-};
-const COLS: FicheStatus[] = ['idea', 'ready', 'wip', 'done'];
-/** Les parkées sont hors flux (fiche 20261104090517494) : leur colonne n'apparaît qu'à la demande. */
-const COLS_WITH_PARKED: FicheStatus[] = [...COLS, 'parked'];
-const PRIO_N: Record<string, number> = { P0: 0, P1: 1, P2: 2, P3: 3 };
-const ST_N: Record<FicheStatus, number> = { idea: 0, ready: 1, wip: 2, done: 3, parked: 4 };
-
-type SortKey = 'prio' | 'statut' | 'version' | 'titre';
-const SORTERS: Record<SortKey, (a: FicheDetail, b: FicheDetail) => number> = {
-  prio: (a, b) => (PRIO_N[a.prio] ?? 9) - (PRIO_N[b.prio] ?? 9) || a.title.localeCompare(b.title),
-  statut: (a, b) =>
-    ST_N[a.status] - ST_N[b.status] || (PRIO_N[a.prio] ?? 9) - (PRIO_N[b.prio] ?? 9) || a.title.localeCompare(b.title),
-  version: (a, b) => svCmp(a.ver, b.ver) || (PRIO_N[a.prio] ?? 9) - (PRIO_N[b.prio] ?? 9) || a.title.localeCompare(b.title),
-  titre: (a, b) => a.title.localeCompare(b.title),
-};
-
-const CATEGORIES: Array<[VersionCategory, string]> = [
-  ['avenir', 'à venir'],
-  ['encours', 'en cours'],
-  ['realisees', 'réalisées'],
-];
+import { useState, type ReactNode } from 'react';
+import { InfoButton } from './Chrome.js';
+import { FichesKanban } from './FichesKanban.js';
+import {
+  applyCriteria,
+  buildRows,
+  EMPTY_FILTERS,
+  filterOptions,
+  isGroomable,
+  STAGE_LABEL,
+  type FilterKey,
+  type Filters,
+  type ListRow,
+} from './fichesListModel.js';
+import type { BoardProject } from './types.js';
 
 interface FichesViewProps {
   project: BoardProject;
   onOpenFiche: (fid: string) => void;
-  /** Recherche globale (barre du haut) : filtre les fiches par titre ou id. */
+  /** Recherche globale (barre du haut). */
   query?: string;
 }
 
-function FicheRow({ f, onOpenFiche }: { f: FicheDetail; onOpenFiche: (fid: string) => void }): JSX.Element {
+const FILTER_LABEL: Record<FilterKey, string> = {
+  etape: 'Étape',
+  drapeau: 'Drapeau',
+  objectif: 'Objectif',
+  version: 'Version',
+  priorite: 'Priorité',
+};
+const FILTER_KEYS = Object.keys(FILTER_LABEL) as FilterKey[];
+
+function FilterMenu({ label, options, picked, onToggle }: { label: string; options: string[]; picked: string[]; onToggle: (v: string) => void }): JSX.Element {
+  const [open, setOpen] = useState(false);
   return (
-    <div
-      className="fli"
-      role="button"
-      tabIndex={0}
-      onClick={() => onOpenFiche(f.id)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onOpenFiche(f.id);
-        }
-      }}
-    >
-      <span className={`prio ${f.prio}`}>{f.prio}</span>
-      <span className={`stat s-${f.status}`}>{STATUS_LABEL[f.status]}</span>
-      <span className="fn">{f.title}</span>
-      <span className="pill ver" style={f.ver ? undefined : { visibility: 'hidden' }}>
-        {f.ver || '—'}
-      </span>
-      <span className="faint">›</span>
-    </div>
+    <span className="fmenu">
+      <button type="button" className="tgl" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        {label}
+      </button>
+      {open && (
+        <div className="fpop" role="menu" aria-label={label}>
+          {options.map((o) => (
+            <button key={o} type="button" role="menuitemcheckbox" aria-checked={picked.includes(o)} className={picked.includes(o) ? 'on' : undefined} onClick={() => onToggle(o)}>
+              {o}
+            </button>
+          ))}
+        </div>
+      )}
+    </span>
   );
 }
 
-export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JSX.Element {
-  const [fver, setFver] = useState<string>('all');
-  const [fsort, setFsort] = useState<SortKey>('prio');
-  const [fmode, setFmode] = useState<'status' | 'list'>('status');
-  const [showParked, setShowParked] = useState(false);
-  const [fcat, setFcat] = useState<Record<VersionCategory, boolean>>({
-    avenir: true,
-    encours: true,
-    realisees: false,
-  });
+function RowMenu({ onOpen }: { onOpen: () => void }): JSX.Element {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="fmenu">
+      <button type="button" className="rmore" aria-label="Actions de la fiche" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        ⋯
+      </button>
+      {open && (
+        <div className="fpop right" role="menu">
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onOpen();
+            }}
+          >
+            Ouvrir la fiche
+          </button>
+        </div>
+      )}
+    </span>
+  );
+}
 
-  const versionOptions = ['all', ...allVersions(project).map((v) => v.ver), 'sans version'];
+function Avis({ r }: { r: ListRow }): JSX.Element | null {
+  if (r.stage !== 'livree') return null;
+  const v = r.fiche.verdict;
+  if (!v) return <span className="faint" title="avis non publié">—</span>;
+  return (
+    <span className={`pill avis ${v}`} role="img" aria-label={v === 'up' ? 'pouce levé' : 'pouce baissé'}>
+      {v === 'up' ? '▲' : '▼'}
+    </span>
+  );
+}
 
-  let list = Object.values(project.fiches ?? {});
-  // Recherche globale : restreint aux fiches dont le titre ou l'id contient la requête.
-  const q = (query ?? '').trim().toLowerCase();
-  if (q) {
-    list = list.filter((f) => f.title.toLowerCase().includes(q) || f.id.toLowerCase().includes(q));
+function FichesList({ project, onOpenFiche, query, switcher }: FichesViewProps & { switcher: ReactNode }): JSX.Element {
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [hideParked, setHideParked] = useState(true);
+
+  const all = buildRows(project);
+  const objName = new Map((project.objectifs ?? []).map((o) => [o.slug, o.nom] as const).filter((e): e is readonly [string, string] => e[1] !== null));
+  const options = filterOptions(all);
+  const shown = applyCriteria(all, { searches: [search, query ?? ''], filters, hideParked });
+
+  function toggle(key: FilterKey, value: string): void {
+    setFilters((f) => ({ ...f, [key]: f[key].includes(value) ? f[key].filter((v) => v !== value) : [...f[key], value] }));
+    if (key === 'drapeau' && value === 'parkée') setHideParked(false);
   }
-  if (fver === 'sans version') {
-    list = list.filter((f) => !f.ver);
-  } else if (fver !== 'all') {
-    list = list.filter((f) => f.ver === fver);
-  } else {
-    // Filtre par catégorie. Une fiche sans catégorie (sans version, ou version hors
-    // des listes du projet) n'est gouvernée par aucun toggle : on la montre ici, et
-    // elle reste joignable par le lot « sans version ». Quand le vrai read-model
-    // injectera des fiches sans version en nombre, prévoir un toggle dédié.
-    list = list.filter((f) => {
-      // Une fiche livrée sans catégorie compte parmi les réalisées (fiche 20261103191932064) : sinon
-      // les centaines de fiches livrées sans version envahiraient la vue par défaut.
-      const c = verCat(project, f.ver) ?? (f.status === 'done' ? 'realisees' : null);
-      return c ? fcat[c] : true;
-    });
-  }
-  // Les parkées attendent le PO, hors flux : cachées par défaut, comme la Vue d'ensemble les compte à part.
-  const parkedCount = list.filter((f) => f.status === 'parked').length;
-  if (!showParked) list = list.filter((f) => f.status !== 'parked');
-  list = list.slice().sort(SORTERS[fsort]);
-  const cols = showParked ? COLS_WITH_PARKED : COLS;
-
-  function toggleCat(c: VersionCategory): void {
-    setFcat((prev) => ({ ...prev, [c]: !prev[c] }));
+  const chips = FILTER_KEYS.flatMap((k) => filters[k].map((v) => ({ key: k, value: v, text: `${FILTER_LABEL[k]} : ${v}` })));
+  function clearAll(): void {
+    setFilters(EMPTY_FILTERS);
+    setSearch('');
+    setHideParked(false);
   }
 
   return (
     <>
       <div className="vh">
         <h2>Fiches — {project.name}</h2>
-        <span className="sub">{list.length} fiche(s)</span>
+        <InfoButton text="La liste des fiches du projet, une ligne chacune. Les parkées (mises de côté) sont masquées au départ ; retire leur puce pour les voir." />
+        {switcher}
       </div>
 
-      <div className="toolbar">
-        <label htmlFor="fversel">Lot</label>
-        <select id="fversel" value={fver} onChange={(e) => setFver(e.target.value)}>
-          {versionOptions.map((v) => (
-            <option value={v} key={v}>
-              {v === 'all'
-                ? 'toutes versions'
-                : v === 'sans version'
-                  ? v
-                  : v + (isCurVer(project, v) ? '  ● en cours' : '')}
-            </option>
-          ))}
-        </select>
+      <div className="fbar">
+        <input type="search" aria-label="Rechercher une fiche" placeholder="Rechercher une fiche" value={search} onChange={(e) => setSearch(e.target.value)} />
+        {FILTER_KEYS.map((k) => (
+          <FilterMenu key={k} label={FILTER_LABEL[k]} options={options[k]} picked={filters[k]} onToggle={(v) => toggle(k, v)} />
+        ))}
+        <span className="fres">{shown.length} résultats</span>
+      </div>
 
-        {fver === 'all' && (
-          <>
-            <label>Afficher</label>
-            <span className="seg" role="group" aria-label="Catégorie de version">
-              {CATEGORIES.map(([c, lbl]) => (
-                <button
-                  key={c}
-                  type="button"
-                  className={fcat[c] ? 'on' : undefined}
-                  aria-pressed={fcat[c]}
-                  onClick={() => toggleCat(c)}
-                >
-                  {lbl}
-                </button>
-              ))}
+      {(hideParked || chips.length > 0) && (
+        <div className="fbar">
+          {hideParked && (
+            <span className="achip">
+              <span>parkée : masquée</span>
+              <button type="button" className="x" aria-label="Retirer le filtre parkée : masquée" onClick={() => setHideParked(false)}>
+                ×
+              </button>
             </span>
-          </>
-        )}
-
-        <label htmlFor="fsort">Trier</label>
-        <select id="fsort" value={fsort} onChange={(e) => setFsort(e.target.value as SortKey)}>
-          <option value="prio">priorité</option>
-          <option value="statut">statut</option>
-          <option value="version">version</option>
-          <option value="titre">titre</option>
-        </select>
-
-        <button
-          type="button"
-          className={showParked ? 'tgl on' : 'tgl'}
-          aria-pressed={showParked}
-          onClick={() => setShowParked((v) => !v)}
-        >
-          montrer les parkées ({parkedCount})
-        </button>
-
-        <span className="seg" role="group" aria-label="Affichage">
-          <button type="button" className={fmode === 'status' ? 'on' : undefined} aria-pressed={fmode === 'status'} onClick={() => setFmode('status')}>
-            Par statut
-          </button>
-          <button type="button" className={fmode === 'list' ? 'on' : undefined} aria-pressed={fmode === 'list'} onClick={() => setFmode('list')}>
-            En ligne
-          </button>
-        </span>
-      </div>
-
-      {fmode === 'status' ? (
-        <section className={showParked ? 'kanban k5' : 'kanban'}>
-          {cols.map((c) => {
-            const col = list.filter((f) => f.status === c);
-            return (
-              <div className="col" key={c}>
-                <h4>
-                  {COL_LABEL[c]} <span className="cnt">{col.length}</span>
-                </h4>
-                {col.length === 0 ? (
-                  <div className="fcard muted" style={{ cursor: 'default' }}>
-                    —
-                  </div>
-                ) : (
-                  col.map((f) => (
-                    <div
-                      className="fcard"
-                      role="button"
-                      tabIndex={0}
-                      key={f.id}
-                      onClick={() => onOpenFiche(f.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          onOpenFiche(f.id);
-                        }
-                      }}
-                    >
-                      <div className="ft">{f.title}</div>
-                      <div className="fm">
-                        <span className={`prio ${f.prio}`}>{f.prio}</span>
-                        <span className="pill ver">{f.ver || 'sans version'}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            );
-          })}
-        </section>
-      ) : (
-        <section className="card flist">
-          {list.length === 0 ? (
-            <div className="muted" style={{ padding: '11px 16px' }}>
-              aucune fiche
-            </div>
-          ) : (
-            list.map((f) => <FicheRow key={f.id} f={f} onOpenFiche={onOpenFiche} />)
           )}
-        </section>
+          {chips.map((c) => (
+            <span className="achip" key={`${c.key}-${c.value}`}>
+              <span>{c.text}</span>
+              <button type="button" className="x" aria-label={`Retirer le filtre ${c.text}`} onClick={() => toggle(c.key, c.value)}>
+                ×
+              </button>
+            </span>
+          ))}
+          <button type="button" className="lnkb" onClick={clearAll}>
+            Tout effacer
+          </button>
+        </div>
       )}
+
+      <section className="card">
+        <h3 className="fhead">
+          <span>Fiches</span>
+          <span className="fcount">
+            {shown.length} affichées sur {all.length}
+          </span>
+          <InfoButton text="Une ligne par fiche. Le titre complet s'affiche au survol. Les gestes que la méthode n'offre pas ne sont pas proposés." />
+        </h3>
+        <table className="tbl ftbl" aria-label="Fiches">
+          <thead>
+            <tr>
+              <th>Fiche</th>
+              <th>Étape</th>
+              <th>Priorité</th>
+              <th>Objectif</th>
+              <th>Version</th>
+              <th>Bloquée</th>
+              <th>Avis</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {shown.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="muted">
+                  aucune fiche
+                </td>
+              </tr>
+            ) : (
+              shown.map((r) => (
+                <tr key={r.fiche.id}>
+                  <td className="ftitle">
+                    <button type="button" className="linkbtn" title={r.fiche.title} onClick={() => onOpenFiche(r.fiche.id)}>
+                      {r.fiche.title}
+                    </button>
+                  </td>
+                  <td>{STAGE_LABEL[r.stage]}</td>
+                  <td>
+                    <span className={`prio ${r.fiche.prio}`}>{r.fiche.prio}</span>
+                  </td>
+                  <td>{r.objectif ? <span className="tag obj" title={objName.get(r.objectif) ?? "nom non publié"}>{r.objectif}</span> : null}</td>
+                  <td>{r.fiche.ver ? <span className="pill ver">{r.fiche.ver}</span> : <span className="faint">—</span>}</td>
+                  <td>{r.fiche.blocked ? <span className="pill blocked" title="motif brut : la méthode ne publie pas encore son libellé en français">{r.fiche.blocked}</span> : null}</td>
+                  <td>
+                    <Avis r={r} />
+                  </td>
+                  <td className="rowact">
+                    {isGroomable(r) && (
+                      <button type="button" className="tgl" title={`ezk backlog groom ${r.fiche.id}`} aria-disabled="true">
+                        Groomer
+                      </button>
+                    )}
+                    <RowMenu onOpen={() => onOpenFiche(r.fiche.id)} />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </section>
     </>
+  );
+}
+
+export function FichesView({ project, onOpenFiche, query }: FichesViewProps): JSX.Element {
+  const [mode, setMode] = useState<'liste' | 'colonnes'>('liste');
+  const switcher = (
+    <span className="seg vsw" role="group" aria-label="Affichage des fiches">
+      <button type="button" className={mode === 'liste' ? 'on' : undefined} aria-pressed={mode === 'liste'} onClick={() => setMode('liste')}>
+        Liste
+      </button>
+      <button type="button" className={mode === 'colonnes' ? 'on' : undefined} aria-pressed={mode === 'colonnes'} onClick={() => setMode('colonnes')}>
+        Colonnes
+      </button>
+    </span>
+  );
+  return mode === 'liste' ? (
+    <FichesList project={project} onOpenFiche={onOpenFiche} query={query} switcher={switcher} />
+  ) : (
+    <FichesKanban project={project} onOpenFiche={onOpenFiche} query={query} switcher={switcher} />
   );
 }
