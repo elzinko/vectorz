@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000106_versions-et-page-dune-version.md](../20261126170000106_versions-et-page-dune-version.md)
+> 🗎 Rendu de la fiche [features/20261126170000106_versions-et-page-dune-version.md](../done/20261126170000106_versions-et-page-dune-version.md)
 
 # 20261126170000106 — Les pages Versions et d'une version suivent la maquette, avec le choix du numéro à versionner
 

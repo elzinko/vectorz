@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (2748fa71)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -55,8 +55,8 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (versions) : [avant](../docs/pr-evidence/20261126170000106/versions-before.jpg) → [après](../docs/pr-evidence/20261126170000106/versions-after.jpg)
-- Preuve avant / après (une-version) : [avant](../docs/pr-evidence/20261126170000106/une-version-before.jpg) → [après](../docs/pr-evidence/20261126170000106/une-version-after.jpg)
+- Preuve avant / après (versions) : [avant](../../docs/pr-evidence/20261126170000106/versions-before.jpg) → [après](../../docs/pr-evidence/20261126170000106/versions-after.jpg)
+- Preuve avant / après (une-version) : [avant](../../docs/pr-evidence/20261126170000106/une-version-before.jpg) → [après](../../docs/pr-evidence/20261126170000106/une-version-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (critère du numéro amendé, carte vide masquée)
 
 ```bash
