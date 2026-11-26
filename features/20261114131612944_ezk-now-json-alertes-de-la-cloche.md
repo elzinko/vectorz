@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, theme:mission-control, theme:autonomie]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande et un contrat ; l'écran suit dans une fiche cop1
@@ -158,3 +158,20 @@ Pas de preuve d'écran : la fiche livre une commande et un contrat. L'écran vie
   La question de session vient d'un journal que cop1 lit aussi en direct : une seule source, la méthode.
 - Références : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), [ADR-085](../docs/adr/ADR-085-prete-gate-reservations-via-blocked.md),
   règle [La rétro due est un choix chiffré](../products/mega-city/rules/token-economy/retro-due-choix-chiffre.md).
+
+## Note du 2026-11-26 — périmètre POC retenu (contrôle « prête » ezk-pm : GO)
+
+**En clair.** On livre d'abord la lecture : `ezk now --json` publie la liste des alertes, une par élément.
+La mémoire des alertes fermées, qui demande un geste d'écriture, part dans une fiche suivante.
+
+### Critères d'acceptation (POC)
+
+- [ ] `ezk now --json` rend `alertes[]`, `non_mesure[]` et `suites[]` dans un contrat versionné `now-show/v1`, avec `schema_version` ; l'exemple rangé est égal à la sortie.
+- [ ] Chaque alerte porte un des six types, avec id, titre, raison ou décision attendue, fichier source et date ; une raison inconnue donne « raison non tracée, à requalifier ».
+- [ ] Sur vectorz : toute fiche active bloquée donne `fiche-bloquee`, toute idée non bloquée `idee-a-groomer`, tout lot « à clore » sans étiquette `version-a-poser` ; la sortie texte de `ezk now` est inchangée.
+- [ ] Les types non mesurés (`question-session`, `sprint-sans-retro`) sont dits en mots dans `non_mesure[]` ; aucun type n'affiche un zéro qui ment.
+- [ ] Les contrats `board-show` et `backlog-show` portent `blockedLibelle` (même table que `decision`), ajout compatible sans changement de version ; `blocked` reste inchangé ; toute fiche bloquée a un libellé non vide.
+
+### Hors périmètre du POC
+
+- Fermer une alerte et s'en souvenir (`close`, `fermees[]`). Le daemon n'a pas de geste d'écriture. Voir la fiche « La cloche se souvient des alertes fermées ».
