@@ -26,11 +26,19 @@ export interface LawRule {
 /** Un skill ou un agent, et les règles qui s'y attachent. */
 export interface LawObject {
   id: string;
-  type: 'skill' | 'agent';
+  type: 'skill' | 'agent' | 'bundle';
   regles: string[];
 }
 
+/** Une loi installée (celle du poste, celle du projet) : où elle vit et si elle est posée. */
+export interface LawInstalled {
+  chemin: string;
+  installee: boolean;
+}
+
 export interface LawViewData {
+  /** Absent quand la méthode ne publie pas l'état des lois installées. */
+  lois?: Record<string, LawInstalled>;
   comptes: Record<Portee | 'total', number>;
   regles: LawRule[];
   objets: LawObject[];
@@ -84,6 +92,17 @@ function readRule(v: unknown): LawRule {
   };
 }
 
+function readLois(v: unknown): Record<string, LawInstalled> | undefined {
+  if (!isRecord(v)) return undefined;
+  const lois: Record<string, LawInstalled> = {};
+  for (const [nom, loi] of Object.entries(v)) {
+    if (isRecord(loi) && typeof loi.chemin === 'string' && typeof loi.installee === 'boolean') {
+      lois[nom] = { chemin: loi.chemin, installee: loi.installee };
+    }
+  }
+  return lois;
+}
+
 /** Traduit la réponse ; lève `EzkContractError` si sa forme n'est pas celle du contrat v1. */
 export function translateLaw(json: unknown): LawViewData {
   if (!isRecord(json)) fail('réponse sans objet JSON');
@@ -104,11 +123,12 @@ export function translateLaw(json: unknown): LawViewData {
   for (const o of objets) {
     if (!isRecord(o) || typeof o.id !== 'string' || !Array.isArray(o.regles))
       fail('objet mal formé');
-    if (o.type !== 'skill' && o.type !== 'agent') continue; // bundles et profils : montrés dans le détail d'une règle
+    if (o.type !== 'skill' && o.type !== 'agent' && o.type !== 'bundle') continue; // les profils ne sont pas montrés
     const ids = o.regles.map((l) =>
       isRecord(l) && typeof l.id === 'string' ? l.id : fail(`objet ${o.id} : lien mal formé`),
     );
     objects.push({ id: o.id, type: o.type, regles: ids });
   }
-  return { comptes: counts, regles: regles.map(readRule), objets: objects };
+  const lois = readLois(json.lois);
+  return { ...(lois && { lois }), comptes: counts, regles: regles.map(readRule), objets: objects };
 }

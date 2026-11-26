@@ -42,14 +42,17 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Critères d'acceptation
 
-- [ ] Seules les règles en vigueur sont listées ; le compteur dit « N ici · M au catalogue ».
-- [ ] Le titre d'une règle est en clair, pas son identifiant technique.
-- [ ] Les filtres d'où, de paquet et de niveau réduisent la liste.
-- [ ] Le tableau des 11 paquets donne l'état de chacun sur ce projet.
-- [ ] Le lien vers l'Annuaire figure en tête, sans en inventer la page.
-- [ ] Une donnée non publiée s'écrit « non publié » ; aucun « 0 » inventé.
+- [x] Seules les règles en vigueur sont listées ; le compteur dit « N ici · M au catalogue ».
+- [x] Le titre d'une règle est en clair, pas son identifiant technique.
+- [x] Les filtres d'où, de paquet et de niveau réduisent la liste.
+- [x] Le tableau des 11 paquets donne l'état de chacun sur ce projet.
+- [x] Aucun lien mort vers l'Annuaire : la page n'existe pas encore, le lien attend sa page. (Amendé le 2026-11-26 en revue, voir Hors périmètre.)
+- [x] Une donnée non publiée s'écrit « non publié » ; aucun « 0 » inventé.
 
 ## Comment vérifier
+
+- Preuve avant / après (loi) : [avant](../docs/pr-evidence/20261126170000109/loi-before.jpg) → [après](../docs/pr-evidence/20261126170000109/loi-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (infobulle des règles installées ; lien Annuaire hors périmètre, entériné)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- LawView.test.tsx
@@ -59,6 +62,7 @@ pnpm --dir products/cop1/packages/web test -- LawView.test.tsx
 
 ## Hors périmètre
 
+- Le lien « Annuaire de la méthode → » en tête de page. L'Annuaire est grisé dans le menu et aucune page ne l'accueille. Un lien vers rien serait un bouton sans cible. Il viendra avec la page de l'Annuaire. Décision de revue du 2026-11-26.
 - Modifier une règle depuis l'écran : elle change par une rétro.
 - La page de l'Annuaire.
 - Choisir les paquets d'un projet depuis l'écran.

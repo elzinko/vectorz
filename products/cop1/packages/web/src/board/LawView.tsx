@@ -1,37 +1,68 @@
 /**
- * Board unifié cop1 — vue Loi (fiche 20260826222044335).
+ * Board unifié cop1 — vue Loi (fiches 20260826222044335 et 20261126170000109).
  *
- * Les règles de la méthode, telles que `ezk law show --json` les publie : cinq comptes en tête, les
- * skills et agents à gauche, les règles à droite. Sélectionner un côté met l'autre en avant et trace
- * un trait vers chaque lien ; les traits ne sont dessinés que pour la sélection. La vue ne recompte
- * rien : sans la méthode, elle dit pourquoi, jamais des compteurs à zéro.
+ * « Ce qui s'applique ici » : quatre compteurs, les règles en vigueur sur le projet avec leurs filtres,
+ * puis les paquets et leur état. La page LIT : aucun geste d'écriture, une règle change par une rétro.
+ * La vue n'invente rien : sans la méthode elle dit pourquoi, un champ non publié se dit
+ * « non publié », jamais 0.
  */
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { type LawData, PORTEES, PORTEE_LABEL, type Portee, porteeText, shortName } from './lawModel.js';
+import { useEffect, useState } from 'react';
+import { InfoButton, PageHead } from './Chrome.js';
+import {
+  type EnVigueurRow,
+  type LawData,
+  type Origine,
+  ORIGINE_LABEL,
+  appliqueurs,
+  enVigueur,
+  loiProjetInstallee,
+  paquets,
+  reglePar,
+  shortName,
+  titreClair,
+} from './lawModel.js';
 import type { BoardProject } from './types.js';
-import { PageHead } from './Chrome.js';
 
 type LawState = { kind: 'loading' } | { kind: 'unavailable'; reason: string } | { kind: 'ok'; law: LawData };
-type Selection = { kind: 'objet' | 'regle'; id: string } | null;
-interface Line {
-  key: string;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-}
 
 /** Délai avant de redemander la loi quand le daemon la lit encore. */
 const LOADING_RETRY_MS = 2000;
+const ORIGINES: Origine[] = ['installee', 'demarrage', 'projet'];
+const NIVEAUX = ['MUST', 'SHOULD'] as const;
+const NON_PUBLIE = 'non publié';
+
+const LOI_INFO =
+  "Les règles de la méthode. La loi globale du poste est lue dans toutes les sessions. Cette page ne montre que ce qui s'applique à ce projet : la loi installée dans son dépôt, les règles que ses skills et agents lisent au démarrage, et ce que le projet ajoute. Rien ne se règle ici : une règle change par une rétro.";
+const SOURCE_INFO = 'Source : ezk law show --json. Les titres anglais de la méthode sont affichés tels que publiés.';
+const PAQUETS_INFO =
+  "Un paquet est un groupe de règles. Son état se déduit des règles : installé par la loi, lu au démarrage par des skills et agents, en partie, ou disponible (aucune règle en vigueur).";
+const PROFIL_INFO = "Ni la commande qui installe la loi ni le fichier compilé n'enregistrent le profil utilisé : à publier par la méthode.";
+
+const dOu = (row: EnVigueurRow): string => {
+  if (row.origine === 'installee') return 'installée';
+  if (row.origine === 'projet') return 'propre au projet';
+  const lecteurs = appliqueurs(row.rule);
+  return lecteurs.length ? `lue au démarrage par ${lecteurs.join(', ')}` : 'lue au démarrage';
+};
+
+/** Un compteur de l'en-tête : « — » quand la loi ne publie aucune règle, jamais un faux zéro. */
+function Cell({ value, label, title }: { value: number | null; label: string; title?: string }): JSX.Element {
+  const shown = value === null ? '—' : String(value);
+  return (
+    <div className="mcell" title={title} aria-label={`${label} : ${shown}`}>
+      <div className="mv">{shown}</div>
+      <div className="mk">{label}</div>
+    </div>
+  );
+}
 
 export function LawView({ project }: { project: BoardProject }): JSX.Element {
   const [state, setState] = useState<LawState>({ kind: 'loading' });
-  const [filter, setFilter] = useState<Portee | null>(null);
-  const [selection, setSelection] = useState<Selection>(null);
-  const [lines, setLines] = useState<Line[]>([]);
-  const box = useRef<HTMLDivElement>(null);
-  const objEls = useRef(new Map<string, HTMLElement>());
-  const ruleEls = useRef(new Map<string, HTMLElement>());
+  const [origine, setOrigine] = useState<Origine | null>(null);
+  const [paquet, setPaquet] = useState('');
+  const [niveau, setNiveau] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  const [opened, setOpened] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -52,7 +83,7 @@ export function LawView({ project }: { project: BoardProject }): JSX.Element {
         });
     };
     setState({ kind: 'loading' });
-    setSelection(null);
+    setOpened(null);
     load();
     return () => {
       alive = false;
@@ -61,53 +92,10 @@ export function LawView({ project }: { project: BoardProject }): JSX.Element {
   }, [project.name]);
 
   const law = state.kind === 'ok' ? state.law : null;
-  const shownRules = law ? law.regles.filter((r) => filter === null || r.portee === filter) : [];
-  const shownIds = new Set(shownRules.map((r) => r.id));
-  // Les liens de la sélection : [objet, règle], seulement vers ce qui est affiché.
-  const links: Array<[string, string]> = !law || !selection
-    ? []
-    : selection.kind === 'objet'
-      ? (law.objets.find((o) => o.id === selection.id)?.regles ?? []).filter((id) => shownIds.has(id)).map((id) => [selection.id, id])
-      : (law.regles.find((r) => r.id === selection.id)?.appliqueePar ?? [])
-          .filter((o) => law.objets.some((x) => x.id === o))
-          .map((o) => [o, selection.id]);
-  const linkedObjs = new Set(links.map(([o]) => o));
-  const linkedRules = new Set(links.map(([, r]) => r));
-  const linksKey = links.map(([o, r]) => `${o}>${r}`).join('|');
-
-  // Les traits se mesurent après le rendu : chaque lien va du bord droit d'un objet au bord gauche d'une règle.
-  useLayoutEffect(() => {
-    const container = box.current;
-    if (!container || linksKey === '') {
-      setLines([]);
-      return;
-    }
-    const c = container.getBoundingClientRect();
-    const next: Line[] = [];
-    for (const pair of linksKey.split('|')) {
-      const [o, r] = pair.split('>') as [string, string];
-      const a = objEls.current.get(o)?.getBoundingClientRect();
-      const b = ruleEls.current.get(r)?.getBoundingClientRect();
-      if (!a || !b) continue;
-      next.push({
-        key: pair,
-        x1: a.right - c.left,
-        y1: a.top + a.height / 2 - c.top,
-        x2: b.left - c.left,
-        y2: b.top + b.height / 2 - c.top,
-      });
-    }
-    setLines(next);
-  }, [linksKey]);
-
-  const selectedRule = law && selection?.kind === 'regle' ? law.regles.find((r) => r.id === selection.id) : undefined;
-  const toggle = (kind: 'objet' | 'regle', id: string): void =>
-    setSelection((s) => (s?.kind === kind && s.id === id ? null : { kind, id }));
-
-  return (
-    <>
-      <PageHead title="Loi" info="Les règles de la méthode, et celles que personne ne lit." />
-      {!law ? (
+  if (!law) {
+    return (
+      <>
+        <PageHead title="Loi" info={LOI_INFO} />
         <section className="card">
           <div className="row">
             <span className="ttl" role="status">
@@ -115,95 +103,190 @@ export function LawView({ project }: { project: BoardProject }): JSX.Element {
             </span>
           </div>
         </section>
-      ) : (
-        <>
-          <section className="lawcounts">
-            {PORTEES.map((p) => (
-              <button
-                type="button"
-                key={p}
-                className={filter === p ? 'lawcount on' : 'lawcount'}
-                aria-pressed={filter === p}
-                aria-label={`${PORTEE_LABEL[p]} : ${law.comptes[p]}`}
-                onClick={() => setFilter((f) => (f === p ? null : p))}
-              >
-                <b>{law.comptes[p]}</b> {PORTEE_LABEL[p]}
-              </button>
-            ))}
-          </section>
-          <div className="lawcols" ref={box}>
-            <section className="card">
-              <h3>Compétences et agents — {law.objets.length}</h3>
-              {law.objets.map((o) => (
-                <button
-                  type="button"
-                  key={o.id}
-                  ref={(el) => {
-                    if (el) objEls.current.set(o.id, el);
-                    else objEls.current.delete(o.id);
-                  }}
-                  className={`lawitem${selection?.kind === 'objet' && selection.id === o.id ? ' on' : ''}${linkedObjs.has(o.id) ? ' hl' : ''}`}
-                  aria-pressed={selection?.kind === 'objet' && selection.id === o.id}
-                  onClick={() => toggle('objet', o.id)}
-                >
-                  <span className="ttl">{shortName(o.id)}</span>
-                  <span className="meta">{o.type}</span>
-                </button>
+      </>
+    );
+  }
+
+  const inForce = enVigueur(law);
+  const published = law.regles.length > 0;
+  const count = (o: Origine): number => inForce.filter((r) => r.origine === o).length;
+  const packs = paquets(law);
+  const q = query.trim().toLowerCase();
+  const shown = inForce.filter(
+    ({ rule, origine: o }) =>
+      (origine === null || o === origine) &&
+      (paquet === '' || rule.bundles.includes(paquet)) &&
+      (niveau === null || rule.niveau === niveau) &&
+      (q === '' || titreClair(rule).toLowerCase().includes(q) || rule.id.toLowerCase().includes(q)),
+  );
+  const packOptions = [...new Set(inForce.flatMap((r) => r.rule.bundles))].sort();
+  const num = (n: number): number | null => (published ? n : null);
+  const filterBtn = (on: boolean, label: string, onClick: () => void, key?: string): JSX.Element => (
+    <button type="button" key={key ?? label} className={on ? 'tgl on' : 'tgl'} aria-pressed={on} onClick={onClick}>
+      {label}
+    </button>
+  );
+
+  return (
+    <>
+      <PageHead title="Loi" info={LOI_INFO} />
+
+      <section className="card" aria-label="Ce qui s'applique ici">
+        <h3>
+          Ce qui s'applique ici <InfoButton text={SOURCE_INFO} />
+        </h3>
+        <div className="mgrid">
+          <Cell value={num(inForce.length)} label="règles en vigueur" />
+          <Cell value={num(count('installee'))} label="installées" title={`Règles installées par le profil lié, lues partout sur ce poste. Loi du projet : ${loiProjetInstallee(law)}`} />
+          <Cell value={num(count('projet'))} label="propres au projet" />
+          <Cell value={num(packs.filter((p) => p.enVigueur > 0).length)} label="paquets en vigueur" title="Paquets dont au moins une règle s'applique ici" />
+        </div>
+        <div className="law-facts">
+          <span>
+            <b>Contrat du projet</b> <span className="tag idea">{NON_PUBLIE}</span>
+          </span>
+          <span>loi du projet : {loiProjetInstallee(law)}</span>
+          <span>
+            <b>Déployée par</b> profil non publié <InfoButton text={PROFIL_INFO} />
+          </span>
+        </div>
+      </section>
+
+      <section className="card" aria-label="Règles en vigueur sur ce projet">
+        <h3>
+          Règles — en vigueur sur ce projet
+          <span className="law-count">
+            {shown.length === inForce.length ? `${inForce.length} ici` : `${shown.length} sur ${inForce.length} ici`} · {law.regles.length} au catalogue
+          </span>
+          <InfoButton text={SOURCE_INFO} />
+        </h3>
+        <div className="law-filters">
+          <span>D'où :</span>
+          {filterBtn(origine === null, `toutes · ${inForce.length}`, () => setOrigine(null))}
+          {ORIGINES.map((o) => filterBtn(origine === o, `${ORIGINE_LABEL[o]} · ${count(o)}`, () => setOrigine(origine === o ? null : o), o))}
+          <span>·</span>
+          <label>
+            Paquet :{' '}
+            <select aria-label="Paquet" value={paquet} onChange={(e) => setPaquet(e.target.value)}>
+              <option value="">tous</option>
+              {packOptions.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
               ))}
-            </section>
-            <section className="card">
-              <h3>
-                {/* Le total vient de la liste rendue, jamais d'un compte publié à côté : « X / Y » ne ment pas. */}
-                Règles — {filter === null ? law.regles.length : `${shownRules.length} / ${law.regles.length}`}
-              </h3>
-              {shownRules.map((r) => (
-                <button
-                  type="button"
-                  key={r.id}
-                  ref={(el) => {
-                    if (el) ruleEls.current.set(r.id, el);
-                    else ruleEls.current.delete(r.id);
-                  }}
-                  className={`lawitem${selection?.kind === 'regle' && selection.id === r.id ? ' on' : ''}${linkedRules.has(r.id) ? ' hl' : ''}`}
-                  aria-pressed={selection?.kind === 'regle' && selection.id === r.id}
-                  onClick={() => toggle('regle', r.id)}
-                >
-                  <span className="ttl">{r.id}</span>
-                  <span className="meta">{r.niveau}</span>
-                </button>
-              ))}
-            </section>
-            <svg className="lawlinks" aria-hidden="true" data-links={lines.length}>
-              {lines.map((l) => (
-                <line key={l.key} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
-              ))}
-            </svg>
+            </select>
+          </label>
+          <span>·</span>
+          <span>Niveau :</span>
+          {filterBtn(niveau === null, 'tous', () => setNiveau(null), 'niveau-tous')}
+          {NIVEAUX.map((n) => filterBtn(niveau === n, n, () => setNiveau(niveau === n ? null : n)))}
+          <div className="search">
+            <input type="search" aria-label="Rechercher une règle" placeholder="Rechercher une règle…" value={query} onChange={(e) => setQuery(e.target.value)} />
           </div>
-          {selectedRule && (
-            <section className="card lawdetail" aria-label={`détail de ${selectedRule.id}`}>
-              <h3>{selectedRule.titre}</h3>
-              <dl>
-                <dt>Niveau</dt>
-                <dd>{selectedRule.niveau}</dd>
-                <dt>Portée</dt>
-                <dd>{porteeText(selectedRule)}</dd>
-                <dt>Bundles</dt>
-                <dd>{selectedRule.bundles.join(', ') || 'aucun'}</dd>
-                <dt>Profils</dt>
-                <dd>{selectedRule.profils.join(', ') || 'aucun'}</dd>
-                <dt>Appliquée par</dt>
-                <dd>{selectedRule.appliqueePar.map(shortName).join(', ') || 'personne'}</dd>
-                <dt>Vérifiée par</dt>
-                <dd>{selectedRule.verifieePar.map(shortName).join(', ') || 'personne'}</dd>
-                <dt>Fichier</dt>
-                <dd>
-                  <code>{selectedRule.fichier}</code>
-                </dd>
-              </dl>
-            </section>
-          )}
-        </>
-      )}
+        </div>
+        <div className="tblwrap">
+          <table className="tbl law-rules" aria-label="Règles en vigueur">
+            <thead>
+              <tr>
+                <th>Règle</th>
+                <th>Niveau</th>
+                <th>Réglé par</th>
+                <th>D'où</th>
+                <th>Paquet</th>
+                <th>Garantie</th>
+                <th>Vérifiée par</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((row) => (
+                <tr key={row.rule.id}>
+                  <td title={row.rule.id}>{titreClair(row.rule)}</td>
+                  <td>
+                    <span className={row.rule.niveau === 'MUST' ? 'tag must' : 'tag idea'}>{row.rule.niveau}</span>
+                  </td>
+                  <td title={row.origine === 'installee' ? 'La loi installée vient du profil lié au projet ; la méthode ne publie pas encore son nom' : undefined}>
+                    {reglePar(row.origine)}
+                  </td>
+                  <td className="faint">{dOu(row)}</td>
+                  <td>
+                    {row.rule.bundles.map((b) => (
+                      <span key={b} className="tag obj">
+                        {b}
+                      </span>
+                    ))}
+                  </td>
+                  <td title="Règle de la méthode : elle se change par une rétro, pas ici">{row.origine === 'projet' ? NON_PUBLIE : 'méthode'}</td>
+                  <td>{row.rule.verifieePar.map(shortName).join(', ') || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="faint law-foot">Une règle de la méthode ne se modifie pas ici : elle change par une rétro.</p>
+      </section>
+
+      <section className="card" aria-label="Paquets de la loi">
+        <h3>
+          Paquets — leur état sur ce projet <span className="law-count">{packs.length}</span>
+          <InfoButton text={PAQUETS_INFO} />
+        </h3>
+        <div className="tblwrap">
+          <table className="tbl" aria-label="Paquets">
+            <thead>
+              <tr>
+                <th>Paquet</th>
+                <th>Règles</th>
+                <th>Réglé par</th>
+                <th>État ici</th>
+                <th aria-label="Détail" />
+              </tr>
+            </thead>
+            <tbody>
+              {packs.flatMap((p) => {
+                const isOpen = opened === p.nom;
+                const row = (
+                  <tr key={p.nom}>
+                    <td>
+                      <span className="tag obj">{p.nom}</span>
+                    </td>
+                    <td>{p.total}</td>
+                    <td>{p.par}</td>
+                    <td>
+                      <span className={p.etat.kind === 'installe' ? 'tag ok' : p.etat.kind === 'disponible' ? 'tag idea' : 'tag warn'}>{p.etat.texte}</span>
+                    </td>
+                    <td className="law-act">
+                      {p.total > 0 && (
+                        <button type="button" className="btn ghost sm" aria-expanded={isOpen} onClick={() => setOpened(isOpen ? null : p.nom)}>
+                          {isOpen ? 'Fermer' : 'Ouvrir'}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+                if (!isOpen) return [row];
+                const detail = (
+                  <tr key={`${p.nom}-detail`} className="law-detail">
+                    <td colSpan={5}>
+                      <table className="tbl" aria-label={`Règles du paquet ${p.nom}`}>
+                        <tbody>
+                          {p.regles.map((r) => (
+                            <tr key={r.id}>
+                              <td title={r.id}>{titreClair(r)}</td>
+                              <td>{r.niveau}</td>
+                              <td className="faint">{enVigueur({ ...law, regles: [r] }).length ? 'en vigueur' : 'sans effet ici'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                );
+                return [row, detail];
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </>
   );
 }

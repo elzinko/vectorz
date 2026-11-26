@@ -44,13 +44,27 @@ describe('translateLaw — les comptes et la portée viennent de la méthode', (
     }
   });
 
-  it('les colonnes ne portent que les skills et les agents', () => {
+  it('les objets portent les skills, les agents et les paquets, jamais les profils', () => {
     const law = translateLaw(example());
-    expect(law.objets.every((o) => o.type === 'skill' || o.type === 'agent')).toBe(true);
-    const expected = example().objets.filter(
-      (o: { type: string }) => o.type === 'skill' || o.type === 'agent',
-    );
+    expect(law.objets.every((o) => ['skill', 'agent', 'bundle'].includes(o.type))).toBe(true);
+    const expected = example().objets.filter((o: { type: string }) => o.type !== 'profile');
     expect(law.objets.map((o) => o.id)).toEqual(expected.map((o: { id: string }) => o.id));
+  });
+
+  it('un paquet garde les ids de ses règles', () => {
+    const bundle = example().objets.find((o: { type: string }) => o.type === 'bundle');
+    const t = translateLaw(example()).objets.find((o) => o.id === bundle.id);
+    expect(t?.regles).toEqual(bundle.regles.map((r: { id: string }) => r.id));
+  });
+
+  it('la loi du projet : installée ou non, telle que publiée', () => {
+    expect(translateLaw(example()).lois?.projet?.installee).toBe(true);
+    const j = example();
+    j.lois.projet.installee = false;
+    expect(translateLaw(j).lois?.projet?.installee).toBe(false);
+    const k = example();
+    k.lois = undefined;
+    expect(translateLaw(k).lois).toBeUndefined();
   });
 
   it('un format inconnu est refusé, jamais deviné', () => {

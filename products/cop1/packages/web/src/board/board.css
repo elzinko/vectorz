@@ -630,3 +630,15 @@ button.pname-btn:hover { color: var(--accent); }
 .cfgcol .cfg-tool { margin-left: 0; text-transform: none; letter-spacing: 0; font-size: 12px; }
 @media (max-width: 760px) { .cfgcol .srow { grid-template-columns: 1fr auto; } .cfgcol .srow .val { grid-column: 1 / -1; order: 3; } }
 .cfgcol .tbl th[scope="row"] { font-weight: 600; }
+/* Loi (fiche 20261126170000109) */
+.law-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 11px 16px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+.law-facts b { color: var(--fg); font-weight: 600; }
+.law-count { margin-left: auto; text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--accent); }
+.law-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 4px 16px 12px; font-size: 12.5px; color: var(--muted); }
+.law-filters select { font: inherit; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--fg); }
+.law-filters .search { margin-left: auto; min-width: 180px; }
+.law-foot { margin: 0; padding: 10px 16px; font-size: 12px; border-top: 1px solid var(--line); }
+.law-act { text-align: right; }
+.law-detail > td { padding: 0 0 0 28px; background: var(--surface-2); }
+.tag.must { background: var(--fg); color: var(--surface); }
+.law-rules td:first-child { min-width: 260px; }
