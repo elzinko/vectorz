@@ -1,13 +1,14 @@
 /**
- * Board unifié cop1 — vue Process (fiche 20261102123552183).
+ * Board unifié cop1 — vue Process (fiches 20261102123552183 et 20261126170000108).
  *
- * Chaque fiche du projet posée sur son étape, de l'idée à la livraison, telle que la méthode la place
- * (`ezk board process --json`). Une fiche en sprint ou en revue dit ce qui l'y place : sa PR, sa
- * branche, sa session. La vue ne place aucune fiche elle-même ; sans données, elle dit pourquoi.
+ * Dans l'ordre de la maquette : « En clair », les fiches par statut, le schéma, les étapes de chaque
+ * compétence, qui appelle qui, livrer une version, l'équipe. La vue ne place aucune fiche elle-même
+ * (`ezk board process --json`) et n'invente rien : sans données, elle dit pourquoi.
  */
-import { ProcessMap } from './ProcessMap.js';
-import type { BoardProject, ProcessFiche } from './types.js';
 import { InfoButton } from './Chrome.js';
+import { ProcessMap } from './ProcessMap.js';
+import { ProcessSections } from './ProcessSections.js';
+import type { BoardProject, ProcessStageId } from './types.js';
 
 /** Les parkées restent hors flux : une ligne, plan inconnu = pas de faux zéro. */
 function ParkedNote({ parked }: { parked: number }): JSX.Element {
@@ -27,95 +28,96 @@ function unavailableReason(project: BoardProject): string | null {
   return null;
 }
 
-/** Le signal qui place la fiche : sa PR, sa branche, sa session, dans cet ordre. */
-function signal(f: ProcessFiche): string | null {
-  const parts = [f.pr, f.branch, f.session ? `session ${f.session.split('/').pop()}` : null].filter(Boolean);
-  return parts.length > 0 ? parts.join(' · ') : null;
+/** Les cinq statuts d'une fiche, dans l'ordre du flux, avec ce que chacun veut dire. */
+const STATUSES: { stage: ProcessStageId; label: string; kicker: string; hint: string }[] = [
+  { stage: 'idee', label: 'idée', kicker: 'backlog', hint: 'à groomer' },
+  { stage: 'prete', label: 'prête', kicker: 'backlog', hint: 'tirable' },
+  { stage: 'en-sprint', label: 'en sprint', kicker: 'sprint', hint: 'sur une branche' },
+  { stage: 'en-revue', label: 'en revue', kicker: 'sprint', hint: 'revue adverse' },
+  { stage: 'livree', label: 'livrée', kicker: 'intégrée', hint: 'sur main' },
+];
+
+function EnClair(): JSX.Element {
+  return (
+    <section className="card">
+      <h3>
+        En clair <InfoButton text="Fiche : une idée groomée jusqu'à être prête. Sprint : la construction d'un lot de fiches. Loi : les règles que lisent les skills et les agents." />
+      </h3>
+      <div className="bd pc-pad">
+        <p className="pc-clair">
+          Mega-city est une méthode pour faire avancer un produit avec des agents. Tout part d'une <b>fiche</b> (une idée groomée jusqu'à être prête).
+          Un <b>sprint</b> la construit : le skill /ezk-sprint convoque des agents (architecte, QA, dev, relecteur), passe la gate locale, puis une revue
+          adverse rend GO ou NO-GO avant l'intégration sur la branche principale. Au-dessus, /ezk-product-build enchaîne les sprints tout seul et ne
+          s'arrête que pour les décisions qui te reviennent ; une <b>loi</b> (des règles lues par les skills et les agents) encadre le tout.
+        </p>
+      </div>
+    </section>
+  );
 }
 
-interface ProcessViewProps {
-  project: BoardProject;
-  onOpenFiche: (id: string) => void;
-}
-
-export function ProcessView({ project, onOpenFiche }: ProcessViewProps): JSX.Element {
+function StatusTiles({ project }: { project: BoardProject }): JSX.Element {
   const reason = unavailableReason(project);
   const process = project.process;
   // Le compte des parkées vient du plan publié ; plan inconnu, on ne l'affiche pas (jamais un faux 0).
   const planKnown = !project.plan || project.plan.state === 'ok';
   const parked = planKnown ? project.funnel.parked : null;
   return (
-    <>
-      <div className="vh">
-        <h2>Process</h2>
-        <InfoButton text="Chaque fiche sur son étape, placée par la méthode." />
-      </div>
-      <ProcessMap project={project} />
+    <section className="card">
+      <h3>
+        Mes fiches par statut <InfoButton text="Chaque fiche sur son étape, placée par la méthode. Source : ezk board process --json." />
+      </h3>
       {reason !== null || !process ? (
-        <section className="card">
-          <div className="row">
-            <span className="ttl" role="status">
-              process indisponible : {reason}
-            </span>
-          </div>
-        </section>
+        <p className="pc-pad" role="status">
+          process indisponible : {reason}
+        </p>
       ) : (
-        <>
+        <div>
           {process.reviewUnknown && (
-            <p className="pnote" role="note">
+            <p className="pnote pc-note" role="note">
               {process.github
                 ? "GitHub n'a pas répondu : l'étape « en revue » est inconnue, une fiche en revue reste « en sprint »."
                 : "Ce projet a coupé GitHub : l'étape « en revue » est inconnue, une fiche en revue reste « en sprint »."}
             </p>
           )}
-          {parked !== null && <ParkedNote parked={parked} />}
-          <section className="kanban process">
-            {process.stages.map((g) => (
-              <div className="col" key={g.stage}>
-                <h4>
-                  {g.label}{' '}
-                  <span className="cnt" aria-label={`${g.label} : ${g.total} fiches`}>
-                    {g.fiches.length < g.total ? `${g.fiches.length} / ${g.total}` : g.total}
+          <div className="pc-stats">
+            {STATUSES.map(({ stage, label, kicker, hint }) => {
+              const total = process.stages.find((s) => s.stage === stage)?.total;
+              const unknown = total === undefined || (stage === 'en-revue' && process.reviewUnknown);
+              return (
+                <div className="pc-stat" role="group" aria-label={label} key={stage}>
+                  <span className="faint">{kicker}</span>
+                  <b>{label}</b>
+                  <span className="pc-count" data-testid="tile-count">
+                    {unknown ? '—' : total}
                   </span>
-                </h4>
-                {g.fiches.length === 0 ? (
-                  <div className="fcard muted">—</div>
-                ) : (
-                  g.fiches.map((f) => {
-                    const why = signal(f);
-                    const openable = project.fiches?.[f.id] !== undefined;
-                    const open = (): void => {
-                      if (openable) onOpenFiche(f.id);
-                    };
-                    return (
-                      <div
-                        className={openable ? 'fcard' : 'fcard muted'}
-                        role={openable ? 'button' : undefined}
-                        tabIndex={openable ? 0 : undefined}
-                        key={f.id}
-                        onClick={open}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            open();
-                          }
-                        }}
-                      >
-                        <div className="ft">{f.title}</div>
-                        <div className="fm">
-                          <span className={`prio ${f.priority}`}>{f.priority}</span>
-                          <span className="pill ver">{f.version || 'sans version'}</span>
-                        </div>
-                        {why && <div className="why">{why}</div>}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            ))}
-          </section>
-        </>
+                  <span className="faint">{hint}</span>
+                </div>
+              );
+            })}
+          </div>
+          {parked !== null && <ParkedNote parked={parked} />}
+        </div>
       )}
+    </section>
+  );
+}
+
+interface ProcessViewProps {
+  project: BoardProject;
+  onOpenConfig: () => void;
+}
+
+export function ProcessView({ project, onOpenConfig }: ProcessViewProps): JSX.Element {
+  return (
+    <>
+      <div className="vh">
+        <h2>Process</h2>
+        <InfoButton text="Chaque fiche sur son étape, placée par la méthode." />
+      </div>
+      <EnClair />
+      <StatusTiles project={project} />
+      <ProcessMap project={project} />
+      <ProcessSections project={project} onOpenConfig={onOpenConfig} />
     </>
   );
 }

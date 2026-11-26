@@ -43,3 +43,17 @@ export interface ProcessShow {
   liens: ProcessLien[];
   boucles: ProcessBoucle[];
 }
+
+/** Un contrat utilisable : ses listes de skills, de liens et de boucles existent. Sinon l'écran dit pourquoi. */
+function isProcessShow(value: unknown): value is ProcessShow {
+  const c = value as Partial<ProcessShow> | null | undefined;
+  return Array.isArray(c?.skills) && Array.isArray(c?.liens) && Array.isArray(c?.boucles);
+}
+
+/** Comment lire le contrat au daemon : commun à la carte et aux blocs sous la carte. */
+export const PROCESS_READING = {
+  path: 'process',
+  field: 'process',
+  isUsable: isProcessShow,
+  incompleteReason: 'contrat du process incomplet (compétences, liens ou boucles absents)',
+};

@@ -44,14 +44,17 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Critères d'acceptation
 
-- [ ] Les cinq tuiles de statut affichent des compteurs issus du contrat ; le kanban sous le schéma n'existe plus.
-- [ ] Le bloc « En clair » tient en quelques phrases et un « i ».
-- [ ] Chaque compétence a sa rangée d'étapes ; une étape ouvre son détail.
-- [ ] « Qui appelle qui » montre compétences, agents et commandes dans les trois tableaux de la maquette.
-- [ ] « Livrer une version » liste cinq étapes et renvoie à Configuration.
-- [ ] « Équipe » montre un niveau en français par agent ; une donnée manquante s'écrit « non publié ».
+- [x] Les cinq tuiles de statut affichent des compteurs issus du contrat ; le kanban sous le schéma n'existe plus.
+- [x] Le bloc « En clair » tient en quelques phrases et un « i ».
+- [x] Chaque compétence a sa rangée d'étapes ; une étape ouvre son détail.
+- [x] « Qui appelle qui » montre compétences, agents et commandes dans les trois tableaux de la maquette.
+- [x] « Livrer une version » liste cinq étapes et renvoie à Configuration.
+- [x] « Équipe » montre un niveau en français par agent ; une donnée manquante s'écrit « non publié ».
 
 ## Comment vérifier
+
+- Preuve avant / après (process) : [avant](../docs/pr-evidence/20261126170000108/process-before.jpg) → [après](../docs/pr-evidence/20261126170000108/process-after.jpg)
+- Revue adverse : ezk-reviewer GO (sept blocs tirés des contrats, kanban retiré)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- ProcessView.test.tsx

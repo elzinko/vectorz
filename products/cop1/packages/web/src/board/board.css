@@ -200,7 +200,6 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .mapframe { width: 100%; height: 75vh; border: 1px solid var(--line); border-radius: var(--r); background: #fff; }
 .mapempty { padding: 24px 16px; color: var(--muted); }
 @media (max-width: 760px) { .maps { grid-template-columns: 1fr; } }
-.kanban.process { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .kanban.k5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 /* --- Vue Recettes (fiche 20261104090518109) --- */
 .rc-list { border-top: 1px solid var(--line); }
@@ -228,7 +227,6 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
 .wf-parked { margin: 12px 0 0; font-size: 12.5px; color: var(--faint); border-top: 1px dashed var(--line); padding-top: 9px; }
 .tgl { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 8px; padding: 4px 11px; font-size: 12.5px; }
 .tgl.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
-.fcard .why { margin-top: 5px; font-size: 11.5px; color: var(--muted); font-family: var(--font-data); overflow-wrap: anywhere; }
 .col { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
 .col > h4 { font-size: 12px; padding: 11px 13px; display: flex; justify-content: space-between; color: var(--muted); border-bottom: 1px solid var(--line); }
 .col .cnt { font-family: var(--font-data); }
@@ -281,12 +279,12 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); lin
   .mgrid { grid-template-columns: repeat(2, 1fr); }
   .pmlist { grid-template-columns: 1fr; }
   .metrics4 { grid-template-columns: repeat(2, 1fr); }
-  .kanban, .kanban.k5, .kanban.process { grid-template-columns: repeat(2, 1fr); }
+  .kanban, .kanban.k5 { grid-template-columns: repeat(2, 1fr); }
   .cfg { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 620px) {
-  .kanban, .kanban.k5, .kanban.process { grid-template-columns: 1fr; }
+  .kanban, .kanban.k5 { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
   .shell { grid-template-columns: 50px 1fr; }
@@ -584,3 +582,34 @@ button.pname-btn:hover { color: var(--accent); }
 .obj-more { margin-left: 0; font-weight: 600; justify-self: center; }
 .obj-summary { font-size: 12.5px; color: var(--muted); margin: 6px 0 14px; }
 .vh h2 .tag.obj { font-size: 14px; }
+
+/* Process (fiche 20261126170000108) : les blocs sous le schéma, dans l'ordre de la maquette. */
+.pc-pad { padding: 4px 16px 14px; margin: 0; }
+.pc-clair { font-size: 14.5px; margin: 0; line-height: 1.5; }
+.pc-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; padding: 4px 16px 14px; }
+.pc-stat { display: grid; gap: 2px; justify-items: start; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); font-size: 12.5px; }
+.pc-stat b { font-size: 13px; }
+.pc-count { font-family: var(--font-data); font-size: 26px; font-weight: 600; line-height: 1.2; }
+.pc-lane { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 10px; align-items: start; padding: 8px 16px; border-top: 1px solid var(--line); }
+.pc-lane:first-child { border-top: 0; }
+.pc-who { display: grid; gap: 4px; justify-items: start; font-size: 12.5px; }
+.pc-flow { display: flex; flex-wrap: wrap; gap: 8px; counter-reset: pcstep; }
+.pc-step { counter-increment: pcstep; font: inherit; font-size: 13px; padding: 6px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--fg); cursor: pointer; }
+.pc-step::before { content: counter(pcstep) " · "; color: var(--faint); font-family: var(--font-data); }
+.pc-step:hover, .pc-step.cur { border-color: var(--accent); background: var(--accent-soft); }
+.pc-detail { margin: 4px 16px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); }
+.pc-detail h4 { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 16px 0; font-size: 14px; }
+.pc-x { margin-left: auto; font-size: 18px; line-height: 1; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.pc-sub { padding: 10px 16px 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); border-top: 1px solid var(--line); }
+.pc-tbl .tbl { margin-bottom: 4px; }
+.tbl th[scope="row"] { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--fg); font-size: 13px; }
+.cmd { font-family: var(--font-data); font-size: 12px; background: var(--surface-2); padding: 2px 6px; border-radius: 5px; margin-right: 6px; }
+.warnc { color: var(--warn); }
+.tblwrap { overflow-x: auto; }
+.tag + .tag { margin-left: 4px; }
+@media (max-width: 760px) {
+  .pc-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pc-lane { grid-template-columns: 1fr; }
+}
+.pc-note { margin: 4px 16px 10px; }
+.cmd + .faint { margin-right: 6px; }

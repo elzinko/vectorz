@@ -10,22 +10,9 @@
 import { type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { type Arc, type ArcKind, fitCamera, layoutProcess, type ProcessLayout, type Rect, stepKey } from './processLayout.js';
 import { InfoButton } from './Chrome.js';
-import type { ProcessEtape, ProcessShow, ProcessSkill } from './processShow.js';
+import { PROCESS_READING, type ProcessEtape, type ProcessShow, type ProcessSkill } from './processShow.js';
 import type { BoardProject } from './types.js';
 import { useDaemonContract } from './useDaemonContract.js';
-
-/** Un contrat utilisable : ses listes de skills, de liens et de boucles existent. Sinon la carte dit pourquoi. */
-function isProcessShow(value: unknown): value is ProcessShow {
-  const c = value as Partial<ProcessShow> | null | undefined;
-  return Array.isArray(c?.skills) && Array.isArray(c?.liens) && Array.isArray(c?.boucles);
-}
-
-const PROCESS_READING = {
-  path: 'process',
-  field: 'process',
-  isUsable: isProcessShow,
-  incompleteReason: 'contrat du process incomplet (compétences, liens ou boucles absents)',
-};
 
 /** La couleur d'une phase suit son rang dans le flux ; un outil a la sienne. */
 const HUES = ['backlog', 'sprint', 'retro'];

@@ -457,7 +457,7 @@ export function Board(): JSX.Element {
           ) : view === 'tool' ? (
             <ToolConfigView tool={toolConfig} onChange={setToolConfig} />
           ) : (
-            <ProcessView project={project} onOpenFiche={setFicheModalId} />
+            <ProcessView project={project} onOpenConfig={() => go('config')} />
           )}
           <Footer />
         </main>
