@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000107_objectifs-et-page-dun-objectif.md](../20261126170000107_objectifs-et-page-dun-objectif.md)
+> 🗎 Rendu de la fiche [features/20261126170000107_objectifs-et-page-dun-objectif.md](../done/20261126170000107_objectifs-et-page-dun-objectif.md)
 
 # 20261126170000107 — Les pages Objectifs et d'un objectif suivent la maquette, avec progression et filtre « en cours »
 

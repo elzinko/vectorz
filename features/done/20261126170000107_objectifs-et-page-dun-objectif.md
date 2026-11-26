@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (b10695aa)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -57,8 +57,8 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (objectifs) : [avant](../docs/pr-evidence/20261126170000107/objectifs-before.jpg) → [après](../docs/pr-evidence/20261126170000107/objectifs-after.jpg)
-- Preuve avant / après (un-objectif) : [avant](../docs/pr-evidence/20261126170000107/un-objectif-before.jpg) → [après](../docs/pr-evidence/20261126170000107/un-objectif-after.jpg)
+- Preuve avant / après (objectifs) : [avant](../../docs/pr-evidence/20261126170000107/objectifs-before.jpg) → [après](../../docs/pr-evidence/20261126170000107/objectifs-after.jpg)
+- Preuve avant / après (un-objectif) : [avant](../../docs/pr-evidence/20261126170000107/un-objectif-before.jpg) → [après](../../docs/pr-evidence/20261126170000107/un-objectif-after.jpg)
 - Revue adverse : ezk-reviewer GO (aucun geste absent simulé)
 
 ```bash
