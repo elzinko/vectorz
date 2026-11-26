@@ -26,7 +26,7 @@ import { GraphMap } from './GraphMap.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
 import { SessionsView } from './SessionsView.js';
-import { SprintsView } from './SprintsView.js';
+import { SprintsView, sprintLabel } from './SprintsView.js';
 import type { ViewId } from './viewIds.js';
 
 /** Le projet affiché par défaut à l'ouverture du board. */
@@ -302,7 +302,7 @@ export function Board(): JSX.Element {
     const page = (onClick?: () => void): CrumbItem => ({ label: pageLabel as string, onClick });
     if (runDetail) return [home, proj(false), page(() => setRunDetailId(null)), { label: runDetail.name }];
     if (view === 'overview') return [home, proj(true)];
-    if (view === 'sprints' && sprintFocus) return [home, proj(false), page(() => go('sprints')), { label: sprintFocus }];
+    if (view === 'sprints' && sprintFocus) return [home, proj(false), page(() => go('sprints')), { label: sprintLabel(project, sprintFocus) }];
     return [home, proj(false), page()];
   }
 
@@ -409,7 +409,7 @@ export function Board(): JSX.Element {
           ) : view === 'versions' ? (
             <VersionsView project={project} onOpenFiche={setFicheModalId} />
           ) : view === 'sprints' ? (
-            <SprintsView key={sprintFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={sprintFocus} />
+            <SprintsView key={sprintFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={sprintFocus} onFocusChange={setSprintFocus} onOpenSession={() => go('sessions')} />
           ) : view === 'sessions' ? (
             <SessionsView
               project={project}
