@@ -1,4 +1,4 @@
-import { cleanup, screen } from '@testing-library/react';
+import { cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderBoardOn } from './testing/renderBoard.js';
@@ -147,6 +147,24 @@ describe('Board — la coque', () => {
     expect(screen.getByText('Étapes du run')).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: /retour/ }));
     expect(screen.getByText('En cours — 1')).toBeTruthy();
+  });
+
+  it('la page d’une session n’a qu’un fil d’Ariane, celui de Board, qui ramène à la liste', async () => {
+    const data: BoardData = {
+      ...WITH_SESSION,
+      vectorz: {
+        ...(WITH_SESSION.vectorz as BoardProject),
+        pilotage: { milestones: [], sessions: [{ date: '2026-11-04', title: 'Session du 4 novembre', file: 'a.md', fiches: [], prs: [] }] },
+      },
+    };
+    await renderBoardOn(data);
+    await userEvent.click(screen.getByRole('button', { name: 'Sessions' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Session du 4 novembre' }));
+    const navs = screen.getAllByRole('navigation', { name: /Fil d'Ariane/ });
+    expect(navs).toHaveLength(1);
+    expect(navs[0]?.textContent).toBe('Projets › vectorz › Sessions › Session du 4 novembre');
+    await userEvent.click(within(navs[0] as HTMLElement).getByRole('button', { name: 'Sessions' }));
+    expect(screen.getByText('Closes — 1')).toBeTruthy();
   });
 
   it('« Tous les objectifs » de la vue d’ensemble ouvre la page Objectifs', async () => {

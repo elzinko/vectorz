@@ -48,16 +48,18 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
-## Critères d'acceptation
-
-- [ ] La liste sépare « En cours » et « Closes » et applique les filtres période, branche et la recherche.
-- [ ] Chaque ligne suit « titre · dates · branche · N lancements · N sprints » ; une donnée absente s'écrit « non publié ».
-- [ ] Aucune valeur « 0 » n'est affichée pour un champ que la méthode ne publie pas ; un test le prouve.
-- [ ] La page d'une session contient les cinq blocs demandés dans l'ordre.
-- [ ] Le récit s'affiche en sections, sans caractères Markdown bruts.
-- [ ] Le détail d'un lancement s'ouvre depuis la liste de ses lancements (comportement actuel conservé).
+- [x] La liste sépare « En cours » et « Closes » et applique les filtres période, branche et la recherche.
+- [x] Chaque ligne suit « titre · dates · branche · N lancements · N sprints » ; une donnée absente s'écrit « non publié ».
+- [x] Aucune valeur « 0 » n'est affichée pour un champ que la méthode ne publie pas ; un test le prouve.
+- [x] La page d'une session contient les cinq blocs demandés dans l'ordre.
+- [x] Le récit s'affiche en sections, sans caractères Markdown bruts.
+- [x] Le détail d'un lancement s'ouvre depuis la liste de ses lancements (comportement actuel conservé).
 
 ## Comment vérifier
+
+- Preuve avant / après (sessions) : [avant](../docs/pr-evidence/20261126170000105/sessions-before.jpg) → [après](../docs/pr-evidence/20261126170000105/sessions-after.jpg)
+- Preuve avant / après (une-session) : [avant](../docs/pr-evidence/20261126170000105/une-session-before.jpg) → [après](../docs/pr-evidence/20261126170000105/une-session-after.jpg)
+- Revue adverse : ezk-reviewer GO après correctif (faux zéro du fil, compteur honnête)
 
 ```bash
 pnpm --dir products/cop1/packages/web test -- SessionsView.test.tsx

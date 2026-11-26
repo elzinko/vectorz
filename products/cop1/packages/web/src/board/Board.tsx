@@ -303,6 +303,8 @@ export function Board(): JSX.Element {
     if (runDetail) return [home, proj(false), page(() => setRunDetailId(null)), { label: runDetail.name }];
     if (view === 'overview') return [home, proj(true)];
     if (view === 'sprints' && sprintFocus) return [home, proj(false), page(() => go('sprints')), { label: sprintLabel(project, sprintFocus) }];
+    const sessionTitle = view === 'sessions' && sessionFocus !== null ? project.pilotage?.sessions[sessionFocus]?.title : undefined;
+    if (sessionTitle) return [home, proj(false), page(() => setSessionFocus(null)), { label: sessionTitle }];
     return [home, proj(false), page()];
   }
 
@@ -412,6 +414,7 @@ export function Board(): JSX.Element {
             <SprintsView key={sprintFocus ?? 'liste'} project={project} onOpenFiche={setFicheModalId} initialOpen={sprintFocus} onFocusChange={setSprintFocus} onOpenSession={() => go('sessions')} />
           ) : view === 'sessions' ? (
             <SessionsView
+              key={sessionFocus ?? 'liste'}
               project={project}
               initialOpen={sessionFocus}
               onOpenChange={setSessionFocus}

@@ -231,6 +231,12 @@ export interface PilotageSession {
   file: string;
   fiches: string[];
   prs: string[];
+  /** La branche de la session, quand la méthode la publie. */
+  branch?: string;
+  /** Le jour d'ouverture (AAAA-MM-JJ), quand la méthode le publie. */
+  openedAt?: string;
+  /** Le récit découpé en sections, quand la méthode le publie. Le texte peut porter du gras, de l'italique et du code. */
+  sections?: { title: string; text: string }[];
 }
 
 /** Ce que la méthode publie pour le pilotage : l'avancement par milestone, et les sessions closes (la plus récente d'abord) que lit la page Sessions. */
