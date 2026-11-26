@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (b31b92f8)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -57,8 +57,8 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (sessions) : [avant](../docs/pr-evidence/20261126170000105/sessions-before.jpg) → [après](../docs/pr-evidence/20261126170000105/sessions-after.jpg)
-- Preuve avant / après (une-session) : [avant](../docs/pr-evidence/20261126170000105/une-session-before.jpg) → [après](../docs/pr-evidence/20261126170000105/une-session-after.jpg)
+- Preuve avant / après (sessions) : [avant](../../docs/pr-evidence/20261126170000105/sessions-before.jpg) → [après](../../docs/pr-evidence/20261126170000105/sessions-after.jpg)
+- Preuve avant / après (une-session) : [avant](../../docs/pr-evidence/20261126170000105/une-session-before.jpg) → [après](../../docs/pr-evidence/20261126170000105/une-session-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (faux zéro du fil, compteur honnête)
 
 ```bash

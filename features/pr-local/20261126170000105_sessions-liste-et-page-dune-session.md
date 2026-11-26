@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000105_sessions-liste-et-page-dune-session.md](../20261126170000105_sessions-liste-et-page-dune-session.md)
+> 🗎 Rendu de la fiche [features/20261126170000105_sessions-liste-et-page-dune-session.md](../done/20261126170000105_sessions-liste-et-page-dune-session.md)
 
 # 20261126170000105 — Les pages Sessions et d'une session suivent la maquette, sans faux zéro
 
