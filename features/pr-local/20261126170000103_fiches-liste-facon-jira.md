@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000103_fiches-liste-facon-jira.md](../20261126170000103_fiches-liste-facon-jira.md)
+> 🗎 Rendu de la fiche [features/20261126170000103_fiches-liste-facon-jira.md](../done/20261126170000103_fiches-liste-facon-jira.md)
 
 # 20261126170000103 — La page Fiches est une liste filtrable façon Jira, le kanban reste sous une icône
 

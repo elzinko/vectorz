@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (c3e580d3)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -54,7 +54,7 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (fiches) : [avant](../docs/pr-evidence/20261126170000103/fiches-before.jpg) → [après](../docs/pr-evidence/20261126170000103/fiches-after.jpg)
+- Preuve avant / après (fiches) : [avant](../../docs/pr-evidence/20261126170000103/fiches-before.jpg) → [après](../../docs/pr-evidence/20261126170000103/fiches-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (pastille objectif, motif brut, Groomer survolable ; puce close hors périmètre)
 
 ```bash
