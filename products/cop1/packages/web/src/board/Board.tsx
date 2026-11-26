@@ -13,6 +13,7 @@ import { ConfigView } from './ConfigView.js';
 import { defaultToolConfig, type Role, type Tier } from './configModel.js';
 import { ToolConfigView } from './ToolConfigView.js';
 import type { BoardData, BoardProject, FicheDetail, PlanState } from './types.js';
+import { AlertsBell } from './AlertsBell.js';
 import { FicheModal, type Pouce } from './FicheModal.js';
 import { FichesView } from './FichesView.js';
 import { FleetView } from './FleetView.js';
@@ -381,6 +382,7 @@ export function Board(): JSX.Element {
         >
           ⚙
         </button>
+        <AlertsBell project={project} onOpenFiche={setFicheModalId} />
       </div>
 
       <div className="shell">

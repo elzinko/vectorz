@@ -98,6 +98,7 @@ export class HttpServer {
   private processShowHandler: ProjectReadHandler | null = null;
   private graphHandler: ProjectReadHandler | null = null;
   private retrosHandler: ProjectReadHandler | null = null;
+  private nowHandler: ProjectReadHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
   private boundPort = 0;
@@ -178,6 +179,11 @@ export class HttpServer {
   /** fiche 20260826072532537 — GET /api/retros/<projet> : les rétros capturées et leurs propositions. */
   setRetrosHandler(handler: ProjectReadHandler): void {
     this.retrosHandler = handler;
+  }
+
+  /** fiche 20261126170000112 — GET /api/now/<projet> : les alertes de la cloche (`ezk now --json`). */
+  setNowHandler(handler: ProjectReadHandler): void {
+    this.nowHandler = handler;
   }
 
   setEventBus(eventBus: EventBus): void {
@@ -347,6 +353,12 @@ export class HttpServer {
     // fiche 20261117114544792 — le graphe de la méthode, servi depuis la mémoire du daemon
     if (req.method === 'GET' && req.url?.startsWith('/api/graph/')) {
       this.handleProjectRead('/api/graph/', 'graph_unavailable', this.graphHandler, req.url, res);
+      return;
+    }
+
+    // fiche 20261126170000112 — les alertes de la cloche, servies depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/now/')) {
+      this.handleProjectRead('/api/now/', 'now_unavailable', this.nowHandler, req.url, res);
       return;
     }
 

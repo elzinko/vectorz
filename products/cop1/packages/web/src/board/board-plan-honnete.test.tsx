@@ -12,6 +12,10 @@ import { renderBoardOn } from './testing/renderBoard.js';
 import { BOARD_DATA } from './testing/sampleBoard.js';
 import type { BoardData, BoardProject, FicheDetail } from './types.js';
 
+/** Les lectures du board seul : la cloche (`/api/now/…`) fait les siennes, qu'on ne compte pas ici. */
+const boardCalls = (fetchMock: ReturnType<typeof vi.fn>): number =>
+  fetchMock.mock.calls.filter(([url]) => !String(url).startsWith('/api/now/')).length;
+
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
@@ -74,7 +78,7 @@ describe('plan indisponible ou en chargement', () => {
     await vi.advanceTimersByTimeAsync(2000);
     expect(await screen.findByText('326')).toBeTruthy();
     expect(screen.queryByText(/plan en cours de chargement/)).toBeNull();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(boardCalls(fetchMock)).toBe(2);
     vi.useRealTimers();
   });
 
@@ -119,7 +123,7 @@ describe('la page suit la méthode sans qu’on la recharge', () => {
     expect(await screen.findByText('327')).toBeTruthy();
     await vi.advanceTimersByTimeAsync(2000);
     expect(await screen.findByText('328')).toBeTruthy();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(boardCalls(fetchMock)).toBe(2);
   });
 
   it('page laissée ouverte → elle redemande toutes les 15 s et suit la méthode', async () => {
@@ -132,10 +136,10 @@ describe('la page suit la méthode sans qu’on la recharge', () => {
     render(<Board />);
     expect(await screen.findByText('327')).toBeTruthy();
     await vi.advanceTimersByTimeAsync(2000);
-    expect(fetchMock).toHaveBeenCalledTimes(1); // rien ne se relit : pas de demande rapide
+    expect(boardCalls(fetchMock)).toBe(1); // rien ne se relit : pas de demande rapide
     await vi.advanceTimersByTimeAsync(13_000);
     expect(await screen.findByText('328')).toBeTruthy();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(boardCalls(fetchMock)).toBe(2);
   });
 
   it('une fiche livrée entre deux relectures → sa fenêtre ouverte reste ouverte', async () => {
@@ -156,7 +160,7 @@ describe('la page suit la méthode sans qu’on la recharge', () => {
     await user.click(screen.getByText(opened.title));
     expect(screen.getByRole('dialog')).toBeTruthy();
     await vi.advanceTimersByTimeAsync(15_000);
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(boardCalls(fetchMock)).toBe(2);
     expect(within(screen.getByRole('dialog')).getByText(opened.title)).toBeTruthy();
   });
 

@@ -9,6 +9,7 @@ import { EzkLawSource } from '../../board/ezkLawSource.js';
 import { EzkRecipesSource } from '../../board/ezkRecipesSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
 import { EzkGraphSource } from '../../board/ezkGraphSource.js';
+import { EzkNowSource } from '../../board/ezkNowSource.js';
 import { EzkRetroCapturesSource } from '../../board/ezkRetroCapturesSource.js';
 import { EzkProcessShowSource } from '../../board/ezkProcessShowSource.js';
 import { EzkProcessSource } from '../../board/ezkProcessSource.js';
@@ -55,6 +56,7 @@ export class DaemonService {
   private ezkProcessShowSource: EzkProcessShowSource | null = null;
   private ezkRetroCapturesSource: EzkRetroCapturesSource | null = null;
   private ezkGraphSource: EzkGraphSource | null = null;
+  private ezkNowSource: EzkNowSource | null = null;
 
   constructor(options: DaemonOptions = {}) {
     this.port = options.port ?? DEFAULT_PORT;
@@ -184,6 +186,18 @@ export class DaemonService {
         if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
         const snap = this.retroCapturesSource().get(root);
         if (snap.state === 'ok') return { status: 200, body: { state: 'ok', retros: snap.retros } };
+        if (snap.state === 'unavailable')
+          return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
+        return { status: 200, body: { state: 'loading' } };
+      },
+    });
+    // fiche 20261126170000112 — les alertes de la cloche : servies depuis la mémoire, relues en arrière-plan.
+    this.httpServer.setNowHandler({
+      read: (projet) => {
+        const root = this.boardProjects(projectPath).find((p) => p.name === projet)?.root;
+        if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
+        const snap = this.nowSource().get(root);
+        if (snap.state === 'ok') return { status: 200, body: { state: 'ok', now: snap.now } };
         if (snap.state === 'unavailable')
           return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
         return { status: 200, body: { state: 'loading' } };
@@ -322,6 +336,12 @@ export class DaemonService {
   private graphSource(): EzkGraphSource {
     this.ezkGraphSource ??= new EzkGraphSource({ command: this.ezkCommand });
     return this.ezkGraphSource;
+  }
+
+  /** La source des alertes de la cloche (`ezk now --json`), créée au premier besoin. */
+  private nowSource(): EzkNowSource {
+    this.ezkNowSource ??= new EzkNowSource({ command: this.ezkCommand });
+    return this.ezkNowSource;
   }
 
   /** La source des rétros capturées (`ezk retro captures --json`), créée au premier besoin. */
