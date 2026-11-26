@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (ace2d86b)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -53,7 +53,7 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (process) : [avant](../docs/pr-evidence/20261126170000108/process-before.jpg) → [après](../docs/pr-evidence/20261126170000108/process-after.jpg)
+- Preuve avant / après (process) : [avant](../../docs/pr-evidence/20261126170000108/process-before.jpg) → [après](../../docs/pr-evidence/20261126170000108/process-after.jpg)
 - Revue adverse : ezk-reviewer GO (sept blocs tirés des contrats, kanban retiré)
 
 ```bash

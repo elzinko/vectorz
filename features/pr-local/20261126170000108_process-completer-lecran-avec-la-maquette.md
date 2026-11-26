@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000108_process-completer-lecran-avec-la-maquette.md](../20261126170000108_process-completer-lecran-avec-la-maquette.md)
+> 🗎 Rendu de la fiche [features/20261126170000108_process-completer-lecran-avec-la-maquette.md](../done/20261126170000108_process-completer-lecran-avec-la-maquette.md)
 
 # 20261126170000108 — L'écran Process montre « En clair », les fiches par statut, les étapes, qui appelle qui, livrer une version et l'équipe
 
