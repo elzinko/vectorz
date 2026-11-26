@@ -27,6 +27,8 @@
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
+## Critères d'acceptation
+
 - [x] La pastille de l'en-tête affiche la dernière version étiquetée du projet choisi, et « board v0.17.0 » n'apparaît plus.
 - [x] Sans version étiquetée publiée, la pastille dit « aucune version » ou « non publié », jamais le numéro du paquet.
 - [x] Chaque page du groupe Projet affiche son fil d'Ariane ; chaque maillon, sauf le dernier, est un lien qui ouvre la bonne page.

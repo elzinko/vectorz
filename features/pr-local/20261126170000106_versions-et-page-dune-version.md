@@ -31,6 +31,8 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
+## Critères d'acceptation
+
 - [x] Le numéro que la méthode propose s'affiche à côté de « Versionner » quand elle le publie. (Amendé le 2026-11-26 en revue : la méthode publie un seul numéro, `numeroPropose` ; la liste de choix est en Hors périmètre.)
 - [x] Sans numéros publiés, la liste est absente et rien n'est inventé.
 - [x] La table des versions étiquetées montre les objectifs en pastilles.

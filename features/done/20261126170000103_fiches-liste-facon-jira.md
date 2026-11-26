@@ -44,6 +44,8 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
+## Critères d'acceptation
+
 - [x] La page ouvre en liste avec les colonnes fiche, étape, priorité, objectif, version, bloquée, avis.
 - [x] La recherche et les cinq filtres réduisent la liste ; les puces actives apparaissent et « Tout effacer » les retire.
 - [x] Les parkées sont masquées par défaut, avec leur puce ; la retirer les rend visibles. (Amendé le 2026-11-26 en revue : les fiches closes ne sont pas dans le contrat que lit l'écran, voir Hors périmètre.)

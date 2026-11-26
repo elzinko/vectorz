@@ -48,6 +48,8 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
+## Critères d'acceptation
+
 - [x] Le filtre État vaut « en cours » à l'ouverture, et sa puce se retire.
 - [x] La recherche et les filtres État, Version, Bloquées réduisent la liste.
 - [x] Chaque ligne montre une barre livrées / total ; un test vérifie 45 / 49 → proportion exacte.

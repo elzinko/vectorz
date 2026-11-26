@@ -33,6 +33,8 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
+## Critères d'acceptation
+
 - [x] La liste sépare « En cours » et « Closes » et applique les filtres période, branche et la recherche.
 - [x] Chaque ligne suit « titre · dates · branche · N lancements · N sprints » ; une donnée absente s'écrit « non publié ».
 - [x] Aucune valeur « 0 » n'est affichée pour un champ que la méthode ne publie pas ; un test le prouve.

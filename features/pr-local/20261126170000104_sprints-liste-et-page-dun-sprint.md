@@ -32,6 +32,8 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 Règles d'écran à respecter : boutons en mots avec la commande en infobulle, « i » au survol plutôt que du texte long, un seul « i » par ligne de réglage, « Afficher plus » centré avec le compteur à droite, pas de bouton sans besoin avéré, étapes « idée · prête · en sprint · en revue · livrée », « Objectifs » et « lancement » à l'écran.
 
+## Critères d'acceptation
+
 - [x] La liste affiche « Sprint N — but » quand le but est publié et le nom sinon.
 - [x] Les filtres type, état, période et la recherche réduisent la liste ; « Afficher plus » ajoute des lignes avec un compteur à droite.
 - [x] Chaque ligne indique badge ok/attention, rétro ou sans rétro, et un lien vers sa session.
