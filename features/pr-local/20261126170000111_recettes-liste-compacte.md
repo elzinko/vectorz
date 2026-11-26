@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000111_recettes-liste-compacte.md](../20261126170000111_recettes-liste-compacte.md)
+> 🗎 Rendu de la fiche [features/20261126170000111_recettes-liste-compacte.md](../done/20261126170000111_recettes-liste-compacte.md)
 
 # 20261126170000111 — La page Recettes est une liste compacte avec recherche, filtres et état en français
 
