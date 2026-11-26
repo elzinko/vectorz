@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000112_cloche-dalertes-de-len-tete.md](../20261126170000112_cloche-dalertes-de-len-tete.md)
+> 🗎 Rendu de la fiche [features/20261126170000112_cloche-dalertes-de-len-tete.md](../done/20261126170000112_cloche-dalertes-de-len-tete.md)
 
 # 20261126170000112 — La cloche d'alertes de l'en-tête montre une alerte par élément
 

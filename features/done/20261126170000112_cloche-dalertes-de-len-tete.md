@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: ready
+status: shipped
 blocked:
 depends: ["20261114131612944"]
-pr:
+pr: "local (94eec516)"
 evidence: before-after
 created: 2026-11-26
 ---
@@ -27,7 +27,7 @@ Captures : `/private/tmp/claude-501/-Users-elzinko-git-bacasable-vectorz--claude
 
 - Aujourd'hui l'en-tête n'a aucune alerte.
 - La maquette montre un compteur, un panneau, et pour chaque alerte un type, un projet, un titre, un texte et une croix.
-- La donnée vient de [`ezk now --json` publie les alertes de la cloche](done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md), pas encore livrée.
+- La donnée vient de [`ezk now --json` publie les alertes de la cloche](20261114131612944_ezk-now-json-alertes-de-la-cloche.md), pas encore livrée.
 
 ## Proposition
 
@@ -49,7 +49,7 @@ Règles d'écran à respecter : boutons en mots avec la commande en infobulle, �
 
 ## Comment vérifier
 
-- Preuve avant / après (cloche) : [avant](../docs/pr-evidence/20261126170000112/cloche-before.jpg) → [après](../docs/pr-evidence/20261126170000112/cloche-after.jpg)
+- Preuve avant / après (cloche) : [avant](../../docs/pr-evidence/20261126170000112/cloche-before.jpg) → [après](../../docs/pr-evidence/20261126170000112/cloche-after.jpg)
 - Revue adverse : ezk-reviewer GO après correctif (fermeture renvoyée à la fiche 113 ; capture après jointe, 49 alertes réelles)
 
 ```bash
@@ -60,7 +60,7 @@ pnpm --dir products/cop1/packages/web test -- Alerts.test.tsx
 
 ## Hors périmètre
 
-- Fermer une alerte et s'en souvenir : fiche « La cloche se souvient des alertes fermées » ([20261126170000113](20261126170000113_la-cloche-se-souvient-des-alertes-fermees.md)). Le contrat `now-show/v1` est en lecture seule ; le daemon n'a pas de geste d'écriture. Décision de revue du 2026-11-26, alignée sur le périmètre POC entériné par ezk-pm pour la fiche des alertes.
+- Fermer une alerte et s'en souvenir : fiche « La cloche se souvient des alertes fermées » ([20261126170000113](../20261126170000113_la-cloche-se-souvient-des-alertes-fermees.md)). Le contrat `now-show/v1` est en lecture seule ; le daemon n'a pas de geste d'écriture. Décision de revue du 2026-11-26, alignée sur le périmètre POC entériné par ezk-pm pour la fiche des alertes.
 - Écrire le contrat `ezk now --json` : c'est la fiche dont celle-ci dépend.
 - Notifications hors de l'écran.
 - Alertes par e-mail.
