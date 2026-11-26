@@ -42,6 +42,19 @@ export const ESCALATION_BY_REASON: Record<BlockedReason, string> = {
   legacy: 'drapeau hérité, raison non tracée — à requalifier avant de délibérer',
 };
 
+/** La phrase d'une raison hors liste fermée : jamais un blanc, toujours un geste (requalifier). */
+export const UNKNOWN_REASON = 'raison non tracée, à requalifier';
+
+/**
+ * La décision attendue pour un `blocked:`, en français : la phrase de `ESCALATION_BY_REASON`.
+ * Vide sans blocage ; `UNKNOWN_REASON` pour une raison hors liste fermée. Source unique du libellé
+ * publié par `board show`, `backlog show` et `now --json` (fiche 20261114131612944).
+ */
+export function blockedLibelle(blocked: string): string {
+  if (blocked.trim() === '') return '';
+  return isKnownBlockedReason(blocked) ? ESCALATION_BY_REASON[blockedType(blocked) as BlockedReason] : UNKNOWN_REASON;
+}
+
 /** Les champs d'une fiche que le filtre lit. Sous-ensemble du type `Fiche` (jamais le disque). */
 export interface FicheEligibility {
   status: string;

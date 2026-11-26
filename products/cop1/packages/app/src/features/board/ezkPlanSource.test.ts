@@ -61,7 +61,8 @@ describe('EzkPlanSource — jamais d’attente', () => {
     await vi.waitFor(() => expect(source.get('/p').state).toBe('ok'));
     const ok = source.get('/p');
     if (ok.state !== 'ok') throw new Error('attendu ok');
-    expect(ok.plan.done).toBe(1);
+    // L'exemple porte deux fiches livrées : celle de v1.0.0 et celle, sans étiquette, du lot « à clore » v1.5.0.
+    expect(ok.plan.done).toBe(2);
     expect(Object.keys(ok.fiches)).toContain('20990101000000003');
   });
 

@@ -12,6 +12,7 @@
  *   contracts/board-maps/v1/schema.json, example.json              ← les documents de la méthode
  *   contracts/process-show/v1/schema.json, example.json            ← les étapes fines de chaque skill
  *   contracts/graph-check/v1/schema.json, example.json             ← le graphe de la méthode, briques et liens
+ *   contracts/now-show/v1/schema.json, example.json                ← les alertes de la cloche (`ezk now --json`)
  * Chaque schéma est tiré du schéma zod ; chaque exemple est la sortie de la commande sur la fixture.
  * L'exemple de `ezk process show --json` porte les VRAIES étapes de `method/etapes.yml` (la fixture ne
  * donne que les réglages) : une étape ajoutée au fichier demande de régénérer l'exemple.
@@ -32,6 +33,7 @@ import { MAPS_SCHEMA_VERSION, MapsContractSchema } from '../core/maps-contract.j
 import { PROCESS_SCHEMA_VERSION, ProcessContractSchema } from '../core/process-contract.js';
 import { PROCESS_SHOW_SCHEMA_VERSION, ProcessShowSchema } from '../core/process-show.js';
 import { GRAPH_CHECK_SCHEMA_VERSION, GraphCheckSchema } from '../core/graph-check.js';
+import { NOW_SCHEMA_VERSION, NowShowSchema } from '../core/now-contract.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
 import { RECIPES_SCHEMA_VERSION, RecipesContractSchema, discover, recipesContract } from '../core/recipe-discovery.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
@@ -40,6 +42,7 @@ import { boardShowData } from './board-show.js';
 import { configShowData } from './config-show.js';
 import { graphCheckExample } from './graph-check.js';
 import { methodMapsData } from './method-maps.js';
+import { nowShowData } from './now-show.js';
 import { processShowData } from './process-show.js';
 
 /** Les fichiers rangés, chemins relatifs à `products/mega-city`. */
@@ -69,6 +72,9 @@ export const PROCESS_SHOW_EXAMPLE_FILE = `${PROCESS_SHOW_DIR}/example.json`;
 const GRAPH_CHECK_DIR = `contracts/graph-check/v${GRAPH_CHECK_SCHEMA_VERSION}`;
 export const GRAPH_CHECK_SCHEMA_FILE = `${GRAPH_CHECK_DIR}/schema.json`;
 export const GRAPH_CHECK_EXAMPLE_FILE = `${GRAPH_CHECK_DIR}/example.json`;
+const NOW_DIR = `contracts/now-show/v${NOW_SCHEMA_VERSION}`;
+export const NOW_SCHEMA_FILE = `${NOW_DIR}/schema.json`;
+export const NOW_EXAMPLE_FILE = `${NOW_DIR}/example.json`;
 
 /**
  * L'exemple de `ezk recipes --json` part d'entrées écrites ici, pas de `recipes/` : l'exemple ne doit
@@ -184,10 +190,11 @@ const FIXTURE_RELEASE_VERDICT = {
 const FIXTURE_FICHES: readonly FixtureFiche[] = [
   { file: 'features/20990101000000001_en-cours.md', frontMatter: 'id: "20990101000000001"\ntitle: En cours\npriority: P1\nstatus: ready\nversion: v1.0.0' },
   { file: 'features/20990101000000002_deux-points.md', frontMatter: 'id: "20990101000000002"\ntitle: Tour Driver.js : tracking\npriority: P2\nstatus: idea\nversion: v2.0.0', body: DETAIL_BODY },
-  { file: 'features/20990101000000003_bloquee.md', frontMatter: 'id: "20990101000000003"\ntitle: Bloquée\npriority: P1\nstatus: ready\nblocked: panel\nversion: v1.0.0' },
+  { file: 'features/20990101000000003_bloquee.md', frontMatter: 'id: "20990101000000003"\ntitle: Bloquée\npriority: P1\nstatus: ready\nblocked: panel\nversion: v1.0.0\ncreated: 2026-11-01' },
   { file: 'features/done/20990101000000004_remplacee.md', frontMatter: 'id: "20990101000000004"\ntitle: Remplacée\npriority: P2\nstatus: superseded\nversion: v1.0.0' },
   { file: 'features/20990101000000005_version-mal-ecrite.md', frontMatter: 'id: "20990101000000005"\ntitle: Version mal écrite\npriority: P3\nstatus: idea\nversion: V1.1', body: '**En clair.** La version est mal écrite.\n\n## Notes\n\nRien.\n' },
   { file: 'features/done/20990101000000006_livree.md', frontMatter: 'id: "20990101000000006"\ntitle: Livrée\npriority: P2\nstatus: shipped\nversion: v1.0.0\nmilestone: board' },
+  { file: 'features/done/20990101000000009_lot-a-clore.md', frontMatter: 'id: "20990101000000009"\ntitle: Lot à clore\npriority: P2\nstatus: shipped\nversion: v1.5.0' },
   { file: 'features/20990101000000007_parkee.md', frontMatter: 'id: "20990101000000007"\ntitle: Parkée\npriority: P3\nstatus: idea\nmilestone: parked' },
   { file: 'features/20990101000000008_sans-version.md', frontMatter: 'id: "20990101000000008"\ntitle: Sans version\npriority: P2\nstatus: idea\nmilestone: board\nlabels: [contrat]', crlf: true },
 ];
@@ -243,7 +250,30 @@ export function makeContractFixture(): string {
     ].join('\n'),
   );
   write('docs/sprints/notes.md', '# Notes libres, pas un compte rendu\n');
-  write('docs/captures/2026-10-31-retro-premiere.md', '# Rétro\n');
+  // Une rétro lisible : une proposition décidée, une en attente (la cloche ne publie que celle-ci).
+  write(
+    'docs/captures/2026-10-31-retro-premiere.md',
+    [
+      '---',
+      'type: retro',
+      'date: 2026-10-31',
+      'theme: Le premier sprint',
+      'scope: Le premier sprint',
+      'actions:',
+      '  - proposition: Relire les sorties avant de livrer',
+      '    kind: action',
+      '    status: ✅',
+      '    decision: Adopté',
+      '    date: 2026-11-01',
+      '  - proposition: Nommer chaque lancement',
+      '    kind: action',
+      '    status: ⏳',
+      '---',
+      '',
+      '# Rétro',
+      '',
+    ].join('\n'),
+  );
   write('docs/captures/2026-10-31-panel-board.md', '# Panel, pas une rétro\n');
   // Les sessions closes (fiche 20261102123552182) : 2 récits, et le README du dossier, qui n'en est pas un.
   write('docs/sessions/README.md', '# Les récits de session\n');
@@ -328,6 +358,8 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [GRAPH_CHECK_SCHEMA_FILE]: schemaText(GraphCheckSchema),
       // Un petit graphe écrit à la main : l'exemple ne bouge pas quand la méthode gagne une brique.
       [GRAPH_CHECK_EXAMPLE_FILE]: exampleText(graphCheckExample()),
+      [NOW_SCHEMA_FILE]: schemaText(NowShowSchema),
+      [NOW_EXAMPLE_FILE]: exampleText(nowShowData(root)),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

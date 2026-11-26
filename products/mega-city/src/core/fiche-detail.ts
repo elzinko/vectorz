@@ -10,6 +10,7 @@
  * monte quand un champ disparaît, change de nom ou de sens.
  */
 import { z } from 'zod';
+import { blockedLibelle } from '../backlog/run-eligibility.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { isParked } from './fiche-schema.js';
 import { ficheBodyText, sectionLines } from './fiche-sections.js';
@@ -33,6 +34,9 @@ const FicheDetailShape = {
   version: z.string().describe("Version ciblée telle qu'écrite, '' sans version."),
   labels: z.array(z.string()),
   blocked: z.string().describe("Raison du blocage (`blocked:`), '' si la fiche n'est pas bloquée."),
+  blockedLibelle: z
+    .string()
+    .describe("La raison du blocage en français : la décision attendue, même table que `ezk now --json` ; '' sans blocage."),
   pr: z.string(),
   enCours: z.boolean().describe('Une branche de travail est ouverte pour la fiche (ADR-0077).'),
   done: z.boolean().describe('La fiche est rangée dans `features/done/`.'),
@@ -139,6 +143,7 @@ export function buildFicheDetail(fiche: Fiche, text: string, enCours: boolean): 
     version: fiche.version,
     labels: fiche.labels,
     blocked: fiche.blocked,
+    blockedLibelle: blockedLibelle(fiche.blocked),
     pr: fiche.pr,
     enCours,
     done: fiche.done,

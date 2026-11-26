@@ -11,6 +11,7 @@ import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { blockedLibelle, ESCALATION_BY_REASON } from '../backlog/run-eligibility.js';
 import {
   BacklogShowFicheSchema,
   BacklogShowListeSchema,
@@ -187,6 +188,17 @@ describe('ezk backlog show — sur la fixture', () => {
     expect(liste.fiches.find((f) => f.id === FIXTURE_CRLF)?.enClair).toBe('Fiche de fixture.');
   });
 
+  // fiche 20261114131612944 — la raison de blocage en français, tirée de la même table que `decision`
+  it('chaque fiche, en liste comme seule, porte blockedLibelle : vide sans blocage, la phrase de la table sinon', () => {
+    const liste = backlogShowListe(fixture);
+    for (const f of liste.fiches) expect(f.blockedLibelle, f.id).toBe(blockedLibelle(f.blocked));
+    const bloquee = liste.fiches.find((f) => f.id === '20990101000000003');
+    expect(bloquee?.blocked).toBe('panel');
+    expect(bloquee?.blockedLibelle).toBe(ESCALATION_BY_REASON.panel);
+    expect(backlogShowFiche(fixture, '20990101000000003')?.blockedLibelle).toBe(ESCALATION_BY_REASON.panel);
+    expect(backlogShowFiche(fixture, FIXTURE_DETAIL)?.blockedLibelle).toBe('');
+  });
+
   // fiche 20261103191932064 — mission control montre les fiches livrées : la méthode les publie
   it('sans id : le résumé des fiches livrées, sans les closes rangées dans done/', () => {
     const liste = backlogShowListe(fixture);
@@ -201,6 +213,16 @@ describe('ezk backlog show — sur la fixture', () => {
         labels: [],
         sprint: 'second', // citée par les lots de « premier » et de « second » : le plus récent
       },
+      {
+        id: '20990101000000009',
+        title: 'Lot à clore',
+        priority: 'P2',
+        version: 'v1.5.0',
+        pr: '',
+        milestone: '',
+        labels: [],
+        sprint: null, // aucun lot scellé ne la cite
+      },
     ]);
     expect(liste.livrees.map((f) => f.id)).not.toContain('20990101000000004'); // superseded
     expect(liste.fiches.map((f) => f.id)).not.toContain('20990101000000006');
@@ -211,7 +233,7 @@ describe('ezk backlog show — sur la fixture', () => {
     const sansSprints = makeContractFixture();
     try {
       rmSync(join(sansSprints, 'docs', 'sprints'), { recursive: true, force: true });
-      expect(backlogShowListe(sansSprints).livrees.map((f) => f.sprint)).toEqual([null]);
+      expect(backlogShowListe(sansSprints).livrees.map((f) => f.sprint)).toEqual([null, null]);
     } finally {
       rmSync(sansSprints, { recursive: true, force: true });
     }

@@ -10,6 +10,7 @@
  "version": "v2.0.0",
  "labels": [],
  "blocked": "",
+ "blockedLibelle": "",
  "pr": "",
  "enCours": false,
  "done": false,

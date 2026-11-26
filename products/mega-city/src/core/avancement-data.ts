@@ -6,6 +6,7 @@
  * à la main. C'est le pendant « flux » de la carte « structure ». Le bord I/O (bin)
  * charge les fiches ; ici on ne fait que trier/compter/grouper.
  */
+import { blockedLibelle } from '../backlog/run-eligibility.js';
 import { compareLoose } from '../backlog/versions.js';
 import type { Fiche } from '../loaders/fiches.js';
 import { isParked, STATUTS, TERMINAUX } from './fiche-schema.js';
@@ -66,6 +67,8 @@ export interface BoardFiche {
   labels: string[];
   /** Drapeau orthogonal (sliver B, fiche 652) : raison si `blocked:` est posé, '' sinon. */
   blocked: string;
+  /** La décision attendue pour ce blocage, en français (table `ESCALATION_BY_REASON`) ; '' sans blocage. */
+  blockedLibelle: string;
   /** Version ciblée telle qu'écrite (`v1.2.0`, ou '' sans version) — fiche 20261029112813308. */
   version: string;
   /** Une branche de travail est ouverte pour la fiche (ADR-0077) — déduit, jamais écrit. */
@@ -124,6 +127,7 @@ const toBoard = (f: Fiche, inProgressIds: ReadonlySet<string>): BoardFiche => ({
   pr: f.pr,
   labels: f.labels,
   blocked: f.blocked,
+  blockedLibelle: blockedLibelle(f.blocked),
   version: f.version,
   enCours: inProgressIds.has(f.id),
   file: f.file,

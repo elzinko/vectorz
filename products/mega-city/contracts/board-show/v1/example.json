@@ -4,7 +4,7 @@
   "ready": 2,
   "idea": 4,
   "superseded": 1,
-  "shipped": 1
+  "shipped": 2
  },
  "tirables": 1,
  "actives": [
@@ -19,6 +19,7 @@
    "pr": "",
    "labels": [],
    "blocked": "",
+   "blockedLibelle": "",
    "version": "v1.0.0",
    "enCours": true,
    "file": "features/20990101000000001_en-cours.md"
@@ -34,6 +35,7 @@
    "pr": "",
    "labels": [],
    "blocked": "panel",
+   "blockedLibelle": "attend un panel adverse — décision structurelle à tenir avec le PO",
    "version": "v1.0.0",
    "enCours": false,
    "file": "features/20990101000000003_bloquee.md"
@@ -49,6 +51,7 @@
    "pr": "",
    "labels": [],
    "blocked": "",
+   "blockedLibelle": "",
    "version": "v2.0.0",
    "enCours": false,
    "file": "features/20990101000000002_deux-points.md"
@@ -66,6 +69,7 @@
     "contrat"
    ],
    "blocked": "",
+   "blockedLibelle": "",
    "version": "",
    "enCours": false,
    "file": "features/20990101000000008_sans-version.md"
@@ -81,6 +85,7 @@
    "pr": "",
    "labels": [],
    "blocked": "",
+   "blockedLibelle": "",
    "version": "V1.1",
    "enCours": false,
    "file": "features/20990101000000005_version-mal-ecrite.md"
@@ -144,12 +149,12 @@
   ]
  },
  "comptes": {
-  "total": 8,
+  "total": 9,
   "idees": 3,
   "pretes": 1,
   "enCours": 1,
   "parkees": 1,
-  "livrees": 1,
+  "livrees": 2,
   "closes": 1,
   "autres": 0,
   "bloquees": 1,
@@ -158,6 +163,7 @@
  "versions": {
   "courante": "v1.0.0",
   "ecartees": [
+   "v1.5.0",
    "v2.0.0"
   ],
   "lots": [
@@ -186,6 +192,23 @@
     "bloquees": [
      "20990101000000003"
     ],
+    "intrus": []
+   },
+   {
+    "version": "v1.5.0",
+    "nom": "",
+    "milestones": [],
+    "etat": "a-clore",
+    "cycleDeVie": "brouillon",
+    "etiquette": null,
+    "dateEtiquette": null,
+    "etiquetteGel": null,
+    "livrees": [
+     "20990101000000009"
+    ],
+    "aFaire": [],
+    "pretes": [],
+    "bloquees": [],
     "intrus": []
    },
    {
@@ -226,9 +249,14 @@
      "id": "20990101000000006",
      "titre": "Livrée",
      "objectif": "board"
+    },
+    {
+     "id": "20990101000000009",
+     "titre": "Lot à clore",
+     "objectif": ""
     }
    ],
-   "nombre": 2,
+   "nombre": 3,
    "gate": {
     "version": "v0.9.0",
     "verdict": "NO-GO",

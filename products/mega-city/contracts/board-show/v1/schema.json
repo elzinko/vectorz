@@ -62,6 +62,10 @@
             "type": "string",
             "description": "Raison du blocage (`blocked:`), '' si la fiche n'est pas bloquée."
           },
+          "blockedLibelle": {
+            "type": "string",
+            "description": "La raison du blocage en français : la décision attendue, même table que `ezk now --json` ; '' sans blocage."
+          },
           "version": {
             "type": "string",
             "description": "Version ciblée telle qu'écrite, '' sans version."
@@ -86,6 +90,7 @@
           "pr",
           "labels",
           "blocked",
+          "blockedLibelle",
           "version",
           "enCours",
           "file"

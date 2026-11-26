@@ -166,11 +166,13 @@ La mémoire des alertes fermées, qui demande un geste d'écriture, part dans un
 
 ### Critères d'acceptation (POC)
 
-- [ ] `ezk now --json` rend `alertes[]`, `non_mesure[]` et `suites[]` dans un contrat versionné `now-show/v1`, avec `schema_version` ; l'exemple rangé est égal à la sortie.
-- [ ] Chaque alerte porte un des six types, avec id, titre, raison ou décision attendue, fichier source et date ; une raison inconnue donne « raison non tracée, à requalifier ».
-- [ ] Sur vectorz : toute fiche active bloquée donne `fiche-bloquee`, toute idée non bloquée `idee-a-groomer`, tout lot « à clore » sans étiquette `version-a-poser` ; la sortie texte de `ezk now` est inchangée.
-- [ ] Les types non mesurés (`question-session`, `sprint-sans-retro`) sont dits en mots dans `non_mesure[]` ; aucun type n'affiche un zéro qui ment.
-- [ ] Les contrats `board-show` et `backlog-show` portent `blockedLibelle` (même table que `decision`), ajout compatible sans changement de version ; `blocked` reste inchangé ; toute fiche bloquée a un libellé non vide.
+- [x] `ezk now --json` rend `alertes[]`, `non_mesure[]` et `suites[]` dans un contrat versionné `now-show/v1`, avec `schema_version` ; l'exemple rangé est égal à la sortie.
+- [x] Chaque alerte porte un des six types, avec id, titre, raison ou décision attendue, fichier source et date ; une raison inconnue donne « raison non tracée, à requalifier ».
+- [x] Sur vectorz : toute fiche active bloquée donne `fiche-bloquee`, toute idée non bloquée `idee-a-groomer`, tout lot « à clore » sans étiquette `version-a-poser` ; la sortie texte de `ezk now` est inchangée.
+- [x] Les types non mesurés (`question-session`, `sprint-sans-retro`) sont dits en mots dans `non_mesure[]` ; aucun type n'affiche un zéro qui ment.
+- [x] Les contrats `board-show` et `backlog-show` portent `blockedLibelle` (même table que `decision`), ajout compatible sans changement de version ; `blocked` reste inchangé ; toute fiche bloquée a un libellé non vide.
+
+- Revue adverse : ezk-reviewer GO (contrat now-show/v1, sortie texte figée par test d'or, blockedLibelle compatible). Gate : pnpm --dir products/mega-city gate verte (2565 vitest, 49 suites de scripts).
 
 ### Hors périmètre du POC
 

@@ -12,6 +12,7 @@ import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { blockedLibelle, ESCALATION_BY_REASON } from '../backlog/run-eligibility.js';
 import { buildAvancementData } from '../core/avancement-data.js';
 import { type BoardContract, BoardContractSchema, buildBoardContract } from '../core/board-contract.js';
 import { TERMINAUX } from '../core/fiche-schema.js';
@@ -81,17 +82,17 @@ describe('board show --json — le contrat', () => {
 
   it('cause 5 — la version V1.1 est listée illisible, jamais avalée', () => {
     expect(data.versions.illisibles.map((f) => [f.id, f.version])).toEqual([['20990101000000005', 'V1.1']]);
-    expect(data.versions.lots.map((l) => l.version)).toEqual(['v1.0.0', 'v2.0.0']);
+    expect(data.versions.lots.map((l) => l.version)).toEqual(['v1.0.0', 'v1.5.0', 'v2.0.0']);
   });
 
   it('les comptes interprétés : parkées et sans version à part, colonnes qui se partagent les fiches', () => {
     expect(data.comptes).toEqual({
-      total: 8,
+      total: 9,
       idees: 3,
       pretes: 1,
       enCours: 1,
       parkees: 1,
-      livrees: 1,
+      livrees: 2,
       closes: 1,
       autres: 0,
       bloquees: 1,
@@ -101,7 +102,8 @@ describe('board show --json — le contrat', () => {
 
   it('les lots : état, cycle de vie, et la version en cours nommée', () => {
     expect(data.versions.courante).toBe('v1.0.0');
-    expect(data.versions.ecartees).toEqual(['v2.0.0']);
+    expect(data.versions.ecartees).toEqual(['v1.5.0', 'v2.0.0']);
+    expect(lot('v1.5.0')).toMatchObject({ etat: 'a-clore', etiquette: null });
     expect(lot('v1.0.0')).toMatchObject({ etat: 'en-cours', cycleDeVie: 'brouillon', etiquette: null });
     expect(lot('v2.0.0')).toMatchObject({ cycleDeVie: 'figee', etiquetteGel: 'freeze/v2.0.0' });
     expect(lot('v1.0.0')?.bloquees).toEqual(['20990101000000003']);
@@ -150,8 +152,9 @@ describe('board show --json — les versions publiées comme coupes', () => {
       livrees: [
         { id: '20990101000000004', titre: 'Remplacée', objectif: '' },
         { id: '20990101000000006', titre: 'Livrée', objectif: 'board' },
+        { id: '20990101000000009', titre: 'Lot à clore', objectif: '' },
       ],
-      nombre: 2,
+      nombre: 3,
       numeroPropose: null,
     });
   });
@@ -335,6 +338,21 @@ describe('board show --json — sur le vrai dépôt', () => {
       .sort();
     expect(real.milestones.flatMap((m) => m.livrees).sort()).toEqual(attendues);
     for (const m of real.milestones) expect(m.livrees, m.milestone).toHaveLength(m.shipped);
+  });
+});
+
+describe('board show --json — blockedLibelle (fiche 20261114131612944)', () => {
+  it('toute fiche bloquée porte un libellé non vide, tiré de la table des décisions ; sinon vide', () => {
+    for (const f of data.actives) {
+      if (f.blocked === '') expect(f.blockedLibelle, f.id).toBe('');
+      else expect(f.blockedLibelle, f.id).toBe(blockedLibelle(f.blocked));
+    }
+    expect(fiche('20990101000000003')?.blockedLibelle).toBe(ESCALATION_BY_REASON.panel);
+    expect(fiche('20990101000000003')?.blocked).toBe('panel'); // le mot anglais ne change pas
+  });
+
+  it('le numéro de version du contrat ne bouge pas : ajout compatible', () => {
+    expect(data.schema_version).toBe(1);
   });
 });
 

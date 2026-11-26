@@ -403,7 +403,7 @@ commands:
     project: true
   - domain: now
     run: bin/ezk-now.ts
-    summary: Boussole de session — que faire maintenant, vu l'état du dépôt (lecture seule).
+    summary: Boussole de session, que faire maintenant ; --json = alertes de la cloche.
     project: true
   - domain: scout
     verb: extract

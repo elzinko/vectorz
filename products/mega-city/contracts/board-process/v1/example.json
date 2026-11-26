@@ -105,6 +105,21 @@
    "label": "Livrée",
    "fiches": [
     {
+     "id": "20990101000000009",
+     "title": "Lot à clore",
+     "priority": "P2",
+     "status": "shipped",
+     "product": "—",
+     "version": "v1.5.0",
+     "milestone": "",
+     "file": "features/done/20990101000000009_lot-a-clore.md",
+     "session": null,
+     "branch": null,
+     "pr": null,
+     "stage": "livree",
+     "reviewIndetermine": false
+    },
+    {
      "id": "20990101000000006",
      "title": "Livrée",
      "priority": "P2",
@@ -126,6 +141,7 @@
   "versions": [
    "V1.1",
    "v1.0.0",
+   "v1.5.0",
    "v2.0.0"
   ],
   "milestones": [

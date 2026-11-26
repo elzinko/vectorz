@@ -19,6 +19,8 @@ const contract = (path: string): Json =>
   );
 const board = (): Json => contract('board-show/v1/example.json');
 const backlog = (): Json => contract('backlog-show/v1/example.json');
+/** Le lot « en cours » de l'exemple qui sert de modèle : désigné par sa version, pas par sa place (l'exemple porte aussi un lot « à clore »). */
+const upcomingLot = (b: Json): Json => b.versions.lots.find((l: Json) => l.version === 'v2.0.0');
 
 describe('translatePlan — mêmes chiffres que le contrat', () => {
   it("l'entonnoir et metrics.done valent les comptes du contrat (les closes ne sont pas des livrées)", () => {
@@ -58,17 +60,18 @@ describe('translatePlan — mêmes chiffres que le contrat', () => {
     const b = board();
     b.versions.lots.push(
       {
-        ...b.versions.lots[1],
+        ...upcomingLot(b),
         version: 'v0.9.0',
         etiquette: 'v0.9.0',
         livrees: ['a', 'b'],
         aFaire: [],
         pretes: [],
       },
-      { ...b.versions.lots[1], version: 'v3.0.0', aFaire: ['x'], pretes: [] },
+      { ...upcomingLot(b), version: 'v3.0.0', aFaire: ['x'], pretes: [] },
     );
     const { plan } = translatePlan(b, backlog());
-    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v0.9.0']);
+    // v1.5.0 est le lot « à clore » de l'exemple : il rejoint les réalisées, après la version étiquetée.
+    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v0.9.0', 'v1.5.0']);
     expect(plan.versions.past[0]?.date).toBe('taguée');
     expect(plan.versions.upcoming.map((v) => v.ver)).toEqual(['v2.0.0', 'v3.0.0']);
     expect(plan.versions.upcoming[0]?.date).toBeUndefined();
@@ -76,31 +79,31 @@ describe('translatePlan — mêmes chiffres que le contrat', () => {
 
   it('les versions passées vont de la plus récente à la plus ancienne (le contrat les range en croissant)', () => {
     const b = board();
-    const tagged = { ...b.versions.lots[1], aFaire: [], pretes: [], livrees: ['a'] };
+    const tagged = { ...upcomingLot(b), aFaire: [], pretes: [], livrees: ['a'] };
     b.versions.lots.unshift(
       { ...tagged, version: 'v0.8.0', etiquette: 'v0.8.0' },
       { ...tagged, version: 'v0.9.0', etiquette: 'v0.9.0' },
     );
     const { plan } = translatePlan(b, backlog());
-    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v0.9.0', 'v0.8.0']);
+    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v1.5.0', 'v0.9.0', 'v0.8.0']);
   });
 
   it('un lot que la méthode dit « à clore » quitte « à venir » et rejoint les réalisées (fiche 20261102100505774)', () => {
     const b = board();
     b.versions.lots.push(
       {
-        ...b.versions.lots[1],
+        ...upcomingLot(b),
         version: 'v2.5.0',
         etat: 'a-clore',
         livrees: ['a', 'b'],
         aFaire: [],
         pretes: [],
       },
-      { ...b.versions.lots[1], version: 'v3.0.0', aFaire: ['x'], pretes: [] },
+      { ...upcomingLot(b), version: 'v3.0.0', aFaire: ['x'], pretes: [] },
     );
     const { plan } = translatePlan(b, backlog());
     expect(plan.versions.upcoming.map((v) => v.ver)).toEqual(['v2.0.0', 'v3.0.0']);
-    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v2.5.0']);
+    expect(plan.versions.past.map((v) => v.ver)).toEqual(['v2.5.0', 'v1.5.0']);
     expect(plan.versions.past[0]?.toClose).toBe(true);
     expect(plan.versions.past[0]?.date).toBeUndefined();
     expect(plan.versions.upcoming.some((v) => v.toClose)).toBe(false);
@@ -118,14 +121,15 @@ describe('translatePlan — mêmes chiffres que le contrat', () => {
     const b = board();
     b.versions.lots = b.versions.lots.map(({ etat: _etat, ...lot }: Json) => lot);
     b.versions.lots.push({
-      ...b.versions.lots[1],
+      ...upcomingLot(b),
       version: 'v3.0.0',
       livrees: ['a'],
       aFaire: [],
       pretes: [],
     });
     const { plan } = translatePlan(b, backlog());
-    expect(plan.versions.upcoming.map((v) => v.ver)).toEqual(['v2.0.0', 'v3.0.0']);
+    // Sans `etat`, le lot v1.5.0 de l'exemple (non étiqueté) reste « à venir », comme avant la marque.
+    expect(plan.versions.upcoming.map((v) => v.ver)).toEqual(['v1.5.0', 'v2.0.0', 'v3.0.0']);
     expect(plan.versions.past).toEqual([]);
     expect(plan.versions.current?.toClose).toBeUndefined();
   });

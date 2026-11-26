@@ -1,0 +1,75 @@
+{
+ "schema_version": 1,
+ "alertes": [
+  {
+   "type": "fiche-bloquee",
+   "id": "20990101000000003",
+   "titre": "Bloquée",
+   "raison": "panel",
+   "decision": "attend un panel adverse — décision structurelle à tenir avec le PO",
+   "fichier": "features/20990101000000003_bloquee.md",
+   "date": "2026-11-01"
+  },
+  {
+   "type": "idee-a-groomer",
+   "id": "20990101000000002",
+   "titre": "Tour Driver.js : tracking",
+   "raison": "idée pas encore préparée",
+   "decision": "groomer la fiche jusqu’à ce qu’elle soit tirable",
+   "fichier": "features/20990101000000002_deux-points.md",
+   "date": ""
+  },
+  {
+   "type": "idee-a-groomer",
+   "id": "20990101000000008",
+   "titre": "Sans version",
+   "raison": "idée pas encore préparée",
+   "decision": "groomer la fiche jusqu’à ce qu’elle soit tirable",
+   "fichier": "features/20990101000000008_sans-version.md",
+   "date": ""
+  },
+  {
+   "type": "idee-a-groomer",
+   "id": "20990101000000005",
+   "titre": "Version mal écrite",
+   "raison": "idée pas encore préparée",
+   "decision": "groomer la fiche jusqu’à ce qu’elle soit tirable",
+   "fichier": "features/20990101000000005_version-mal-ecrite.md",
+   "date": ""
+  },
+  {
+   "type": "proposition-retro",
+   "id": "docs/captures/2026-10-31-retro-premiere.md#2",
+   "titre": "Nommer chaque lancement",
+   "raison": "proposition de rétro (action) en attente",
+   "decision": "accepter ou refuser la proposition",
+   "fichier": "docs/captures/2026-10-31-retro-premiere.md",
+   "date": "2026-10-31"
+  },
+  {
+   "type": "version-a-poser",
+   "id": "v1.5.0",
+   "titre": "v1.5.0",
+   "raison": "toutes les fiches du lot sont livrées, aucune étiquette posée",
+   "decision": "poser l’étiquette v1.5.0",
+   "fichier": "",
+   "date": ""
+  }
+ ],
+ "non_mesure": [
+  "Questions posées par la méthode dans une session (`question-session`) : pas encore calculées, aucune alerte de ce type n’est publiée.",
+  "Sprints clos sans rétro (`sprint-sans-retro`) : pas encore calculables, le compte rendu d’un sprint ne dit pas s’il a eu sa rétro."
+ ],
+ "suites": [
+  {
+   "kind": "suite",
+   "command": "/ezk-backlog list",
+   "reason": "plus de fiche tirable dans la version en cours — revois le stock"
+  },
+  {
+   "kind": "piste",
+   "command": "/ezk-retro run",
+   "reason": "si une itération vient de se terminer"
+  }
+ ]
+}

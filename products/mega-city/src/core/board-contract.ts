@@ -49,6 +49,9 @@ const BoardFicheSchema = z.strictObject({
   pr: z.string(),
   labels: z.array(z.string()),
   blocked: z.string().describe("Raison du blocage (`blocked:`), '' si la fiche n'est pas bloquée."),
+  blockedLibelle: z
+    .string()
+    .describe("La raison du blocage en français : la décision attendue, même table que `ezk now --json` ; '' sans blocage."),
   version: z.string().describe("Version ciblée telle qu'écrite, '' sans version."),
   enCours: z.boolean().describe('Une branche de travail est ouverte pour la fiche (ADR-0077).'),
   file: z.string().describe('Chemin de la fiche, relatif à la racine du projet.'),
