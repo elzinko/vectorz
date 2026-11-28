@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [theme:mission-control, recettes]
-status: idea
+status: ready
 blocked:
 depends: []
 pr:

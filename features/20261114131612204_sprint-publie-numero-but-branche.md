@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [sprint, contrat, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande et un contrat, aucun écran modifié
@@ -162,3 +162,4 @@ la méthode, éviterait la confusion à la rétro.
 - Risques : deux sprints clos le même jour avec le même slug se disputent un nom de fichier ; deux
   branches qui clôturent en parallèle peuvent se donner le même numéro (le recalcul depuis
   l'historique à la lecture tranche) ; le `.json` committé double le volume de `docs/sprints/`.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. Le critère « 55 entrées » se lit « autant d'entrées que de comptes rendus dans `docs/sprints/` ». La branche se lit dans l'en-tête du compte rendu, dans le dépôt. Le numéro continu est codé ; l'ADR attend le panel.

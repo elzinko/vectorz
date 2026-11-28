@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, recettes]
-status: idea
+status: ready
 blocked:
 depends: ["20261126170000114"]
 pr:
@@ -49,8 +49,12 @@ le crée.
 
 ## Comment vérifier
 
-- vue Recettes : http://localhost:5273 → menu Recettes
+- vue Recettes : http://localhost:5274 → menu Recettes
 
 ## Hors périmètre
 
 - Lancer la commande depuis l'écran (un geste d'écriture côté daemon serait une autre décision).
+
+## Notes / décisions
+
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. Le port de l'app est 5274.

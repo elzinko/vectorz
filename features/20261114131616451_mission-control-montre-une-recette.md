@@ -7,8 +7,9 @@ product: cop1
 milestone: board
 version:
 labels: [recettes, theme:mission-control]
-status: idea
+status: ready
 blocked:
+depends: ["20261114131616266"]
 pr:
 evidence: before-after
 created: 2026-11-14
@@ -156,3 +157,4 @@ Recette et les comptes du Catalogue (après), sur le modèle de `docs/pr-evidenc
   [Suggérer les recettes à implémenter par projet](20261029093423195_suggerer-recettes-par-projet-dashboard.md)
   renvoie à cette paire (son blocage `design` porte sur la suggestion, pas sur ces pages) ; le test
   écran ↔ JSON de la vue Recettes s'ajoute à la fiche du contrôle des écrans, pas dans un test neuf.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. « La recette est-elle un nœud du graphe ? » : oui, depuis le sprint du 17 novembre « les recettes entrent dans le graphe et sur la carte ». La page marche avec ou sans ce nœud.

@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [recettes, contrat]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande publiée, aucun écran modifié
@@ -158,3 +158,4 @@ pnpm --dir products/mega-city test -- src/__tests__/board-contract.test.ts src/c
   `show` publie une recette à la fois, la liste ne porte pas les corps.
 - Priorité P2 : la liste tourne déjà ; le corps et les comptes sont un confort de lecture, sans
   urgence PO enregistrée sur les recettes.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. La preuve « depuis le dossier principal » se fait par un test sur un jeu d'essai ; la commande manuelle reste en complément. Les noms de clés de la Proposition sont pris tels quels.
