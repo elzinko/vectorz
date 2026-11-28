@@ -120,7 +120,10 @@ export function recipesContract(
   input: Omit<DiscoveryInput, 'projectLabel'>,
   scope?: ImplementationScope,
 ): RecipesContract {
+  const declaredIds = new Set(input.projectRecipes.map((r) => r.id));
   const here = (r: DiscoveredRecipe): boolean => {
+    // Une recette que le projet déclare sous le même id est ajoutée (`ezk recipes add` écrit cette déclaration).
+    if (declaredIds.has(r.id)) return true;
     if (!scope) return false;
     const path = resolveSource(r.source, scope.methodRoot, scope.home);
     return path !== null && isInside(path, scope.projectRoot);

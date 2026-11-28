@@ -144,18 +144,10 @@ function readEntry(raw: unknown, index: number): ManifestEntry {
 
 function checkGrammar(commands: ManifestEntry[]): void {
   const seen = new Set<string>();
-  const byDomain = new Map<string, ManifestEntry[]>();
   for (const e of commands) {
     const key = `${e.domain} ${e.verb ?? ''}`.trim();
     if (seen.has(key)) fail(key, 'doublon (même domaine et même verbe).');
     seen.add(key);
-    byDomain.set(e.domain, [...(byDomain.get(e.domain) ?? []), e]);
-  }
-  for (const [domain, entries] of byDomain) {
-    const withVerb = entries.filter((e) => e.verb !== undefined).length;
-    if (withVerb !== 0 && withVerb !== entries.length) {
-      fail(domain, 'mêle une entrée sans verbe et des verbes : choisis l’un ou l’autre.');
-    }
   }
 }
 
@@ -294,21 +286,19 @@ export function route(manifest: Manifest, args: string[], env: RouterEnv): Resol
   if (entries.length === 0) {
     return { kind: 'error', exitCode: 2, message: `ezk : commande inconnue « ${domain} ». Essaie « ezk help ».` };
   }
-  let entry = entries.find((e) => e.verb === undefined);
-  let userArgs = tail;
+  // Un verbe connu gagne ; sinon l'entrée sans verbe (la commande par défaut du domaine) reçoit tout.
+  const [verb, ...rest] = tail;
+  const byVerb = verb === undefined ? undefined : entries.find((e) => e.verb === verb);
+  const entry = byVerb ?? entries.find((e) => e.verb === undefined);
+  const userArgs = byVerb ? rest : tail;
   if (!entry) {
-    const [verb, ...rest] = tail;
-    entry = entries.find((e) => e.verb === verb);
-    userArgs = rest;
-    if (!entry) {
-      const verbs = entries.map((e) => e.verb).join(', ');
-      const what = verb === undefined ? 'il manque un verbe' : `verbe inconnu « ${verb} »`;
-      return {
-        kind: 'error',
-        exitCode: 2,
-        message: `ezk ${domain} : ${what}. Verbes : ${verbs}. (« ezk help ${domain} » pour le détail.)`,
-      };
-    }
+    const verbs = entries.map((e) => e.verb).join(', ');
+    const what = verb === undefined ? 'il manque un verbe' : `verbe inconnu « ${verb} »`;
+    return {
+      kind: 'error',
+      exitCode: 2,
+      message: `ezk ${domain} : ${what}. Verbes : ${verbs}. (« ezk help ${domain} » pour le détail.)`,
+    };
   }
   const problem = rootProblem(entry, env);
   if (problem) return { kind: 'error', exitCode: 2, message: problem };

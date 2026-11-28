@@ -309,6 +309,13 @@ commands:
     summary: Montre les recettes de la méthode et celles déclarées dans ce projet (lecture seule).
     root: none
     project: true
+  - domain: recipes
+    verb: add
+    run: bin/ezk-recipes-add.ts
+    summary: Ajoute une recette du catalogue au projet en écrivant sa déclaration (<id>).
+    root: none
+    project: true
+    writes: true
   # --- carto : le carnet de tests (fiche 20261102182259416) ---
   - domain: carto
     verb: status

@@ -48,11 +48,11 @@ Le bord `bin/ezk-recipes.ts` lit ces fichiers. Rien n'écrit un `RECIPE.md` dans
 
 ## Critères d'acceptation
 
-- [ ] Après `ezk recipes add <id>` sur un projet, `ezk recipes --json` publie cette recette comme ajoutée (`ici: true`).
-- [ ] Une recette inconnue, en brouillon ou déjà ajoutée est refusée sans écrire, avec un message et un code non nul.
-- [ ] Le fichier écrit passe le contrôle des recettes (`regen-recipes.sh` / contrat strict de la fiche 002).
-- [ ] Le verbe figure dans `ezk help` et dans le manifeste.
-- [ ] Un test de script rejoue l'ajout sur un projet de test, puis la lecture.
+- [x] Après `ezk recipes add <id>` sur un projet, `ezk recipes --json` publie cette recette comme ajoutée (`ici: true`).
+- [x] Une recette inconnue, en brouillon ou déjà ajoutée est refusée sans écrire, avec un message et un code non nul.
+- [x] Le fichier écrit passe le contrôle des recettes (`regen-recipes.sh` / contrat strict de la fiche 002).
+- [x] Le verbe figure dans `ezk help` et dans le manifeste.
+- [x] Un test de script rejoue l'ajout sur un projet de test, puis la lecture.
 
 ## Comment vérifier
 
@@ -66,3 +66,4 @@ ezk recipes --json --root <projet-de-test>
 - Le bouton « + Ajouter » de mission control : fiche « Le bouton « + Ajouter » de la page Recettes montre la commande d'ajout ».
 - Copier le code de l'implémentation de référence dans le projet : la déclaration suffit à la découverte.
 - Retirer une recette d'un projet.
+- 2026-11-28 — Revue adverse (ezk-reviewer) : GO. La recette s'écrit dans `.vectorz/recipes/<nom>/RECIPE.md` du projet. Un verbe mal tapé (« recipes ad ») est refusé, code 2, au lieu de lister en silence. Remarque laissée : la commande écrit dans le dossier courant sans vérifier que c'est un projet ; le chemin écrit est annoncé.

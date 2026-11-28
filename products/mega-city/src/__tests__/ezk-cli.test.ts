@@ -36,6 +36,13 @@ commands:
   - domain: dashboard
     run: bin/ezk-map.ts
     summary: Ouvre le tableau de bord de la méthode.
+  - domain: shelf
+    run: bin/shelf.ts
+    summary: Montre l'étagère.
+  - domain: shelf
+    verb: add
+    run: bin/shelf-add.ts
+    summary: Ajoute un objet à l'étagère.
   - domain: map
     run: bin/ezk-map.ts
     summary: Ancien nom du tableau de bord.
@@ -54,7 +61,7 @@ const inside = { ownRoot: OWN, checkoutRoot: OWN };
 
 describe('parseManifest', () => {
   it('lit les entrées et pose la règle de racine « fixed » par défaut', () => {
-    expect(MANIFEST.commands).toHaveLength(6);
+    expect(MANIFEST.commands).toHaveLength(8);
     expect(MANIFEST.commands[0]).toMatchObject({ domain: 'law', verb: 'bind', root: 'none' });
     expect(MANIFEST.commands[1]?.root).toBe('fixed');
     expect(MANIFEST.internal).toEqual([{ script: 'bin/ezk.ts', reason: 'le routeur lui-même' }]);
@@ -79,12 +86,13 @@ describe('parseManifest', () => {
       /doublon/i,
     );
   });
-  it('refuse de mêler, dans un domaine, une entrée sans verbe et des verbes', () => {
-    bad(
-      '  - domain: a\n    summary: s\n    run: bin/x.ts\n' +
-        '  - domain: a\n    verb: b\n    summary: t\n    run: bin/y.ts\n',
-      /verbe/i,
-    );
+  it('accepte, dans un domaine, une entrée sans verbe (la commande par défaut) à côté de verbes', () => {
+    expect(() =>
+      parseManifest(
+        'commands:\n  - domain: a\n    summary: s\n    run: bin/x.ts\n' +
+          '  - domain: a\n    verb: b\n    summary: t\n    run: bin/y.ts\n',
+      ),
+    ).not.toThrow();
   });
   it('refuse un résumé sur plusieurs lignes (une ligne par commande dans l’aide)', () => {
     bad('  - domain: a\n    summary: "un\\ndeux"\n    run: bin/x.ts\n', /ligne/i);
@@ -114,6 +122,18 @@ describe('route', () => {
       kind: 'run',
       step: { script: 'bin/ezk-map.ts', args: ['--list'] },
     });
+  });
+
+  it('un domaine à commande par défaut et à verbes : le verbe connu gagne, le reste va à la commande par défaut', () => {
+    expect(route(MANIFEST, ['shelf', 'add', 'x'], inside)).toMatchObject({
+      kind: 'run',
+      step: { script: 'bin/shelf-add.ts', args: ['x'] },
+    });
+    expect(route(MANIFEST, ['shelf', '--json'], inside)).toMatchObject({
+      kind: 'run',
+      step: { script: 'bin/shelf.ts', args: ['--json'] },
+    });
+    expect(route(MANIFEST, ['shelf'], inside)).toMatchObject({ kind: 'run', step: { script: 'bin/shelf.ts', args: [] } });
   });
 
   it('un ancien nom marche encore et prévient', () => {
