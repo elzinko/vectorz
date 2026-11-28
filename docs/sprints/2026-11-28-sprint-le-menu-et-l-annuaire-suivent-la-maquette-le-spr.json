@@ -1,0 +1,77 @@
+{
+  "schema": "sprint-report@0.1",
+  "sprint": {
+    "slug": "le-menu-et-l-annuaire-suivent-la-maquette-le-spr",
+    "product": "mega-city",
+    "numero": 93,
+    "but": "Le menu et l'annuaire suivent la maquette, le sprint se numérote, une recette s'ajoute",
+    "branche": "claude/run-carte-methode-1117"
+  },
+  "generatedAt": "2026-11-28T11:12:59.601Z",
+  "window": {
+    "startTs": "2026-11-28T09:36:34.929Z",
+    "endTs": "2026-11-28T11:12:34.147Z"
+  },
+  "duration": {
+    "ms": 5759218,
+    "grain": "sprint"
+  },
+  "tokens": {
+    "grain": "session",
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheRead": 0,
+    "cacheCreation": 0,
+    "totalTokens": 0,
+    "note": "fenêtrage sprint vide (aucun message.usage dans la fenêtre) — repli au grain session (total du run).",
+    "mode": "local"
+  },
+  "kpi": {
+    "shippedFeatures": {
+      "count": 4,
+      "ids": [
+        "20261114131612204",
+        "20261126170000114",
+        "20261128093846629",
+        "20261128093846641"
+      ]
+    },
+    "blockages": {
+      "count": 0,
+      "events": []
+    },
+    "prRetouches": {
+      "total": 0,
+      "sansRetouche": 0,
+      "indetermine": 0
+    }
+  },
+  "lot": {
+    "entries": [
+      {
+        "id": "20261128093846629",
+        "result": "shipped",
+        "title": "La page Annuaire de la méthode : compétences, agents, règles, profils, commandes, glossaire (local 9d8a4b5d)"
+      },
+      {
+        "id": "20261128093846641",
+        "result": "shipped",
+        "title": "Le menu de mission control n'a plus que les entrées de la maquette : ni Cartes, ni Archives (local 9d8a4b5d)"
+      },
+      {
+        "id": "20261126170000114",
+        "result": "shipped",
+        "title": "Une commande de la méthode ajoute une recette du catalogue au projet (local 8f7e8a7c)"
+      },
+      {
+        "id": "20261114131612204",
+        "result": "shipped",
+        "title": "Le sprint se publie avec son numéro continu, son but et sa branche (local 5b74cbaf)"
+      }
+    ]
+  },
+  "steps": {
+    "ventilated": false,
+    "note": "Un seul gate_reached par sprint dans le journal — pas de ventilation par étape (BDD/archi/TDD/gate/revue/PR) dans ce MVP : total du sprint seulement."
+  }
+}
