@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [sprint, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une option de skill et un en-tête de capture
@@ -157,3 +157,4 @@ Pas de preuve d'écran : la fiche livre une option de compétence, un en-tête e
 - Références :
   [ADR-0068](../products/mega-city/docs/adr/0068-compte-rendu-de-sprint-faits-rapport-commit-archive.md),
   [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md).
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. À couper en deux dans le sprint : d'abord l'en-tête `sprints:` des captures et sa publication, ensuite l'option `--sprints`, les refus et les reports. Si la seconde moitié déborde, elle est parkée.

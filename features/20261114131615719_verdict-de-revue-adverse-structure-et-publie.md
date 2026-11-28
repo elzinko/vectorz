@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un en-tête de REVIEW.md et un contrat
@@ -158,3 +158,4 @@ Aucun écran ne change : pas de preuve avant / après.
   mission control n'a pas le droit de lire `REVIEW.md` ; il lit le contrat.
 - Risque : le pouce du PO n'a jamais servi (0 posé) ; deux verdicts côte à côte peuvent se confondre.
   Les noms distincts et le « i » de l'écran y répondent.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. Les revues ne s'écrasent pas : `REVIEW-<relecteur>-<date-heure>.md` dans le dossier de la fiche, `REVIEW.md` restant la dernière. La publication passe par `backlog show`.

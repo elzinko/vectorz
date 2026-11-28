@@ -7,10 +7,10 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
-evidence: none # un contrat et une adaptation cop1 sans nouvel écran
+evidence: before-after
 created: 2026-11-14
 ---
 
@@ -158,3 +158,4 @@ Aucune preuve d'écran : l'écran garde ses pages, il lit des champs de plus.
   pose les verdicts que l'écran montrera ensuite.
 - Risque : la v2 casse un cop1 non mis à jour. Le lot livre les deux côtés ensemble ; le traducteur
   dit « schema_version inconnu » plutôt que d'afficher du faux.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. La page Configuration change : une capture avant / après est jointe. Le contrat v2 et le traducteur de cop1 partent dans le même commit.

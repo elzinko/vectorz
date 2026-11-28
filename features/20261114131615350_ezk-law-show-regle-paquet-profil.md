@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [loi, contrat]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande publiée, aucun écran modifié
@@ -158,3 +158,4 @@ Aucun écran ne change : pas de preuve avant / après.
 - Contrainte : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md),
   mission control ne lit que les contrats JSON.
 - Risque : le refus de `bundle:` et `profile:` était voulu et testé ; cette fiche change ce test, et le dit.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. `lie_a` seul, pas de champ `host:`.

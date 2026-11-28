@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [sprint, contrat, theme:mission-control]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # un en-tête de récit et un contrat, aucun écran modifié
@@ -143,3 +143,4 @@ Le chargeur n'a pas de test aujourd'hui : en ajouter un sous `src/loaders/__test
 - Risques : un récit écrit à la main hors `ezk-archive` n'aura pas d'en-tête (le portier le
   signale, il ne le bloque pas) ; `Ouvert:` et `Clos:` sont des jours, la durée qui en sort est
   grossière ; deux sessions sur la même branche se partagent un journal de branche.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. La période se lit dans le journal de branche. À tirer après la fiche du sprint numéroté.

@@ -7,7 +7,7 @@ product: mega-city
 milestone: board
 version:
 labels: [contrat, convention]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: none # une commande publiée, aucun écran modifié
@@ -158,3 +158,4 @@ pnpm --dir products/mega-city test -- src/__tests__/glossaire-contract.test.ts  
 - Risques : deux glossaires qui divergent si le pointeur est oublié ou si une fiche recopie une
   définition (le critère « pointeur » et la mesure de suivi le gardent) ; le glossaire mélange mots
   d'écran et jargon à « supprimer » (le champ verdict laisse l'écran filtrer « garder », « traduire »).
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. Fichier YAML du glossaire dans la méthode, clés `termes / terme / en_clair / ou_il_joue / verdict / scrum`.

@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, sprint]
-status: idea
+status: ready
 blocked:
 pr:
 evidence: before-after
@@ -158,3 +158,4 @@ pnpm --dir products/cop1/packages/web test -- src/board/
   demande doit donc rester rejouable depuis l'écran.
 - Références : [ADR-086](../docs/adr/ADR-086-la-methode-seul-lecteur-des-fiches-contrat-json.md), les points 4 et 5 ;
   [ADR-0057](../products/mega-city/docs/adr/0057-le-tableau-de-bord-ecrit-un-seul-dossier.md), le pouce de revue, seule écriture depuis l'écran aujourd'hui.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. Une demande déposée suffit ; mission control ne lance pas la cérémonie. Le configurateur simulé est retiré. À tirer après la fiche des sprints nommés.

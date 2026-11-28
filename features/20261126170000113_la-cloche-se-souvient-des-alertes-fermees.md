@@ -7,7 +7,7 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control]
-status: idea
+status: ready
 blocked:
 depends: ["20261114131612944", "20261126170000112"]
 pr:
@@ -48,3 +48,7 @@ du 2026-11-26 a sorti la fermeture du périmètre, faute de geste d'écriture da
 ## Hors périmètre
 
 - Une alerte qui revient après fermeture parce que son élément a changé (à décider plus tard).
+
+## Notes / décisions
+
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. La commande de fermeture est nommée au build. Une alerte fermée le reste tant que son identifiant existe. Le fichier des fermetures est local, hors git.

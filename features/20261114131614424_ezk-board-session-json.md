@@ -143,3 +143,4 @@ Un test du nouveau contrat (`board-session`) est à ajouter sous `src/__tests__/
 - Risques : `collectWorktrees` lance `git worktree list` et rend `[]` sans git (dégradation déjà
   codée) ; une branche vue par deux worktrees ou un HEAD détaché n'a pas un nom unique ; le journal
   par worktree n'est pas encore le défaut.
+- 2026-11-28 — Contrôle « prête » (ezk-pm) : NO-GO. Le critère sur les lancements rattachés à une branche n'est pas vérifiable tant que le journal n'est pas par dossier de travail. La fiche reste une idée ; aucun écran de ce lot n'en dépend.
