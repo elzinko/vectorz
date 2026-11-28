@@ -44,11 +44,23 @@ describe('translateLaw — les comptes et la portée viennent de la méthode', (
     }
   });
 
-  it('les objets portent les skills, les agents et les paquets, jamais les profils', () => {
+  it('les objets portent les skills, les agents, les paquets et les profils, avec « lit ses règles »', () => {
     const law = translateLaw(example());
-    expect(law.objets.every((o) => ['skill', 'agent', 'bundle'].includes(o.type))).toBe(true);
-    const expected = example().objets.filter((o: { type: string }) => o.type !== 'profile');
-    expect(law.objets.map((o) => o.id)).toEqual(expected.map((o: { id: string }) => o.id));
+    expect(law.objets.map((o) => o.id)).toEqual(example().objets.map((o: { id: string }) => o.id));
+    expect(law.objets.some((o) => o.type === 'profile')).toBe(true);
+    for (const o of example().objets) {
+      expect(law.objets.find((x) => x.id === o.id)).toMatchObject({
+        type: o.type,
+        litSesRegles: o.litSesRegles,
+      });
+    }
+  });
+
+  it('chaque règle garde sa catégorie', () => {
+    const law = translateLaw(example());
+    for (const r of example().regles) {
+      expect(law.regles.find((x) => x.id === r.id)?.categorie).toBe(r.categorie);
+    }
   });
 
   it('un paquet garde les ids de ses règles', () => {
@@ -75,6 +87,12 @@ describe('translateLaw — les comptes et la portée viennent de la méthode', (
     const k = example();
     k.comptes = { total: 1 };
     expect(() => translateLaw(k)).toThrow(EzkContractError);
+    const l = example();
+    l.objets[0].type = 'gadget';
+    expect(() => translateLaw(l)).toThrow(EzkContractError);
+    const m = example();
+    m.objets[0].litSesRegles = 'oui';
+    expect(() => translateLaw(m)).toThrow(EzkContractError);
   });
 });
 

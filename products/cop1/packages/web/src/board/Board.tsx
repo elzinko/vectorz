@@ -22,7 +22,7 @@ import { ObjectifsView } from './ObjectifsView.js';
 import { VersionsView } from './VersionsView.js';
 import { LawView } from './LawView.js';
 import { RecipesView } from './RecipesView.js';
-import { MapsView } from './MapsView.js';
+import { AnnuaireView } from './AnnuaireView.js';
 import { GraphMap } from './GraphMap.js';
 import { ProcessView } from './ProcessView.js';
 import { RunDetailView } from './RunDetailView.js';
@@ -58,18 +58,13 @@ const PROJECT_NAV: NavItem[] = [
   { id: 'law', icon: '§', label: 'Loi' },
   { id: 'config', icon: '⚙', label: 'Configuration' },
   { id: 'recipes', icon: '✦', label: 'Recettes' },
-  // Seul écart à la maquette (fiche 20261124111116126) : aucune autre page ne montre les documents de la méthode.
-  { id: 'maps', icon: '▤', label: 'Cartes' },
 ];
 
+/** Le groupe Global de la maquette : Projets et Annuaire de la méthode, rien d'autre (fiche 20261128093846641). */
 const GLOBAL_NAV: NavItem[] = [
   { id: 'fleet', icon: '◳', label: 'Projets' },
-  { id: 'graph', icon: '◎', label: 'Carte de la méthode' },
+  { id: 'annuaire', icon: '☰', label: 'Annuaire de la méthode' },
 ];
-
-/** L'Annuaire de la méthode n'existe pas encore : son entrée est grisée et dit ce qui manque. */
-const ANNUAIRE_INFO =
-  "À venir. La méthode publie déjà ses commandes (ezk help --json) ; il lui reste à publier son graphe en contrat compilé.";
 
 function basename(path: string): string {
   const parts = path.split('/').filter(Boolean);
@@ -300,7 +295,15 @@ export function Board(): JSX.Element {
     liveFiche ?? (ficheModalId && lastFicheSeen.current?.id === ficheModalId ? lastFicheSeen.current : undefined);
 
   const pageLabel = PROJECT_NAV.find((n) => n.id === view)?.label;
-  const crumbTrail: CrumbItem[] | null = pageLabel ? projectTrail() : null;
+  const crumbTrail: CrumbItem[] | null = pageLabel ? projectTrail() : methodTrail();
+
+  /** Le fil d'Ariane des pages de la méthode : la carte se range sous l'Annuaire (fiche 20261128093846641). */
+  function methodTrail(): CrumbItem[] | null {
+    const home: CrumbItem = { label: 'Projets', onClick: () => go('fleet') };
+    if (view === 'annuaire') return [home, { label: 'Annuaire de la méthode' }];
+    if (view === 'graph') return [home, { label: 'Annuaire de la méthode', onClick: () => go('annuaire') }, { label: 'Carte de la méthode' }];
+    return null;
+  }
 
   function projectTrail(): CrumbItem[] {
     const home: CrumbItem = { label: 'Projets', onClick: () => go('fleet') };
@@ -389,18 +392,8 @@ export function Board(): JSX.Element {
         <nav className="nav" aria-label="Navigation du board">
           <div className="grp">Global</div>
           {GLOBAL_NAV.map(navButton)}
-          <button type="button" disabled title={ANNUAIRE_INFO} aria-label={`Annuaire de la méthode — ${ANNUAIRE_INFO}`}>
-            <span className="ic" aria-hidden="true">☰</span>
-            <span className="lbl">Annuaire de la méthode</span>
-            <span className="faint" aria-hidden="true">ⓘ</span>
-          </button>
           <div className="grp">Projet · {project.name}</div>
           {PROJECT_NAV.map(navButton)}
-          <div className="grp">Archives</div>
-          <a href="/v1/index.html" title="Pages archivées de la v1 (benchmark, diagrammes qualité, cartes)">
-            <span className="ic" aria-hidden="true">🗄</span>
-            <span className="lbl">v1 / archives</span>
-          </a>
         </nav>
 
         <main className="main">
@@ -452,14 +445,14 @@ export function Board(): JSX.Element {
               }
               onGotoTool={() => go('tool')}
             />
+          ) : view === 'annuaire' ? (
+            <AnnuaireView project={project} onOpenGraph={() => go('graph')} onOpenLaw={() => go('law')} />
           ) : view === 'graph' ? (
             <GraphMap project={project} />
           ) : view === 'law' ? (
             <LawView project={project} />
           ) : view === 'recipes' ? (
             <RecipesView project={project} />
-          ) : view === 'maps' ? (
-            <MapsView project={project} />
           ) : view === 'tool' ? (
             <ToolConfigView tool={toolConfig} onChange={setToolConfig} />
           ) : (

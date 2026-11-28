@@ -9,6 +9,7 @@ export interface LawRule {
   id: string;
   titre: string;
   niveau: string;
+  categorie: string;
   fichier: string;
   bundles: string[];
   profils: string[];
@@ -20,7 +21,9 @@ export interface LawRule {
 
 export interface LawObject {
   id: string;
-  type: 'skill' | 'agent' | 'bundle';
+  type: 'skill' | 'agent' | 'bundle' | 'profile';
+  /** Le skill ou l'agent lit ses règles au démarrage. */
+  litSesRegles: boolean;
   regles: string[];
 }
 

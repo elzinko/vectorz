@@ -14,6 +14,7 @@ export interface LawRule {
   id: string;
   titre: string;
   niveau: string;
+  categorie: string;
   fichier: string;
   bundles: string[];
   profils: string[];
@@ -23,10 +24,14 @@ export interface LawRule {
   portee: Portee;
 }
 
-/** Un skill ou un agent, et les règles qui s'y attachent. */
+const OBJECT_TYPES = ['skill', 'agent', 'bundle', 'profile'] as const;
+
+/** Un skill, un agent, un paquet ou un profil, et les règles qui s'y attachent. */
 export interface LawObject {
   id: string;
-  type: 'skill' | 'agent' | 'bundle';
+  type: (typeof OBJECT_TYPES)[number];
+  /** Le skill ou l'agent lit ses règles au démarrage. */
+  litSesRegles: boolean;
   regles: string[];
 }
 
@@ -56,14 +61,26 @@ function fail(what: string): never {
 
 function readRule(v: unknown): LawRule {
   if (!isRecord(v)) fail('règle sans objet');
-  const { id, titre, niveau, fichier, bundles, profils, appliqueePar, verifieePar, portee } = v;
+  const {
+    id,
+    titre,
+    niveau,
+    categorie,
+    fichier,
+    bundles,
+    profils,
+    appliqueePar,
+    verifieePar,
+    portee,
+  } = v;
   if (
     typeof id !== 'string' ||
     typeof titre !== 'string' ||
     typeof niveau !== 'string' ||
+    typeof categorie !== 'string' ||
     typeof fichier !== 'string'
   ) {
-    fail('règle sans id, titre, niveau ou fichier');
+    fail('règle sans id, titre, niveau, catégorie ou fichier');
   }
   if (
     !isStrings(bundles) ||
@@ -83,6 +100,7 @@ function readRule(v: unknown): LawRule {
     id,
     titre,
     niveau,
+    categorie,
     fichier,
     bundles,
     profils,
@@ -123,11 +141,17 @@ export function translateLaw(json: unknown): LawViewData {
   for (const o of objets) {
     if (!isRecord(o) || typeof o.id !== 'string' || !Array.isArray(o.regles))
       fail('objet mal formé');
-    if (o.type !== 'skill' && o.type !== 'agent' && o.type !== 'bundle') continue; // les profils ne sont pas montrés
+    if (!OBJECT_TYPES.includes(o.type as LawObject['type'])) fail(`objet ${o.id} : type inconnu`);
+    if (typeof o.litSesRegles !== 'boolean') fail(`objet ${o.id} : litSesRegles manquant`);
     const ids = o.regles.map((l) =>
       isRecord(l) && typeof l.id === 'string' ? l.id : fail(`objet ${o.id} : lien mal formé`),
     );
-    objects.push({ id: o.id, type: o.type, regles: ids });
+    objects.push({
+      id: o.id,
+      type: o.type as LawObject['type'],
+      litSesRegles: o.litSesRegles,
+      regles: ids,
+    });
   }
   const lois = readLois(json.lois);
   return { ...(lois && { lois }), comptes: counts, regles: regles.map(readRule), objets: objects };

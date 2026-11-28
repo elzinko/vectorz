@@ -47,21 +47,23 @@ l'onglet cartes, ni le bloc archives ».
 
 ## Critères d'acceptation
 
-- [ ] Le menu affiche exactement : Global (Projets, Annuaire de la méthode), puis Projet (Vue d'ensemble,
+- [x] Le menu affiche exactement : Global (Projets, Annuaire de la méthode), puis Projet (Vue d'ensemble,
   Objectifs, Fiches, Sprints, Sessions, Rétros, Versions, Process, Loi, Configuration, Recettes).
-- [ ] Aucune entrée « Cartes », « Archives » ni « v1 / archives ».
-- [ ] La carte de la méthode s'ouvre depuis l'Annuaire et reste entièrement utilisable.
-- [ ] Le lien « Documentation » du pied de page est toujours là.
-- [ ] Aucun code mort : la vue Cartes et ce qui ne servait qu'à elle sont supprimés, tests compris.
-- [ ] Capture avant / après jointe.
+- [x] Aucune entrée « Cartes », « Archives » ni « v1 / archives ».
+- [x] La carte de la méthode s'ouvre depuis l'Annuaire et reste entièrement utilisable.
+- [x] Le lien « Documentation » du pied de page est toujours là.
+- [x] Aucun code mort : la vue Cartes et ce qui ne servait qu'à elle sont supprimés, tests compris.
+- [x] Capture avant / après jointe.
 
 ## Comment vérifier
 
 - vue Menu : http://localhost:5274 → le menu de gauche
 - `pnpm --dir products/cop1/packages/web exec vitest run`
+- Preuve avant / après (menu) : [avant](../docs/pr-evidence/20261128093846641/menu-before.jpg) → [après](../docs/pr-evidence/20261128093846641/menu-after.jpg)
 
 ## Notes / décisions
 
 - 2026-11-28 — Décision du pilote, à confirmer par le PO : la carte de la méthode est rangée dans
   l'Annuaire plutôt que supprimée. Elle figure dans la liste « ce que l'app fait de plus que la maquette ».
 - 2026-11-28 — Les pages Cartes et v1 restent dans l'historique git : un `git revert` du commit les rend.
+- 2026-11-28 — Revue adverse (ezk-reviewer) : GO. La vue Cartes, la route `/api/maps`, son service et les pages `public/v1` sont supprimés. La documentation qui citait « Cartes » est rafraîchie.

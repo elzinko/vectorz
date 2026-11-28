@@ -20,6 +20,7 @@ const rule = (id: string, portee: LawRule['portee'], over: Partial<LawRule> = {}
   id,
   titre: id,
   niveau: 'SHOULD',
+  categorie: 'cat',
   fichier: `products/mega-city/rules/${id}.md`,
   bundles: [],
   profils: [],
@@ -43,13 +44,14 @@ const regles: LawRule[] = [
 const objets: LawData['objets'] = ['base', 'dod', 'docs'].map((n) => ({
   id: `bundle:${n}`,
   type: 'bundle' as const,
+  litSesRegles: false,
   regles: regles.filter((r) => r.bundles.includes(n)).map((r) => r.id),
 }));
 const law: LawData = {
   lois: { projet: { chemin: '.iamthelaw/ENTRY.md', installee: true } },
   comptes: { total: 5, partout: 2, projet: 0, demarrage: 1, citee: 0, rangee: 1, orpheline: 1 },
   regles,
-  objets: [...objets, { id: 'skill:ezk-sprint', type: 'skill', regles: [] }],
+  objets: [...objets, { id: 'skill:ezk-sprint', type: 'skill', litSesRegles: false, regles: [] }],
 };
 
 function serve(body: unknown) {

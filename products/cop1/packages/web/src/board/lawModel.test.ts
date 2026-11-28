@@ -6,6 +6,7 @@ const rule = (id: string, portee: LawRule['portee'], over: Partial<LawRule> = {}
   id,
   titre: id,
   niveau: 'SHOULD',
+  categorie: 'cat',
   fichier: `r/${id}.md`,
   bundles: ['base'],
   profils: [],
@@ -69,9 +70,10 @@ describe('paquets', () => {
   const objets: LawData['objets'] = ['base', 'dod', 'mixte', 'libre'].map((n) => ({
     id: `bundle:${n}`,
     type: 'bundle' as const,
+  litSesRegles: false,
     regles: regles.filter((r) => r.bundles.includes(n)).map((r) => r.id),
   }));
-  objets.push({ id: 'skill:s', type: 'skill', regles: [] });
+  objets.push({ id: 'skill:s', type: 'skill', litSesRegles: false, regles: [] });
   const rows = paquets(law(regles, objets));
   const by = (n: string) => rows.find((p) => p.nom === n);
 

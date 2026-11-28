@@ -5,6 +5,7 @@ import { BlocageApiHandler } from '../../blocage-api/application/BlocageApiHandl
 import { type BoardProjectInput, composeBoardData } from '../../board/boardProvider.js';
 import { EzkConfigSource } from '../../board/ezkConfigSource.js';
 import { execEzkRunner } from '../../board/ezkExec.js';
+import { EzkHelpSource } from '../../board/ezkHelpSource.js';
 import { EzkLawSource } from '../../board/ezkLawSource.js';
 import { EzkRecipesSource } from '../../board/ezkRecipesSource.js';
 import { EzkPlanSource } from '../../board/ezkPlanSource.js';
@@ -13,7 +14,6 @@ import { EzkNowSource } from '../../board/ezkNowSource.js';
 import { EzkRetroCapturesSource } from '../../board/ezkRetroCapturesSource.js';
 import { EzkProcessShowSource } from '../../board/ezkProcessShowSource.js';
 import { EzkProcessSource } from '../../board/ezkProcessSource.js';
-import { MapsService } from '../../board/mapsService.js';
 import { writeVerdictThroughEzk } from '../../board/verdictWriter.js';
 import { ConfigLoader } from '../../config/application/ConfigLoader.js';
 import { AbandonRunUseCase } from '../../supervision/application/AbandonRunUseCase.js';
@@ -52,6 +52,7 @@ export class DaemonService {
   private ezkConfigSource: EzkConfigSource | null = null;
   private ezkProcessSource: EzkProcessSource | null = null;
   private ezkLawSource: EzkLawSource | null = null;
+  private ezkHelpSource: EzkHelpSource | null = null;
   private ezkRecipesSource: EzkRecipesSource | null = null;
   private ezkProcessShowSource: EzkProcessShowSource | null = null;
   private ezkRetroCapturesSource: EzkRetroCapturesSource | null = null;
@@ -135,13 +136,18 @@ export class DaemonService {
           onWritten: (root) => this.planSource().invalidate(root),
         }),
     });
-    // fiche 20261102123552184 — les documents de la méthode : liste et contenu par `ezk board maps`.
-    // Le lanceur est créé à chaque appel : la commande `ezk` est lue dans la config juste après.
-    const maps = new MapsService({
-      projects: () => this.boardProjects(projectPath),
-      run: (args) => execEzkRunner(this.ezkCommand)(args),
+    // fiche 20261128093846629 — l'annuaire (`ezk help --json`) : servi depuis la mémoire, relu en arrière-plan.
+    this.httpServer.setHelpHandler({
+      read: (projet) => {
+        const root = this.boardProjects(projectPath).find((p) => p.name === projet)?.root;
+        if (!root) return { status: 404, body: { error: `projet inconnu : ${projet}` } };
+        const snap = this.helpSource().get(root);
+        if (snap.state === 'ok') return { status: 200, body: { state: 'ok', help: snap.help } };
+        if (snap.state === 'unavailable')
+          return { status: 200, body: { state: 'unavailable', reason: snap.reason } };
+        return { status: 200, body: { state: 'loading' } };
+      },
     });
-    this.httpServer.setMapsHandler(maps);
     // fiche 20260826222044335 — la loi : servie depuis la mémoire, relue en arrière-plan.
     this.httpServer.setLawHandler({
       read: (projet) => {
@@ -324,6 +330,12 @@ export class DaemonService {
   private lawSource(): EzkLawSource {
     this.ezkLawSource ??= new EzkLawSource({ command: this.ezkCommand });
     return this.ezkLawSource;
+  }
+
+  /** La source de l'annuaire (`ezk help --json`), créée au premier besoin comme les autres. */
+  private helpSource(): EzkHelpSource {
+    this.ezkHelpSource ??= new EzkHelpSource({ command: this.ezkCommand });
+    return this.ezkHelpSource;
   }
 
   /** La source des recettes (`ezk recipes --json`), créée au premier besoin comme les autres. */

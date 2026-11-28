@@ -52,19 +52,9 @@ export interface VerdictHandler {
   execute(body: unknown): Promise<{ status: number; body: unknown }>;
 }
 
-/** fiche 20261102123552184 — les documents de la méthode : la liste, puis un fichier listé. */
-export interface MapsHandler {
-  list(projet: string): Promise<{ status: number; body: unknown }>;
-  file(
-    projet: string,
-    id: string,
-    nom: string,
-  ): Promise<{ status: number; contentType: string; body: string }>;
-}
-
 /**
  * Une lecture par projet, servie depuis la mémoire du daemon (jamais d'attente) : la loi (fiche
- * 20260826222044335), les recettes (fiche 20261104090518109) et les étapes fines (fiche
+ * 20260826222044335), l'annuaire (fiche 20261128093846629), les recettes (fiche 20261104090518109) et les étapes fines (fiche
  * 20261110191135802) passent par elle.
  */
 export interface ProjectReadHandler {
@@ -92,12 +82,12 @@ export class HttpServer {
   private runAbandonHandler: RunAbandonHandler | null = null;
   private projectAnchorHandler: ProjectAnchorHandler | null = null;
   private verdictHandler: VerdictHandler | null = null;
-  private mapsHandler: MapsHandler | null = null;
   private lawHandler: LawHandler | null = null;
   private recipesHandler: ProjectReadHandler | null = null;
   private processShowHandler: ProjectReadHandler | null = null;
   private graphHandler: ProjectReadHandler | null = null;
   private retrosHandler: ProjectReadHandler | null = null;
+  private helpHandler: ProjectReadHandler | null = null;
   private nowHandler: ProjectReadHandler | null = null;
   private eventBusWired = false;
   /** Le port réellement écouté, et celui de la page web : ce que la garde tient pour « local ». */
@@ -151,14 +141,14 @@ export class HttpServer {
     this.verdictHandler = handler;
   }
 
-  /** fiche 20261102123552184 — GET /api/maps/<projet> et GET /api/maps/<projet>/<id>/<nom>. */
-  setMapsHandler(handler: MapsHandler): void {
-    this.mapsHandler = handler;
-  }
-
   /** fiche 20260826222044335 — GET /api/law/<projet>. */
   setLawHandler(handler: LawHandler): void {
     this.lawHandler = handler;
+  }
+
+  /** fiche 20261128093846629 — GET /api/help/<projet> : commandes, skills et agents (`ezk help --json`). */
+  setHelpHandler(handler: ProjectReadHandler): void {
+    this.helpHandler = handler;
   }
 
   /** fiche 20261104090518109 — GET /api/recipes/<projet>. */
@@ -320,15 +310,15 @@ export class HttpServer {
       return;
     }
 
-    // fiche 20261102123552184 — les documents de la méthode, servis par la commande ezk
-    if (req.method === 'GET' && req.url?.startsWith('/api/maps/')) {
-      void this.handleMaps(req.url, res);
-      return;
-    }
-
     // fiche 20260826222044335 — la loi d'un projet, servie depuis la mémoire du daemon
     if (req.method === 'GET' && req.url?.startsWith('/api/law/')) {
       this.handleProjectRead('/api/law/', 'law_unavailable', this.lawHandler, req.url, res);
+      return;
+    }
+
+    // fiche 20261128093846629 — l'annuaire de la méthode, servi depuis la mémoire du daemon
+    if (req.method === 'GET' && req.url?.startsWith('/api/help/')) {
+      this.handleProjectRead('/api/help/', 'help_unavailable', this.helpHandler, req.url, res);
       return;
     }
 
@@ -431,53 +421,6 @@ export class HttpServer {
       projet && !projet.includes('/') ? handler.read(projet) : { status: 404, body: { error: 'not_found' } };
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(body));
-  }
-
-  private async handleMaps(url: string, res: ServerResponse): Promise<void> {
-    if (!this.mapsHandler) {
-      res.writeHead(503, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'maps_unavailable' }));
-      return;
-    }
-    let parts: string[];
-    try {
-      parts = (url.split('?')[0] ?? '')
-        .slice('/api/maps/'.length)
-        .split('/')
-        .map(decodeURIComponent);
-    } catch {
-      parts = [];
-    }
-    try {
-      if (parts.length === 1 && parts[0]) {
-        const { status, body } = await this.mapsHandler.list(parts[0]);
-        res.writeHead(status, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(body));
-        return;
-      }
-      if (parts.length === 3 && parts.every(Boolean)) {
-        const [projet, id, nom] = parts as [string, string, string];
-        const { status, contentType, body } = await this.mapsHandler.file(projet, id, nom);
-        const headers: Record<string, string> = {
-          'Content-Type': contentType,
-          'Cache-Control': 'no-store',
-          'X-Content-Type-Options': 'nosniff',
-        };
-        // Un document s'ouvre isolé, même hors du cadre : ses scripts tournent, sans l'origine du daemon.
-        // Un SVG peut porter un script : il est isolé lui aussi.
-        if (contentType.startsWith('text/html') || contentType.startsWith('image/svg+xml')) {
-          headers['Content-Security-Policy'] = 'sandbox allow-scripts';
-        }
-        res.writeHead(status, headers);
-        res.end(body);
-        return;
-      }
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'not_found' }));
-    } catch (error) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
-    }
   }
 
   private async handleAuthCheck(res: ServerResponse): Promise<void> {

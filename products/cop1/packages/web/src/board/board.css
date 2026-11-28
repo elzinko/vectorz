@@ -210,15 +210,6 @@ button.bpgo:hover { background: var(--surface-2); }
 .lawdetail dt { color: var(--muted); }
 .lawdetail dd { margin: 0; }
 @media (max-width: 760px) { .lawcols { grid-template-columns: 1fr; gap: 12px; } .lawlinks { display: none; } }
-.maps { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 12px; align-items: start; }
-.mapitem { display: flex; justify-content: space-between; gap: 10px; width: 100%; padding: 10px 14px; border: 0; border-top: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; color: inherit; }
-.mapitem:hover { background: var(--surface-2); }
-.mapitem.on { background: var(--accent-soft); }
-.mapitem .ttl { font-size: 13px; }
-.mapitem .meta { font-size: 11px; color: var(--muted); font-family: var(--font-data); }
-.mapframe { width: 100%; height: 75vh; border: 1px solid var(--line); border-radius: var(--r); background: #fff; }
-.mapempty { padding: 24px 16px; color: var(--muted); }
-@media (max-width: 760px) { .maps { grid-template-columns: 1fr; } }
 .kanban.k5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 /* --- Vue Recettes (fiche 20261104090518109) --- */
 .pill.rc-used { background: var(--go-soft); color: var(--go); }
@@ -658,3 +649,6 @@ button.pname-btn:hover { color: var(--accent); }
 .rcp-foot [role='status'] { justify-self: end; }
 .rcp-more { margin-left: 0; font-weight: 600; justify-self: center; }
 @media (max-width: 620px) { .rcp { grid-template-columns: 1fr; } .rcp-a { justify-content: flex-start; } }
+
+/* Un texte long tient en deux lignes ; le survol le donne en entier. */
+.clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

@@ -67,25 +67,27 @@ glossaire et des profils par la méthode.
 
 ## Critères d'acceptation
 
-- [ ] L'entrée « Annuaire de la méthode » du menu ouvre la page ; elle n'est plus grisée.
-- [ ] Les six onglets existent, chacun avec son compte quand la méthode le publie ; l'onglet Compétences
+- [x] L'entrée « Annuaire de la méthode » du menu ouvre la page ; elle n'est plus grisée.
+- [x] Les six onglets existent, chacun avec son compte quand la méthode le publie ; l'onglet Compétences
   s'ouvre par défaut.
-- [ ] Les onglets Compétences, Agents, Règles et Commandes listent les objets publiés, avec les colonnes
+- [x] Les onglets Compétences, Agents, Règles et Commandes listent les objets publiés, avec les colonnes
   de la maquette ; la recherche et les filtres réduisent la liste.
-- [ ] Un clic sur une commande ouvre son détail : domaine et verbe, ce qu'elle fait, script lancé, écrit
+- [x] Un clic sur une commande ouvre son détail : domaine et verbe, ce qu'elle fait, script lancé, écrit
   le projet ou non.
-- [ ] La pastille d'avertissements ouvre la liste des avertissements ; sans avertissement, pas de pastille.
-- [ ] Le lien « Carte de la méthode » ouvre la carte zoomable.
-- [ ] Une donnée non publiée s'affiche « non publié », jamais un zéro ni un texte inventé.
-- [ ] Le relais du daemon est couvert par un test qui fait passer l'exemple du contrat.
-- [ ] Capture avant / après jointe.
+- [x] La pastille d'avertissements ouvre la liste des avertissements ; sans avertissement, pas de pastille.
+- [x] Le lien « Carte de la méthode » ouvre la carte zoomable.
+- [x] Une donnée non publiée s'affiche « non publié », jamais un zéro ni un texte inventé.
+- [x] Le relais du daemon est couvert par un test qui fait passer l'exemple du contrat.
+- [x] Capture avant / après jointe.
 
 ## Comment vérifier
 
 - vue Annuaire : http://localhost:5274 → menu Annuaire de la méthode
 - `pnpm --dir products/cop1/packages/web exec vitest run`
 - `pnpm --dir products/cop1/packages/app exec vitest run`
+- Preuve avant / après (annuaire) : [avant](../docs/pr-evidence/20261128093846629/annuaire-before.jpg) → [après](../docs/pr-evidence/20261128093846629/annuaire-after.jpg)
 
 ## Notes / décisions
 
 - 2026-11-28 — Fiche née de la comparaison maquette ↔ app demandée par le PO.
+- 2026-11-28 — Revue adverse (ezk-reviewer) : GO après une correction (port de test en double). Écarts à la maquette, faute de publication : un seul avertissement de santé au lieu de cinq, glossaire « non publié », profils réduits au nom et au compte de règles, pas de « scripts internes ».

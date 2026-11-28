@@ -4,7 +4,7 @@
 
 ## Comprendre la méthode (avant de lancer)
 
-`pnpm cop1:dev` ouvre **mission control**, le seul écran : la vue « Cartes » y montre la **carte interactive** de la méthode (3 étages moteur / méthode / modules, toutes les cérémonies scrum, onglet 🧭 « le domaine »). `pnpm ezk help` liste toutes les commandes de terminal et de chat. Jargon `ezk-*` traduit dans [`glossaire-jargon-ezk.md`](glossaire-jargon-ezk.md).
+`pnpm cop1:dev` ouvre **mission control**, le seul écran : « Annuaire de la méthode » y ouvre la **carte de la méthode**, zoomable. Les autres documents de la méthode (carte à 3 étages moteur / méthode / modules, cérémonies scrum) se listent en terminal : `ezk board maps`. `pnpm ezk help` liste toutes les commandes de terminal et de chat. Jargon `ezk-*` traduit dans [`glossaire-jargon-ezk.md`](glossaire-jargon-ezk.md).
 
 ## Prerequisites
 

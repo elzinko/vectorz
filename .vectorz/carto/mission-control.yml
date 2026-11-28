@@ -82,6 +82,17 @@ screens:
     actions:
       - id: ouvrir-fiche
         title: Ouvrir la fenêtre d'une fiche depuis sa colonne
+  - id: annuaire
+    title: Annuaire de la méthode — compétences, agents, règles, profils, commandes, glossaire
+    actions:
+      - id: changer-onglet
+        title: Changer d'onglet et filtrer la liste
+      - id: ouvrir-commande
+        title: Ouvrir le détail d'une commande dans une fenêtre
+      - id: ouvrir-sante
+        title: Ouvrir la liste des avertissements de la méthode
+      - id: ouvrir-carte
+        title: Ouvrir la carte de la méthode depuis l'Annuaire
   - id: graph
     title: Carte de la méthode — tout ce qui est relié dans ezk
     actions:
@@ -101,11 +112,6 @@ screens:
     actions:
       - id: lire-recettes-projet
         title: Lire les recettes du projet et le dossier qui implémente chacune
-  - id: maps
-    title: Cartes — les documents de la méthode
-    actions:
-      - id: ouvrir-document
-        title: Ouvrir un document dans son cadre isolé
   - id: tool
     title: Réglages de l'outil
     actions:

@@ -1,6 +1,6 @@
 import { cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderBoardOn } from './testing/renderBoard.js';
 import { BOARD_DATA } from './testing/sampleBoard.js';
 import type { BoardData, BoardProject } from './types.js';
@@ -42,14 +42,13 @@ describe('Board — la coque', () => {
     expect(overviewNav.getAttribute('aria-current')).toBe('page');
   });
 
-  it('range le menu par portée, puis dans l’ordre de la maquette ; Cartes ferme le groupe Projet (fiches 20261114131616818, 20261124111116126)', async () => {
+  it('le menu suit la maquette : Global (Projets, Annuaire de la méthode), puis Projet jusqu’à Recettes (fiche 20261128093846641)', async () => {
     await renderBoardOn();
     const nav = screen.getByRole('navigation', { name: 'Navigation du board' });
-    expect([...nav.querySelectorAll('.grp')].map((g) => g.textContent)).toEqual(['Global', 'Projet · vectorz', 'Archives']);
+    expect([...nav.querySelectorAll('.grp')].map((g) => g.textContent)).toEqual(['Global', 'Projet · vectorz']);
     const entries = [...nav.querySelectorAll('button .lbl')].map((l) => l.textContent);
     expect(entries).toEqual([
       'Projets',
-      'Carte de la méthode',
       'Annuaire de la méthode',
       "Vue d'ensemble",
       'Objectifs',
@@ -62,17 +61,26 @@ describe('Board — la coque', () => {
       'Loi',
       'Configuration',
       'Recettes',
-      'Cartes',
     ]);
+    // Ni « Cartes », ni bloc « Archives », ni lien « v1 / archives ».
+    expect(nav.textContent).not.toMatch(/Cartes|Archives|archives/);
+    expect(nav.querySelector('a')).toBeNull();
     // Le menu ne nomme pas la méthode : ni groupe « Méthode », ni « mega-city ».
     expect(nav.textContent).not.toMatch(/Méthode\b(?! de)|mega-city/);
   });
 
-  it('l’Annuaire de la méthode est grisé, et son « i » dit ce que la méthode doit publier', async () => {
+  it('l’entrée « Annuaire de la méthode » est active et ouvre la page (fiche 20261128093846629)', async () => {
     await renderBoardOn();
-    const annuaire = screen.getByRole('button', { name: /Annuaire de la méthode/ }) as HTMLButtonElement;
-    expect(annuaire.disabled).toBe(true);
-    expect(annuaire.title).toMatch(/graphe .*contrat compilé/);
+    const annuaire = screen.getByRole('button', { name: 'Annuaire de la méthode' }) as HTMLButtonElement;
+    expect(annuaire.disabled).toBe(false);
+    await userEvent.click(annuaire);
+    expect(screen.getByRole('heading', { name: 'Annuaire de la méthode mega-city' })).toBeTruthy();
+    expect(annuaire.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('le lien « Documentation » reste en pied de page', async () => {
+    await renderBoardOn();
+    expect(screen.getByText('Documentation')).toBeTruthy();
   });
 
   it('route vers les pages Objectifs et Versions (fiches 20261124111115865, 20261124111115783)', async () => {
@@ -90,10 +98,32 @@ describe('Board — la coque', () => {
     expect(screen.queryByText('tranche à venir')).toBeNull();
   });
 
-  it('route vers la Carte de la méthode, dans le groupe Global (fiches 20261117114544792, 20261114131616818)', async () => {
+  it('la Carte de la méthode s’ouvre depuis l’Annuaire, et son fil d’Ariane y ramène (fiche 20261128093846641)', async () => {
     await renderBoardOn();
+    await userEvent.click(screen.getByRole('button', { name: 'Annuaire de la méthode' }));
     await userEvent.click(screen.getByRole('button', { name: 'Carte de la méthode' }));
     expect(screen.getByRole('heading', { name: /^Carte de la méthode — / })).toBeTruthy();
+    const crumb = screen.getByRole('navigation', { name: "Fil d'Ariane" });
+    expect(crumb.textContent).toBe('Projets › Annuaire de la méthode › Carte de la méthode');
+    await userEvent.click(within(crumb).getByRole('button', { name: 'Annuaire de la méthode' }));
+    expect(screen.getByRole('heading', { name: 'Annuaire de la méthode mega-city' })).toBeTruthy();
+  });
+
+  it('le lien « sa page Loi » de l’Annuaire ouvre la page Loi', async () => {
+    await renderBoardOn();
+    const law = {
+      comptes: { total: 1, partout: 1, projet: 0, demarrage: 0, citee: 0, rangee: 0, orpheline: 0 },
+      regles: [{ id: 'a/x', titre: 'Une règle', niveau: 'MUST', categorie: 'a', fichier: 'x.md', bundles: [], profils: [], appliqueePar: [], verifieePar: [], portee: 'partout' }],
+      objets: [],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => ({ ok: true, status: 200, json: async () => (url.startsWith('/api/law/') ? { state: 'ok', law } : BOARD_DATA) }) as Response),
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Annuaire de la méthode' }));
+    await userEvent.click(await screen.findByRole('tab', { name: 'Règles · 1' }));
+    await userEvent.click(screen.getByRole('button', { name: /sa page Loi/ }));
+    expect(screen.getByRole('heading', { name: 'Loi' })).toBeTruthy();
   });
 
   it('le bouton ⚙ ouvre la configuration de l’outil', async () => {
