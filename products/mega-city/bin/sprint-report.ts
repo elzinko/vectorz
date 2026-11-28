@@ -33,6 +33,10 @@ Options:
   --product <name>       Nom du produit dans le rapport (défaut : mega-city)
   --sprint-md <path>     SPRINT.md dont lire le lot scellé (défaut : <repo-root>/SPRINT.md s'il existe)
   --allow-undated        Rapport non daté si aucun gate de supervision (lot seulement) au lieu d'échouer
+  --numero <n>           Numéro continu du sprint depuis le début du projet (écrit dans l'en-tête)
+  --objective <texte>    But complet du sprint (écrit dans l'en-tête)
+  --branch <nom>         Branche sur laquelle le sprint est clos (écrite dans l'en-tête)
+  --abandon <raison>     Raison d'abandon : ajoute la section « Abandon » (sprint clos par close --abandon)
   --out <dir>            Dossier de sortie (défaut : <repo-root>/docs/sprints)
 `);
   process.exit(2);
@@ -55,6 +59,10 @@ function main(): void {
   let out: string | undefined;
   let sprintMdPath: string | undefined;
   let allowUndated = false;
+  let numero: number | undefined;
+  let but: string | undefined;
+  let branche: string | undefined;
+  let abandon: string | undefined;
 
   for (let i = 1; i < argv.length; i += 1) {
     const a = argv[i];
@@ -69,6 +77,15 @@ function main(): void {
     else if (a === '--product') product = argv[++i];
     else if (a === '--sprint-md') sprintMdPath = resolve(argv[++i]);
     else if (a === '--allow-undated') allowUndated = true;
+    else if (a === '--numero') {
+      numero = Number(argv[++i]);
+      if (!Number.isInteger(numero) || numero < 1) {
+        console.error(`--numero invalide : attendu un entier ≥ 1`);
+        usage();
+      }
+    } else if (a === '--objective') but = argv[++i];
+    else if (a === '--branch') branche = argv[++i];
+    else if (a === '--abandon') abandon = argv[++i];
     else if (a === '--out') out = resolve(argv[++i]);
     else {
       console.error(`option inconnue : ${a}`);
@@ -85,7 +102,7 @@ function main(): void {
   const mode = reviewMode(githubCapabilities(repoRoot));
 
   const report = collectSprintReport(
-    { projectRoot, repoRoot, slug, product, sprintMd, allowUndated, reviewMode: mode },
+    { projectRoot, repoRoot, slug, product, sprintMd, allowUndated, reviewMode: mode, numero, but, branche, abandon },
     {
       journal: new SupervisionJournalSource(),
       transcript: new ClaudeCodeTranscriptSource(),

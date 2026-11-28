@@ -13,6 +13,7 @@
  *   contracts/process-show/v1/schema.json, example.json            ← les étapes fines de chaque skill
  *   contracts/graph-check/v1/schema.json, example.json             ← le graphe de la méthode, briques et liens
  *   contracts/now-show/v1/schema.json, example.json                ← les alertes de la cloche (`ezk now --json`)
+ *   contracts/sprint-show/v1/schema.json, example.json             ← un compte rendu de sprint en champs (`ezk sprint show <slug> --json`)
  * Chaque schéma est tiré du schéma zod ; chaque exemple est la sortie de la commande sur la fixture.
  * L'exemple de `ezk process show --json` porte les VRAIES étapes de `method/etapes.yml` (la fixture ne
  * donne que les réglages) : une étape ajoutée au fichier demande de régénérer l'exemple.
@@ -34,6 +35,7 @@ import { PROCESS_SCHEMA_VERSION, ProcessContractSchema } from '../core/process-c
 import { PROCESS_SHOW_SCHEMA_VERSION, ProcessShowSchema } from '../core/process-show.js';
 import { GRAPH_CHECK_SCHEMA_VERSION, GraphCheckSchema } from '../core/graph-check.js';
 import { NOW_SCHEMA_VERSION, NowShowSchema } from '../core/now-contract.js';
+import { SPRINT_SHOW_SCHEMA_VERSION, SprintShowSchema } from '../core/sprint-show-contract.js';
 import { BACKLOG_SCHEMA_VERSION, BacklogShowFicheSchema, BacklogShowListeSchema } from '../core/fiche-detail.js';
 import { RECIPES_SCHEMA_VERSION, RecipesContractSchema, discover, recipesContract } from '../core/recipe-discovery.js';
 import { backlogShowFiche, backlogShowListe } from './backlog-show.js';
@@ -44,6 +46,7 @@ import { graphCheckExample } from './graph-check.js';
 import { methodMapsData } from './method-maps.js';
 import { nowShowData } from './now-show.js';
 import { processShowData } from './process-show.js';
+import { sprintShowData } from './sprint-show.js';
 
 /** Les fichiers rangés, chemins relatifs à `products/mega-city`. */
 const BOARD_DIR = `contracts/board-show/v${BOARD_SCHEMA_VERSION}`;
@@ -75,6 +78,11 @@ export const GRAPH_CHECK_EXAMPLE_FILE = `${GRAPH_CHECK_DIR}/example.json`;
 const NOW_DIR = `contracts/now-show/v${NOW_SCHEMA_VERSION}`;
 export const NOW_SCHEMA_FILE = `${NOW_DIR}/schema.json`;
 export const NOW_EXAMPLE_FILE = `${NOW_DIR}/example.json`;
+const SPRINT_SHOW_DIR = `contracts/sprint-show/v${SPRINT_SHOW_SCHEMA_VERSION}`;
+export const SPRINT_SHOW_SCHEMA_FILE = `${SPRINT_SHOW_DIR}/schema.json`;
+export const SPRINT_SHOW_EXAMPLE_FILE = `${SPRINT_SHOW_DIR}/example.json`;
+/** Le sprint de la fixture qui sert d'exemple à `ezk sprint show <slug> --json` : daté, avec son JSON rangé. */
+export const FIXTURE_SPRINT = 'second';
 
 /**
  * L'exemple de `ezk recipes --json` part d'entrées écrites ici, pas de `recipes/` : l'exemple ne doit
@@ -233,6 +241,12 @@ export function makeContractFixture(): string {
     [
       '# Rapport de sprint — second',
       '',
+      '## En-tête',
+      '',
+      '- **Numéro** : 2',
+      '- **But** : Publier le second sprint avec son numéro continu',
+      '- **Branche** : main',
+      '',
       '## Lot scellé',
       '',
       '- `20990101000000001` — Une fiche livrée (PR local (abc1234)) — **livrée**',
@@ -248,6 +262,30 @@ export function makeContractFixture(): string {
       '- **Blocages** (0)',
       '',
     ].join('\n'),
+  );
+  // Son JSON, rangé à côté par `close` : la même source pour `board show` et `sprint show`.
+  write(
+    'docs/sprints/2026-10-31-sprint-second.json',
+    `${JSON.stringify(
+      {
+        schema: 'sprint-report@0.1',
+        sprint: { slug: 'second', numero: 2, but: 'Publier le second sprint avec son numéro continu', branche: 'main' },
+        generatedAt: '2026-10-31T09:45:00.000Z',
+        window: { startTs: '2026-10-31T09:00:00.000Z', endTs: '2026-10-31T09:42:00.000Z' },
+        duration: { ms: 2520000, grain: 'sprint' },
+        tokens: { grain: 'sprint', inputTokens: 10, outputTokens: 20, cacheRead: 30, cacheCreation: 40, totalTokens: 100 },
+        kpi: { blockages: { count: 0 } },
+        lot: {
+          entries: [
+            { id: '20990101000000001', result: 'shipped', title: 'Une fiche livrée' },
+            { id: '20990101000000006', result: 'shipped', title: 'Livrée' },
+            { id: '20990101000000002', result: 'reported', title: 'Une fiche reportée' },
+          ],
+        },
+      },
+      null,
+      2,
+    )}\n`,
   );
   write('docs/sprints/notes.md', '# Notes libres, pas un compte rendu\n');
   // Une rétro lisible : une proposition décidée, une en attente (la cloche ne publie que celle-ci).
@@ -360,6 +398,8 @@ export function renderContractFiles(fixtureRoot?: string): Record<string, string
       [GRAPH_CHECK_EXAMPLE_FILE]: exampleText(graphCheckExample()),
       [NOW_SCHEMA_FILE]: schemaText(NowShowSchema),
       [NOW_EXAMPLE_FILE]: exampleText(nowShowData(root)),
+      [SPRINT_SHOW_SCHEMA_FILE]: schemaText(SprintShowSchema),
+      [SPRINT_SHOW_EXAMPLE_FILE]: exampleText(sprintShowData(root, FIXTURE_SPRINT)),
     };
   } finally {
     if (fixtureRoot === undefined) rmSync(root, { recursive: true, force: true });

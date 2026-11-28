@@ -96,7 +96,16 @@ export interface LotSummary {
 
 export interface SprintReport {
   schema: typeof SPRINT_REPORT_SCHEMA;
-  sprint: { slug: string; product?: string };
+  sprint: {
+    slug: string;
+    product?: string;
+    /** Le numéro CONTINU du sprint depuis le début du projet (jamais le compteur du journal de branche). */
+    numero?: number;
+    /** Le but complet (`--objective` de `ezk-sprint start`), non coupé comme le slug. */
+    but?: string;
+    /** La branche sur laquelle le sprint a été clos. */
+    branche?: string;
+  };
   generatedAt: string;
   window: { startTs: string; endTs: string };
   duration: { ms: number; grain: 'sprint' };
@@ -109,4 +118,6 @@ export interface SprintReport {
   /** Le lot scellé de CE sprint (périmètre « ce sprint », ADR-0068) — vide si `SPRINT.md` absent. */
   lot: LotSummary;
   steps: StepsSummary;
+  /** La raison d'abandon (`close --abandon`) ; absente pour un sprint scellé normalement. */
+  abandon?: string;
 }

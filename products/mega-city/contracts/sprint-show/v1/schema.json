@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "sprint": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "numero": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Le numéro continu depuis le début du projet : celui écrit au `close`, sinon le rang du compte rendu dans l’historique."
+        },
+        "but": {
+          "description": "Le but complet du sprint ; `null` si le compte rendu ne le dit pas (compte rendu d’avant).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branche": {
+          "description": "La branche sur laquelle le sprint a été clos ; `null` si le compte rendu ne la dit pas.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "debut": {
+          "description": "Début de la fenêtre du sprint (ISO 8601) ; `null` si non daté.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fin": {
+          "description": "Fin de la fenêtre du sprint (ISO 8601) ; `null` si non datée.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "jour": {
+          "type": "string",
+          "description": "Le jour du compte rendu (`AAAA-MM-JJ`), tiré de son nom."
+        },
+        "fichier": {
+          "type": "string",
+          "description": "Le compte rendu, relatif à la racine du projet."
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "json",
+            "markdown"
+          ],
+          "description": "D’où viennent les faits : le JSON rangé à côté du compte rendu, ou la relecture du markdown (anciens comptes rendus)."
+        }
+      },
+      "required": [
+        "slug",
+        "numero",
+        "but",
+        "branche",
+        "debut",
+        "fin",
+        "jour",
+        "fichier",
+        "source"
+      ]
+    },
+    "sections": {
+      "type": "object",
+      "properties": {
+        "enClair": {
+          "description": "La section « En clair » du compte rendu ; `null` si elle manque.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lotScelle": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string",
+                "description": "Le titre de la story ; '' si le lot ne le dit pas."
+              },
+              "resultat": {
+                "type": "string",
+                "enum": [
+                  "livree",
+                  "reportee",
+                  "ouverte"
+                ],
+                "description": "livree = `[x]`, reportee = `[~]`, ouverte = `[ ]` (sprint abandonné)."
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "resultat"
+            ]
+          },
+          "description": "Une entrée par story du lot de CE sprint."
+        },
+        "detail": {
+          "type": "object",
+          "properties": {
+            "dureeMs": {
+              "description": "Durée du sprint ; `null` si non mesurée (jamais un faux zéro).",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "tokens": {
+              "description": "Jetons du sprint, au grain `sprint` seulement ; `null` sinon.",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "blocages": {
+              "description": "Blocages essuyés ; `null` si le compte rendu ne le dit pas.",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "livrees": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title"
+                ]
+              },
+              "description": "Les fiches livrées du lot scellé."
+            }
+          },
+          "required": [
+            "dureeMs",
+            "tokens",
+            "blocages",
+            "livrees"
+          ]
+        },
+        "abandon": {
+          "description": "La raison d’abandon ; `null` pour un sprint scellé normalement.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "enClair",
+        "lotScelle",
+        "detail",
+        "abandon"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "sprint",
+    "sections"
+  ]
+}

@@ -19,6 +19,17 @@ Le format fixe les sections ; il ne dispense pas d'écrire clairement dedans (r�
 > lecteur frais doit retenir **avant** tout chiffre.
 > **Bannis** : le jargon interne en ouverture, les ids nus, un tableau avant cette phrase.
 
+## En-tête
+
+> **Mets** : trois lignes, écrites par `close` (jamais à la main) — **Numéro** : le numéro CONTINU du
+> sprint depuis le début du projet (le nombre de comptes rendus déjà connus, plus un : décision du PO du
+> 14 novembre, fiche 20261114131612204) ; **But** : le texte complet de `--objective`, sur une ligne ;
+> **Branche** : la branche sur laquelle le sprint a été clos. Une ligne manque quand `close` ne la sait
+> pas (but absent, tête détachée). Les mêmes valeurs sont dans le `.json` rangé à côté, sous `sprint`.
+> **Bannis** : le compteur du journal de branche (`# Sprint N`, qui repart à 1 par branche) sous le nom
+> « Numéro » ; une valeur devinée. Les comptes rendus d'avant n'ont pas cette section : leurs champs
+> valent `null` à la lecture (`ezk sprint show`, `ezk board show`).
+
 ## Lot scellé
 
 > **Mets** : une ligne par story du **lot de CE sprint** (section `## Lot` de `SPRINT.md`), avec son

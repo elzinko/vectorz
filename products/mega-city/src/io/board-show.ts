@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import { type BoardContract, buildBoardContract } from '../core/board-contract.js';
 import type { CartoStatus } from '../core/carto.js';
 import { derniereEtiquette } from '../core/coupe.js';
-import { latestSprints } from '../core/sprint-report-summary.js';
+import { allSprints } from '../core/sprint-report-summary.js';
 import { countHistory } from '../core/sprint-reports-since.js';
 import { loadFiches } from '../loaders/fiches.js';
 import { loadMilestoneNoms, loadVersionNoms } from '../loaders/milestones.js';
@@ -61,7 +61,7 @@ export function boardShowData(root: string): BoardContract {
       namesIn(root, scrumPaths(root).retroCaptures),
       namesIn(root, join('docs', 'sprints')),
     ),
-    derniersSprints: latestSprints(SPRINTS_DIR, sprintReports(root)),
+    sprints: allSprints(SPRINTS_DIR, sprintReports(root)),
     sessions: loadRuns(root),
     nomsMilestones: loadMilestoneNoms(root),
     nomsVersions: loadVersionNoms(root),

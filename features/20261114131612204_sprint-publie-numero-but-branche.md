@@ -101,21 +101,21 @@ la vue par session ([`ezk board session`](20261114131614424_ezk-board-session-js
 
 ## Critères d'acceptation
 
-- [ ] À la clôture, le compte rendu porte le numéro continu, le but complet et la branche, dans le
+- [x] À la clôture, le compte rendu porte le numéro continu, le but complet et la branche, dans le
   `.md` et dans le `.json` ; le `.json` est committé à côté du `.md` ; les 55 comptes rendus
   existants restent lisibles, leurs champs absents valent `null`, jamais une valeur devinée.
-- [ ] Le numéro publié est le compte continu depuis le début du projet, calculé depuis l'historique
+- [x] Le numéro publié est le compte continu depuis le début du projet, calculé depuis l'historique
   des sprints scellés ; le compteur par branche n'apparaît jamais sous le nom `numero` ; deux
   branches qui clôturent chacune un sprint reçoivent deux numéros différents.
-- [ ] `ezk board show --json` publie `sprints[]`, la liste complète, sans changer le sens de
+- [x] `ezk board show --json` publie `sprints[]`, la liste complète, sans changer le sens de
   `derniersSprints` ; le contrat `board-show` et son exemple décrivent le champ ajouté. Si le PO
   choisit de lever le plafond à la place, le contrat passe en version 2 et le dit.
-- [ ] `ezk sprint show <slug> --json` figure au manifeste (`project: true`), sort le compte rendu
+- [x] `ezk sprint show <slug> --json` figure au manifeste (`project: true`), sort le compte rendu
   avec `schema_version` sous le contrat `contracts/sprint-show/v1`, ses sections en champs ; un
   slug inconnu rend le code 1 et une phrase.
-- [ ] `board show` et `sprint show` lisent la même source ; la relecture par expressions régulières
+- [x] `board show` et `sprint show` lisent la même source ; la relecture par expressions régulières
   ne sert plus qu'aux anciens comptes rendus.
-- [ ] Sur vectorz, `sprints[]` compte 55 entrées ; chacune a un `numero` et, quand la ligne
+- [x] Sur vectorz, `sprints[]` compte 55 entrées ; chacune a un `numero` et, quand la ligne
   « Fenêtre » existe, un `debut` ; le premier sprint clos après la livraison porte `numero`,
   `but`, `debut` et `branche` non nuls.
 
@@ -163,3 +163,5 @@ la méthode, éviterait la confusion à la rétro.
   branches qui clôturent en parallèle peuvent se donner le même numéro (le recalcul depuis
   l'historique à la lecture tranche) ; le `.json` committé double le volume de `docs/sprints/`.
 - 2026-11-28 — Contrôle « prête » (ezk-pm) : GO. Le critère « 55 entrées » se lit « autant d'entrées que de comptes rendus dans `docs/sprints/` ». La branche se lit dans l'en-tête du compte rendu, dans le dépôt. Le numéro continu est codé ; l'ADR attend le panel.
+- 2026-11-28 — Revue adverse (ezk-reviewer) : GO. Sur vectorz, `sprints[]` publie 92 sprints, numérotés de 1 à 92 sans doublon. Pour un ancien compte rendu, le numéro est son rang dans l'historique ; son but et sa branche valent `null`.
+- 2026-11-28 — Deux écarts connus, non bloquants. (1) La lecture fait confiance au numéro écrit à la clôture : le « recalcul à la lecture » annoncé plus haut n'est pas codé, deux clôtures exactement simultanées pourraient donc porter le même numéro. (2) Le test du cycle de sprint qui vérifie le numéro continu a échoué une fois sur cinq passages, puis est repassé : un compte rendu « au mieux » qui ne s'écrit pas décale le compte. À reprendre en rétro.

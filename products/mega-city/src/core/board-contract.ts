@@ -29,7 +29,7 @@ import type { CartoStatus } from './carto.js';
 import { derniereEtiquette, livreesDepuis } from './coupe.js';
 import { isParked, TERMINAUX } from './fiche-schema.js';
 import type { ReleaseVerdict } from './release-gate.js';
-import type { SprintSummary } from './sprint-report-summary.js';
+import { DERNIERS_SPRINTS, type SprintListed } from './sprint-report-summary.js';
 import type { VerdictsData } from './verdicts.js';
 
 /** La version du format. Un consommateur qui lit une autre valeur le dit, et n'affiche rien de faux. */
@@ -175,6 +175,29 @@ const SessionSchema = z.strictObject({
   prs: z.array(z.string()).describe('Numéros de PR cités dans le récit.'),
 });
 
+/** Un sprint publié : `sprints[]` et `derniersSprints[]` partagent ce format. */
+const SprintEntrySchema = z.strictObject({
+  slug: z.string(),
+  numero: z
+    .number()
+    .int()
+    .positive()
+    .describe('Le numéro continu depuis le début du projet : celui écrit au `close`, sinon le rang du compte rendu dans l’historique. Jamais le compteur du journal de branche.'),
+  but: z.string().nullable().describe('Le but complet du sprint ; `null` si le compte rendu ne le dit pas (compte rendu d’avant).'),
+  debut: z.string().nullable().describe('Début de la fenêtre du sprint (ISO 8601) ; `null` si non daté.'),
+  branche: z.string().nullable().describe('La branche sur laquelle le sprint a été clos ; `null` si le compte rendu ne la dit pas.'),
+  fichier: z.string().describe('Le compte rendu, relatif à la racine du projet.'),
+  jour: z.string().describe('Le jour du compte rendu (`AAAA-MM-JJ`), tiré de son nom.'),
+  fin: z.string().nullable().describe('Fin de la fenêtre du sprint (ISO 8601) ; `null` si non datée.'),
+  dureeMs: z.number().nullable().describe('Durée du sprint ; `null` si non mesurée (jamais un faux zéro).'),
+  tokens: z
+    .number()
+    .nullable()
+    .describe('Jetons du sprint, au grain `sprint` seulement ; `null` sinon (le grain session compte tout le run).'),
+  livrees: z.array(z.strictObject({ id: z.string(), title: z.string() })).describe('Les fiches livrées du lot scellé.'),
+  blocages: z.number().nullable().describe('Blocages essuyés ; `null` si le compte rendu ne le dit pas.'),
+});
+
 export const BoardContractSchema = z.strictObject({
   schema_version: z.literal(BOARD_SCHEMA_VERSION),
   counts: z
@@ -199,25 +222,14 @@ export const BoardContractSchema = z.strictObject({
       retros: count().describe('Captures de rétro (`AAAA-MM-JJ-retro-<slug>.md`, dossier `scrum:` du projet).'),
     })
     .describe('Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762).'),
+  sprints: z
+    .array(SprintEntrySchema)
+    .describe(
+      'Tous les comptes rendus de sprint de `docs/sprints/`, le plus récent d’abord, chacun avec son numéro continu, son but, son début et sa branche (fiche 20261114131612204).',
+    ),
   derniersSprints: z
-    .array(
-      z.strictObject({
-        slug: z.string(),
-        fichier: z.string().describe('Le compte rendu, relatif à la racine du projet.'),
-        jour: z.string().describe('Le jour du compte rendu (`AAAA-MM-JJ`), tiré de son nom.'),
-        fin: z.string().nullable().describe('Fin de la fenêtre du sprint (ISO 8601) ; `null` si non datée.'),
-        dureeMs: z.number().nullable().describe('Durée du sprint ; `null` si non mesurée (jamais un faux zéro).'),
-        tokens: z
-          .number()
-          .nullable()
-          .describe('Jetons du sprint, au grain `sprint` seulement ; `null` sinon (le grain session compte tout le run).'),
-        livrees: z
-          .array(z.strictObject({ id: z.string(), title: z.string() }))
-          .describe('Les fiches livrées du lot scellé.'),
-        blocages: z.number().nullable().describe('Blocages essuyés ; `null` si le compte rendu ne le dit pas.'),
-      }),
-    )
-    .describe('Les 5 derniers comptes rendus de sprint, le plus récent d’abord (fiche 20261104090517904).'),
+    .array(SprintEntrySchema)
+    .describe('Les 5 derniers comptes rendus de sprint, le plus récent d’abord (fiche 20261104090517904) : les 5 premiers de `sprints`.'),
   sessions: z
     .array(SessionSchema)
     .describe('Sessions closes, une par récit du dossier `scrum:` du projet, la plus récente d’abord (fiche 20261102123552182).'),
@@ -238,8 +250,8 @@ export interface BoardContractInput {
   historique: { sprints: number; retros: number };
   /** Récits des sessions closes, lus au bord (`loaders/runs.ts`), la plus récente d'abord. */
   sessions: readonly RunReport[];
-  /** Les derniers sprints, résumés au bord depuis leurs comptes rendus (`core/sprint-report-summary.ts`). */
-  derniersSprints?: readonly SprintSummary[];
+  /** Tous les sprints, résumés au bord depuis leurs comptes rendus, le plus récent d'abord (`core/sprint-report-summary.ts`). */
+  sprints?: readonly SprintListed[];
   /** Le nom en clair des objectifs déclarés, lus au bord (`loaders/milestones.ts`). */
   nomsMilestones?: ReadonlyMap<string, string>;
   /** Le nom en clair des versions déclarées, lus au bord (`loaders/milestones.ts`). */
@@ -280,9 +292,11 @@ function colonneOf(f: Fiche, inProgressIds: ReadonlySet<string>): Colonne {
   return 'autres';
 }
 
+const copySprint = (s: SprintListed): SprintListed => ({ ...s, livrees: s.livrees.map((f) => ({ ...f })) });
+
 /** Compile le contrat. Tout est trié : la même entrée donne toujours la même sortie. */
 export function buildBoardContract(input: BoardContractInput): BoardContract {
-  const { fiches, inProgressIds, tags, verdicts, historique, sessions, derniersSprints = [], nomsMilestones } = input;
+  const { fiches, inProgressIds, tags, verdicts, historique, sessions, sprints = [], nomsMilestones } = input;
   const { nomsVersions = new Map<string, string>(), datesEtiquettes = new Map<string, string>() } = input;
   const coupe = input.coupe ?? { ajoutees: [], gate: null, carnet: null };
   const board = buildAvancementData([...fiches], inProgressIds, nomsMilestones);
@@ -335,7 +349,8 @@ export function buildBoardContract(input: BoardContractInput): BoardContract {
     verdicts: Object.fromEntries(Object.entries(verdicts.verdicts).sort(([a], [b]) => (a < b ? -1 : 1))),
     verdictsIllisibles: [...verdicts.illisibles].sort(),
     historique: { sprints: historique.sprints, retros: historique.retros },
-    derniersSprints: derniersSprints.map((s) => ({ ...s, livrees: s.livrees.map((f) => ({ ...f })) })),
+    sprints: sprints.map(copySprint),
+    derniersSprints: sprints.slice(0, DERNIERS_SPRINTS).map(copySprint),
     sessions: sessions.map((s) => ({ date: s.date, title: s.title, file: s.file, fiches: s.fiches, prs: s.prs })),
   };
 }

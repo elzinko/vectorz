@@ -15,9 +15,12 @@
 # Usage :
 #   commit-doc-via-worktree.sh --repo <principal> --file <doc-absolu> --dest-rel <chemin/dans/le/dépôt> \
 #       --branch-base <nom-de-branche-souhaité> --subject "<message de commit>" \
+#       [--also-file <doc-absolu> --also-dest-rel <chemin/dans/le/dépôt>] \
 #       [--kind-tag ARCHIVE] [--kind-noun archive] [--base main] [--ship-merge <chemin>]
 #
 # --dest-rel    : où le document atterrit dans le dépôt (ex. docs/sprints/2026-10-11-sprint-x.md).
+# --also-file   : un SECOND document, rangé dans le MÊME commit (le compte rendu de sprint et son JSON) ;
+#                 exige --also-dest-rel, soumis à la même garde de confinement.
 # --branch-base : nom de branche souhaité ; un suffixe -2, -3… est ajouté si elle existe déjà.
 # --kind-tag    : préfixe MAJUSCULE de la ligne « committée sur » (défaut DOC).
 # --kind-noun   : nom du document dans « <noun> intégrée sur main » (défaut « document »).
@@ -25,13 +28,15 @@
 
 set -uo pipefail
 
-repo="" file="" dest_rel="" branch_base="" subject="" base="main" kind_tag="DOC" kind_noun="document" ship_merge=""
-usage() { sed -n '2,25p' "$0"; }
+also_file="" also_dest_rel="" repo="" file="" dest_rel="" branch_base="" subject="" base="main" kind_tag="DOC" kind_noun="document" ship_merge=""
+usage() { sed -n '2,28p' "$0"; }
 while (( $# )); do
   case "$1" in
     --repo)        repo="${2:-}"; shift 2 ;;
     --file)        file="${2:-}"; shift 2 ;;
     --dest-rel)    dest_rel="${2:-}"; shift 2 ;;
+    --also-file)   also_file="${2:-}"; shift 2 ;;
+    --also-dest-rel) also_dest_rel="${2:-}"; shift 2 ;;
     --branch-base) branch_base="${2:-}"; shift 2 ;;
     --subject)     subject="${2:-}"; shift 2 ;;
     --kind-tag)    kind_tag="${2:-}"; shift 2 ;;
@@ -46,10 +51,16 @@ for req in repo file dest_rel branch_base subject; do
   [[ -n "${!req}" ]] || { echo "commit-doc-via-worktree.sh : --$req requis" >&2; exit 2; }
 done
 [[ -f "$file" ]] || { echo "commit-doc-via-worktree.sh : document introuvable : $file" >&2; exit 2; }
+if [[ -n "$also_file" || -n "$also_dest_rel" ]]; then
+  [[ -n "$also_file" && -n "$also_dest_rel" ]] || { echo "commit-doc-via-worktree.sh : --also-file et --also-dest-rel vont ensemble" >&2; exit 2; }
+  [[ -f "$also_file" ]] || { echo "commit-doc-via-worktree.sh : second document introuvable : $also_file" >&2; exit 2; }
+fi
 git -C "$repo" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "commit-doc-via-worktree.sh : $repo n'est pas un dépôt git" >&2; exit 2; }
 git -C "$repo" show-ref --verify --quiet "refs/heads/$base" || { echo "commit-doc-via-worktree.sh : base « $base » absente dans $repo" >&2; exit 2; }
 # dest_rel ne doit jamais sortir du dépôt : un `..` casserait la garde anti-perte.
-case "$dest_rel" in /*|*..*) echo "commit-doc-via-worktree.sh : --dest-rel doit être relatif, sans « .. » : « $dest_rel »" >&2; exit 2 ;; esac
+for rel in "$dest_rel" "$also_dest_rel"; do
+  case "$rel" in /*|*..*) echo "commit-doc-via-worktree.sh : --dest-rel doit être relatif, sans « .. » : « $rel »" >&2; exit 2 ;; esac
+done
 
 # Chemin de ship-merge, surchargeable en test pour éprouver le repli d'échec.
 SHIP_MERGE="${ship_merge:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../skills/ezk-pr/scripts" 2>/dev/null && pwd)/ship-merge.sh}"
@@ -89,6 +100,7 @@ fi
 if ! mkdir -p "$TMP/$(dirname "$dest_rel")" \
    || ! cp "$file" "$TMP/$dest_rel" \
    || ! git -C "$TMP" add "$dest_rel" \
+   || ! { [[ -z "$also_file" ]] || { mkdir -p "$TMP/$(dirname "$also_dest_rel")" && cp "$also_file" "$TMP/$also_dest_rel" && git -C "$TMP" add "$also_dest_rel"; }; } \
    || ! git -C "$TMP" commit -q -m "$subject"; then
   echo "commit-doc-via-worktree.sh : commit du document échoué — RIEN retiré, le document reste écrit : $file" >&2
   exit 2   # le trap EXIT retire le worktree jetable ; l'original n'est jamais supprimé sans commit
@@ -97,7 +109,7 @@ fi
 git -C "$repo" worktree remove --force "$TMP" >/dev/null 2>&1 && wt_live=0
 # Le commit a RÉUSSI (vérifié ci-dessus) : la copie non suivie du worktree de session vit désormais
 # sur la branche. On la retire pour que `git status` du worktree de session ne la montre plus.
-rm -f "$file"
+rm -f "$file" ${also_file:+"$also_file"}
 
 # --- intégration ----------------------------------------------------------------------------------
 echo "$kind_tag: committée sur $branch ($dest_rel)"

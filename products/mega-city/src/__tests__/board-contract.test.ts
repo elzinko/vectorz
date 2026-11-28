@@ -6,7 +6,7 @@
  * schéma comme l'exemple rangés pour les consommateurs sont à jour.
  */
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
@@ -384,5 +384,68 @@ describe('board show --json — les fichiers rangés pour les consommateurs', ()
   it('le schéma publié tolère un champ ajouté : il n’interdit aucun champ en plus', () => {
     const text = readFileSync(join(megaCity, SCHEMA_FILE), 'utf8');
     expect(text).not.toContain('"additionalProperties": false');
+  });
+});
+
+// fiche 20261114131612204 — la liste complète des sprints, avec numéro continu, but, début et branche.
+describe('board show --json — sprints[] (fiche 20261114131612204)', () => {
+  it('publie autant de sprints que de comptes rendus de docs/sprints/, le plus récent d’abord', () => {
+    expect(data.sprints).toHaveLength(data.historique.sprints);
+    expect(data.sprints.map((s) => s.slug)).toEqual(['second', 'premier']);
+  });
+
+  it('chaque sprint a un numéro : celui écrit au close, sinon son rang dans l’historique', () => {
+    expect(data.sprints.map((s) => [s.slug, s.numero])).toEqual([['second', 2], ['premier', 1]]);
+  });
+
+  it('un compte rendu daté porte son but, son début et sa branche ; un ancien les publie à null', () => {
+    expect(data.sprints[0]).toMatchObject({
+      but: 'Publier le second sprint avec son numéro continu',
+      debut: '2026-10-31T09:00:00.000Z',
+      fin: '2026-10-31T09:42:00.000Z',
+      branche: 'main',
+      fichier: 'docs/sprints/2026-10-31-sprint-second.md',
+    });
+    expect(data.sprints[1]).toMatchObject({ but: null, debut: null, branche: null });
+  });
+
+  it('`derniersSprints` garde son sens (les 5 derniers) et le contrat reste en version 1', () => {
+    const entry = (i: number) => ({
+      slug: `s${i}`, numero: i, but: null, debut: null, branche: null, fichier: `docs/sprints/s${i}.md`, jour: '2026-11-01',
+      fin: null, dureeMs: null, tokens: null, livrees: [], blocages: null,
+    });
+    const sprints = Array.from({ length: 7 }, (_, i) => entry(7 - i));
+    const out = buildBoardContract({
+      fiches: [], inProgressIds: new Set(), tags: new Set(), verdicts: { verdicts: {}, illisibles: [] },
+      historique: { sprints: 7, retros: 0 }, sessions: [], sprints,
+    });
+    expect(out.sprints).toHaveLength(7);
+    expect(out.derniersSprints.map((s) => s.numero)).toEqual([7, 6, 5, 4, 3]);
+    expect(out.schema_version).toBe(1);
+  });
+
+  it('lit le JSON rangé à côté du compte rendu quand il existe (une seule source)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'board-sprint-json-'));
+    try {
+      mkdirSync(join(root, 'docs', 'sprints'), { recursive: true });
+      mkdirSync(join(root, 'features'));
+      spawnSync('git', ['init', '-q', '-b', 'main'], { cwd: root });
+      writeFileSync(join(root, 'docs/sprints/2026-11-20-sprint-x.md'), '# Rapport de sprint — x\n');
+      writeFileSync(
+        join(root, 'docs/sprints/2026-11-20-sprint-x.json'),
+        JSON.stringify({
+          schema: 'sprint-report@0.1',
+          sprint: { slug: 'x', numero: 41, but: 'Le but du JSON', branche: 'feat/x' },
+          window: { startTs: '2026-11-20T08:00:00.000Z', endTs: '2026-11-20T09:00:00.000Z' },
+          duration: { ms: 3600000, grain: 'sprint' },
+          tokens: { grain: 'sprint', totalTokens: 10 },
+          kpi: { blockages: { count: 0 } },
+          lot: { entries: [] },
+        }),
+      );
+      expect(boardShowData(root).sprints[0]).toMatchObject({ numero: 41, but: 'Le but du JSON', branche: 'feat/x', debut: '2026-11-20T08:00:00.000Z' });
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

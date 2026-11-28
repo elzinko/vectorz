@@ -679,13 +679,40 @@
       ],
       "description": "Ce que la méthode a mené dans le projet. Zéro = rien trouvé, compté (fiche 20261102104443762)."
     },
-    "derniersSprints": {
+    "sprints": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "slug": {
             "type": "string"
+          },
+          "numero": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Le numéro continu depuis le début du projet : celui écrit au `close`, sinon le rang du compte rendu dans l’historique. Jamais le compteur du journal de branche."
+          },
+          "but": {
+            "description": "Le but complet du sprint ; `null` si le compte rendu ne le dit pas (compte rendu d’avant).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "debut": {
+            "description": "Début de la fenêtre du sprint (ISO 8601) ; `null` si non daté.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branche": {
+            "description": "La branche sur laquelle le sprint a été clos ; `null` si le compte rendu ne la dit pas.",
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "fichier": {
             "type": "string",
@@ -745,6 +772,10 @@
         },
         "required": [
           "slug",
+          "numero",
+          "but",
+          "debut",
+          "branche",
           "fichier",
           "jour",
           "fin",
@@ -754,7 +785,115 @@
           "blocages"
         ]
       },
-      "description": "Les 5 derniers comptes rendus de sprint, le plus récent d’abord (fiche 20261104090517904)."
+      "description": "Tous les comptes rendus de sprint de `docs/sprints/`, le plus récent d’abord, chacun avec son numéro continu, son but, son début et sa branche (fiche 20261114131612204)."
+    },
+    "derniersSprints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Le numéro continu depuis le début du projet : celui écrit au `close`, sinon le rang du compte rendu dans l’historique. Jamais le compteur du journal de branche."
+          },
+          "but": {
+            "description": "Le but complet du sprint ; `null` si le compte rendu ne le dit pas (compte rendu d’avant).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "debut": {
+            "description": "Début de la fenêtre du sprint (ISO 8601) ; `null` si non daté.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branche": {
+            "description": "La branche sur laquelle le sprint a été clos ; `null` si le compte rendu ne la dit pas.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fichier": {
+            "type": "string",
+            "description": "Le compte rendu, relatif à la racine du projet."
+          },
+          "jour": {
+            "type": "string",
+            "description": "Le jour du compte rendu (`AAAA-MM-JJ`), tiré de son nom."
+          },
+          "fin": {
+            "description": "Fin de la fenêtre du sprint (ISO 8601) ; `null` si non datée.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dureeMs": {
+            "description": "Durée du sprint ; `null` si non mesurée (jamais un faux zéro).",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "tokens": {
+            "description": "Jetons du sprint, au grain `sprint` seulement ; `null` sinon (le grain session compte tout le run).",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "livrees": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title"
+              ]
+            },
+            "description": "Les fiches livrées du lot scellé."
+          },
+          "blocages": {
+            "description": "Blocages essuyés ; `null` si le compte rendu ne le dit pas.",
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "numero",
+          "but",
+          "debut",
+          "branche",
+          "fichier",
+          "jour",
+          "fin",
+          "dureeMs",
+          "tokens",
+          "livrees",
+          "blocages"
+        ]
+      },
+      "description": "Les 5 derniers comptes rendus de sprint, le plus récent d’abord (fiche 20261104090517904) : les 5 premiers de `sprints`."
     },
     "sessions": {
       "type": "array",
@@ -817,6 +956,7 @@
     "versions",
     "verdicts",
     "historique",
+    "sprints",
     "derniersSprints",
     "sessions",
     "verdictsIllisibles"

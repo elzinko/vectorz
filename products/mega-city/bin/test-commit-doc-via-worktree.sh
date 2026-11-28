@@ -47,6 +47,19 @@ ok "sortie : committé sur la branche" "printf '%s' \"\$OUT\" | grep -q 'committ
 ok "le document est sur la branche, sous dest-rel" "git -C \"$P\" show 'docs/doc-v:docs/sprints/ok.md' 2>/dev/null | grep -q 'contenu du document'"
 ok "la source a été retirée après le commit réussi" "[ ! -f \"$SRC\" ]"
 
+echo "J — un second document dans le MÊME commit (--also-file) : le compte rendu et son JSON :"
+printf 'contenu du document\n' > "$SRC"
+ALSO="$ROOT/doc.json"; printf '{"numero":1}\n' > "$ALSO"
+OUT="$(bash "$HELPER" --repo "$P" --file "$SRC" --dest-rel "docs/sprints/duo.md" --also-file "$ALSO" --also-dest-rel "docs/sprints/duo.json" --branch-base docs/doc-j --subject "docs: duo" 2>&1)"
+ok "les deux documents sont sur la branche" "git -C \"$P\" show 'docs/doc-j:docs/sprints/duo.md' >/dev/null 2>&1 && git -C \"$P\" show 'docs/doc-j:docs/sprints/duo.json' 2>/dev/null | grep -q numero"
+ok "dans UN seul commit" "[ \"\$(git -C \"$P\" show --name-only --format= docs/doc-j | grep -c 'docs/sprints/duo')\" -eq 2 ]"
+ok "les deux sources sont retirées après le commit réussi" "[ ! -f \"$SRC\" ] && [ ! -f \"$ALSO\" ]"
+printf 'contenu du document\n' > "$SRC"; printf 'x\n' > "$ALSO"
+bash "$HELPER" --repo "$P" --file "$SRC" --dest-rel "docs/sprints/duo2.md" --also-file "$ALSO" --also-dest-rel "../escape.json" --branch-base docs/doc-k --subject "docs: duo" >/dev/null 2>&1; rc=$?
+ok "un --also-dest-rel qui s'échappe est refusé (exit 2), les deux sources restent" "[ \"$rc\" -eq 2 ] && [ -f \"$SRC\" ] && [ -f \"$ALSO\" ]"
+bash "$HELPER" --repo "$P" --file "$SRC" --dest-rel "docs/sprints/duo3.md" --also-file "$ALSO" --branch-base docs/doc-m --subject "docs: duo" >/dev/null 2>&1; rc=$?
+ok "--also-file sans --also-dest-rel : exit 2" "[ \"$rc\" -eq 2 ]"
+
 echo
 if (( FAIL )); then echo "test-commit-doc-via-worktree: ÉCHECS"; exit 1; fi
 echo "test-commit-doc-via-worktree: TOUT VERT"

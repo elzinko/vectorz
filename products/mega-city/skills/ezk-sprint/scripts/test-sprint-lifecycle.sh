@@ -134,6 +134,10 @@ ok "incrément inscrit dans « Incréments scellés de la session », la story r
 ok "la session n'est pas touchée (docs/sessions, handoff)" '[ "$(sum docs/sessions/2026-10-01-marker.md)" = "$SESS_MARK" ] && [ "$(sum "$HF")" = "$SESS_HAND" ] && [ "$(ls docs/sessions | wc -l | tr -d " ")" = 1 ]'
 ok "close committe le compte rendu du sprint (ADR-0068) sans salir l'arbre" 'printf "%s\n" "$OUT7" | grep -q "^SPRINT-REPORT: committ" && git log --all --format=%s | grep -q "compte rendu du sprint 1" && [ -z "$(git status --porcelain)" ]'
 ok "le compte rendu porte le lot scellé (## Lot scellé + la story livrée)" 'SHA="$(git log --all --format=%H --grep="compte rendu du sprint 1" | head -1)" && git show "$SHA" -- "docs/sprints/*" | grep -q "Lot scellé" && git show "$SHA" -- "docs/sprints/*" | grep -q "$A"'
+# fiche 20261114131612204 — l'en-tête du compte rendu : numéro continu, but complet, branche ; le JSON à côté.
+SHA7="$(git log --all --format=%H --grep="compte rendu du sprint 1" | head -1)"
+ok "le compte rendu écrit le numéro continu, le but complet et la branche (en-tête)" 'git show "$SHA7" -- "docs/sprints/*.md" | grep -qxF "+- **Numéro** : 1" && git show "$SHA7" -- "docs/sprints/*.md" | grep -qxF "+- **But** : Premier sprint" && git show "$SHA7" -- "docs/sprints/*.md" | grep -qxF "+- **Branche** : main"'
+ok "le JSON est committé à côté du .md, dans le même commit, avec les mêmes trois champs" '[ "$(git show --name-only --format= "$SHA7" | grep -c "^docs/sprints/.*-sprint-.*\.\(md\|json\)$")" = 2 ] && git show "$SHA7" -- "docs/sprints/*.json" | grep -qF "\"numero\": 1" && git show "$SHA7" -- "docs/sprints/*.json" | grep -qF "\"branche\": \"main\""'
 
 echo "S8 — close sans sprint ouvert : refus, pas de double scellé"
 SUM8="$(sum "$J")"
@@ -162,6 +166,7 @@ edit "s/^- \[ \] $C — Gamma\$/- [x] $C — Gamma (PR #13)/"
 OUT10="$(bash "$SPRINT" close)"
 ok "CLOSE: SEALED sprint=2 done=1 deferred=0" 'printf "%s\n" "$OUT10" | grep -qx "CLOSE: SEALED sprint=2 done=1 deferred=0"'
 ok "deux incréments dans la session, dans l'ordre" '[ "$(grep -c "^- Sprint [0-9]* — " "$J")" = 2 ] && [ "$(grep "^- Sprint [0-9]* — " "$J" | head -1 | cut -c1-10)" = "- Sprint 1" ]'
+ok "le deuxième compte rendu reçoit le numéro continu 2 (le premier, sur sa branche de PR, est compté)" 'git log --all --format=%s | grep -q "compte rendu du sprint 2 — second-sprint"'
 
 echo "S11 — rien de livré : pas d'incrément, donc close refuse ; --abandon est la sortie, le savoir de session reste"
 bash "$SPRINT" start --lot "$A" --objective "Sprint vide" >/dev/null
@@ -180,6 +185,7 @@ ok "Statut: clos, avec la raison de l'abandon" 'head -5 "$J" | grep -q "^Statut:
 ok "le journal de session garde l'abandon ET les incréments précédents" 'grep -qF -- "- Sprint 3 — Sprint vide — abandonné (pas de capacité) — 0 livrée, 1 reportée, 0 ouverte" "$J" && [ "$(grep -c "^- Sprint [0-9]* — " "$J")" = 3 ]'
 ok "le labo est conservé" 'grep -q "symptôme X — geste Y" "$J"'
 ok "la session n'est pas touchée" '[ "$(sum "$HF")" = "$SESS_HAND" ]'
+ok "le compte rendu d'un sprint abandonné porte sa raison, dans le .md et dans le .json" 'SHA11="$(git log --all --format=%H --grep="compte rendu du sprint 3 —" | head -1)" && git show "$SHA11" -- "docs/sprints/*.md" | grep -qxF "+pas de capacité" && git show "$SHA11" -- "docs/sprints/*.json" | grep -qF "\"abandon\": \"pas de capacité\""'
 
 echo "S12 — après un abandon, plus d'impasse : un nouveau sprint s'ouvre ; abandon avec des stories encore ouvertes"
 OUT12="$(bash "$SPRINT" start --lot "$A,$B" --objective "Sprint repris")"
@@ -217,6 +223,7 @@ OUT14="$(bash "$SPRINT" close)"
 ok "CLOSE: SEALED sprint=7 done=1 deferred=1" 'printf "%s\n" "$OUT14" | grep -qx "CLOSE: SEALED sprint=7 done=1 deferred=1"'
 ok "le statut en fin de ligne passe à clos, le périmètre reste" 'sed -n 2p "$J" | grep -q "^Périmètre: 2h   Statut: clos"'
 ok "incrément lu sans « — » : libellé + référence de PR" 'printf "%s\n" "$OUT14" | grep -qx "INCREMENT: feat: B (PR #12, squash-merged)"'
+ok "le compteur du journal (sprint 7) n'est jamais LE numéro : le compte rendu porte le numéro continu" '! git log --all --format=%s | grep -q "compte rendu du sprint 7 —" && git log --all --format=%s | grep -q "compte rendu du sprint 6 — ancien-format"'
 SUM14="$(sum "$J")"
 OUT14B="$(bash "$SPRINT" close)"
 ok "second close : REFUSED not_open, pas de double scellé" 'printf "%s\n" "$OUT14B" | grep -qx "CLOSE: REFUSED not_open" && [ "$(sum "$J")" = "$SUM14" ]'
@@ -507,6 +514,28 @@ sed -i.bak -e "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (local abc1234)/" "$
 OUT25C="$(cd "$TMP/committed" && bash "$SPRINT" close)"
 ok "close scelle le sprint" 'printf "%s\n" "$OUT25C" | grep -qx "CLOSE: SEALED sprint=1 done=1 deferred=0"'
 ok "le SPRINT.md committé reste intact et suivi, l'arbre reste propre" '[ "$(sum "$TMP/committed/SPRINT.md")" = "$COM_SUM" ] && git -C "$TMP/committed" ls-files --error-unmatch SPRINT.md >/dev/null 2>&1 && [ -z "$(git -C "$TMP/committed" status --porcelain)" ]'
+
+echo "S26 — deux branches qui closent chacune un sprint reçoivent deux numéros continus différents (fiche 20261114131612204)"
+git init -q -b main "$TMP/deux"
+(
+  cd "$TMP/deux"
+  git config user.email test@test && git config user.name test && git config commit.gpgsign false
+  mkdir -p features && mkfiche "$A" "Alpha" alpha && mkfiche "$B" "Beta" beta
+  echo node_modules/ > .gitignore
+  git add . && git commit -qm base
+  bash "$SPRINT" start --lot "$A" --objective "Sprint de la branche main" >/dev/null
+  sed -i.bak -e "s/^- \[ \] $A — Alpha\$/- [x] $A — Alpha (PR #40)/" "$(journal_of)" && rm -f "$(journal_of).bak"
+  bash "$SPRINT" close >/dev/null
+  git checkout -q -b feat/autre-branche
+  bash "$SPRINT" start --lot "$B" --objective "Sprint de l'autre branche" >/dev/null
+  sed -i.bak -e "s/^- \[ \] $B — Beta\$/- [x] $B — Beta (PR #41)/" "$(journal_of)" && rm -f "$(journal_of).bak"
+  bash "$SPRINT" close >/dev/null
+)
+SUBJ24="$(git -C "$TMP/deux" log --all --format=%s | grep "compte rendu du sprint")"
+ok "le sprint de main reçoit le numéro continu 1" 'printf "%s\n" "$SUBJ24" | grep -q "du sprint 1 — sprint-de-la-branche-main"'
+ok "le sprint de l'autre branche reçoit le numéro 2, pas le compteur de sa branche (1)" 'printf "%s\n" "$SUBJ24" | grep -q "du sprint 2 — sprint-de-l-autre-branche"'
+SECOND24="$(git -C "$TMP/deux" log --all --format=%H --grep="compte rendu du sprint 2" | head -1)"
+ok "chaque compte rendu nomme SA branche" 'git -C "$TMP/deux" show "$SECOND24" -- "docs/sprints/*.md" | grep -qxF "+- **Branche** : feat/autre-branche" && git -C "$TMP/deux" show "$SECOND24" -- "docs/sprints/*.md" | grep -qxF "+- **Numéro** : 2"'
 
 if (( FAIL )); then
   echo "FAIL"

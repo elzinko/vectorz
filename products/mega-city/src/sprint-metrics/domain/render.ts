@@ -9,6 +9,22 @@ function fmtDuration(ms: number): string {
 
 const LOT_LABEL: Record<LotResult, string> = { shipped: 'livrée', reported: 'reportée', open: 'restée ouverte' };
 
+/** Les lignes de la section « En-tête » : numéro continu, but complet, branche. Aucune ligne pour un champ absent. */
+function headerLines(sprint: SprintReport['sprint']): string[] {
+  const fields: [string, string | undefined][] = [
+    ['Numéro', sprint.numero === undefined ? undefined : String(sprint.numero)],
+    ['But', sprint.but?.replace(/\s+/g, ' ').trim()],
+    ['Branche', sprint.branche],
+  ];
+  const lines = fields.filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `- **${k}** : ${v}`);
+  return lines.length === 0 ? [] : ['## En-tête', '', ...lines, ''];
+}
+
+/** La section « Abandon », ajoutée en toute fin du compte rendu d'un sprint abandonné. */
+function abandonLines(report: SprintReport): string[] {
+  return report.abandon === undefined ? [] : ['## Abandon', '', report.abandon, ''];
+}
+
 /** Rendu markdown DEPUIS le JSON (source de vérité) — ouvre par « En clair ». */
 export function renderSprintReportMarkdown(report: SprintReport): string {
   const lines: string[] = [];
@@ -41,6 +57,7 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
     lines.push(`> ${report.steps.note}`);
     lines.push('');
   }
+  lines.push(...headerLines(report.sprint));
   lines.push('## Lot scellé');
   lines.push('');
   if (report.lot.entries.length === 0) {
@@ -58,6 +75,7 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
     lines.push('');
     lines.push(`_Rapport généré le ${report.generatedAt} — schéma \`${report.schema}\`._`);
     lines.push('');
+    lines.push(...abandonLines(report));
     return lines.join('\n');
   }
   lines.push(`- **Fenêtre** : ${report.window.startTs} → ${report.window.endTs}`);
@@ -90,5 +108,6 @@ export function renderSprintReportMarkdown(report: SprintReport): string {
   lines.push('');
   lines.push(`_Rapport généré le ${report.generatedAt} — schéma \`${report.schema}\`._`);
   lines.push('');
+  lines.push(...abandonLines(report));
   return lines.join('\n');
 }

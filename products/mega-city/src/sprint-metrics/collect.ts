@@ -25,6 +25,11 @@ export interface CollectSprintReportInput {
   allowUndated?: boolean;
   /** Mode de revue du run (`local` | `pr-codex`), déduit de la config par l'appelant I/O et posé sur les tokens (fiche 20261017110956989). */
   reviewMode?: ReviewMode;
+  /** Le numéro continu, le but complet, la branche et la raison d'abandon, posés par `close` (fiche 20261114131612204). */
+  numero?: number;
+  but?: string;
+  branche?: string;
+  abandon?: string;
   /** Horloge injectable — déterminisme des tests. */
   now?: () => string;
   /** Override de résolution des transcripts (tests / `--transcript`). */
@@ -44,6 +49,7 @@ export interface SprintMetricsPorts {
  */
 export function collectSprintReport(input: CollectSprintReportInput, ports: SprintMetricsPorts): SprintReport {
   const generatedAt = (input.now ?? (() => new Date().toISOString()))();
+  const header = { numero: input.numero, but: input.but, branche: input.branche, abandon: input.abandon };
 
   // Périmètre « ce sprint » : le lot scellé de SPRINT.md (ADR-0068), jamais les incréments de session.
   const lot = { entries: input.sprintMd ? parseSprintLot(input.sprintMd) : [] };
@@ -80,6 +86,7 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
       prRetouches: { total: 0, sansRetouche: 0, indetermine: 0 },
       lot,
       generatedAt,
+      ...header,
     });
   }
 
@@ -111,5 +118,6 @@ export function collectSprintReport(input: CollectSprintReportInput, ports: Spri
     prRetouches,
     lot,
     generatedAt,
+    ...header,
   });
 }

@@ -418,8 +418,25 @@ write_closed() { # $1 = ligne du journal des incréments ; $2 = raison d'abandon
 # `ezk sprint report` (lot scellé lu dans SPRINT.md, périmètre « ce sprint ») et on committe le document
 # via le helper partagé `commit-doc-via-worktree.sh` (local = squash local ; PR = branche + commande).
 # Best-effort : tout échec ici LAISSE le sprint scellé (le compte rendu est un livrable, pas le sceau).
-emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison d'abandon (vide si sceau normal)
-  local n="$1" obj="$2" reason="$3" root repo_main slug tmp report_md day dest_rel helper tsx bounded rc
+# Le numéro CONTINU du prochain compte rendu (fiche 20261114131612204, décision du PO du 14 novembre) :
+# combien de comptes rendus le dépôt connaît déjà, +1. « Connaît » = ceux de `main` ET ceux encore sur leur
+# branche de PR (`docs/sprint-report-*`), faute de quoi deux clôtures avant le merge de la première se
+# donneraient le même numéro. Le compteur du journal de branche (`# Sprint N`) repart à 1 par branche : il
+# ne se publie jamais comme LE numéro.
+next_report_numero() { # $1 = dépôt principal
+  local repo="$1" ref count
+  count="$({
+    git -C "$repo" ls-tree --name-only main -- docs/sprints/ 2>/dev/null
+    for ref in $(git -C "$repo" for-each-ref --format='%(refname)' 'refs/heads/docs/sprint-report-*' 2>/dev/null); do
+      git -C "$repo" ls-tree --name-only "$ref" -- docs/sprints/ 2>/dev/null
+    done
+  } | grep -E '^docs/sprints/[0-9]{4}-[0-9]{2}-[0-9]{2}-sprint-.+\.md$' | sort -u | wc -l | tr -d ' ')" || true
+  echo $(( ${count:-0} + 1 ))
+}
+
+emit_sprint_report() { # $1 = numéro du journal de branche (repli du slug) · $2 = objectif · $3 = raison d'abandon (vide si sceau normal)
+  local n="$1" obj="$2" reason="$3" root repo_main slug tmp report_md report_json day dest_rel helper tsx bounded rc numero
+  local -a header_args=() also_args=()
   # On appelle le bin DIRECTEMENT (pas `ezk sprint report`, dont le wrapper refuse hors dépôt de méthode).
   # tsx + le bin vivent dans le catalogue ($MC) ; absents (install en copie) → on dégrade proprement.
   tsx="$MC/node_modules/.bin/tsx"
@@ -435,17 +452,25 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
   # slug sûr depuis l'objectif (accents translittérés, fiche 20261115180226950), repli n<N> :
   # il entre dans un nom de fichier.
   slug="$(sprint_slug "$obj" "$n")"
+  # L'en-tête du compte rendu : numéro continu, but complet (jamais le placeholder), branche (jamais « _detached »).
+  numero="$(next_report_numero "$repo_main")"
+  header_args=(--numero "$numero")
+  [[ -n "$obj" && "$obj" != "sans objectif" ]] && header_args+=(--objective "$obj")
+  [[ "$BRANCH" != "_detached" ]] && header_args+=(--branch "$BRANCH")
+  # Sprint abandonné : la raison entre dans le compte rendu, markdown et JSON (ADR-0068, cas abandon).
+  [[ -n "$reason" ]] && header_args+=(--abandon "$reason")
   tmp="$(mktemp -d)"
-  if ! "$tsx" "$MC/bin/sprint-report.ts" "$slug" --repo-root "$root" --project-root "$root" --sprint-md "$FILE" --allow-undated --out "$tmp" >/dev/null 2>&1; then
+  if ! "$tsx" "$MC/bin/sprint-report.ts" "$slug" --repo-root "$root" --project-root "$root" --sprint-md "$FILE" --allow-undated "${header_args[@]}" --out "$tmp" >/dev/null 2>&1; then
     echo "SPRINT-REPORT: non produit (sprint:report a échoué) — sprint scellé quand même" >&2
     rm -rf "$tmp" 2>/dev/null || true; return 0
   fi
   report_md="$(ls "$tmp"/*-sprint-"$slug".md 2>/dev/null | head -1)"
   [[ -f "$report_md" ]] || { echo "SPRINT-REPORT: non produit (fichier absent) — sprint scellé quand même" >&2; rm -rf "$tmp"; return 0; }
-  # Sprint abandonné : la raison entre dans le compte rendu (ADR-0068, cas abandon).
-  [[ -n "$reason" ]] && printf '\n## Abandon\n\n%s\n' "$reason" >> "$report_md"
+  report_json="${report_md%.md}.json"
   day="$(basename "$report_md")"; day="${day%%-sprint-*}"
   dest_rel="docs/sprints/$(basename "$report_md")"
+  # Le JSON du rapport part dans le MÊME commit que le markdown : une seule source pour `board show` et `sprint show`.
+  [[ -f "$report_json" ]] && also_args=(--also-file "$report_json" --also-dest-rel "docs/sprints/$(basename "$report_json")")
   helper="$MC/bin/commit-doc-via-worktree.sh"
   bounded="$MC/bin/run-bounded.sh"
   if [[ -f "$helper" ]]; then
@@ -455,13 +480,13 @@ emit_sprint_report() { # $1 = numéro de sprint · $2 = objectif · $3 = raison 
     # appel direct, comme avant (le blocage ne touche que le worktree, où le catalogue est présent).
     if [[ -f "$bounded" ]]; then
       bash "$bounded" 20 bash "$helper" --repo "$repo_main" --file "$report_md" --dest-rel "$dest_rel" \
-        --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
-        --kind-tag SPRINT-REPORT --kind-noun "compte rendu"
+        --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${numero} — ${slug}" \
+        ${also_args[@]+"${also_args[@]}"} --kind-tag SPRINT-REPORT --kind-noun "compte rendu"
       rc=$?
     else
       bash "$helper" --repo "$repo_main" --file "$report_md" --dest-rel "$dest_rel" \
-        --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${n} — ${slug}" \
-        --kind-tag SPRINT-REPORT --kind-noun "compte rendu"
+        --branch-base "docs/sprint-report-${day}" --subject "docs(sprints): compte rendu du sprint ${numero} — ${slug}" \
+        ${also_args[@]+"${also_args[@]}"} --kind-tag SPRINT-REPORT --kind-noun "compte rendu"
       rc=$?
     fi
     if (( rc == 124 )); then

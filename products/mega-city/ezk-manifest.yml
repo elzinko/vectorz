@@ -358,6 +358,11 @@ commands:
     run: bin/sprint-report.ts
     summary: Collecte le rapport de sprint (durée, jetons, indicateurs ; --root <projet>).
     root: none
+  - domain: sprint
+    verb: show
+    run: bin/sprint-show.ts
+    summary: Rend un compte rendu de sprint en champs, avec numéro, but et branche (--json).
+    project: true
   - domain: retro
     verb: captures
     run: bin/retro-captures.ts

@@ -82,3 +82,43 @@ describe('renderSprintReportMarkdown', () => {
     expect(md).toMatch(/Jetons par mode.*mode `local`.*local 2670.*pr-codex 0.*somme = total 2670/);
   });
 });
+
+describe('en-tête du compte rendu : numéro continu, but complet, branche', () => {
+  const withHeader = {
+    ...baseInput,
+    numero: 29,
+    but: 'Le sprint se publie avec son numéro continu, son but et sa branche',
+    branche: 'feat/sprint-publie',
+  };
+
+  it('le JSON porte numero, but et branche sous `sprint`', () => {
+    const report = buildSprintReport(withHeader);
+    expect(report.sprint).toMatchObject({ slug: 'metriques-sprint', numero: 29, but: withHeader.but, branche: 'feat/sprint-publie' });
+  });
+
+  it('le markdown écrit une section « En-tête » après « En clair », avant le lot', () => {
+    const md = renderSprintReportMarkdown(buildSprintReport(withHeader));
+    expect(md.indexOf('## En clair')).toBeLessThan(md.indexOf('## En-tête'));
+    expect(md.indexOf('## En-tête')).toBeLessThan(md.indexOf('## Lot scellé'));
+    expect(md).toContain('- **Numéro** : 29');
+    expect(md).toContain(`- **But** : ${withHeader.but}`);
+    expect(md).toContain('- **Branche** : feat/sprint-publie');
+  });
+
+  it('sans en-tête, le markdown et le JSON restent ceux d\u2019avant (aucune clé devinée)', () => {
+    const report = buildSprintReport(baseInput);
+    expect(Object.keys(report.sprint)).not.toContain('numero');
+    expect(renderSprintReportMarkdown(report)).not.toContain('## En-tête');
+  });
+
+  it('un but sur plusieurs lignes tient sur une ligne', () => {
+    const md = renderSprintReportMarkdown(buildSprintReport({ ...withHeader, but: 'un but\n  sur deux lignes' }));
+    expect(md).toContain('- **But** : un but sur deux lignes');
+  });
+
+  it('la raison d\u2019abandon est écrite dans le JSON et en section « Abandon » en fin de markdown', () => {
+    const report = buildSprintReport({ ...withHeader, abandon: 'plus de budget' });
+    expect(report.abandon).toBe('plus de budget');
+    expect(renderSprintReportMarkdown(report).endsWith('\n## Abandon\n\nplus de budget\n')).toBe(true);
+  });
+});

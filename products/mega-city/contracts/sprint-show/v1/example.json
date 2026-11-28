@@ -1,0 +1,50 @@
+{
+ "schema_version": 1,
+ "sprint": {
+  "slug": "second",
+  "numero": 2,
+  "but": "Publier le second sprint avec son numéro continu",
+  "branche": "main",
+  "debut": "2026-10-31T09:00:00.000Z",
+  "fin": "2026-10-31T09:42:00.000Z",
+  "jour": "2026-10-31",
+  "fichier": "docs/sprints/2026-10-31-sprint-second.md",
+  "source": "json"
+ },
+ "sections": {
+  "enClair": null,
+  "lotScelle": [
+   {
+    "id": "20990101000000001",
+    "title": "Une fiche livrée",
+    "resultat": "livree"
+   },
+   {
+    "id": "20990101000000006",
+    "title": "Livrée",
+    "resultat": "livree"
+   },
+   {
+    "id": "20990101000000002",
+    "title": "Une fiche reportée",
+    "resultat": "reportee"
+   }
+  ],
+  "detail": {
+   "dureeMs": 2520000,
+   "tokens": 100,
+   "blocages": 0,
+   "livrees": [
+    {
+     "id": "20990101000000001",
+     "title": "Une fiche livrée"
+    },
+    {
+     "id": "20990101000000006",
+     "title": "Livrée"
+    }
+   ]
+  },
+  "abandon": null
+ }
+}

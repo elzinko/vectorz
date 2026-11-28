@@ -20,6 +20,12 @@ export interface BuildSprintReportInput {
   /** Le lot scellé du sprint (ADR-0068) — `{ entries: [] }` si `SPRINT.md` absent. */
   lot: LotSummary;
   generatedAt: string;
+  /** Le numéro continu, le but complet et la branche du sprint (fiche 20261114131612204) ; chacun est facultatif. */
+  numero?: number;
+  but?: string;
+  branche?: string;
+  /** La raison d'abandon, pour un sprint clos par `close --abandon`. */
+  abandon?: string;
 }
 
 /**
@@ -31,7 +37,13 @@ export interface BuildSprintReportInput {
 export function buildSprintReport(input: BuildSprintReportInput): SprintReport {
   return {
     schema: SPRINT_REPORT_SCHEMA,
-    sprint: { slug: input.slug, product: input.product },
+    sprint: {
+      slug: input.slug,
+      product: input.product,
+      ...(input.numero !== undefined && { numero: input.numero }),
+      ...(input.but !== undefined && { but: input.but }),
+      ...(input.branche !== undefined && { branche: input.branche }),
+    },
     generatedAt: input.generatedAt,
     window: { startTs: input.window.startTs, endTs: input.window.endTs },
     duration: { ms: input.window.durationMs, grain: 'sprint' },
@@ -48,5 +60,6 @@ export function buildSprintReport(input: BuildSprintReportInput): SprintReport {
         'Un seul gate_reached par sprint dans le journal — pas de ventilation par étape ' +
         '(BDD/archi/TDD/gate/revue/PR) dans ce MVP : total du sprint seulement.',
     },
+    ...(input.abandon !== undefined && { abandon: input.abandon }),
   };
 }

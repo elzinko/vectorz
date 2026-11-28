@@ -479,8 +479,13 @@ describe('translatePlan — numéro, but et branche d’un sprint, quand la mét
   it('les relaie s’ils sont publiés, et les omet sinon', () => {
     const b = board();
     Object.assign(b.derniersSprints[0], { numero: 61, but: 'Pages Sprints', branche: 'feat/x' });
+    // L'exemple de `board show` publie désormais ces champs pour chaque sprint (fiche 20261114131612204) :
+    // le second sprint doit les perdre explicitement pour éprouver « omis quand non publiés ».
+    Object.assign(b.derniersSprints[1], { numero: undefined, but: undefined, branche: undefined });
     const { plan } = translatePlan(b, backlog());
     expect(plan.lastSprints?.[0]).toMatchObject({ numero: 61, but: 'Pages Sprints', branche: 'feat/x' });
     expect(plan.lastSprints?.[1]?.numero).toBeUndefined();
+    expect(plan.lastSprints?.[1]?.but).toBeUndefined();
+    expect(plan.lastSprints?.[1]?.branche).toBeUndefined();
   });
 });
