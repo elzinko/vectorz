@@ -58,7 +58,7 @@ Ce que la méthode fait aujourd'hui.
 
 La clé d'un sprint est le slug de son compte rendu (`docs/sprints/<date>-sprint-<slug>.md`). Le numéro
 continu vient de
-[Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md) ;
+[Le sprint se publie avec son numéro continu](done/20261114131612204_sprint-publie-numero-but-branche.md) ;
 il sert à l'affichage, le slug reste la clé (voir Notes).
 
 1. La capture porte un en-tête `sprints: [<slug>, …]`. Le gabarit le définit. L'extracteur
@@ -142,7 +142,7 @@ Pas de preuve d'écran : la fiche livre une option de compétence, un en-tête e
 - Clé du lien rétro → sprint : la fiche retient le slug du compte rendu, déjà publié ; le numéro
   continu s'affiche à côté. La carte demandait de fixer l'identifiant avant de coder : si le PO
   préfère le numéro comme clé, la fiche sur le numéro continu passe devant celle-ci.
-- Dépend de : [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md).
+- Dépend de : [Le sprint se publie avec son numéro continu](done/20261114131612204_sprint-publie-numero-but-branche.md).
 - Nourrit : l'alerte « sprint clos sans rétro » de [`ezk now --json` publie les alertes de la cloche](done/20261114131612944_ezk-now-json-alertes-de-la-cloche.md) ;
   le bouton de [Demander une rétro depuis mission control](20261114131617010_demander-une-retro-depuis-mission-control.md) ;
   la colonne « sprints relus » de [Une page qui liste les rétros passées](done/20260826072532537_vue-retros-actions-ezk-map.md).

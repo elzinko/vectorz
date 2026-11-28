@@ -7,9 +7,9 @@ product: mega-city
 milestone: board
 version:
 labels: [sprint, contrat, theme:mission-control]
-status: ready
+status: shipped
 blocked:
-pr:
+pr: "local (5b74cbaf)"
 evidence: none # une commande et un contrat, aucun écran modifié
 created: 2026-11-14
 ---
@@ -59,14 +59,14 @@ Ce que le code publie le 14 novembre.
 
 Fiches livrées qui couvrent le besoin en partie :
 
-- [La Vue d'ensemble résume le dernier sprint et ses indicateurs](done/20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md)
+- [La Vue d'ensemble résume le dernier sprint et ses indicateurs](20261104090517904_vue-ensemble-dernier-sprint-et-kpi.md)
   — le plafond « au plus 5 » y est un critère coché (l. 50), pas un oubli.
-- [Le journal de sprint se range par branche, hors du worktree](done/20261004181110201_sprint-md-par-branche-hors-worktree.md)
+- [Le journal de sprint se range par branche, hors du worktree](20261004181110201_sprint-md-par-branche-hors-worktree.md)
   — la source actuelle du numéro, du but et de la branche, hors dépôt et non publiée.
-- [La vue d'ensemble compte les vrais sprints et rétros](done/20261102104443762_vue-ensemble-sprints-retros-reels.md)
+- [La vue d'ensemble compte les vrais sprints et rétros](20261102104443762_vue-ensemble-sprints-retros-reels.md)
   — publie le compte (55), pas la liste.
-- [Au close, le sprint écrit et committe son compte rendu](done/20261008072305169_close-ecrit-et-committe-le-compte-rendu.md)
-  et [Domaine « métriques de sprint »](done/20260826082120062_domaine-metriques-de-sprint-rapport.md)
+- [Au close, le sprint écrit et committe son compte rendu](20261008072305169_close-ecrit-et-committe-le-compte-rendu.md)
+  et [Domaine « métriques de sprint »](20260826082120062_domaine-metriques-de-sprint-rapport.md)
   — le markdown seul, par choix d'alors, et le JSON `sprint-report@0.1` déjà produit à chaque clôture.
 
 ## Proposition
@@ -74,7 +74,7 @@ Fiches livrées qui couvrent le besoin en partie :
 1. **La clôture écrit l'en-tête.** `sprint.sh close` écrit le numéro, le but complet (le texte de
    `--objective`) et la branche dans le compte rendu, dans le `.md` et dans le `.json`. Le `.json`
    est rangé à côté du `.md`, dans le même commit. Le gabarit
-   [`sprint-report-template.md`](../products/mega-city/skills/ezk-sprint/references/sprint-report-template.md)
+   [`sprint-report-template.md`](../../products/mega-city/skills/ezk-sprint/references/sprint-report-template.md)
    gagne cet en-tête. Les 55 comptes rendus existants restent lisibles : leurs champs absents
    valent `null`.
 2. **Le numéro est continu.** Décision du PO du 14 novembre : le vrai numéro est le compte continu
@@ -82,7 +82,7 @@ Fiches livrées qui couvrent le besoin en partie :
    scellés et `ezk board show --json` l'émet. Le compteur qui repart à 1 par branche reste un
    artefact local : il ne se publie jamais comme LE numéro. Cette décision est à confirmer par le
    panel adverse avant d'être écrite en ADR, voir
-   [Amendements d'ADR du 12 novembre](done/20261114131614058_amendements-adr-du-12-novembre.md).
+   [Amendements d'ADR du 12 novembre](20261114131614058_amendements-adr-du-12-novembre.md).
 3. **Une lecture JSON.** Une commande à créer, `ezk sprint show <slug> --json` (`project: true`,
    lecture seule), sort le compte rendu sous un contrat `contracts/sprint-show/v1`, avec
    `schema_version`. Les sections (« En clair », « Lot scellé », « Détail », « Abandon ») sont des
@@ -95,9 +95,9 @@ Fiches livrées qui couvrent le besoin en partie :
 5. **Une seule source.** `board show` et `sprint show` lisent le `.json` quand il existe. La
    relecture du markdown ne sert plus qu'aux anciens comptes rendus.
 
-Hors périmètre : l'écran (fiche sœur côté mission control), le [récit de session](20261114131614243_recit-de-session-en-tete-structure.md),
-la vue par session ([`ezk board session`](20261114131614424_ezk-board-session-json.md)) et la
-[rétro par sprints nommés](20261114131614801_retro-relit-une-liste-de-sprints-nommes.md).
+Hors périmètre : l'écran (fiche sœur côté mission control), le [récit de session](../20261114131614243_recit-de-session-en-tete-structure.md),
+la vue par session ([`ezk board session`](../20261114131614424_ezk-board-session-json.md)) et la
+[rétro par sprints nommés](../20261114131614801_retro-relit-une-liste-de-sprints-nommes.md).
 
 ## Critères d'acceptation
 
@@ -147,7 +147,7 @@ s'intitulent « sprint 1 », « sprint 1 » puis « sprint 2 » : le numéro sui
 sprint s'ouvre, et la première ouverture a eu lieu sur une branche de story. Un numéro continu, publié par
 la méthode, éviterait la confusion à la rétro.
 
-- Origine : la [carte des écarts du 14 novembre](../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
+- Origine : la [carte des écarts du 14 novembre](../../docs/maquettes/2026-11-14-carte-des-ecarts-maquette-code-backlog.md),
   écarts A1 et H1, fusionnés : même en-tête de compte rendu, même `close`, même source pour
   `board show`.
 - Décision du PO du 14 novembre (n° 1) : numéro continu calculé depuis l'historique des sprints

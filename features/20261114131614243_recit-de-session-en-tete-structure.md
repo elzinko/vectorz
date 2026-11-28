@@ -67,7 +67,7 @@ Un besoin déclaré trois fois, jamais livré.
 
 1. **Un en-tête structuré à l'écriture.** `ezk-archive` écrit en tête de chaque nouveau récit un
    front-matter YAML : `fiches`, `branche`, `debut`, `fin`, `sprints` (les numéros continus de
-   [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md)),
+   [Le sprint se publie avec son numéro continu](done/20261114131612204_sprint-publie-numero-but-branche.md)),
    `comptesRendus` (les chemins `docs/sprints/…` des sprints de la session). La ligne `fiches:` des
    anciens récits reste lue.
 2. **Le trio lisible.** Le récit devient une instance de la règle
@@ -136,7 +136,7 @@ Le chargeur n'a pas de test aujourd'hui : en ajouter un sous `src/loaders/__test
 - Reprise d'un besoin déclaré le 26 août et le 4 septembre 2026, jamais livré (fiches citées dans
   le Contexte). La vue qui le portait a disparu avec l'ADR-086 ; le besoin, lui, revient par
   mission control.
-- Dépend de : [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md)
+- Dépend de : [Le sprint se publie avec son numéro continu](done/20261114131612204_sprint-publie-numero-but-branche.md)
   pour les numéros de `sprints`. Nourrit : [`ezk board session`](20261114131614424_ezk-board-session-json.md).
 - Décisions attendues au grooming : la source de `debut` et `fin` (journal de branche ou journal de
   supervision) ; le nom de l'extracteur du trio.

@@ -257,7 +257,7 @@ d'être écrites en ADR. Les fiches les portent comme décisions du PO à confir
 
 | # | Fiche | Priorité | Produit | Écarts |
 |---|---|---|---|---|
-| 1 | [Le sprint se publie avec son numéro continu, son but et sa branche](../../features/20261114131612204_sprint-publie-numero-but-branche.md) | P1 | mega-city | A1, H1 |
+| 1 | [Le sprint se publie avec son numéro continu, son but et sa branche](../../features/done/20261114131612204_sprint-publie-numero-but-branche.md) | P1 | mega-city | A1, H1 |
 | 2 | [L'émetteur nomme la session et dérive la clé de chantier de la milestone](../../features/20261114131612388_session-nommee-cle-de-chantier-derivee.md) | P1 | mega-city | A2, A3 |
 | 3 | [Les objectifs publiés comme objets, avec nom, fiches livrées et versions](../../features/done/20261114131612572_objectifs-publies-comme-objets.md) | P1 | mega-city | A6 |
 | 4 | [Les versions publiées comme coupes, avec la prochaine coupe à faire](../../features/done/20261114131612759_versions-publiees-comme-coupes.md) | P1 | mega-city | A7 |

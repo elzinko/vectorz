@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261114131612204_sprint-publie-numero-but-branche.md](../20261114131612204_sprint-publie-numero-but-branche.md)
+> 🗎 Rendu de la fiche [features/20261114131612204_sprint-publie-numero-but-branche.md](../done/20261114131612204_sprint-publie-numero-but-branche.md)
 
 # 20261114131612204 — Le sprint se publie avec son numéro continu, son but et sa branche
 

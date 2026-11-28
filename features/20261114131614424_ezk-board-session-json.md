@@ -75,7 +75,7 @@ même une fois la session nommée. Le vrai prérequis est le journal par worktre
 2. **La sortie.** Une session = une branche. Le JSON porte : `branche`, `dossier` (le worktree),
    `etat` (active ou dormante, repris de `buildSessionsData`), `sprints[]` (numéro, but, lot,
    compte rendu, depuis les comptes rendus publiés par
-   [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md)
+   [Le sprint se publie avec son numéro continu](done/20261114131612204_sprint-publie-numero-but-branche.md)
    et le journal de branche), `lancements[]` (`run.started` / `run.finished` du journal, avec la
    clé de chantier posée par
    [L'émetteur nomme la session](20261114131612388_session-nommee-cle-de-chantier-derivee.md)),

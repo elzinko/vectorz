@@ -89,7 +89,7 @@ Des gestes de texte, bon marché, plus deux renommages. Les amendements d'abord,
    adverse avant d'être gravées ; la 5 est prise. L'ADR porteur se choisit au panel (ADR-086, candidat naturel) :
    - Décision 1, à confirmer par le panel : le numéro d'un sprint est le compte continu depuis le début du projet,
      calculé depuis l'historique des sprints scellés, émis par `ezk board show --json` ; le compteur qui repart à 1
-     par branche est un artefact local, jamais publié comme le numéro. Build : [Le sprint se publie avec son numéro continu](../20261114131612204_sprint-publie-numero-but-branche.md).
+     par branche est un artefact local, jamais publié comme le numéro. Build : [Le sprint se publie avec son numéro continu](20261114131612204_sprint-publie-numero-but-branche.md).
    - Décision 3, à confirmer par le panel : les liens se déclarent dans le front-matter des objets de process ; la
      méthode les compile en un bloc typé (adjacence, étage, orphelins, provenance) ; ce bloc est le contrat publié ;
      `ezk graph check` le lit, pas un deuxième canal. Aujourd'hui `ezk graph check --json` existe (`products/mega-city/bin/ezk-graph.ts:27-36`)

@@ -87,7 +87,7 @@ nécessaire par le juge PO adverse :
 ## 5 · Cohérence avec les décisions 1 et 3
 
 Voir la ligne 9 du tableau. Deux conséquences pour les fiches du lot : le compte rendu de sprint porte
-`objectif:` (fiche [Le sprint se publie avec son numéro continu](../../features/20261114131612204_sprint-publie-numero-but-branche.md)),
+`objectif:` (fiche [Le sprint se publie avec son numéro continu](../../features/done/20261114131612204_sprint-publie-numero-but-branche.md)),
 et la fiche [L'émetteur nomme la session](../../features/20261114131612388_session-nommee-cle-de-chantier-derivee.md)
 dérive la clé de chantier de l'objectif seul, ce que ce panel confirme.
 

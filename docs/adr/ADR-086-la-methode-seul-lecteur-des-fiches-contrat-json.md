@@ -258,7 +258,7 @@ prise par le PO, hors panel.
 depuis l'historique des sprints scellés et émis par `ezk board show --json`. Le compteur qui repart à 1 par
 branche (journal de branche sous `<git-common-dir>/ezk/sprints/`) est un artefact local : il ne se publie
 jamais comme le numéro. Un sprint se rattache à un objectif, jamais à une version. Build :
-[Le sprint se publie avec son numéro continu, son but et sa branche](../../features/20261114131612204_sprint-publie-numero-but-branche.md).
+[Le sprint se publie avec son numéro continu, son but et sa branche](../../features/done/20261114131612204_sprint-publie-numero-but-branche.md).
 
 **Décision 3 — le graphe de la méthode.** Les liens se déclarent dans le front-matter des objets de process ;
 la méthode les compile en un seul bloc typé (adjacence, étage, orphelins, provenance) ; ce bloc compilé est

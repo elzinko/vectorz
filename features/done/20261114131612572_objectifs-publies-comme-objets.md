@@ -73,7 +73,7 @@ Un ajout de champs, sans changement de sens. Les contrats `board-show` et `backl
    - `milestone` et `labels`, déjà lus par le loader.
    - `sprint` : le sprint dont le lot scellé cite la fiche, `null` sinon. Aujourd'hui c'est le slug
      du compte rendu. Ce sera son numéro continu quand
-     [Le sprint se publie avec son numéro continu, son but et sa branche](../20261114131612204_sprint-publie-numero-but-branche.md)
+     [Le sprint se publie avec son numéro continu, son but et sa branche](20261114131612204_sprint-publie-numero-but-branche.md)
      l'aura publié.
 3. Où vit le nom. Décision du PO du 14 novembre : le nom en clair vit dans le front-matter de
    l'objet milestone lui-même, pas dans `PLAN.md`. Pas de fichier `milestones.yml`. `PLAN.md` reste
