@@ -151,7 +151,7 @@ Les frictions observées :
     1er novembre. Une règle existe depuis ce premier cas.
 13. **Les dettes non bloquantes ne vont nulle part.** Le product owner virtuel en a nommé une
     douzaine. Trois seulement ont donné une fiche : [la cloche se souvient des alertes fermées](../../features/20261126170000113_la-cloche-se-souvient-des-alertes-fermees.md),
-    [une commande ajoute une recette au projet](../../features/20261126170000114_ezk-recipes-add-ajoute-une-recette-au-projet.md)
+    [une commande ajoute une recette au projet](../../features/done/20261126170000114_ezk-recipes-add-ajoute-une-recette-au-projet.md)
     et [le bouton « + Ajouter » des recettes](../../features/20261126170000115_bouton-ajouter-de-la-page-recettes.md).
 14. **Les jetons du run ne sont pas mesurés.** On ne peut pas dire si la cible de 200 000 jetons par
     fiche a tenu.

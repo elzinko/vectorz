@@ -7,10 +7,10 @@ product: mega-city
 milestone: board
 version:
 labels: [theme:mission-control, recettes]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (8f7e8a7c)"
 evidence: none # commande sans écran ; l'écran a sa propre fiche
 created: 2026-11-26
 ---

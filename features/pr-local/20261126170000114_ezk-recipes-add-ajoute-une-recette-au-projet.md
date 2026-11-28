@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261126170000114_ezk-recipes-add-ajoute-une-recette-au-projet.md](../20261126170000114_ezk-recipes-add-ajoute-une-recette-au-projet.md)
+> 🗎 Rendu de la fiche [features/20261126170000114_ezk-recipes-add-ajoute-une-recette-au-projet.md](../done/20261126170000114_ezk-recipes-add-ajoute-une-recette-au-projet.md)
 
 # 20261126170000114 — Une commande de la méthode ajoute une recette du catalogue au projet
 
