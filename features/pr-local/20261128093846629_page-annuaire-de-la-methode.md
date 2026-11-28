@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261128093846629_page-annuaire-de-la-methode.md](../20261128093846629_page-annuaire-de-la-methode.md)
+> 🗎 Rendu de la fiche [features/20261128093846629_page-annuaire-de-la-methode.md](../done/20261128093846629_page-annuaire-de-la-methode.md)
 
 # 20261128093846629 — La page Annuaire de la méthode : compétences, agents, règles, profils, commandes, glossaire
 

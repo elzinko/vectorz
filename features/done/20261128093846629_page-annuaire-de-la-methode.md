@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, annuaire]
-status: ready
+status: shipped
 blocked:
 depends: []
-pr:
+pr: "local (9d8a4b5d)"
 evidence: before-after
 created: 2026-11-28
 ---
@@ -85,7 +85,7 @@ glossaire et des profils par la méthode.
 - vue Annuaire : http://localhost:5274 → menu Annuaire de la méthode
 - `pnpm --dir products/cop1/packages/web exec vitest run`
 - `pnpm --dir products/cop1/packages/app exec vitest run`
-- Preuve avant / après (annuaire) : [avant](../docs/pr-evidence/20261128093846629/annuaire-before.jpg) → [après](../docs/pr-evidence/20261128093846629/annuaire-after.jpg)
+- Preuve avant / après (annuaire) : [avant](../../docs/pr-evidence/20261128093846629/annuaire-before.jpg) → [après](../../docs/pr-evidence/20261128093846629/annuaire-after.jpg)
 
 ## Notes / décisions
 

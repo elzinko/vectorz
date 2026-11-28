@@ -7,10 +7,10 @@ product: cop1
 milestone: board
 version:
 labels: [theme:mission-control, menu]
-status: ready
+status: shipped
 blocked:
 depends: ["20261128093846629"]
-pr:
+pr: "local (9d8a4b5d)"
 evidence: before-after
 created: 2026-11-28
 ---
@@ -59,7 +59,7 @@ l'onglet cartes, ni le bloc archives ».
 
 - vue Menu : http://localhost:5274 → le menu de gauche
 - `pnpm --dir products/cop1/packages/web exec vitest run`
-- Preuve avant / après (menu) : [avant](../docs/pr-evidence/20261128093846641/menu-before.jpg) → [après](../docs/pr-evidence/20261128093846641/menu-after.jpg)
+- Preuve avant / après (menu) : [avant](../../docs/pr-evidence/20261128093846641/menu-before.jpg) → [après](../../docs/pr-evidence/20261128093846641/menu-after.jpg)
 
 ## Notes / décisions
 

@@ -1,4 +1,4 @@
-> 🗎 Rendu de la fiche [features/20261128093846641_menu-sans-cartes-ni-archives.md](../20261128093846641_menu-sans-cartes-ni-archives.md)
+> 🗎 Rendu de la fiche [features/20261128093846641_menu-sans-cartes-ni-archives.md](../done/20261128093846641_menu-sans-cartes-ni-archives.md)
 
 # 20261128093846641 — Le menu de mission control n'a plus que les entrées de la maquette : ni Cartes, ni Archives
 
